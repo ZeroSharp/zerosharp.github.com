@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://ZeroSharp.github.com/blog/archives/</loc>
+        <loc>http://blog.zerosharp.com/blog/archives/</loc>
         <lastmod>2012-04-03T12:30:32+01:00</lastmod>
     </url>
     <url>
-        <loc>http://ZeroSharp.github.com/</loc>
+        <loc>http://blog.zerosharp.com/</loc>
         <lastmod>2012-04-03T12:30:32+01:00</lastmod>
     </url>
 </urlset>
