@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[ZeroSharp]]></title>
-  <link href="http://blog.zerosharp.com/atom.xml" rel="self"/>
+  <title><![CDATA[Category: octopress | ZeroSharp]]></title>
+  <link href="http://blog.zerosharp.com/blog/categories/octopress/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
   <updated>2012-04-06T17:21:46+01:00</updated>
   <id>http://blog.zerosharp.com/</id>
@@ -102,7 +102,7 @@ rake install
 
 <p>At the top of pythonexec.rb, modify the file as follows:</p>
 
-<figure class='code'><figcaption><span>pythonexec.rb </span></figcaption>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>pythonexec.rb </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -121,6 +121,9 @@ rake install
 <span class='line-number'>16</span>
 <span class='line-number'>17</span>
 <span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
 </pre></td><td class='code'><pre><code class='rb'><span class='line'><span class="k">class</span> <span class="nc">RubyPython</span><span class="o">::</span><span class="no">PythonExec</span>
 </span><span class='line'>  <span class="c1"># Based on the name of or path to the \Python executable provided, will</span>
 </span><span class='line'>  <span class="c1"># determine:</span>
@@ -129,19 +132,21 @@ rake install
 </span><span class='line'>  <span class="c1"># * The version of \Python being run.</span>
 </span><span class='line'>  <span class="c1"># * The system prefix.</span>
 </span><span class='line'>  <span class="c1"># * The main loadable \Python library for this version.</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">python_executable</span><span class="p">)</span>
-</span><span class='line'>    <span class="vi">@python</span> <span class="o">=</span> <span class="n">python_executable</span> <span class="o">||</span> <span class="s2">&quot;python&quot;</span>
+</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">python_executable</span><span class="p">)</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="o">+</span>    <span class="c1"># &lt;zerosharp+&gt; Start of modification</span>
-</span><span class='line'><span class="o">+</span>    <span class="k">if</span> <span class="p">(</span><span class="vi">@python</span><span class="o">.</span><span class="n">include?</span> <span class="s1">&#39;python2.7&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="o">+</span>      <span class="vi">@python</span> <span class="o">=</span> <span class="s2">&quot;python&quot;</span>
-</span><span class='line'><span class="o">+</span>    <span class="k">end</span>
-</span><span class='line'><span class="o">+</span>    <span class="c1"># &lt;zerosharp+&gt; End of modification</span>
+</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;@python = python_executable || &quot;python&quot;</span>
+</span><span class='line'><span class="sr">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;</span><span class="sr">/pre&gt;</span>
 </span><span class='line'>
-</span><span class='line'>    <span class="vi">@python</span> <span class="o">=</span> <span class="sx">%x(</span><span class="si">#{</span><span class="vi">@python</span><span class="si">}</span><span class="sx"> -c &quot;import sys; print sys.executable&quot;)</span><span class="o">.</span><span class="n">chomp</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
+</span><span class='line'><span class="sr">&lt;ul&gt;</span>
+</span><span class='line'><span class="sr">&lt;li&gt; # &amp;lt;zerosharp+&gt; Start of modification&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span> <span class="k">if</span> <span class="p">(</span><span class="vi">@python</span><span class="o">.</span><span class="n">include?</span> <span class="s1">&#39;python2.7&#39;</span><span class="p">)</span><span class="o">&lt;</span><span class="sr">/li&gt;</span>
+</span><span class='line'><span class="sr">&lt;li&gt;   @python = &quot;python&quot;&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span> <span class="k">end</span><span class="o">&lt;</span><span class="sr">/li&gt;</span>
+</span><span class='line'><span class="sr">&lt;li&gt;&lt;p&gt; # &amp;lt;zerosharp+&gt; End of modification&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span><span class="vi">@python</span> <span class="o">=</span> <span class="sx">%x(</span><span class="si">#{</span><span class="vi">@python</span><span class="si">}</span><span class="sx"> -c &quot;import sys; print sys.executable&quot;)</span><span class="o">.</span><span class="n">chomp</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p></li>
+</ul>
 
 
 <H2>References</H2>
