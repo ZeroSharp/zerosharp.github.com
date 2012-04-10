@@ -27,10 +27,12 @@
   <link href="/atom.xml" rel="alternate" title="ZeroSharp" type="application/atom+xml">
   <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
 <link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> 
+
 <!-- <ra+> -->
-<link href="http://fonts.googleapis.com/css?family=Nunito:300" rel="stylesheet" type="text/css">
-<link href="http://fonts.googleapis.com/css?family=Inconsolata:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Ubuntu:500" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
 <!-- </ra+> -->
 
   
@@ -51,7 +53,8 @@
 
 <body    class="collapse-sidebar sidebar-footer" >
   <header role="banner"><hgroup>
-  <h1><a href="/">ZeroSharp</a></h1>
+  <!--<h1><a href="/">ZeroSharp</a></h1>-->
+  <a href="http://www.zerosharp.com/"><h1>ZeroSharp</h1></a>
   
 </hgroup>
 
@@ -106,10 +109,9 @@
   </header>
 
 
-<div class="entry-content"><p>This is quick guide to setting up Octopress on a Windows 7 machine to publish to GitHub pages.</p>
+<div class="entry-content"><p>This is quick guide to setting up <a href="http://octopress.org/">Octopress</a> on a Windows 7 machine to publish to GitHub pages.</p>
 
-<H2>Get with GitHub</H2>
-
+<h2>Get with GitHub</h2>
 
 <p>First, get an account on GitHub and follow the excellent instructions for Windows here.  <a href="http://help.github.com/win-set-up-git/">here</a>.</p>
 
@@ -117,66 +119,75 @@
 
 <p>Then create a directory for all your github projects.  You could put this anywhere, e.g., <code>%USERPROFILE%\github</code>.  I chose to create a directory <code>C:\projects\github\</code>.</p>
 
-<H2>Use yari instead of RVM/rbenv</H2>
+<h2>Installing Octopress</h2>
 
+<p><img class="right" src="images/blog/octopress_logo.png"></p>
+
+<h4>Use yari instead of RVM/rbenv</h4>
 
 <p>Scott Muc has written <a href="https://github.com/scottmuc/yari">yari</a> which lets you switch between Windows Ruby versions.  Get it with the following command.</p>
 
-<pre>
-cd C:\projects\github\
+<pre><code>cd C:\projects\github\
 git clone git://github.com/scottmuc/yari.git yari
-</pre>
-
+</code></pre>
 
 <p>Once this has completed you can setup the required Ruby environment with the command:</p>
 
-<pre>
-yari 1.9.2
-</pre>
+<pre><code>yari 1.9.2
+</code></pre>
 
+<p>Then follow the rest of the instructions from <a href="http://octopress.org/docs/setup/">the Octopress setup instructions</a>.</p>
 
-
-
-<H2>Install Octopress</H2>
-
-
-<p>The following instruction are taken from <a href="http://octopress.org/docs/setup/">the Octopress setup instructions</a> with minor changes.</p>
-
-<pre>
-git clone git://github.com/imathis/octopress.git octopress
+<pre><code>git clone git://github.com/imathis/octopress.git octopress
 cd octopress
 ruby --version  # Should report Ruby 1.9.2 thanks to yari
-</pre>
-
+</code></pre>
 
 <p>Next install dependencies</p>
 
-<pre>
-gem install bundler
+<pre><code>gem install bundler
 bundle install
-</pre>
-
+</code></pre>
 
 <p>Install the default Octopress theme.</p>
 
-<pre>
-rake install
-</pre>
+<pre><code>rake install
+</code></pre>
 
+<h2>Deploying to GitHub</h2>
 
-<p>Then follow the instructions <a href="http://octopress.org/docs/configuring/">here</a> to configure your blog.</p>
+<p>The instructions are <a href="http://octopress.org/docs/deploying/github/">here</a>.  The only difficulty I had was working out which URL to use after:</p>
 
-<H2>Problem with codeblocks</H2>
+<pre><code>rake setup_github_pages
+</code></pre>
 
+<p>This will ask you for your Github Pages repository url, but it is not clear that this is the SSH one, e.g., <code>git@github.com:ZeroSharp/zerosharp.github.com.git</code>.  You can find it near the top of <a href="https://github.com/ZeroSharp/zerosharp.github.com">the repository page</a>.</p>
 
-<p>On Windows it seems that whenever you include a <code>lang</code> parameter in a <code>codeblock</code>, you get:</p>
+<h2>Configuring your blog</h2>
 
-<pre>
-     Liquid error: No such file or directory - python2.7 -c “import sys; print sys.executable”
-</pre>
+<p>Follow the instructions <a href="http://octopress.org/docs/configuring/">here</a> to configure your blog.</p>
 
+<h4>Markdown</h4>
 
-<p>It seems that there are two issues:</p>
+<p>It is quite difficult to find good help on the markdown syntax other than for the codeblocks section.  For instance, it is not clear how to generate a codeblock with no line numbers, like this one:</p>
+
+<pre><code>How do I output a codeblock with no line numbers?
+</code></pre>
+
+<p>It turns out it either requires a <code>&lt;pre&gt;</code> tag instead of a <code>{ codeblock }</code> tag, or alternatively, start the line with four spaces.  The official syntax is <a href="http://daringfireball.net/projects/markdown/syntax">here</a>, but I also found <a href="http://warpedvisions.org/projects/markdown-cheat-sheet/">this cheat sheet</a>.</p>
+
+<h4>Fonts and Styles</h4>
+
+<p>See <a href="http://blog.bigdinosaur.org/changing-octopresss-header/">Lee&#8217;s Bigdinosaur blog</a>.</p>
+
+<h4>Problem with CodeBlocks</h4>
+
+<p>I had a problem with codeblocks which seems to be specific to Windows.  It seems that whenever you include a <code>lang</code> parameter in a <code>codeblock</code>, you get:</p>
+
+<pre><code>Liquid error: No such file or directory - python2.7 -c “import sys; print sys.executable”
+</code></pre>
+
+<p>There are two issues:</p>
 
 <ul>
 <li>Syntax highlighting requires Python which is not automatically installed.</li>
@@ -230,14 +241,13 @@ rake install
 </span></code></pre></td></tr></table></div></figure>
 
 
-
-
-<H2>References</H2>
-
+<h2>References</h2>
 
 <ul>
-<li><a href="http://translate.googleusercontent.com/translate_c?hl=en&amp;ie=UTF8&amp;prev=_t&amp;rurl=translate.google.com&amp;sl=zh-CN&amp;tl=en&amp;twu=1&amp;u=http://blog.yesmryang.net/windows-octopress-python/&amp;usg=ALkJrhhFZMKpT5j6_L8NXOL1S9H9CGjHNw">This blog post</a> (translated from the Chinese via Google Translate) helped me solve the syntax highlighting problem.</li>
-<li><a href="https://github.com/github/gollum/issues/225">This similar issue</a> also helped.</li>
+<li><a href="http://blog.bigdinosaur.org/changing-octopresss-header/">Lee&#8217;s Bigdinosaur blog</a> helped with fonts and colours.</li>
+<li><a href="http://translate.googleusercontent.com/translate_c?hl=en&amp;ie=UTF8&amp;prev=_t&amp;rurl=translate.google.com&amp;sl=zh-CN&amp;tl=en&amp;twu=1&amp;u=http://blog.yesmryang.net/windows-octopress-python/&amp;usg=ALkJrhhFZMKpT5j6_L8NXOL1S9H9CGjHNw">This blog post</a> (translated from the Chinese via Google Translate) helped me solve the codeblock problem.</li>
+<li><a href="https://github.com/imathis/octopress/issues/262">This issue</a> and <a href="https://github.com/github/gollum/issues/225">this issue</a> also helped.</li>
+<li>Markdown <a href="http://daringfireball.net/projects/markdown/syntax">syntax</a> and <a href="http://warpedvisions.org/projects/markdown-cheat-sheet/">cheat sheet</a></li>
 </ul>
 
 </div>
@@ -276,7 +286,7 @@ rake install
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://blog.zerosharp.com/setting-up-octopress-on-windows/" data-via="" data-counturl="http://blog.zerosharp.com/setting-up-octopress-on-windows/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://blog.zerosharp.com/setting-up-octopress-on-windows/" data-via="8ctopus" data-counturl="http://blog.zerosharp.com/setting-up-octopress-on-windows/" >Tweet</a>
   
   
   
