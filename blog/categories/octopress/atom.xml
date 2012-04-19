@@ -4,7 +4,7 @@
   <title><![CDATA[Category: octopress | ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/blog/categories/octopress/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2012-04-12T12:03:48+01:00</updated>
+  <updated>2012-04-19T18:21:44+01:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -30,7 +30,7 @@
 
 <h2>Installing Octopress</h2>
 
-<p><img class="right" src="images/blog/octopress_logo.png"></p>
+<p><img class="right" src="/images/blog/octopress_logo.png"></p>
 
 <h4>Use yari instead of RVM/rbenv</h4>
 

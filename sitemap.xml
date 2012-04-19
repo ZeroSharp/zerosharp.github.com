@@ -2,14 +2,18 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://blog.zerosharp.com/setting-up-octopress-on-windows/</loc>
-        <lastmod>2012-04-10T17:17:53+01:00</lastmod>
+        <lastmod>2012-04-19T16:59:03+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://blog.zerosharp.com/about/</loc>
+        <lastmod>2012-04-19T17:40:42+01:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/blog/archives/</loc>
-        <lastmod>2012-04-10T17:17:53+01:00</lastmod>
+        <lastmod>2012-04-19T16:59:03+01:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/</loc>
-        <lastmod>2012-04-10T17:17:53+01:00</lastmod>
+        <lastmod>2012-04-19T16:59:03+01:00</lastmod>
     </url>
 </urlset>
