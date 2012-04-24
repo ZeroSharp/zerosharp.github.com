@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: robots | ZeroSharp]]></title>
+  <link href="http://blog.zerosharp.com/blog/categories/robots/atom.xml" rel="self"/>
+  <link href="http://blog.zerosharp.com/"/>
+  <updated>2012-04-24T12:47:56+01:00</updated>
+  <id>http://blog.zerosharp.com/</id>
+  <author>
+    <name><![CDATA[Robert Anderson]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Friends, Robots, Countrymen]]></title>
+    <link href="http://blog.zerosharp.com/friends-robots-countrymen/"/>
+    <updated>2012-04-24T15:55:00+01:00</updated>
+    <id>http://blog.zerosharp.com/friends-robots-countrymen</id>
+    <content type="html"><![CDATA[<p>This is the first in a series of posts about robots, past and present.</p>
+
+<p>Since at least the 1950s, people have claimed that we are just around the corner from a robot revolution.  Perhaps it's finally here!  The robots are coming!</p>
+
+<p>Recently there have been substantial advances in many different overlapping domains: the driverless car, unmanned drones, machine vision, machine translation, machine learning, speech recognition, facial recognition, swarm robotics, self-reconfiguring modular robots, powered exoskeletons, nanotechnology, etc.</p>
+
+<p>First up:  here's the rather terrifying DARPA AlphaDog Legged Squad Support System (LS3).</p>
+
+<p><iframe width="640" height="390" src="http://www.youtube.com/embed/xY42w1w0TWk " frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></p>
+
+<p>The <a href="http://www.darpa.mil/NewsEvents/Releases/2012/02/07.aspx">DARPA website</a> says it can <em>track a specific individual or object</em>, so watch your back!</p>
+]]></content>
+  </entry>
+  
+</feed>
