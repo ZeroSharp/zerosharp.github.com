@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2012-04-27T14:53:36+01:00</updated>
+  <updated>2012-04-27T15:07:03+01:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -18,7 +18,7 @@
     <link href="http://blog.zerosharp.com/skiing-on-mars/"/>
     <updated>2012-04-27T11:45:00+01:00</updated>
     <id>http://blog.zerosharp.com/skiing-on-mars</id>
-    <content type="html"><![CDATA[<p><img class="right" src="http://upload.wikimedia.org/wikipedia/commons/5/5a/Mars_propm_rover.jpg">
+    <content type="html"><![CDATA[<p><a href="http://en.wikipedia.org/wiki/File:Mars_propm_rover.jpg"><img class="right" src="http://blog.zerosharp.com/images/blog/skiing-on-mars-003.jpg"></a>
 This post is part of an ongoing series about robots, past and present.  See <a href="http://blog.zerosharp.com/friends-robots-countrymen/">Friends, Robots, Countrymen</a>.</p>
 
 <h3>The Soviet PrOP-M Rovers</h3>
@@ -28,7 +28,7 @@ This post is part of an ongoing series about robots, past and present.  See <a h
 <p>The first one crash landed.  The second landed sucessfully but failed twenty seconds after landing and never moved.  The reasons are unknown although the landing took place in the middle of a dust storm.  The base module did manage to transmit about 20 seconds worth of the <strong>first ever photograph of the surface of Mars</strong>, shown on the left here.  According to the Soviet Academy of Sciences there is nothing, horizon or otherwise, identifiable in this photograph.</p>
 
 <p><a href="http://en.wikipedia.org/wiki/File:Mars_3_Image.png"><img class="left" src="http://blog.zerosharp.com/images/blog/skiing-on-mars-001.png"></a>
-<img class="right" src="http://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Soviet_Union-1972-Stamp-0.06._Mars_2.jpg/220px-Soviet_Union-1972-Stamp-0.06._Mars_2.jpg"></p>
+<a href="http://en.wikipedia.org/wiki/File:Soviet_Union-1972-Stamp-0.06._Mars_2.jpg"><img class="right" src="http://blog.zerosharp.com/images/blog/skiing-on-mars-002.jpg"></a></p>
 
 <p>The rover itself, although never deployed, was equipped with sensors to detect obstacles (the two foremost metal bars in the photograph above).  <strong>The rovers were somewhat autonomous</strong> and capable of navigating obstacles.  The Soviet engineers were aware they might not have enough time for a remote-controlled operation of the rover (one-way communication takes between 4 and 20 minutes to Mars).</p>
 
@@ -51,6 +51,7 @@ This post is part of an ongoing series about robots, past and present.  See <a h
 <li><a href="http://cyberneticzoo.com/?p=3830">Cybernetic Zoo</a></li>
 <li><a href="http://weburbanist.com/2011/12/04/star-cars-10-past-present-future-robot-space-rovers/">Star Cars: 10 Past, Present &amp; Future Robot Space Rovers</a></li>
 <li><a href="http://web.mit.edu/slava/space/interview/interview-przhiyalkovsky.htm">Interview with Viktor Przhiyalkovsky</a></li>
+<li>Images via Wikipedia</li>
 </ul>
 
 ]]></content>
