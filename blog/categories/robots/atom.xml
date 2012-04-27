@@ -4,7 +4,7 @@
   <title><![CDATA[Category: robots | ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/blog/categories/robots/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2012-04-24T12:47:56+01:00</updated>
+  <updated>2012-04-27T14:53:36+01:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,48 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Skiing on Mars]]></title>
+    <link href="http://blog.zerosharp.com/skiing-on-mars/"/>
+    <updated>2012-04-27T11:45:00+01:00</updated>
+    <id>http://blog.zerosharp.com/skiing-on-mars</id>
+    <content type="html"><![CDATA[<p><img class="right" src="http://upload.wikimedia.org/wikipedia/commons/5/5a/Mars_propm_rover.jpg">
+This post is part of an ongoing series about robots, past and present.  See <a href="/friends-robots-countrymen/">Friends, Robots, Countrymen</a>.</p>
+
+<h3>The Soviet PrOP-M Rovers</h3>
+
+<p>In May 1971, the USSR launched two rovers to explore Mars.  <strong>They were to move on skis (!!)</strong> while connected to the landers with 15m umbilical cables.</p>
+
+<p>The first one crash landed.  The second landed sucessfully but failed twenty seconds after landing and never moved.  The reasons are unknown although the landing took place in the middle of a dust storm.  The base module did manage to transmit about 20 seconds worth of the <strong>first ever photograph of the surface of Mars</strong>, shown on the left here.  According to the Soviet Academy of Sciences there is nothing, horizon or otherwise, identifiable in this photograph.</p>
+
+<p><a href="http://en.wikipedia.org/wiki/File:Mars_3_Image.png"><img class="left" src="/images/blog/skiing-on-mars-001.png"></a>
+<img class="right" src="http://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/Soviet_Union-1972-Stamp-0.06.<em>Mars_2.jpg/220px-Soviet_Union-1972-Stamp-0.06.</em>Mars_2.jpg"></p>
+
+<p>The rover itself, although never deployed, was equipped with sensors to detect obstacles (the two foremost metal bars in the photograph above).  <strong>The rovers were somewhat autonomous</strong> and capable of navigating obstacles.  The Soviet engineers were aware they might not have enough time for a remote-controlled operation of the rover (one-way communication takes between 4 and 20 minutes to Mars).</p>
+
+<p>Receiving a signal from another planet, even for a few seconds is such an incredible achievement.  It's difficult to imagine what it was like being a programmer in those days, under that regime, but it must have been dramatic for those involved.  Hope, fear, pride, joy and perhaps disappointment and regret. <strong>All because of a chunk of metal sitting in a red dust storm <a href="http://www.wolframalpha.com/input/?i=distance+between+mars+and+earth+on+December+2+1971">141 million kilometres</a> away.</strong></p>
+
+<h3>Analog Computers</h3>
+
+<p><a href="http://programmers.stackexchange.com/questions/145669/what-software-programming-languages-were-used-by-the-soviet-unions-space-progra">Apparently</a> any programming would have been done on analog computers.  An analog computer does not require 'software' in the sense we use the term today.  Instead the computer evaluates an <em>analog</em>, a 'model' which corresponds to a given problem. You create the model by describing differential﻿ equations which correspond to the problem and then deriving a circuit corresponding to these equations. This is the 'program' of the analog computer. The computer itself has no memory and no algorithmic program control.</p>
+
+<p>Watch a demonstration of how to program an analog computer to simulate a mass-spring system.  <strong>It's a far cry from my day job.</strong></p>
+
+<p><iframe width="640" height="390" src="http://www.youtube.com/embed/H_4bFgYReq0 " frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></p>
+
+<h3>References</h3>
+
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Mars_2">Wikipedia Mars 2</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Mars_3">Wikipedia Mars 3</a></li>
+<li><a href="http://cyberneticzoo.com/?p=3830">Cybernetic Zoo</a></li>
+<li><a href="http://weburbanist.com/2011/12/04/star-cars-10-past-present-future-robot-space-rovers/">Star Cars: 10 Past, Present &amp; Future Robot Space Rovers</a></li>
+<li><a href="http://web.mit.edu/slava/space/interview/interview-przhiyalkovsky.htm">Interview with Viktor Przhiyalkovsky</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Friends, Robots, Countrymen]]></title>
@@ -24,11 +66,11 @@
 
 <p>Recently there have been substantial advances in many different overlapping domains: the driverless car, unmanned drones, machine vision, machine translation, machine learning, speech recognition, facial recognition, swarm robotics, self-reconfiguring modular robots, powered exoskeletons, nanotechnology, etc.</p>
 
-<p>First up:  here's the rather terrifying DARPA AlphaDog Legged Squad Support System (LS3).</p>
+<p>First up:  here's the <strong>rather terrifying</strong> DARPA AlphaDog Legged Squad Support System (LS3).</p>
 
 <p><iframe width="640" height="390" src="http://www.youtube.com/embed/xY42w1w0TWk " frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></p>
 
-<p>The <a href="http://www.darpa.mil/NewsEvents/Releases/2012/02/07.aspx">DARPA website</a> says it can <em>track a specific individual or object</em>, so watch your back!</p>
+<p>The <a href="http://www.darpa.mil/NewsEvents/Releases/2012/02/07.aspx">DARPA website</a> says it can <strong>track a specific individual</strong>, so watch your back!</p>
 ]]></content>
   </entry>
   
