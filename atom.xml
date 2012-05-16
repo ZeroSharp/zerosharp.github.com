@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2012-05-01T17:13:48+01:00</updated>
+  <updated>2012-05-16T11:07:45+01:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,38 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Self driving cars]]></title>
+    <link href="http://blog.zerosharp.com/self-driving-car/"/>
+    <updated>2012-06-30T15:55:00+01:00</updated>
+    <id>http://blog.zerosharp.com/self-driving-car</id>
+    <content type="html"><![CDATA[<iframe width="640" height="390" src="http://www.youtube.com/embed/bp9KBrH8H04 " frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Musical Interlude]]></title>
+    <link href="http://blog.zerosharp.com/musical-interlude/"/>
+    <updated>2012-05-15T15:55:00+01:00</updated>
+    <id>http://blog.zerosharp.com/musical-interlude</id>
+    <content type="html"><![CDATA[<p>Robot quadcopters playing the James Bond theme tune.</p>
+
+<iframe width="640" height="390" src="http://www.youtube.com/embed/_sUeGC-8dyk " frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
+
+
+<p>There is no human controlling the robots. They have been assigned a series of points in space that it must reach at specific times to play notes.  The robots are aware of each other and avoid collisions.</p>
+
+<h3>References</h3>
+
+<ul>
+<li><a href="http://kumar.grasp.upenn.edu/">Vijay Kumar</a> at the University of Pennsylvania</li>
+<li><a href="http://www.newscientist.com/blogs/nstv/2012/03/swarm-of-robot-helicopters-performs-james-bond-tune.html">New Scientist</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Robot Egyptologists]]></title>
