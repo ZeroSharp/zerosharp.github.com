@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: music | ZeroSharp]]></title>
+  <link href="http://blog.zerosharp.com/blog/categories/music/atom.xml" rel="self"/>
+  <link href="http://blog.zerosharp.com/"/>
+  <updated>2012-05-16T11:25:04+01:00</updated>
+  <id>http://blog.zerosharp.com/</id>
+  <author>
+    <name><![CDATA[Robert Anderson]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Musical Interlude]]></title>
+    <link href="http://blog.zerosharp.com/musical-interlude/"/>
+    <updated>2012-05-15T11:10:00+01:00</updated>
+    <id>http://blog.zerosharp.com/musical-interlude</id>
+    <content type="html"><![CDATA[<p>This post is part of an ongoing series about robots, past and present.  See <a href="/robot-egyptologists/">Robot Egyptologists</a>.</p>
+
+<p>Robot quadcopters playing the James Bond theme tune.</p>
+
+<p><iframe width="640" height="390" src="http://www.youtube.com/embed/_sUeGC-8dyk " frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></p>
+
+<p>There is no human controlling the robots. Each one has been assigned a series of points in space that it must reach at specific times.  The robots are aware of each other and avoid collisions.</p>
+
+<h3>References</h3>
+
+<ul>
+<li><a href="http://kumar.grasp.upenn.edu/">Vijay Kumar</a> at the University of Pennsylvania</li>
+<li><a href="http://www.newscientist.com/blogs/nstv/2012/03/swarm-of-robot-helicopters-performs-james-bond-tune.html">New Scientist</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>
