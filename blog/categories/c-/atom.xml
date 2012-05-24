@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: linq | ZeroSharp]]></title>
-  <link href="http://blog.zerosharp.com/blog/categories/linq/atom.xml" rel="self"/>
+  <title><![CDATA[Category: c# | ZeroSharp]]></title>
+  <link href="http://blog.zerosharp.com/blog/categories/c-/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
   <updated>2012-05-24T19:38:40+01:00</updated>
   <id>http://blog.zerosharp.com/</id>
