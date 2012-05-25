@@ -4,7 +4,7 @@
   <title><![CDATA[Category: visualstudio | ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/blog/categories/visualstudio/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2012-05-25T08:38:05+01:00</updated>
+  <updated>2012-05-25T08:40:47+01:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -35,7 +35,7 @@ cannot install the update.
 
 <p>As explained in the <a href="http://docs.nuget.org/docs/release-notes/nuget-1.8">NuGet release notes</a>, one solution is to uninstall NuGet from the VS Extension Gallery before reinstalling.  Note: If Visual Studio won't allow you to uninstall the extension (the Uninstall button is disabled), then you likely need to restart Visual Studio using "Run as Administrator."</p>
 
-<p>Another alternative (courtesy of <a href="http://jeffhandley.com/">Jeff Handley</a>) is to install this Visual Studio hotfix: http://bit.ly/vsixcertfix and the next time you start Visual Studio, updating via the package manager will work.</p>
+<p>Another alternative (courtesy of <a href="http://jeffhandley.com/">Jeff Handley</a>) is to install (this Visual Studio hotfix)[http://connect.microsoft.com/VisualStudio/Downloads/DownloadDetails.aspx?DownloadID=38654] and the next time you start Visual Studio, updating via the package manager will work.</p>
 ]]></content>
   </entry>
   
