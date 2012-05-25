@@ -4,7 +4,7 @@
   <title><![CDATA[Category: devexpress | ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/blog/categories/devexpress/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2012-05-24T19:38:40+01:00</updated>
+  <updated>2012-05-25T08:38:05+01:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -56,7 +56,7 @@
 
 <p>Instead, either property should be declared <code>protected</code> or the property should also have the <code>[NonPersistent]</code> and <code>[MemberDesignTimeVisibility(false)]</code> attributes as well.</p>
 
-<p>Consequently, I wrote the following unit test which will detect any properties which have the <code>[RuleFromBoolProperty]</code> attribute.</p>
+<p>Consequently, I wrote the following unit test which will detect any properties which have the <code>[RuleFromBoolProperty]</code> attribute.  This is not really a unit test, rather a sort of meta-test</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
