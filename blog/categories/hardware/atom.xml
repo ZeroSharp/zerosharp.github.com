@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: hardware | ZeroSharp]]></title>
+  <link href="http://blog.zerosharp.com/blog/categories/hardware/atom.xml" rel="self"/>
+  <link href="http://blog.zerosharp.com/"/>
+  <updated>2012-07-02T10:31:00+01:00</updated>
+  <id>http://blog.zerosharp.com/</id>
+  <author>
+    <name><![CDATA[Robert Anderson]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Trying out a new keyboard with no labels on the keys]]></title>
+    <link href="http://blog.zerosharp.com/trying-out-a-new-keyboard-with-no-labels-on-the-keys/"/>
+    <updated>2012-07-02T09:35:00+01:00</updated>
+    <id>http://blog.zerosharp.com/trying-out-a-new-keyboard-with-no-labels-on-the-keys</id>
+    <content type="html"><![CDATA[<p> <a href="http://www.daskeyboard.com/model-s-ultimate/"><img class="right" src="/images/blog/trying-out-a-new-keyboard-001.jpg" title="Das Keyboard Model S Ultimate" ></a></p>
+
+<p> My new <del>keyboarf</del> keyboard <a href="http://www.daskeyboard.com/model-s-ultimate/">has no labels on the keys</a>!</p>
+
+<p> On a normal keyboard, I can type at about 60 wpm, but I only use three or four fingers and I have to periodically glance down at the keyboard.  I hope my new keyboard forces me to learn to touch type properly.  Various coders have written on the subject - Jeff Atwood says <a href="http://www.codinghorror.com/blog/2008/11/we-are-typists-first-programmers-second.html">we are typists first</a>; Phil Haack <a href="http://haacked.com/archive/2007/06/05/dvorak-keyboard-layout-of-champions.aspx">opts for Dvorak</a>.</p>
+
+<p> The <a href="http://www.daskeyboard.com/model-s-ultimate/"><em>Das Keyboard</em></a> is beautiful.  It's certainly heavier and noisier than other computer keyboards but with such nicely-weighted quality keys that it is a pleasure to type on.  At the moment I am struggling, especially when it comes to brackets () [] {} and punctuation symbols.  Looking down is of no use whatsoever.  Having your hands positioned correctly (with forefingers on the tiny bumps on the <strong>f</strong> and <strong>j</strong> keys) helps a lot, although my ring finger and pinkie are not used to any action whatsoever.</p>
+
+<p> I've been trying <a href="http://play.typeracer.com/">some</a> <a href="http://www.freetypinggame.net/default.asp">typing</a> <a href="http://playwithyourmind.com/online-brain-games/typing-games/typo-ii/">games</a> too.  Suggestions welcome.</p>
+]]></content>
+  </entry>
+  
+</feed>
