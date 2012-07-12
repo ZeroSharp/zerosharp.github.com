@@ -4,7 +4,7 @@
   <title><![CDATA[Category: devexpress | ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/blog/categories/devexpress/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2012-07-12T17:35:39+01:00</updated>
+  <updated>2012-07-12T17:46:53+01:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -45,24 +45,30 @@
 <span class='line-number'>19</span>
 <span class='line-number'>20</span>
 <span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="n">ModificationResult</span> <span class="n">Delete</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span><span class="k">this</span> <span class="n">Session</span> <span class="n">session</span><span class="p">,</span> <span class="n">CriteriaOperator</span> <span class="n">criteria</span> <span class="p">=</span> <span class="k">null</span><span class="p">)</span> <span class="k">where</span> <span class="n">T</span> <span class="p">:</span> <span class="n">IXPObject</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">SessionExtensions</span>
 </span><span class='line'><span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="n">ReferenceEquals</span><span class="p">(</span><span class="n">criteria</span><span class="p">,</span> <span class="k">null</span><span class="p">))</span>
-</span><span class='line'>    <span class="n">criteria</span> <span class="p">=</span> <span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;True&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">XPClassInfo</span> <span class="n">classInfo</span> <span class="p">=</span> <span class="n">session</span><span class="p">.</span><span class="n">Dictionary</span><span class="p">.</span><span class="n">GetClassInfo</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">T</span><span class="p">));</span>
-</span><span class='line'><span class="kt">var</span> <span class="n">batchWideData</span> <span class="p">=</span> <span class="k">new</span> <span class="n">BatchWideDataHolder4Modification</span><span class="p">(</span><span class="n">session</span><span class="p">);</span>
-</span><span class='line'><span class="kt">int</span> <span class="n">recordsAffected</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">session</span><span class="p">.</span><span class="n">Evaluate</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">T</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;(</span><span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;Count()&quot;</span><span class="p">),</span> <span class="n">criteria</span><span class="p">);</span>
-</span><span class='line'><span class="n">List</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">ModificationStatement</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">collection</span> <span class="p">=</span> <span class="n">DeleteQueryGenerator</span><span class="p">.</span><span class="n">GenerateDelete</span><span class="p">(</span><span class="n">classInfo</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">batchWideData</span><span class="p">);</span>
-</span><span class='line'><span class="k">foreach</span> <span class="p">(</span><span class="n">ModificationStatement</span> <span class="n">item</span> <span class="k">in</span> <span class="n">collection</span><span class="p">)</span>
+</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="k">public</span> <span class="k">static</span> <span class="n">ModificationResult</span> <span class="n">Delete</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">T</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;(</span><span class="k">this</span> <span class="n">Session</span> <span class="n">session</span><span class="p">,</span> <span class="n">CriteriaOperator</span> <span class="n">criteria</span> <span class="p">=</span> <span class="k">null</span><span class="p">)</span> <span class="k">where</span> <span class="n">T</span> <span class="p">:</span> <span class="n">IXPObject</span>
 </span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">item</span><span class="p">.</span><span class="n">RecordsAffected</span> <span class="p">=</span> <span class="n">recordsAffected</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">ReferenceEquals</span><span class="p">(</span><span class="n">criteria</span><span class="p">,</span> <span class="k">null</span><span class="p">))</span>
+</span><span class='line'>        <span class="n">criteria</span> <span class="p">=</span> <span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;True&quot;</span><span class="p">);</span>
 </span><span class='line'>
-</span><span class='line'><span class="n">ModificationStatement</span><span class="p">[]</span> <span class="n">collectionToArray</span> <span class="p">=</span> <span class="n">collection</span><span class="p">.</span><span class="n">ToArray</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">ModificationStatement</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;();</span>
-</span><span class='line'><span class="n">ModificationResult</span> <span class="n">result</span> <span class="p">=</span> <span class="n">session</span><span class="p">.</span><span class="n">DataLayer</span><span class="p">.</span><span class="n">ModifyData</span><span class="p">(</span><span class="n">collectionToArray</span><span class="p">);</span>
-</span><span class='line'><span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">XPClassInfo</span> <span class="n">classInfo</span> <span class="p">=</span> <span class="n">session</span><span class="p">.</span><span class="n">Dictionary</span><span class="p">.</span><span class="n">GetClassInfo</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">T</span><span class="p">));</span>
+</span><span class='line'>    <span class="kt">var</span> <span class="n">batchWideData</span> <span class="p">=</span> <span class="k">new</span> <span class="n">BatchWideDataHolder4Modification</span><span class="p">(</span><span class="n">session</span><span class="p">);</span>
+</span><span class='line'>    <span class="kt">int</span> <span class="n">recordsAffected</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">session</span><span class="p">.</span><span class="n">Evaluate</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">T</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;(</span><span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;Count()&quot;</span><span class="p">),</span> <span class="n">criteria</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">List</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">ModificationStatement</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">collection</span> <span class="p">=</span> <span class="n">DeleteQueryGenerator</span><span class="p">.</span><span class="n">GenerateDelete</span><span class="p">(</span><span class="n">classInfo</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">batchWideData</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">foreach</span> <span class="p">(</span><span class="n">ModificationStatement</span> <span class="n">item</span> <span class="k">in</span> <span class="n">collection</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">item</span><span class="p">.</span><span class="n">RecordsAffected</span> <span class="p">=</span> <span class="n">recordsAffected</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">ModificationStatement</span><span class="p">[]</span> <span class="n">collectionToArray</span> <span class="p">=</span> <span class="n">collection</span><span class="p">.</span><span class="n">ToArray</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">ModificationStatement</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;();</span>
+</span><span class='line'>    <span class="n">ModificationResult</span> <span class="n">result</span> <span class="p">=</span> <span class="n">session</span><span class="p">.</span><span class="n">DataLayer</span><span class="p">.</span><span class="n">ModifyData</span><span class="p">(</span><span class="n">collectionToArray</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
 </span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}</span>
@@ -88,7 +94,7 @@
 </span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}</span>
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
-<p>This achieves the same as result and similar performance to direct SQL, but with cleaner syntax and support for criteria.</p>
+<p>This achieves the same as result and similar performance to direct SQL, but with cleaner syntax and support for criteria.  Also, since it uses a <code>ModificationStatement[]</code>, it works with a remote <code>IDataStore</code>.</p>
 
 <p>The next post will deal with a similar approach for fast batch modifications.</p>
 ]]></content>
