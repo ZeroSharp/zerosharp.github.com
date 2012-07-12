@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: xpo | ZeroSharp]]></title>
+  <link href="http://blog.zerosharp.com/blog/categories/xpo/atom.xml" rel="self"/>
+  <link href="http://blog.zerosharp.com/"/>
+  <updated>2012-07-12T17:35:39+01:00</updated>
+  <id>http://blog.zerosharp.com/</id>
+  <author>
+    <name><![CDATA[Robert Anderson]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Fast batch deletions with DevExpress XPO]]></title>
+    <link href="http://blog.zerosharp.com/fast-batch-deletions-with-devexpress-xpo/"/>
+    <updated>2012-07-12T17:00:00+01:00</updated>
+    <id>http://blog.zerosharp.com/fast-batch-deletions-with-devexpress-xpo</id>
+    <content type="html"><![CDATA[<p>When deleting a collection of objects, DevExpress recommends using <a href="http://documentation.devexpress.com/#XPO/DevExpressXpoSession_Deletetopic116"><code>Session.Delete(ICollection objects)</code></a>. This has the same effect as calling the <code>Delete()</code> method for every object in the collection so that the business logic is applied correctly. (The business logic in this context refers to code such as that in the <code>OnDeleting()</code>, <code>OnDeleted()</code> virtual methods), but it also includes the clearing of references to the object by other objects. This approach is slow, but ensures the integrity of the data.</p>
+
+<p>If you know that your objects do not require any of this processing, you can use use direct SQL <a href="http://documentation.devexpress.com/#XPO/CustomDocument8914">as described in the XPO documentation</a>. This however requires knowledge of the underlying database table and is not very versatile, (although the <code>DevExpress.Data.Filtering.CriteriaToWhereClauseHelper()</code> can help if you choose this route).</p>
+
+<p>An alternative is to use the extension method below:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="n">ModificationResult</span> <span class="n">Delete</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span><span class="k">this</span> <span class="n">Session</span> <span class="n">session</span><span class="p">,</span> <span class="n">CriteriaOperator</span> <span class="n">criteria</span> <span class="p">=</span> <span class="k">null</span><span class="p">)</span> <span class="k">where</span> <span class="n">T</span> <span class="p">:</span> <span class="n">IXPObject</span>
+</span><span class='line'><span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="n">ReferenceEquals</span><span class="p">(</span><span class="n">criteria</span><span class="p">,</span> <span class="k">null</span><span class="p">))</span>
+</span><span class='line'>    <span class="n">criteria</span> <span class="p">=</span> <span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;True&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">XPClassInfo</span> <span class="n">classInfo</span> <span class="p">=</span> <span class="n">session</span><span class="p">.</span><span class="n">Dictionary</span><span class="p">.</span><span class="n">GetClassInfo</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">T</span><span class="p">));</span>
+</span><span class='line'><span class="kt">var</span> <span class="n">batchWideData</span> <span class="p">=</span> <span class="k">new</span> <span class="n">BatchWideDataHolder4Modification</span><span class="p">(</span><span class="n">session</span><span class="p">);</span>
+</span><span class='line'><span class="kt">int</span> <span class="n">recordsAffected</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">session</span><span class="p">.</span><span class="n">Evaluate</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">T</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;(</span><span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;Count()&quot;</span><span class="p">),</span> <span class="n">criteria</span><span class="p">);</span>
+</span><span class='line'><span class="n">List</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">ModificationStatement</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">collection</span> <span class="p">=</span> <span class="n">DeleteQueryGenerator</span><span class="p">.</span><span class="n">GenerateDelete</span><span class="p">(</span><span class="n">classInfo</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">batchWideData</span><span class="p">);</span>
+</span><span class='line'><span class="k">foreach</span> <span class="p">(</span><span class="n">ModificationStatement</span> <span class="n">item</span> <span class="k">in</span> <span class="n">collection</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">item</span><span class="p">.</span><span class="n">RecordsAffected</span> <span class="p">=</span> <span class="n">recordsAffected</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">ModificationStatement</span><span class="p">[]</span> <span class="n">collectionToArray</span> <span class="p">=</span> <span class="n">collection</span><span class="p">.</span><span class="n">ToArray</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">ModificationStatement</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;();</span>
+</span><span class='line'><span class="n">ModificationResult</span> <span class="n">result</span> <span class="p">=</span> <span class="n">session</span><span class="p">.</span><span class="n">DataLayer</span><span class="p">.</span><span class="n">ModifyData</span><span class="p">(</span><span class="n">collectionToArray</span><span class="p">);</span>
+</span><span class='line'><span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Here is an example of how to call the method:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">using</span> <span class="p">(</span><span class="n">UnitOfWork</span> <span class="n">uow</span> <span class="p">=</span> <span class="k">new</span> <span class="n">UnitOfWork</span><span class="p">())</span>
+</span><span class='line'><span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="n">uow</span><span class="p">.</span><span class="n">Delete</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">MyObject</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;(</span><span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;City != &#39;Chicago&#39;&quot;</span><span class="p">));</span>
+</span><span class='line'><span class="n">uow</span><span class="p">.</span><span class="n">CommitChanges</span><span class="p">();</span>
+</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>This achieves the same as result and similar performance to direct SQL, but with cleaner syntax and support for criteria.</p>
+
+<p>The next post will deal with a similar approach for fast batch modifications.</p>
+]]></content>
+  </entry>
+  
+</feed>
