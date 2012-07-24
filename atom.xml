@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2012-07-24T14:57:44+01:00</updated>
+  <updated>2012-07-24T15:01:48+01:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Fast batch modifications with DevExpress XPO]]></title>
     <link href="http://blog.zerosharp.com/fast-batch-modifications-with-devexpress-xpo/"/>
-    <updated>2012-07-21T14:02:00+01:00</updated>
+    <updated>2012-07-24T14:02:00+01:00</updated>
     <id>http://blog.zerosharp.com/fast-batch-modifications-with-devexpress-xpo</id>
     <content type="html"><![CDATA[<p>Last week I wrote about <a href="http://blog.zerosharp.com/fast-batch-deletions-with-devexpress-xpo/">fast batch deletions</a>. In this post I&#8217;ll show how to do the same for modifications.</p>
 
