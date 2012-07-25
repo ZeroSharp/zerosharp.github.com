@@ -283,6 +283,9 @@
 <span class='line-number'>76</span>
 <span class='line-number'>77</span>
 <span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
 </pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">PropertyValueStore</span> <span class="p">:</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">KeyValuePair</span><span class="p">&lt;</span><span class="n">XPMemberInfo</span><span class="p">,</span> <span class="n">Object</span><span class="p">&gt;&gt;</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'><span class="p">}</span>
@@ -328,7 +331,6 @@
 </span><span class='line'>            <span class="n">criteria</span> <span class="p">=</span> <span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;True&quot;</span><span class="p">);</span>
 </span><span class='line'>
 </span><span class='line'>        <span class="n">XPClassInfo</span> <span class="n">classInfo</span> <span class="p">=</span> <span class="n">session</span><span class="p">.</span><span class="n">GetClassInfo</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">T</span><span class="p">));</span>
-</span><span class='line'>        <span class="c1">// if you are using DevExpress 11.2 or earlier, change the following to BatchWideDataHolder(session) instead.</span>
 </span><span class='line'>        <span class="kt">var</span> <span class="n">batchWideData</span> <span class="p">=</span> <span class="k">new</span> <span class="n">BatchWideDataHolder4Modification</span><span class="p">(</span><span class="n">session</span><span class="p">);</span>
 </span><span class='line'>        <span class="kt">int</span> <span class="n">recordsAffected</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">session</span><span class="p">.</span><span class="n">Evaluate</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span><span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;Count()&quot;</span><span class="p">),</span> <span class="n">criteria</span><span class="p">);</span>
 </span><span class='line'>
@@ -354,7 +356,11 @@
 </span><span class='line'>        <span class="p">{</span>
 </span><span class='line'>            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">updateStatement</span><span class="p">.</span><span class="n">Parameters</span><span class="p">.</span><span class="n">Count</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span>
 </span><span class='line'>            <span class="p">{</span>
-</span><span class='line'>                <span class="n">updateStatement</span><span class="p">.</span><span class="n">Parameters</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">Value</span> <span class="p">=</span> <span class="n">propertyValueStore</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">Value</span><span class="p">;</span>
+</span><span class='line'>                <span class="n">Object</span> <span class="k">value</span> <span class="p">=</span> <span class="n">propertyValueStore</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">Value</span><span class="p">;</span>
+</span><span class='line'>                <span class="k">if</span> <span class="p">(</span><span class="k">value</span> <span class="k">is</span> <span class="n">IXPObject</span><span class="p">)</span>
+</span><span class='line'>                    <span class="n">updateStatement</span><span class="p">.</span><span class="n">Parameters</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">Value</span> <span class="p">=</span> <span class="p">((</span><span class="n">IXPObject</span><span class="p">)(</span><span class="k">value</span><span class="p">)).</span><span class="n">ClassInfo</span><span class="p">.</span><span class="n">GetId</span><span class="p">(</span><span class="k">value</span><span class="p">);</span>
+</span><span class='line'>                <span class="k">else</span>
+</span><span class='line'>                    <span class="n">updateStatement</span><span class="p">.</span><span class="n">Parameters</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">Value</span> <span class="p">=</span> <span class="k">value</span><span class="p">;</span>
 </span><span class='line'>            <span class="p">}</span>
 </span><span class='line'>            <span class="n">updateStatement</span><span class="p">.</span><span class="n">RecordsAffected</span> <span class="p">=</span> <span class="n">recordsAffected</span><span class="p">;</span>
 </span><span class='line'>        <span class="p">}</span>
@@ -389,9 +395,9 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>In order to fix this, the <code>evaluator</code> has to be of type <code>Expression&lt;Func&lt;T, T&gt;&gt;</code> instead of <code>Expression&lt;Func&lt;T&gt;&gt;</code>, and then you can use expression trees to get an assignment expression. But then there is way to pass it to a DevExpress <code>UpdateStatement.Parameter</code> as an <code>OperandValue</code>.</p>
+<p>In order to fix this, the <code>evaluator</code> has to be of type <code>Expression&lt;Func&lt;T, T&gt;&gt;</code> instead of <code>Expression&lt;Func&lt;T&gt;&gt;</code>, and then you can use expression trees to get an assignment expression. But then there is no way to pass it to a DevExpress <code>UpdateStatement.Parameter</code> as an <code>OperandValue</code>.</p>
 
-<p>I&#8217;m putting together a small demo project for download which I hope will be ready in the next couple of days.</p>
+<p><strong>Update:</strong> The <a href="https://github.com/ZeroSharp/XpoBatch">source code is now available on GitHub</a>.</p>
 
 <h4>References</h4>
 
@@ -445,6 +451,8 @@
       
         <a class="basic-alignment left" href="/fast-batch-deletions-with-devexpress-xpo/" title="Previous Post: Fast batch deletions with DevExpress XPO">&laquo; Fast batch deletions with DevExpress XPO</a>
       
+      
+        <a class="basic-alignment right" href="/xpobatch-source-code-available/" title="Next Post: XpoBatch source code available">XpoBatch source code available &raquo;</a>
       
     </p>
   </footer>

@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Last week I wrote about fast batch deletions. In this post I&#8217;ll show how to do the same for modifications. Let&#8217;s assume we want to &hellip;">
+  <meta name="description" content="The source code for the fast batch operations with DevExpress XPO is now available on on GitHub. It includes unit tests that can be run against SQL &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -109,6 +109,54 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/xpobatch-source-code-available/">XpoBatch Source Code Available</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-25T16:24:00+01:00" pubdate data-updated="true">Jul 25<span>th</span>, 2012</time>
+        
+         | <a href="/xpobatch-source-code-available/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>The source code for the fast batch operations with DevExpress XPO <a href="https://github.com/ZeroSharp/XpoBatch">is now available on on GitHub</a>.</p>
+
+<p>It includes unit tests that can be run against SQL Server or in memory. It runs against DevExpress 12.1.5, but it will work against 11.2 (and possibly earlier versions) with a couple of minor modifications which are documented in the code.</p>
+
+<h4>References</h4>
+
+<ul>
+<li><a href="/fast-batch-deletions-with-devexpress-xpo/">Fast batch deletions</a></li>
+<li><a href="/fast-batch-modifications-with-devexpress-xpo/">Fast batch modifications</a></li>
+</ul>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -286,6 +334,9 @@
 <span class='line-number'>76</span>
 <span class='line-number'>77</span>
 <span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
 </pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">PropertyValueStore</span> <span class="p">:</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">KeyValuePair</span><span class="p">&lt;</span><span class="n">XPMemberInfo</span><span class="p">,</span> <span class="n">Object</span><span class="p">&gt;&gt;</span>
 </span><span class='line'><span class="p">{</span>
 </span><span class='line'><span class="p">}</span>
@@ -331,7 +382,6 @@
 </span><span class='line'>            <span class="n">criteria</span> <span class="p">=</span> <span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;True&quot;</span><span class="p">);</span>
 </span><span class='line'>
 </span><span class='line'>        <span class="n">XPClassInfo</span> <span class="n">classInfo</span> <span class="p">=</span> <span class="n">session</span><span class="p">.</span><span class="n">GetClassInfo</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">T</span><span class="p">));</span>
-</span><span class='line'>        <span class="c1">// if you are using DevExpress 11.2 or earlier, change the following to BatchWideDataHolder(session) instead.</span>
 </span><span class='line'>        <span class="kt">var</span> <span class="n">batchWideData</span> <span class="p">=</span> <span class="k">new</span> <span class="n">BatchWideDataHolder4Modification</span><span class="p">(</span><span class="n">session</span><span class="p">);</span>
 </span><span class='line'>        <span class="kt">int</span> <span class="n">recordsAffected</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">session</span><span class="p">.</span><span class="n">Evaluate</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span><span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;Count()&quot;</span><span class="p">),</span> <span class="n">criteria</span><span class="p">);</span>
 </span><span class='line'>
@@ -357,7 +407,11 @@
 </span><span class='line'>        <span class="p">{</span>
 </span><span class='line'>            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">updateStatement</span><span class="p">.</span><span class="n">Parameters</span><span class="p">.</span><span class="n">Count</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span>
 </span><span class='line'>            <span class="p">{</span>
-</span><span class='line'>                <span class="n">updateStatement</span><span class="p">.</span><span class="n">Parameters</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">Value</span> <span class="p">=</span> <span class="n">propertyValueStore</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">Value</span><span class="p">;</span>
+</span><span class='line'>                <span class="n">Object</span> <span class="k">value</span> <span class="p">=</span> <span class="n">propertyValueStore</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">Value</span><span class="p">;</span>
+</span><span class='line'>                <span class="k">if</span> <span class="p">(</span><span class="k">value</span> <span class="k">is</span> <span class="n">IXPObject</span><span class="p">)</span>
+</span><span class='line'>                    <span class="n">updateStatement</span><span class="p">.</span><span class="n">Parameters</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">Value</span> <span class="p">=</span> <span class="p">((</span><span class="n">IXPObject</span><span class="p">)(</span><span class="k">value</span><span class="p">)).</span><span class="n">ClassInfo</span><span class="p">.</span><span class="n">GetId</span><span class="p">(</span><span class="k">value</span><span class="p">);</span>
+</span><span class='line'>                <span class="k">else</span>
+</span><span class='line'>                    <span class="n">updateStatement</span><span class="p">.</span><span class="n">Parameters</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">Value</span> <span class="p">=</span> <span class="k">value</span><span class="p">;</span>
 </span><span class='line'>            <span class="p">}</span>
 </span><span class='line'>            <span class="n">updateStatement</span><span class="p">.</span><span class="n">RecordsAffected</span> <span class="p">=</span> <span class="n">recordsAffected</span><span class="p">;</span>
 </span><span class='line'>        <span class="p">}</span>
@@ -392,9 +446,9 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>In order to fix this, the <code>evaluator</code> has to be of type <code>Expression&lt;Func&lt;T, T&gt;&gt;</code> instead of <code>Expression&lt;Func&lt;T&gt;&gt;</code>, and then you can use expression trees to get an assignment expression. But then there is way to pass it to a DevExpress <code>UpdateStatement.Parameter</code> as an <code>OperandValue</code>.</p>
+<p>In order to fix this, the <code>evaluator</code> has to be of type <code>Expression&lt;Func&lt;T, T&gt;&gt;</code> instead of <code>Expression&lt;Func&lt;T&gt;&gt;</code>, and then you can use expression trees to get an assignment expression. But then there is no way to pass it to a DevExpress <code>UpdateStatement.Parameter</code> as an <code>OperandValue</code>.</p>
 
-<p>I&#8217;m putting together a small demo project for download which I hope will be ready in the next couple of days.</p>
+<p><strong>Update:</strong> The <a href="https://github.com/ZeroSharp/XpoBatch">source code is now available on GitHub</a>.</p>
 
 <h4>References</h4>
 
@@ -505,6 +559,8 @@
 <p>This achieves the same as result and similar performance to direct SQL, but with cleaner syntax and support for criteria.  Also, since it uses a <code>ModificationStatement[]</code>, it works with a remote <code>IDataStore</code>.</p>
 
 <p>See the next post for <a href="/fast-batch-modifications-with-devexpress-xpo/">a similar approach for fast batch modifications</a>.</p>
+
+<p><strong>Update:</strong> The <a href="https://github.com/ZeroSharp/XpoBatch">source code is now available on GitHub</a>.</p>
 </div>
   
   
@@ -1008,79 +1064,6 @@ In 1992-3, a series of robots were sent into the shafts to explore them.  The mo
 <li><a href="http://www.newscientist.com/article/mg21028144.500-first-images-from-great-pyramids-chamber-of-secrets.html">New Scientist</a></li>
 <li><a href="http://www.cheops.org/startpage/thefuture/future.htm">Rudolf Gantenbrink&#8217;s site</a></li>
 <li>Images via Wikipedia, <a href="http://www.flickr.com/photos/mickythepixel/3903073791/">Michael Studt</a> via <a href="http://heritage-key.com/egypt/gizas-robot-explorers">Heritage Key</a>,</li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/skiing-on-mars/">Skiing on Mars</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-04-27T11:45:00+01:00" pubdate data-updated="true">Apr 27<span>th</span>, 2012</time>
-        
-         | <a href="/skiing-on-mars/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><a href="http://en.wikipedia.org/wiki/File:Mars_propm_rover.jpg"><img class="right" src="/images/blog/skiing-on-mars-003.jpg"></a>
-This post is part of an ongoing series about robots, past and present.  See <a href="/friends-robots-countrymen/">Friends, Robots, Countrymen</a>.</p>
-
-<h3>The Soviet PrOP-M Rovers</h3>
-
-<p>In May 1971, the USSR launched two rovers to explore Mars.  <strong>They were to move on skis (!!)</strong> while connected to the landers with 15m umbilical cables.</p>
-
-<p>The first one crash landed.  The second landed sucessfully but failed twenty seconds after landing and never moved.  The reasons are unknown although the landing took place in the middle of a dust storm.  The base module did manage to transmit about 20 seconds worth of the <strong>first ever photograph of the surface of Mars</strong>, shown on the left here.  According to the Soviet Academy of Sciences there is nothing, horizon or otherwise, identifiable in this photograph.</p>
-
-<p><a href="http://en.wikipedia.org/wiki/File:Mars_3_Image.png"><img class="left" src="/images/blog/skiing-on-mars-001.png"></a>
-<a href="http://en.wikipedia.org/wiki/File:Soviet_Union-1972-Stamp-0.06._Mars_2.jpg"><img class="right" src="/images/blog/skiing-on-mars-002.jpg"></a></p>
-
-<p>The rover itself, although never deployed, was equipped with sensors to detect obstacles (the two foremost metal bars in the photograph above).  <strong>The rovers were somewhat autonomous</strong> and capable of navigating obstacles.  The Soviet engineers were aware they might not have enough time for a remote-controlled operation of the rover (one-way communication takes between 4 and 20 minutes to Mars).</p>
-
-<p>Receiving a signal from another planet, even for a few seconds is such an incredible achievement.  It&#8217;s difficult to imagine what it was like being a programmer in those days, under that regime, but it must have been dramatic for those involved.  Hope, fear, pride, joy and perhaps disappointment and regret. <strong>All because of a chunk of metal sitting in a red dust storm <a href="http://www.wolframalpha.com/input/?i=distance+between+mars+and+earth+on+December+2+1971">141 million kilometres</a> away.</strong></p>
-
-<h3>Analog Computers</h3>
-
-<p><a href="http://programmers.stackexchange.com/questions/145669/what-software-programming-languages-were-used-by-the-soviet-unions-space-progra">Apparently</a> any programming would have been done on analog computers.  An analog computer does not require &#8216;software&#8217; in the sense we use the term today.  Instead the computer evaluates an <em>analog</em>, a &#8216;model&#8217; which corresponds to a given problem. You create the model by describing differential﻿ equations which correspond to the problem and then deriving a circuit corresponding to these equations. This is the &#8216;program&#8217; of the analog computer. The computer itself has no memory and no algorithmic program control.</p>
-
-<p>Watch a demonstration of how to program an analog computer to simulate a mass-spring system.  <strong>It&#8217;s a far cry from my day job.</strong></p>
-
-<iframe width="640" height="390" src="http://www.youtube.com/embed/H_4bFgYReq0 " frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-
-
-<h4>References</h4>
-
-<ul>
-<li><a href="http://en.wikipedia.org/wiki/Mars_2">Wikipedia Mars 2</a></li>
-<li><a href="http://en.wikipedia.org/wiki/Mars_3">Wikipedia Mars 3</a></li>
-<li><a href="http://cyberneticzoo.com/?p=3830">Cybernetic Zoo</a></li>
-<li><a href="http://weburbanist.com/2011/12/04/star-cars-10-past-present-future-robot-space-rovers/">Star Cars: 10 Past, Present &amp; Future Robot Space Rovers</a></li>
-<li><a href="http://web.mit.edu/slava/space/interview/interview-przhiyalkovsky.htm">Interview with Viktor Przhiyalkovsky</a></li>
-<li>Images via Wikipedia</li>
 </ul>
 
 </div>
