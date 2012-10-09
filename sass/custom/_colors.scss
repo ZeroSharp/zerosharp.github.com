@@ -14,6 +14,20 @@
 //$footer-bg-front: image-url('noise.png');
 //$footer-bg-back: linear-gradient(lighten($footer-bg, 8), $footer-bg, darken($footer-bg, 11));
 
+// <ra+>
+$header-bg: #839496;
+$header-bg-back: linear-gradient(lighten($header-bg, 8), $header-bg, darken($header-bg, 11));
+$subtitle-color: lighten($header-bg, 58);
+$nav-bg: desaturate(lighten(#d3bc5f, 18), 5);
+$nav-bg-front: image-url('noise.png');
+$nav-bg-back: linear-gradient(lighten($nav-bg, 8), $nav-bg, darken($nav-bg, 11));
+$sidebar-bg: lighten(#d3bc5f, 18);
+//$sidebar-link-color: saturate(#526f9a, 10);
+//$sidebar-link-color-hover: darken(#7ab662, 9);
+$footer-bg: desaturate(lighten(#d3bc5f, 18), 5);
+$footer-bg-front: image-url('noise.png');
+$footer-bg-back: linear-gradient(lighten($footer-bg, 8), $footer-bg, darken($footer-bg, 11));
+// </ra+>
 
 /* To use the light Solarized highlighting theme uncomment the following line */
 //$solarized: light;

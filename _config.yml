@@ -2,12 +2,12 @@
 #      Main Configs       #
 # ----------------------- #
 
-url: http://ZeroSharp.github.com
-title: My Octopress Blog
-subtitle: A blogging framework for hackers.
-author: Your Name
+url: http://blog.zerosharp.com
+title: ZeroSharp
+subtitle: Rob Anderson's ones and zeros
+author: Robert Anderson
 simple_search: http://google.com/search
-description:
+description: Robert Anderson on Programming, C#, .NET, DevExpress, Robots, Artificial Intelligence and technology in general
 
 # Default date format is "ordinal" (resulting in "July 22nd 2007")
 # You can customize the format as defined in
@@ -16,7 +16,8 @@ description:
 date_format: "ordinal"
 
 # RSS / Email (optional) subscription links (change if using something like Feedburner)
-subscribe_rss: /atom.xml
+show_feeds: false
+subscribe_rss: http://feeds.feedburner.com/zerosharp
 subscribe_email:
 # RSS feeds can list your email address if you like
 email:
@@ -27,7 +28,7 @@ email:
 
 # If publishing to a subdirectory as in http://site.com/project set 'root: /project'
 root: /
-permalink: /blog/:year/:month/:day/:title/
+permalink: /:title/
 source: source
 destination: public
 plugins: plugins
@@ -38,14 +39,19 @@ pygments: false # default python pygments have been replaced by pygments.rb
 
 paginate: 10          # Posts per page on the blog index
 pagination_dir: blog  # Directory base for pagination URLs eg. /blog/page/2/
-recent_posts: 5       # Posts in the sidebar Recent Posts section
+recent_posts: 0       # Posts in the sidebar Recent Posts section
 excerpt_link: "Read on &rarr;"  # "Continue reading" link text at the bottom of excerpted articles
 
 titlecase: true       # Converts page and post titles to titlecase
 
 # list each of the sidebar modules you want to include, in the order you want them to appear.
 # To add custom asides, create files in /source/_includes/custom/asides/ and add them to the list like 'custom/asides/custom_aside_name.html'
-default_asides: [asides/recent_posts.html, asides/github.html, asides/twitter.html, asides/delicious.html, asides/pinboard.html, asides/googleplus.html]
+#<ra-/> 
+#default_asides: [asides/about.html, asides/recent_posts.html, asides/github.html, asides/twitter.html, asides/googleplus.html, asides/social.html]
+#<ra+>
+default_asides: []
+sidebar: collapse
+#</ra+>
 
 # Each layout uses the default asides, but they can have their own asides instead. Simply uncomment the lines below
 # and add an array with the asides you want to use.
@@ -58,42 +64,58 @@ default_asides: [asides/recent_posts.html, asides/github.html, asides/twitter.ht
 # ----------------------- #
 
 # Github repositories
-github_user:
+github_user: zerosharp
 github_repo_count: 0
-github_show_profile_link: true
+github_show_profile_link: false
 github_skip_forks: true
 
 # Twitter
-twitter_user:
-twitter_tweet_count: 4
+twitter_user: 8ctopus
+twitter_tweet_count: 0
 twitter_show_replies: false
-twitter_follow_button: true
+twitter_follow_button: false
 twitter_show_follower_count: false
 twitter_tweet_button: true
 
 # Google +1
-google_plus_one: false
+google_plus_one: true
 google_plus_one_size: medium
 
 # Google Plus Profile
 # Hidden: No visible button, just add author information to search results
-googleplus_user:
+googleplus_user: 112685056596124127572
 googleplus_hidden: false
+
+# Last.fm
+lastfm_user: nosredna
+lastfm_hidden: false
+
+# LinkedIn
+linkedin_user: 926740
+linkedin_hidden: false
 
 # Pinboard
 pinboard_user:
 pinboard_count: 3
+
+# Pinterest
+pinterest_user: shamp00
+pinterest_hidden: true
+
+# SpringPad
+springpad_user: shamp00
+springpad_hidden: false
 
 # Delicious
 delicious_user:
 delicious_count: 3
 
 # Disqus Comments
-disqus_short_name:
-disqus_show_comment_count: false
+disqus_short_name: zerosharp
+disqus_show_comment_count: true
 
 # Google Analytics
-google_analytics_tracking_id:
+google_analytics_tracking_id: UA-30564687-1
 
 # Facebook Like
 facebook_like: false

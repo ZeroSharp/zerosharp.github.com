@@ -19,3 +19,18 @@
 //$sidebar-pad-medium: 15px;
 //$sidebar-pad-wide: 20px;
 //$sidebar-width-wide: 300px;
+
+// <ra+>
+body > header h1 {
+      @include replace-text('/images/logoname_rendered_400x120.png');
+      height: 120px;
+      width: 400px;
+}
+
+body > header h2 {
+	  position: relative;
+      left: +130px;
+      top: -28px;
+      line-height:0px;
+}
+// </ra+>

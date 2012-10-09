@@ -1,0 +1,29 @@
+{% if site.googleplus_user %}
+<section class="googleplus">
+    <a href="https://plus.google.com/{{ site.googleplus_user }}?rel=author">
+      <img src="/images/asides/googleplus.png" width="20" height="20" alt="Rob on Google+">
+    </a>    
+    <a rel="me" href="http://twitter.com/{{ site.twitter_user }}">
+      <img src="/images/asides/twitter.png" width="20" height="20" alt="Rob on Twitter" />
+    </a>
+    <a rel="me" href="http://stackoverflow.com/users/1077279/shamp00">
+      <img src="/images/asides/stackoverflow.png" width="20" height="20" alt="Rob on StackOverflow" />
+    </a>
+    <a rel="me" href="https://github.com/{{ site.github_user }}">
+      <img src="/images/asides/github.png" width="20" height="20" alt="Rob on GitHub" />
+    </a>   
+    <a rel="me" href="http://www.linkedin.com/profile/view?id={{ site.linkedin_user }}">
+      <img src="/images/asides/linkedin.png" width="20" height="20" alt="Rob on LinkedIn" />
+    </a>        
+    <a rel="me" href="http://pinterest.com/{{ site.pinterest_user }}">
+      <img src="/images/asides/pinterest.png" width="20" height="20" alt="Rob on Pinterest" />
+    </a>
+    <a rel="me" href="http://www.last.fm/user/nosredna">
+      <img src="/images/asides/lastfm.png" width="20" height="20" alt="Rob on Last.fm" />
+    </a>
+    <a href="{{ site.subscribe_rss }}">
+      <img src="/images/asides/rss.png" width="20" height="20" alt="RSS Feed" />
+    </a>
+</section>
+{% endif %}
+

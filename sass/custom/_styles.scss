@@ -1,2 +1,26 @@
 // This File is imported last, and will override other styles in the cascade
 // Add styles here to make changes without digging in too much
+
+.credit
+{
+	float:right;
+}
+
+h4, section h3, section section h2, section section section h1 {
+  font-size: 1.1em;
+}
+
+blockquote {
+  font-size: 1.2em;	
+}
+
+sup, sub {
+	padding: 0 0.2em;
+	display: inline;
+}
+
+article {
+  ol, ul {
+    padding-left: 3em;
+  }
+}
