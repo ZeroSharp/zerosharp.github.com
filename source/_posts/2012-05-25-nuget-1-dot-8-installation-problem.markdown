@@ -4,6 +4,7 @@ title: "NuGet 1.8 Installation Problem"
 date: 2012-05-25 00:26
 comments: true
 categories: [visualstudio, nuget]
+description: A fix for a problem when installing NuGet 1.8.
 ---
 
 The NuGet team just released NuGet 1.8.  Unfortunately there is an issue when upgrading it via the NuGet package manager.  The following message appears and the installation fails.

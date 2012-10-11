@@ -4,6 +4,7 @@ title: "Octopress on Windows and GitHub"
 date: 2012-04-06 17:11
 comments: true
 categories: [octopress, github]
+description: How to set up Octopress on Windows and host your blog with GitHub.
 ---
 
 This is quick guide to setting up [Octopress](http://octopress.org/) on a Windows 7 machine to publish to GitHub pages.

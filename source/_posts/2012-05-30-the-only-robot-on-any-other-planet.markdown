@@ -4,6 +4,7 @@ title: "The only robot on any other planet"
 date: 2012-05-30 08:44
 comments: true
 categories: [robots, space, C]
+description: A mention of the hardware and software on board the Mars Opportunity Rover.
 ---
 
 This post is part of an ongoing series about robots, past and present.  See [Musical Interlude](/musical-interlude/).

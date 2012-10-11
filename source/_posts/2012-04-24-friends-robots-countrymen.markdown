@@ -4,6 +4,7 @@ title: "Friends, Robots, Countrymen"
 date: 2012-04-24 15:55
 comments: true
 categories: robots
+description: Robots past and present.
 ---
 This is the first in a series of posts about robots, past and present.
 

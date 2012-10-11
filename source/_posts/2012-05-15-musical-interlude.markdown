@@ -4,6 +4,7 @@ title: "Musical Interlude"
 date: 2012-05-15 11:10
 comments: true
 categories: [robots, music]
+description: Robot quadcopters playing the James Bond theme tune.
 ---
 This post is part of an ongoing series about robots, past and present.  See [Robot Egyptologists](/robot-egyptologists/).
 

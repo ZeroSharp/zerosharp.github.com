@@ -4,6 +4,7 @@ title: "Fast batch deletions with DevExpress XPO"
 date: 2012-07-12 17:00
 comments: true
 categories: [c#, devexpress, xpo, performance]
+description: An undocumented method of performing fast batch deletions with DevExpress XPO.
 ---
 When deleting a collection of objects, DevExpress recommends using [`Session.Delete(ICollection objects)`](http://documentation.devexpress.com/#XPO/DevExpressXpoSession_Deletetopic116). This has the same effect as calling the `Delete()` method for every object in the collection so that the business logic is applied correctly. The business logic in this context refers to code such as that in the `OnDeleting()`, `OnDeleted()` methods, but it also includes the clearing of references to the object by other objects. This approach is slow, but ensures the integrity of the data.
 

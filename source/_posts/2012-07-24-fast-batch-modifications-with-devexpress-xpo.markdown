@@ -4,6 +4,7 @@ title: "Fast batch modifications with DevExpress XPO"
 date: 2012-07-24 14:02
 comments: true
 categories: [c#, devexpress, xpo, performance]
+description: An undocumented method of performing fast batch modifications with DevExpress XPO.
 ---
 Last week I wrote about [fast batch deletions](/fast-batch-deletions-with-devexpress-xpo/). In this post I'll show how to do the same for modifications.
 

@@ -4,6 +4,7 @@ title: "Robot Egyptologists"
 date: 2012-05-01 11:52
 comments: true
 categories: [robots]
+description: A history of the robot exploration of the Great Pyramid of Giza.
 ---
 This post is part of an ongoing series about robots, past and present.  See [Skiing on Mars](/skiing-on-mars/).
 

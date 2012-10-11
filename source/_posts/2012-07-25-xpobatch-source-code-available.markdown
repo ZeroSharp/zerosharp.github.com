@@ -7,7 +7,7 @@ categories: [c#, devexpress, xpo, performance]
 ---
 The source code for the fast batch operations with DevExpress XPO [is now available on on GitHub](https://github.com/ZeroSharp/XpoBatch).
 
-It includes unit tests that can be run against SQL Server or in memory. It runs against DevExpress 12.1.5, but it will work against 11.2 (and possibly earlier versions) with a couple of minor modifications which are documented in the code.
+It includes unit tests that can be run against SQL Server or in memory. It runs against DevExpress 12.1.7, but it will work against 11.2 (and possibly earlier versions) with a couple of minor modifications which are documented in the code.
 
 #### References ####
 

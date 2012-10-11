@@ -4,6 +4,7 @@ title: "Trying out a new keyboard with no labels on the keys"
 date: 2012-07-02 09:35
 comments: true
 categories: [hardware]
+description: First impressions using Das Keyboard Model S Ultimate.
 ---
  [{% img right /images/blog/trying-out-a-new-keyboard-001.jpg Das Keyboard Model S Ultimate %}](http://www.daskeyboard.com/model-s-ultimate/)
 

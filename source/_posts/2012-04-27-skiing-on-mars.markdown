@@ -4,6 +4,7 @@ title: "Skiing on Mars"
 date: 2012-04-27 11:45
 comments: true
 categories: [robots, space]
+description: A short hisotry of the Soviet PrOP-M Rovers.
 ---
 [{% img right /images/blog/skiing-on-mars-003.jpg %}](http://en.wikipedia.org/wiki/File:Mars_propm_rover.jpg)
 This post is part of an ongoing series about robots, past and present.  See [Friends, Robots, Countrymen](/friends-robots-countrymen/).

@@ -4,6 +4,7 @@ title: "An afternoon with two Fields Medallists"
 date: 2012-06-05 08:30
 comments: true
 categories: [mathematics]
+description: A review of a lecture at the Tate Modern by Sir Michael Atiyah and Cédric Villani.
 ---
 
 {% img right /images/blog/an-afternoon-with-two-fields-medallists-001.jpg %}

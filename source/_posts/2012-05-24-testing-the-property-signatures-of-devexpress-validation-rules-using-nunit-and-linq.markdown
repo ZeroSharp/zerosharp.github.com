@@ -4,6 +4,7 @@ title: "Testing the property signatures of DevExpress validation rules using NUn
 date: 2012-05-24 16:39
 comments: true
 categories: [c#, devexpress, nunit, linq, xaf]
+description: Meta-tests for XAF validation rules.
 ---
 
 One of the projects I work on uses the validation module of the [eXpressApp Framework (XAF)](http://devexpress.com/Products/NET/Application_Framework/).  Since the business logic is complex, there are many validation rules defined using the `[RuleFromBoolProperty]`.

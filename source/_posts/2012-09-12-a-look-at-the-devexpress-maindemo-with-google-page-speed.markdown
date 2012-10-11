@@ -4,6 +4,7 @@ title: "A look at the DevExpress MainDemo with Google Page Speed"
 date: 2012-09-12 17:22
 comments: true
 categories: [c#, devexpress, xaf, performance]
+description: An analysis of the page speed of the DevExpress MainDemo.
 ---
 In this post I'll demonstrate how to use the [Google Page Speed](https://developers.google.com/speed/pagespeed/) tools to analyse the performance of the DevExpress XAF MainDemo.
 
