@@ -4,7 +4,7 @@
   <title><![CDATA[Category: devexpress | ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/blog/categories/devexpress/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2012-09-27T17:07:16+01:00</updated>
+  <updated>2012-10-11T12:59:08+01:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -104,7 +104,7 @@
     <id>http://blog.zerosharp.com/xpobatch-source-code-available</id>
     <content type="html"><![CDATA[<p>The source code for the fast batch operations with DevExpress XPO <a href="https://github.com/ZeroSharp/XpoBatch">is now available on on GitHub</a>.</p>
 
-<p>It includes unit tests that can be run against SQL Server or in memory. It runs against DevExpress 12.1.5, but it will work against 11.2 (and possibly earlier versions) with a couple of minor modifications which are documented in the code.</p>
+<p>It includes unit tests that can be run against SQL Server or in memory. It runs against DevExpress 12.1.7, but it will work against 11.2 (and possibly earlier versions) with a couple of minor modifications which are documented in the code.</p>
 
 <h4>References</h4>
 

@@ -2,78 +2,82 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://blog.zerosharp.com/setting-up-octopress-on-windows/</loc>
-        <lastmod>2012-05-30T11:37:34+01:00</lastmod>
+        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/friends-robots-countrymen/</loc>
-        <lastmod>2012-04-27T14:50:59+01:00</lastmod>
+        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/skiing-on-mars/</loc>
-        <lastmod>2012-05-30T11:37:32+01:00</lastmod>
+        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/robot-egyptologists/</loc>
-        <lastmod>2012-05-30T11:37:33+01:00</lastmod>
+        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/musical-interlude/</loc>
-        <lastmod>2012-05-30T11:37:33+01:00</lastmod>
+        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://blog.zerosharp.com/testing-the-property-signatures-of-devexpress-validation-rules-using-nunit-and-linq/
         </loc>
-        <lastmod>2012-07-12T17:17:18+01:00</lastmod>
+        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/nuget-1-dot-8-installation-problem/</loc>
-        <lastmod>2012-05-25T08:42:47+01:00</lastmod>
+        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/the-only-robot-on-any-other-planet/</loc>
-        <lastmod>2012-05-30T11:39:58+01:00</lastmod>
+        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/an-afternoon-with-two-fields-medallists/</loc>
-        <lastmod>2012-06-05T12:18:17+01:00</lastmod>
+        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/trying-out-a-new-keyboard-with-no-labels-on-the-keys/</loc>
-        <lastmod>2012-07-02T11:00:20+01:00</lastmod>
+        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/fast-batch-deletions-with-devexpress-xpo/</loc>
-        <lastmod>2012-09-12T17:23:17+01:00</lastmod>
+        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/fast-batch-modifications-with-devexpress-xpo/</loc>
-        <lastmod>2012-09-12T17:23:14+01:00</lastmod>
+        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/xpobatch-source-code-available/</loc>
-        <lastmod>2012-09-12T17:23:23+01:00</lastmod>
+        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://blog.zerosharp.com/a-look-at-the-devexpress-maindemo-with-google-page-speed/
         </loc>
-        <lastmod>2012-09-13T11:20:54+01:00</lastmod>
+        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://blog.zerosharp.com/the-best-pc-laptop-is-a-mac/</loc>
+        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/about/</loc>
-        <lastmod>2012-09-27T16:04:10+01:00</lastmod>
+        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/blog/archives/</loc>
-        <lastmod>2012-09-13T11:20:54+01:00</lastmod>
+        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/</loc>
-        <lastmod>2012-09-13T11:20:54+01:00</lastmod>
+        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/license/</loc>
-        <lastmod>2012-04-20T17:52:13+01:00</lastmod>
+        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
 </urlset>

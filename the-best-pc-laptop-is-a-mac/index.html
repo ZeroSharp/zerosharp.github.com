@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>NuGet 1.8 Installation Problem - ZeroSharp</title>
+  <title>The best PC laptop is a Mac - ZeroSharp</title>
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="A fix for a problem when installing NuGet 1.8.">
+  <meta name="description" content="My first impressions of using a Macbook Pro with retina screen for Windows development.">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://blog.zerosharp.com/nuget-1-dot-8-installation-problem/">
+  <link rel="canonical" href="http://blog.zerosharp.com/the-best-pc-laptop-is-a-mac/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -33,8 +33,6 @@
 <link href="http://fonts.googleapis.com/css?family=Ubuntu:500" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
 <link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
-
-<link href="/stylesheets/custom/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
 
 <!-- </ra+> -->
 
@@ -117,7 +115,7 @@
   
   <header>
     
-      <h1 class="entry-title">NuGet 1.8 Installation Problem</h1>
+      <h1 class="entry-title">The Best PC Laptop Is a Mac</h1>
     
     
       <p class="meta">
@@ -133,7 +131,7 @@
   
 
 
-<time datetime="2012-05-25T00:26:00+01:00" pubdate data-updated="true">May 25<span>th</span>, 2012</time>
+<time datetime="2012-10-09T17:09:00+01:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -142,24 +140,92 @@
   </header>
 
 
-<div class="entry-content"><p>The NuGet team just released NuGet 1.8.  Unfortunately there is an issue when upgrading it via the NuGet package manager.  The following message appears and the installation fails.</p>
+<div class="entry-content"><h3>A month ago</h3>
 
-<pre>
-VSIXInstaller.SignatureMismatchException: The installed version of 'NuGet Package Manager' 
-is signed, but the update version has an invalid signature. Therefore, Extension Manager 
-cannot install the update. 
+<p>I&#8217;ve never liked laptops. The screen seems so small. A powerful laptop is too heavy; a light one doesn&#8217;t cut the mustard.
+I can&#8217;t even find the on/off switch.</p>
 
-  at VSIXInstaller.Common.VerifyMatchingExtensionSignatures(IInstalledExtension installedExtension, 
-    IInstallableExtension updateExtension) 
-  at VSIXInstaller.InstallProgressPage.BeginInstallVSIX(SupportedVSSKU targetAppID)
-</pre>
+<p>Then there are those fancy new <strong>Macbook Pro</strong>s with retina displays. They seem light and powerful and the screen looks great. I don&#8217;t know much about Macs, but I&#8217;d like to learn.</p>
+
+<blockquote><p>But I need Microsoft Windows and Visual Studio. I know theoretically I can run a virtual machine or setup a dual boot, but I&#8217;ll bet it&#8217;s all a bit of a hassle and rather clunky&#8230;</p></blockquote>
 
 
-<p></p>
+<h3>Three hours after my Macbook Pro arrived</h3>
 
-<p>As explained in the <a href="http://docs.nuget.org/docs/release-notes/nuget-1.8">NuGet release notes</a>, one solution is to uninstall NuGet from the VS Extension Gallery before reinstalling.  Note: If Visual Studio won&#8217;t allow you to uninstall the extension (the Uninstall button is disabled), then you likely need to restart Visual Studio using &#8220;Run as Administrator.&#8221;</p>
+<p>Windows 8 is installed and looks absolutely beautiful! The font is small, but the screen is so sharp that it is quite readable. Visual Studio looks great with the font size in the editor Window set to 14 or 15.</p>
 
-<p>Another alternative (courtesy of <a href="http://jeffhandley.com/">Jeff Handley</a>) is to install <a href="http://connect.microsoft.com/VisualStudio/Downloads/DownloadDetails.aspx?DownloadID=38654">this Visual Studio hotfix</a> and the next time you start Visual Studio, updating via the package manager will work.</p>
+<p>The installation was much simpler than most other Windows installations I&#8217;ve done. I followed <a href="http://www.iclarified.com/entry/index.php?enid=20961">this tutorial on iClarified</a> to set up a dual boot. You use a tool called the Bootcamp Advisor which is already installed on your Mac to create an bootable USB for installing Windows. Since all Macs are the same, the Bootcamp Advisor sets up all the drivers correctly for you.</p>
+
+<h3>Three weeks later</h3>
+
+<blockquote><p>This is by far the most pleasant laptop I&#8217;ve ever used for development.</p></blockquote>
+
+
+<p>The screen is wonderful - the machine seems very fast and it is no weight to carry around.</p>
+
+<h3>A tiny little gripe</h3>
+
+<p>There is a little annoyance with the Bootcamp Control Panel which won&#8217;t start properly, but Thomas Jespersen found a <a href="http://apple.stackexchange.com/a/59132/30710">workaround</a>, <a href="https://gist.github.com/3859956">which I&#8217;ve put in a batch file</a>. You need this to make the F1-12 keys work as they would in Windows.</p>
+
+<h3>Some help with the Mac keyboard and trackpad</h3>
+
+<p>I&#8217;m very picky about keyboards and I need to be able to find all my Visual Studio shortcuts in the same places. All in all I find the keyboard fine to work with.</p>
+
+<p>The <code>delete</code> key works like a PC <code>backspace</code> so you have to do <code>fn+delete</code> to delete forwards. Here&#8217;s a list of other shortcuts:</p>
+
+<table>
+<thead>
+<tr>
+<th align="left">PC (running Windows)       </th>
+<th align="left"> &nbsp;Macbook (running Windows)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><code>Windows</code> key              </td>
+<td align="left"> &nbsp;<code>command</code></td>
+</tr>
+<tr>
+<td align="left"><code>Del</code>                      </td>
+<td align="left"> &nbsp;<code>fn+delete</code> </td>
+</tr>
+<tr>
+<td align="left"><code>Ins</code>                      </td>
+<td align="left"> &nbsp;<code>fn+return</code></td>
+</tr>
+<tr>
+<td align="left"><code>Home</code>                     </td>
+<td align="left"> &nbsp;<code>fn+left</code></td>
+</tr>
+<tr>
+<td align="left"><code>End</code>                      </td>
+<td align="left"> &nbsp;<code>fn+right</code></td>
+</tr>
+<tr>
+<td align="left"><code>PgUp</code>                     </td>
+<td align="left"> &nbsp;<code>fn+up</code></td>
+</tr>
+<tr>
+<td align="left"><code>PgDn</code>                     </td>
+<td align="left"> &nbsp;<code>fn+down</code></td>
+</tr>
+<tr>
+<td align="left"><code>Ctrl+Home</code>                </td>
+<td align="left"> &nbsp;<code>fn+control+left</code></td>
+</tr>
+<tr>
+<td align="left"><code>Ctrl+End</code>                 </td>
+<td align="left"> &nbsp;<code>fn+control+right</code></td>
+</tr>
+</tbody>
+</table>
+
+
+<p>There are some keys which you will still not find, for instance, <code>NumLock</code>, <code>PrtScn</code>, <code>Break</code>.</p>
+
+<p>If I need these, I use the On-Screen keyboard (type &#8216;osk&#8217; into the search bar). If you cannot see the <code>NumLock</code>, the options allow you to show the numeric keypad. Alternatively, you could always plug in a USB keyboard.</p>
+
+<p>The trackpad works great including the two-finger click for right-click and two-finger swipe for scroll.</p>
 </div>
 
 
@@ -182,12 +248,12 @@ cannot install the update.
   
 
 
-<time datetime="2012-05-25T00:26:00+01:00" pubdate data-updated="true">May 25<span>th</span>, 2012</time>
+<time datetime="2012-10-09T17:09:00+01:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/nuget/'>nuget</a>, <a class='category' href='/blog/categories/visualstudio/'>visualstudio</a>
+    <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/hardware/'>hardware</a>, <a class='category' href='/blog/categories/macbook/'>macbook</a>
   
 </span>
 
@@ -196,7 +262,7 @@ cannot install the update.
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://blog.zerosharp.com/nuget-1-dot-8-installation-problem/" data-via="8ctopus" data-counturl="http://blog.zerosharp.com/nuget-1-dot-8-installation-problem/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://blog.zerosharp.com/the-best-pc-laptop-is-a-mac/" data-via="8ctopus" data-counturl="http://blog.zerosharp.com/the-best-pc-laptop-is-a-mac/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -207,10 +273,8 @@ cannot install the update.
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/testing-the-property-signatures-of-devexpress-validation-rules-using-nunit-and-linq/" title="Previous Post: Testing the property signatures of DevExpress validation rules using NUnit and LINQ">&laquo; Testing the property signatures of DevExpress validation rules using NUnit and LINQ</a>
+        <a class="basic-alignment left" href="/a-look-at-the-devexpress-maindemo-with-google-page-speed/" title="Previous Post: A look at the DevExpress MainDemo with Google Page Speed">&laquo; A look at the DevExpress MainDemo with Google Page Speed</a>
       
-      
-        <a class="basic-alignment right" href="/the-only-robot-on-any-other-planet/" title="Next Post: The only robot on any other planet">The only robot on any other planet &raquo;</a>
       
     </p>
   </footer>
@@ -246,8 +310,8 @@ cannot install the update.
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://blog.zerosharp.com/nuget-1-dot-8-installation-problem/';
-        var disqus_url = 'http://blog.zerosharp.com/nuget-1-dot-8-installation-problem/';
+        var disqus_identifier = 'http://blog.zerosharp.com/the-best-pc-laptop-is-a-mac/';
+        var disqus_url = 'http://blog.zerosharp.com/the-best-pc-laptop-is-a-mac/';
         var disqus_script = 'embed.js';
       
     (function () {
