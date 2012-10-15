@@ -65,16 +65,22 @@
         <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://blog.zerosharp.com/incompatible-character-encodings-when-generating-octopress/
+        </loc>
+        <lastmod>2012-10-15T16:33:38+01:00</lastmod>
+    </url>
+    <url>
         <loc>http://blog.zerosharp.com/about/</loc>
         <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/blog/archives/</loc>
-        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
+        <lastmod>2012-10-15T16:33:38+01:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/</loc>
-        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
+        <lastmod>2012-10-15T16:33:38+01:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/license/</loc>

@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2012-10-11T12:59:08+01:00</updated>
+  <updated>2012-10-15T16:33:39+01:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,29 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Incompatible character encodings when generating Octopress]]></title>
+    <link href="http://blog.zerosharp.com/incompatible-character-encodings-when-generating-octopress/"/>
+    <updated>2012-10-15T16:26:00+01:00</updated>
+    <id>http://blog.zerosharp.com/incompatible-character-encodings-when-generating-octopress</id>
+    <content type="html"><![CDATA[<p>I started getting an encoding error whenever I tried to generate my Octopress blog with <code>rake generate</code>. The error message was:</p>
+
+<pre><code>Liquid error: incompatible character encodings: UTF-8 and IBM437
+</code></pre>
+
+<p>I tried to save all my recently modified files with UTF-8 encoding, but I couldn&#8217;t get the error to go away until
+I found a solution on <a href="http://chxt6896.github.com/blog/2012/02/13/blog-jekyll-native.html#comment-678936946">this blog in Chinese</a>.</p>
+
+<p>Set two environment variables (via Control Panel/System/Advanced System Settings/Environment Variables) as follows:</p>
+
+<pre><code>LC_ALL = en_US.UTF-8
+LANG = en_US.UTF-8
+</code></pre>
+
+<p>Now my blog generates without error.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[The best PC laptop is a Mac]]></title>

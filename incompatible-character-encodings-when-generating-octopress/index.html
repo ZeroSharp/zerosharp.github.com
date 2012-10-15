@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: octopress - ZeroSharp</title>
+  <title>Incompatible character encodings when generating Octopress - ZeroSharp</title>
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Category: octopress">
+  <meta name="description" content="A fix for 'Liquid error incompatible character encodings' when running 'rake generate'">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://blog.zerosharp.comblog/categories/octopress/">
+  <link rel="canonical" href="http://blog.zerosharp.com/incompatible-character-encodings-when-generating-octopress/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -113,50 +113,109 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Octopress</h1>
+    
+      <h1 class="entry-title">Incompatible Character Encodings When Generating Octopress</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-15T16:26:00+01:00" pubdate data-updated="true">Oct 15<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>I started getting an encoding error whenever I tried to generate my Octopress blog with <code>rake generate</code>. The error message was:</p>
 
-  
-  <h2>2012</h2>
+<pre><code>Liquid error: incompatible character encodings: UTF-8 and IBM437
+</code></pre>
 
-<article>
-  
-<h1><a href="/incompatible-character-encodings-when-generating-octopress/">Incompatible character encodings when generating Octopress</a></h1>
-<time datetime="2012-10-15T16:26:00+01:00" pubdate><span class='month'>Oct</span> <span class='day'>15</span> <span class='year'>2012</span></time>
+<p>I tried to save all my recently modified files with UTF-8 encoding, but I couldn&#8217;t get the error to go away until
+I found a solution on <a href="http://chxt6896.github.com/blog/2012/02/13/blog-jekyll-native.html#comment-678936946">this blog in Chinese</a>.</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/octopress/'>octopress</a></span>
-</footer>
+<p>Set two environment variables (via Control Panel/System/Advanced System Settings/Environment Variables) as follows:</p>
 
+<pre><code>LC_ALL = en_US.UTF-8
+LANG = en_US.UTF-8
+</code></pre>
 
-</article>
-
-
-
-<article>
-  
-<h1><a href="/setting-up-octopress-on-windows/">Octopress on Windows and GitHub</a></h1>
-<time datetime="2012-04-06T17:11:00+01:00" pubdate><span class='month'>Apr</span> <span class='day'>06</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/github/'>github</a>, <a class='category' href='/blog/categories/octopress/'>octopress</a></span>
-</footer>
-
-
-</article>
-
+<p>Now my blog generates without error.</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-15T16:26:00+01:00" pubdate data-updated="true">Oct 15<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/octopress/'>octopress</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://blog.zerosharp.com/incompatible-character-encodings-when-generating-octopress/" data-via="8ctopus" data-counturl="http://blog.zerosharp.com/incompatible-character-encodings-when-generating-octopress/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/the-best-pc-laptop-is-a-mac/" title="Previous Post: The best PC laptop is a Mac">&laquo; The best PC laptop is a Mac</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -181,7 +240,10 @@
       var disqus_shortname = 'zerosharp';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.zerosharp.com/incompatible-character-encodings-when-generating-octopress/';
+        var disqus_url = 'http://blog.zerosharp.com/incompatible-character-encodings-when-generating-octopress/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
