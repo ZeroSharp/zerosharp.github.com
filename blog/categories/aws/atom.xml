@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2012-10-23T17:26:20+01:00</updated>
+  <updated>2012-10-23T17:28:16+01:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services]]></title>
+    <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 1]]></title>
     <link href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/"/>
     <updated>2012-10-23T12:52:00+01:00</updated>
     <id>http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud</id>
