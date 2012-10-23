@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2012-10-23T17:28:16+01:00</updated>
+  <updated>2012-10-23T17:30:09+01:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -79,7 +79,7 @@ You can leave the account number blank.</p>
 
 <p><img src="http://blog.zerosharp.com/images/blog/aws/aws-properties-1.jpg" title="&#34;figure 8&#34;" alt="&#34;figure 8&#34;"></p>
 
-<p>For instance mine looks like this:</p>
+<p>My connection string looks like this:</p>
 
 <pre><code>&lt;add name="ConnectionString" connectionString="User ID=zerosharp;Password=password;Pooling=false;Data Source=maindemo.c5uchpz3rigs.eu-west-1.rds.amazonaws.com;Initial Catalog=MainDemo_v12.1"/&gt;    
 </code></pre>
