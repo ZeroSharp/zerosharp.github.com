@@ -81,6 +81,14 @@
         <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
     <url>
+        <loc>http://blog.zerosharp.com/atom_xaf.xml</loc>
+        <lastmod>2012-10-26T02:27:03+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://blog.zerosharp.com/atom_xpo.xml</loc>
+        <lastmod>2012-10-26T02:27:19+01:00</lastmod>
+    </url>
+    <url>
         <loc>http://blog.zerosharp.com/blog/archives/</loc>
         <lastmod>2012-10-23T17:29:57+01:00</lastmod>
     </url>
@@ -91,5 +99,9 @@
     <url>
         <loc>http://blog.zerosharp.com/license/</loc>
         <lastmod>2012-10-11T12:48:55+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://blog.zerosharp.com/xaf_or_xpo.xml</loc>
+        <lastmod>2012-10-26T00:49:44+01:00</lastmod>
     </url>
 </urlset>
