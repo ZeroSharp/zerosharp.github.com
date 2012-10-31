@@ -4,7 +4,7 @@
   <title><![CDATA[Category: devexpress | ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/blog/categories/devexpress/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2012-10-26T02:28:43+01:00</updated>
+  <updated>2012-10-31T15:39:15+00:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,114 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 2]]></title>
+    <link href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/"/>
+    <updated>2012-10-31T12:52:00+00:00</updated>
+    <id>http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo</id>
+    <content type="html"><![CDATA[<h1>Part 2: Publishing MainDemo</h1>
+
+<p>This is the second post in a series about deploying ASP.NET applications to the <a href="http://aws.amazon.com/">Amazon cloud</a>.</p>
+
+<p>In <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1</a> we created an Amazon RDS instance of SQL Server to act as the database for the deployment. Make sure this is up and running before continuing.</p>
+
+<p>This part guides you through publishing the <a href="http://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a> MainDemo application to the Amazon Elastic Beanstalk.</p>
+
+<h2>Amazon Elastic Beanstalk</h2>
+
+<p><span class='pullquote-right' data-pullquote='Amazon Elastic Beanstalk provides automatic capacity provisioning, load balancing, auto-scaling, and application health monitoring.'>
+Amazon Elastic Beanstalk provides automatic capacity provisioning, load balancing, auto-scaling, and application health monitoring. <strong>That sounds like a lot of features we don't really need</strong> for the MainDemo, so let me explain.</p>
+
+<p>With Amazon Web Services, the choices are endless. An Amazon EC2 instance is a virtual machine running an actual Windows (or other) operating system that you can connect to with Remote Desktop and configure however you want. It might seem that the simplest would be to put everything on a 'single machine' instance. However, the default 'single machine' does not have SQL Server Express installed. We could connect to it and install it, but it ends up being a lot of extra steps. There are other Amazon Machine Images (AMIs) that include SQL Server Express, but these don't support automatic deployment from Visual Studio.
+</span></p>
+
+<p>In fact (and Amazon should advertise this better), the Elastic Beanstalk is designed to make it very simple to deploy applications quickly <strong>even if you have no intention of ever needing more than a single little instance</strong>. It is the recommended starting point for all new deployments regardless of size. Ignore the long list of amazing additional features for now, (but one day you might need them.)</p>
+
+<h2>Prepare the MainDemo for deployment</h2>
+
+<p>First we need to fix a few problems with the MainDemo. (These will cause deployment in problems any environment, not just Amazon Web Services.)</p>
+
+<ul>
+<li>remove the reference to <em>stdole</em> in the web.config <em>&lt;assemblies&gt;</em> section</li>
+<li>add a reference to the project <em>DevExpress.XtraPrinting.v12.1</em></li>
+<li>add a reference to the project <em>DevExpress.XtraNavBar.v12.1</em></li>
+<li>add a reference to the project <em>DevExpress.Utils.v12.1.UI</em></li>
+<li>set the <em>CopyLocal</em> flag to true for all DevExpress assemblies</li>
+</ul>
+
+
+<p>(Some of these might have been fixed if you are using a newer release of XAF than 12.1.7.)</p>
+
+<p>Also, if there are any errors, we don't get much useful feedback unless we turn custom errors off. Go to the web.config and add a tag just before the end of the <em>&lt;system.web&gt;</em> section.</p>
+
+<pre><code>    ...
+      &lt;customErrors mode="Off"/&gt;
+    &lt;/system.web&gt;
+</code></pre>
+
+<p>Make sure you can build without errors.</p>
+
+<h2>Deploy to Elastic Beanstalk</h2>
+
+<p>You might like to switch to <strong>Release</strong> mode since we will be publishing. Right click on the MainDemo.Web project in the Solution Explorer and select <strong>Publish to AWS...</strong></p>
+
+<p><img src="/images/blog/aws/aws-solution-explorer-1.jpg" title="'figure 9'" ></p>
+
+<p>This opens the AWS publishing wizard. Select the <strong>AWS Elastic Beanstalk</strong> template.  I have also selected to deploy in the <strong>EU West (Ireland)</strong> region. Click <strong>Next</strong>.</p>
+
+<p><img src="/images/blog/aws/launch-aws-beanstalk-1.jpg" title="'figure 10'" ></p>
+
+<p>Make sure you uncheck the <strong>Deploy application incrementally</strong> checkbox (see the upcoming Part 4 for more information on this option).</p>
+
+<p><img src="/images/blog/aws/launch-aws-beanstalk-2.jpg" title="'figure 11'" ></p>
+
+<p>The next few screens are self-explanatory.</p>
+
+<p><img src="/images/blog/aws/launch-aws-beanstalk-3.jpg" title="'figure 12'" ></p>
+
+<p>(Note the keypair property referred to Part 3.)</p>
+
+<p><img src="/images/blog/aws/launch-aws-beanstalk-4.jpg" title="'figure 13'" ></p>
+
+<p><img src="/images/blog/aws/launch-aws-beanstalk-6.jpg" title="'figure 14'" ></p>
+
+<p>The following screen appears only if we have active RDS instances running (whcih you should if you followed <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1</a>). It allows us to add a permission for the application to access the database. This can also be done manually via the <em>Security Groups</em> section in the AWS Explorer.</p>
+
+<p><img src="/images/blog/aws/launch-aws-beanstalk-7.jpg" title="'figure 15'" ></p>
+
+<p>The last screen summarizes all the choices so far.</p>
+
+<p><img src="/images/blog/aws/launch-aws-beanstalk-8.jpg" title="'figure 16'" ></p>
+
+<p>After you click <strong>Launch</strong>, you can follow the progress in the Amazon Web Services output window. It will upload the MainDemo web deployment package to a temporary S3 bucket. It will then provision an EC2 instance and install the application to it. It will also provision an Elastic Load Balancer and connect up all the pieces. This will all take a few minutes.</p>
+
+<h2>Navigate to the Deployed MainDemo</h2>
+
+<p>Launch your browser and navigate to the instance web address which will look something like <strong>http://zerosharp-maindemo.elasticbeanstalk.com/</strong>. It should forward you to the login page. Login as Sam. Depending on whether the database needs to be created, this may take a couple of minutes and may even time out. I had to wait a minute and then click Login again before I was in.</p>
+
+<p>When you have finished <strong>don't forget to terminate both the Elastic Beanstalk application and the DB Instance</strong> (right click and 'Delete' from the AWS Explorer) otherwise you will be charged for the time the machines are provisioned. You can always check that everything has terminated properly in the <a href="https://console.aws.amazon.com/">AWS Console</a>.</p>
+
+<h2>Next up</h2>
+
+<p>In the next posts we will look some additional details:</p>
+
+<ul>
+<li>Part 3: Connecting to an EC2 instance via Remote Desktop (helpful for troubleshooting)</li>
+<li>Part 4: Incremental deployment</li>
+<li>Part 5: Sticky sessions and load balancing</li>
+</ul>
+
+
+<h4>References</h4>
+
+<ul>
+<li>The <a href="https://www.youtube.com/watch?v=z-N0z5K_WFI">Amazon tutorial for the AWS Visual Studio Toolkit</a></li>
+<li>Nathanial Woolls has written an excellent similar article on hosting <a href="http://nwoolls.wordpress.com/2012/09/20/hosting-xaf-asp-net-projects-using-azure-web-sites/">XAF ASP.NET applications on Azure</a>.</li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 1]]></title>
@@ -90,7 +198,7 @@ You can leave the account number blank.</p>
 
 <h2>Next up</h2>
 
-<p>In the next post I explain how to publish the MainDemo application itself to an EC2 instance in the Amazon cloud.</p>
+<p>In the <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">next post</a> I explain how to publish the MainDemo application itself to an EC2 instance in the Amazon cloud.</p>
 ]]></content>
   </entry>
   
@@ -491,95 +599,6 @@ You can leave the account number blank.</p>
 <h4>References</h4>
 
 <p>The code was inspired by <a href="http://www.aneyfamily.com/terryandann/post/2008/04/Batch-Updates-and-Deletes-with-LINQ-to-SQL.aspx">an old blog post Terry Aney</a> in which he describes a similar approach for LINQ to SQL.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Fast batch deletions with DevExpress XPO]]></title>
-    <link href="http://blog.zerosharp.com/fast-batch-deletions-with-devexpress-xpo/"/>
-    <updated>2012-07-12T17:00:00+01:00</updated>
-    <id>http://blog.zerosharp.com/fast-batch-deletions-with-devexpress-xpo</id>
-    <content type="html"><![CDATA[<p>When deleting a collection of objects, DevExpress recommends using <a href="http://documentation.devexpress.com/#XPO/DevExpressXpoSession_Deletetopic116"><code>Session.Delete(ICollection objects)</code></a>. This has the same effect as calling the <code>Delete()</code> method for every object in the collection so that the business logic is applied correctly. The business logic in this context refers to code such as that in the <code>OnDeleting()</code>, <code>OnDeleted()</code> methods, but it also includes the clearing of references to the object by other objects. This approach is slow, but ensures the integrity of the data.</p>
-
-<p>If you know that your objects do not require any of this processing, you can use use direct SQL <a href="http://documentation.devexpress.com/#XPO/CustomDocument8914">as described in the XPO documentation</a>. This however requires knowledge of the underlying database table and is not very versatile, (although the <code>DevExpress.Data.Filtering.CriteriaToWhereClauseHelper()</code> can help if you choose this route).</p>
-
-<p>An alternative is to use the extension method below:</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">SessionExtensions</span>
-</span><span class='line'><span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="k">public</span> <span class="k">static</span> <span class="n">ModificationResult</span> <span class="n">Delete</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">T</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;(</span><span class="k">this</span> <span class="n">Session</span> <span class="n">session</span><span class="p">,</span> <span class="n">CriteriaOperator</span> <span class="n">criteria</span> <span class="p">=</span> <span class="k">null</span><span class="p">)</span> <span class="k">where</span> <span class="n">T</span> <span class="p">:</span> <span class="n">IXPObject</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">ReferenceEquals</span><span class="p">(</span><span class="n">criteria</span><span class="p">,</span> <span class="k">null</span><span class="p">))</span>
-</span><span class='line'>        <span class="n">criteria</span> <span class="p">=</span> <span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;True&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">XPClassInfo</span> <span class="n">classInfo</span> <span class="p">=</span> <span class="n">session</span><span class="p">.</span><span class="n">GetClassInfo</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">T</span><span class="p">));</span>
-</span><span class='line'>    <span class="kt">var</span> <span class="n">batchWideData</span> <span class="p">=</span> <span class="k">new</span> <span class="n">BatchWideDataHolder4Modification</span><span class="p">(</span><span class="n">session</span><span class="p">);</span>
-</span><span class='line'>    <span class="kt">int</span> <span class="n">recordsAffected</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">session</span><span class="p">.</span><span class="n">Evaluate</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">T</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;(</span><span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;Count()&quot;</span><span class="p">),</span> <span class="n">criteria</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">List</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">ModificationStatement</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">collection</span> <span class="p">=</span> <span class="n">DeleteQueryGenerator</span><span class="p">.</span><span class="n">GenerateDelete</span><span class="p">(</span><span class="n">classInfo</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">batchWideData</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">foreach</span> <span class="p">(</span><span class="n">ModificationStatement</span> <span class="n">item</span> <span class="k">in</span> <span class="n">collection</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">item</span><span class="p">.</span><span class="n">RecordsAffected</span> <span class="p">=</span> <span class="n">recordsAffected</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">ModificationStatement</span><span class="p">[]</span> <span class="n">collectionToArray</span> <span class="p">=</span> <span class="n">collection</span><span class="p">.</span><span class="n">ToArray</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">ModificationStatement</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;();</span>
-</span><span class='line'>    <span class="n">ModificationResult</span> <span class="n">result</span> <span class="p">=</span> <span class="n">session</span><span class="p">.</span><span class="n">DataLayer</span><span class="p">.</span><span class="n">ModifyData</span><span class="p">(</span><span class="n">collectionToArray</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>Here is an example of how to call the method:</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">using</span> <span class="p">(</span><span class="n">UnitOfWork</span> <span class="n">uow</span> <span class="p">=</span> <span class="k">new</span> <span class="n">UnitOfWork</span><span class="p">())</span>
-</span><span class='line'><span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="n">uow</span><span class="p">.</span><span class="n">Delete</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">MyObject</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;(</span><span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;City != &#39;Chicago&#39;&quot;</span><span class="p">));</span>
-</span><span class='line'><span class="n">uow</span><span class="p">.</span><span class="n">CommitChanges</span><span class="p">();</span>
-</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>This achieves the same as result and similar performance to direct SQL, but with cleaner syntax and support for criteria.  Also, since it uses a <code>ModificationStatement[]</code>, it works with a remote <code>IDataStore</code>.</p>
-
-<p>See the next post for <a href="/fast-batch-modifications-with-devexpress-xpo/">a similar approach for fast batch modifications</a>.</p>
-
-<p><strong>Update:</strong> The <a href="https://github.com/ZeroSharp/XpoBatch">source code is now available on GitHub</a>.</p>
 ]]></content>
   </entry>
   

@@ -74,7 +74,13 @@
         <loc>
             http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/
         </loc>
-        <lastmod>2012-10-23T17:29:57+01:00</lastmod>
+        <lastmod>2012-10-31T15:01:06+00:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/
+        </loc>
+        <lastmod>2012-10-31T15:35:45+00:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/about/</loc>
@@ -90,11 +96,11 @@
     </url>
     <url>
         <loc>http://blog.zerosharp.com/blog/archives/</loc>
-        <lastmod>2012-10-23T17:29:57+01:00</lastmod>
+        <lastmod>2012-10-31T15:35:45+00:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/</loc>
-        <lastmod>2012-10-23T17:29:57+01:00</lastmod>
+        <lastmod>2012-10-31T15:35:45+00:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/license/</loc>
