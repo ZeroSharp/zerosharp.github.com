@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2012-11-03T12:48:40+00:00</updated>
+  <updated>2012-11-03T16:01:29+00:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -62,6 +62,7 @@
 <span class='line-number'>23</span>
 <span class='line-number'>24</span>
 <span class='line-number'>25</span>
+<span class='line-number'>26</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>2012-11-02T12:37:13.000Z Warning 3:Web Event ASP.NET 4.0.30319.0 - Event code: 3008
 </span><span class='line'>    Event message: A configuration error has occurred.
 </span><span class='line'>    [...]
@@ -86,7 +87,8 @@
 </span><span class='line'>      at System.Web.Compilation.BuildManager.GetReferencedAssemblies(CompilationSection compConfig)
 </span><span class='line'>      at System.Web.Compilation.BuildManager.CallPreStartInitMethods(String preStartInitListPath)
 </span><span class='line'>      at System.Web.Compilation.BuildManager.ExecutePreAppStart()
-</span><span class='line'>      at System.Web.Hosting.HostingEnvironment.Initialize(ApplicationManager appManager, IApplicationHost appHost, IConfigMapPathFactory configMapPathFactory, HostingEnvironmentParameters hostingParameters, PolicyLevel policyLevel, Exception appDomainCreationException)</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>      at System.Web.Hosting.HostingEnvironment.Initialize(ApplicationManager appManager, IApplicationHost appHost, IConfigMapPathFactory configMapPathFactory, HostingEnvironmentParameters hostingParameters, PolicyLevel policyLevel, Exception appDomainCreationException)
+</span><span class='line'>    [...]</span></code></pre></td></tr></table></div></figure>
 
 
 <h2>Connecting via Remote Desktop</h2>

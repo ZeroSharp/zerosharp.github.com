@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c# | ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/blog/categories/c-/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2012-11-03T12:48:40+00:00</updated>
+  <updated>2012-11-03T16:01:29+00:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -67,6 +67,7 @@
 <span class='line-number'>28</span>
 <span class='line-number'>29</span>
 <span class='line-number'>30</span>
+<span class='line-number'>31</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>&lt;/p>
 </span><span class='line'>
 </span><span class='line'>&lt;pre>&lt;code>2012-11-02T12:37:13.000Z Warning 3:Web Event ASP.NET 4.0.30319.0 - Event code: 3008
@@ -94,6 +95,7 @@
 </span><span class='line'>  at System.Web.Compilation.BuildManager.CallPreStartInitMethods(String preStartInitListPath)
 </span><span class='line'>  at System.Web.Compilation.BuildManager.ExecutePreAppStart()
 </span><span class='line'>  at System.Web.Hosting.HostingEnvironment.Initialize(ApplicationManager appManager, IApplicationHost appHost, IConfigMapPathFactory configMapPathFactory, HostingEnvironmentParameters hostingParameters, PolicyLevel policyLevel, Exception appDomainCreationException)
+</span><span class='line'>[...]
 </span><span class='line'>&lt;/code>&lt;/pre>
 </span><span class='line'>
 </span><span class='line'>&lt;p></span></code></pre></td></tr></table></div></figure></notextile></div></p>
