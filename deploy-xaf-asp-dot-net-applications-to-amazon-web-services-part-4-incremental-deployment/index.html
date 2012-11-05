@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: aws - ZeroSharp</title>
+  <title>Deploy XAF ASP.NET Applications to Amazon Web Services: Part 4 - ZeroSharp</title>
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Category: aws">
+  <meta name="description" content="A tutorial for publishing the DevExpress expressAppFramework MainDemo to Amazon Web Services. This part discusses incremental deployment to the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://blog.zerosharp.comblog/categories/aws/">
+  <link rel="canonical" href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -113,78 +113,129 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Aws</h1>
+    
+      <h1 class="entry-title">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 4</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-05T14:16:00+00:00" pubdate data-updated="true">Nov 5<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><h2>Part 4: Incremental Deployment</h2>
 
-  
-  <h2>2012</h2>
+<p>This is the fourth post in a series about deploying ASP.NET applications to the Amazon cloud. In the first three posts covered deploying the XAF ASP.NET MainDemo to the Amazon cloud (<a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1</a>, <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2</a>, <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3</a>).</p>
 
-<article>
-  
-<h1><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 4</a></h1>
-<time datetime="2012-11-05T14:16:00+00:00" pubdate><span class='month'>Nov</span> <span class='day'>05</span> <span class='year'>2012</span></time>
+<p>When we deployed to the Elastic Beanstalk in <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2</a>, we chose <em>not</em> to enable incremental deployment.</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
+<p><img src="/images/blog/aws/launch-aws-beanstalk-2.jpg" title="'figure 11'" ></p>
 
+<p>I want to explain this decision further.</p>
 
-</article>
+<p>If you choose not to deploy incrementally your deployment will take longer because the entire web deployment package needs to be uploaded every time you re-publish which takes about 4-5 minutes on my connection. The incremental deployment option creates a git repository in the target environment so that only the modified files are re-deployed. If you are frequently making changes and redploying, you can save considerable time. A re-deployment takes only a few seconds.</p>
 
+<p>However, if you try to deploy from the default MainDemo location with incremental deployment enabled, you will probably get the following error</p>
 
+<pre><code>Commencing deployment for project MainDemo.Web
+...building deployment package obj\Release\Package\Archive...
+...deployment package created at C:\Users\Public\Documents\DXperience 12.1 Demos\eXpressApp Framework\MainDemo\CS\MainDemo.Web\obj\Release\Package\Archive
+...build of project archive completed succesfully
+...starting deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo'
+...starting incremental deployment to environment 'zerosharp-maindemo'
+Deployment to AWS Elastic Beanstalk failed with exception: Exception caught during execution of add command,
+Inner Exception Message: The specified path, file name, or both are too long. The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters.
+...
+Deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo' did not complete successfully
+</code></pre>
 
-<article>
-  
-<h1><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 3</a></h1>
-<time datetime="2012-11-02T17:54:00+00:00" pubdate><span class='month'>Nov</span> <span class='day'>02</span> <span class='year'>2012</span></time>
+<p>The problem is with the NGit libraries that the AWS Toolkit uses. Presumably a fix will emerge, but the simplest workaround is to move the application to a shorter path. Then you can enable incremental deployment when you publish:</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
+<p><img src="/images/blog/aws/launch-aws-beanstalk-incremental-2.jpg" title="'figure 21'" ></p>
 
+<p>Note that you can toggle incremental deployment whenever you publish, so you&#8217;re not locked in either way.</p>
 
-</article>
+<h2>Next up</h2>
 
-
-
-<article>
-  
-<h1><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 2</a></h1>
-<time datetime="2012-10-31T12:52:00+00:00" pubdate><span class='month'>Oct</span> <span class='day'>31</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 1</a></h1>
-<time datetime="2012-10-23T12:52:00+01:00" pubdate><span class='month'>Oct</span> <span class='day'>23</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
-
-
-</article>
-
+<p>In the next post we will enable load balancing (which is easy) and discuss the problems with autoscaling XAF applications (which is not).</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-05T14:16:00+00:00" pubdate data-updated="true">Nov 5<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/" data-via="8ctopus" data-counturl="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/" title="Previous Post: Deploy XAF ASP.NET Applications to Amazon Web Services: Part 3">&laquo; Deploy XAF ASP.NET Applications to Amazon Web Services: Part 3</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -209,7 +260,10 @@
       var disqus_shortname = 'zerosharp';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/';
+        var disqus_url = 'http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

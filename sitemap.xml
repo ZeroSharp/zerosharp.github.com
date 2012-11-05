@@ -89,6 +89,12 @@
         <lastmod>2012-11-03T12:52:30+00:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/
+        </loc>
+        <lastmod>2012-11-05T14:16:25+00:00</lastmod>
+    </url>
+    <url>
         <loc>http://blog.zerosharp.com/about/</loc>
         <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
@@ -102,11 +108,11 @@
     </url>
     <url>
         <loc>http://blog.zerosharp.com/blog/archives/</loc>
-        <lastmod>2012-11-03T12:52:30+00:00</lastmod>
+        <lastmod>2012-11-05T14:16:25+00:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/</loc>
-        <lastmod>2012-11-03T12:52:30+00:00</lastmod>
+        <lastmod>2012-11-05T14:16:25+00:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/license/</loc>
