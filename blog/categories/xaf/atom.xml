@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2012-11-05T14:16:52+00:00</updated>
+  <updated>2012-12-06T11:04:11+00:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,69 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 5]]></title>
+    <link href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/"/>
+    <updated>2012-12-05T11:03:00+00:00</updated>
+    <id>http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing</id>
+    <content type="html"><![CDATA[<h2>Part 5: Load balancing</h2>
+
+<p>This is the final post in this 5 part series about deploying XAF to the Amazon cloud. The other parts are:</p>
+
+<ul>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1 - Creating a database in RDS</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2 - Deploying to ElasticBeanstalk</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3 - Troubleshooting</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
+</ul>
+
+
+<p>This part covers load balancing and autoscaling.</p>
+
+<h3>Load balancing</h3>
+
+<p>In order to enable load balancing with DevExpress XAF applications, you must activate client affinity (sticky sessions) which you can do in the <strong>Load Balancer tab</strong>.</p>
+
+<p><img src="/images/blog/aws/aws-autoscaling-2.jpg" title="'figure 19'" ></p>
+
+<p>This is because XAF relies http session variables (notably the <code>WebApplication</code>). With sticky sessions enabled, when a user first hits the Elastic Load Balancer, they are assigned a random server but all subsequent requests are routed to the same server instance.</p>
+
+<h2>Autoscaling</h2>
+
+<h3>Adding Capacity (Works)</h3>
+
+<p>Switch to the <strong>Auto Scaling</strong> tab of the Elastic Beanstalk instance.</p>
+
+<p><img src="/images/blog/aws/aws-autoscaling-1.jpg" title="'figure 19'" ></p>
+
+<p>The options for autoscaling are extensive and there is plenty information on the <a href="http://aws.amazon.com/autoscaling">Amazon website</a>. In the above screenshot we have the Elastic Load Balancer configured so that it will initially deploy 1 server (the Minimum Instance Count), but whenever the NetworkOut measurement of 600,000 bytes over a 5 minute interval, a new server launch is triggered up to a maximum of 4 servers. Adding capacity works fine with XAF applications.</p>
+
+<h3>Removing Capacity (Fails)</h3>
+
+<p>The configuration above also shows that if the NetworkOut drops to below 200,000 bytes over a period of 5 minutes then the number of servers should decrease. <strong>This will NOT work</strong>.</p>
+
+<p>The problem is that the Elastic Load Balancer will terminate the surplus server immediately (the equivalent of a <code>shutdown -s</code>). Any users connected to that server will immediately lose their session and will probably receive an ugly error.</p>
+
+<p>One workaround is to allow scaling out but to disable scaling in. To do this, set the 'Lower Threshold' to zero.</p>
+
+<h3>Possible Improvements</h3>
+
+<p>There are a couple of potential longer term solutions to the problem of dropped sessions when scaling in.</p>
+
+<p>DevExpress could make the classes they use in the session variables serializable (e.g., <code>WebApplication</code>). When this is the case, the application can be configured to store the session variables to a persistent data store (SQL Server for instance) instead of in the session and then we could configure autoscaling to work correctly. There is <a href="http://www.devexpress.com/Support/Center/Question/Details/Q426045">an item in the Support Center in this regard</a> and <a href="http://www.devexpress.com/Support/Center/p/S36497.aspx">another one here</a>.</p>
+
+<p>Another solution would be if Amazon provided a new option to handle a server termination in a less brutal fashion. That is, stop routing new users to the surplus server but continue to server existing users until their sessions have all terminated. This approach is discussed in <a href="https://forums.aws.amazon.com/thread.jspa?threadID=61278">this AWS forum thread</a>.</p>
+
+<h2>Conclusions</h2>
+
+<p>The load balancing features of AWS work fine with XAF applications, but the benefits of autoscaling are lost because there is currently no effective method of removing capacity without knocking out existing sessions.</p>
+
+<h2>What next</h2>
+
+<p>In a future series, I will demonstrate how to load test XAF applications cheaply and effectively by making use of Amazon Web Services. Stay tuned.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 4]]></title>
@@ -353,90 +416,6 @@ You can leave the account number blank.</p>
 <h2>Next up</h2>
 
 <p>In the <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">next post</a> I explain how to publish the MainDemo application itself to an EC2 instance in the Amazon cloud.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[A look at the DevExpress MainDemo with Google Page Speed]]></title>
-    <link href="http://blog.zerosharp.com/a-look-at-the-devexpress-maindemo-with-google-page-speed/"/>
-    <updated>2012-09-12T17:22:00+01:00</updated>
-    <id>http://blog.zerosharp.com/a-look-at-the-devexpress-maindemo-with-google-page-speed</id>
-    <content type="html"><![CDATA[<p>In this post I'll demonstrate how to use the <a href="https://developers.google.com/speed/pagespeed/">Google Page Speed</a> tools to analyse the performance of the DevExpress XAF MainDemo.</p>
-
-<p>The easiest way to run Google Page Speed is as a Chrome or Firefox plugin. Both are available <a href="https://developers.google.com/speed/pagespeed/insights_extensions">here</a>. I use Chrome.</p>
-
-<p>Now open the DevExpress MainDemo from Visual Studio. By default it is installed to:</p>
-
-<pre><code>C:\Users\Public\Documents\DXperience 12.1 Demos\eXpressApp Framework\MainDemo\CS\MainDemo.sln
-</code></pre>
-
-<p>Set the MainDemo.Web as the startup project and change the connection string in web.config if necessary. Launch the application with Chrome and login as 'Sam' (password is blank). Then press <code>F12</code> to bring up the developer tools. The last tab is the Page Speed Analysis and your browser should look like this:</p>
-
-<p><img src="/images/blog/google-page-speed-001.png"></p>
-
-<p>Now click <code>Start Analysis</code> button. After a few seconds you should get something like the following results.</p>
-
-<h4>Results against the debug webserver</h4>
-
-<p><img src="/images/blog/google-page-speed-002.png"></p>
-
-<p>It's as easy as that. We now have a list of suggested improvements. The same report can be generated for any page you visit with your browser.</p>
-
-<p>I get an overall score of 72 out of 100. First thing to note is that the only 'high priority' recommendation is to 'enable keep-alive' which I suspect will not be necessary when running in IIS instead of the debug webserver.</p>
-
-<h4>Switch to use IIS</h4>
-
-<p>Actually to get the main demo to run in IIS is not altogether simple because of the security permissions required for logging in and creating or updating the schema. If you get an error message after login:</p>
-
-<pre><code>Login failed for user 'IIS APPPOOL\DefaultAppPool
-</code></pre>
-
-<p>you will need to add the IIS application pool identity to the SQL Server security.</p>
-
-<ul>
-<li>Launch SQL Server management studio and connect to the database.</li>
-<li>In the <code>Security\Logins</code> right click and select <code>New Login...</code>.</li>
-<li>Type in <code>IIS APPPOOL\DefaultAppPool</code> (you won't find it by searching) or <code>IIS APPPOOL\ASP.NET v4.0</code> depending on the security context of the application pool you are using.</li>
-<li>Select <code>Server Roles</code> and check <code>public</code> and <code>sysadmin</code> to allow the MainDemo to create the database.</li>
-</ul>
-
-
-<p>(All of this is assuming you are using a non-public instance of SQL Server for development.)</p>
-
-<h4>Results against IIS</h4>
-
-<p>The results are much better: an overall score of 93.</p>
-
-<p><img src="/images/blog/google-page-speed-003.png"></p>
-
-<h4>Other points of interest</h4>
-
-<p>Let's experiment by turning off compression in the webconfig.</p>
-
-<pre><code>&lt;compression 
-  enableHtmlCompression="false" 
-  enableCallbackCompression="false" 
-  enableResourceCompression="false" 
-  enableResourceMerging="false" /&gt;
-</code></pre>
-
-<p>The overall score drops to 62.</p>
-
-<p><img class="right" src="/images/blog/google-page-speed-004.png"></p>
-
-<p>You can alternatively use IIS's dynamic compression by setting <code>enableResourceMerging="true"</code> and the others false and adding a <code>urlCompression</code> setting as follows.</p>
-
-<pre><code>&lt;system.webServer&gt;
-  &lt;urlCompression doDynamicCompression="true" /&gt;
-  ...
-&lt;/system.webServer&gt; 
-</code></pre>
-
-<p>(Note that you may need to install the dynamic compression module via <strong>Control Panel/Programs/Turn Windows Features On or Off</strong>.)</p>
-
-<p>Then the analysis is back up to 93. The advantage of IIS dynamic compression in IIS 7 is that it turns itself off automatically when the CPU load is high. See <a href="http://www.codeproject.com/Articles/242133/Making-the-most-out-of-IIS-compression-Part-1-conf">Matt Perdeck's series of articles about IIS Compression</a> for more information.</p>
-
-<p>One mysterious point: if you navigate to the <a href="http://demos.devexpress.com/XAF/MainDemo/default.aspx">online version of the MainDemo</a> and run the analysis there you will notice that compression resource merging must be turned off for some reason and the overall score is only 75. Perhaps someone from DevExpress can explain...</p>
 ]]></content>
   </entry>
   

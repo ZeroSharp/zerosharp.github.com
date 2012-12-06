@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2012-11-05T14:16:52+00:00</updated>
+  <updated>2012-12-06T11:04:11+00:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,69 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 5]]></title>
+    <link href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/"/>
+    <updated>2012-12-05T11:03:00+00:00</updated>
+    <id>http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing</id>
+    <content type="html"><![CDATA[<h2>Part 5: Load balancing</h2>
+
+<p>This is the final post in this 5 part series about deploying XAF to the Amazon cloud. The other parts are:</p>
+
+<ul>
+<li><a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1 - Creating a database in RDS</a></li>
+<li><a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2 - Deploying to ElasticBeanstalk</a></li>
+<li><a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3 - Troubleshooting</a></li>
+<li><a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
+</ul>
+
+
+<p>This part covers load balancing and autoscaling.</p>
+
+<h3>Load balancing</h3>
+
+<p>In order to enable load balancing with DevExpress XAF applications, you must activate client affinity (sticky sessions) which you can do in the <strong>Load Balancer tab</strong>.</p>
+
+<p><img src="http://blog.zerosharp.com/images/blog/aws/aws-autoscaling-2.jpg" title="'figure 19'" ></p>
+
+<p>This is because XAF relies http session variables (notably the <code>WebApplication</code>). With sticky sessions enabled, when a user first hits the Elastic Load Balancer, they are assigned a random server but all subsequent requests are routed to the same server instance.</p>
+
+<h2>Autoscaling</h2>
+
+<h3>Adding Capacity (Works)</h3>
+
+<p>Switch to the <strong>Auto Scaling</strong> tab of the Elastic Beanstalk instance.</p>
+
+<p><img src="http://blog.zerosharp.com/images/blog/aws/aws-autoscaling-1.jpg" title="'figure 19'" ></p>
+
+<p>The options for autoscaling are extensive and there is plenty information on the <a href="http://aws.amazon.com/autoscaling">Amazon website</a>. In the above screenshot we have the Elastic Load Balancer configured so that it will initially deploy 1 server (the Minimum Instance Count), but whenever the NetworkOut measurement of 600,000 bytes over a 5 minute interval, a new server launch is triggered up to a maximum of 4 servers. Adding capacity works fine with XAF applications.</p>
+
+<h3>Removing Capacity (Fails)</h3>
+
+<p>The configuration above also shows that if the NetworkOut drops to below 200,000 bytes over a period of 5 minutes then the number of servers should decrease. <strong>This will NOT work</strong>.</p>
+
+<p>The problem is that the Elastic Load Balancer will terminate the surplus server immediately (the equivalent of a <code>shutdown -s</code>). Any users connected to that server will immediately lose their session and will probably receive an ugly error.</p>
+
+<p>One workaround is to allow scaling out but to disable scaling in. To do this, set the &#8216;Lower Threshold&#8217; to zero.</p>
+
+<h3>Possible Improvements</h3>
+
+<p>There are a couple of potential longer term solutions to the problem of dropped sessions when scaling in.</p>
+
+<p>DevExpress could make the classes they use in the session variables serializable (e.g., <code>WebApplication</code>). When this is the case, the application can be configured to store the session variables to a persistent data store (SQL Server for instance) instead of in the session and then we could configure autoscaling to work correctly. There is <a href="http://www.devexpress.com/Support/Center/Question/Details/Q426045">an item in the Support Center in this regard</a> and <a href="http://www.devexpress.com/Support/Center/p/S36497.aspx">another one here</a>.</p>
+
+<p>Another solution would be if Amazon provided a new option to handle a server termination in a less brutal fashion. That is, stop routing new users to the surplus server but continue to server existing users until their sessions have all terminated. This approach is discussed in <a href="https://forums.aws.amazon.com/thread.jspa?threadID=61278">this AWS forum thread</a>.</p>
+
+<h2>Conclusions</h2>
+
+<p>The load balancing features of AWS work fine with XAF applications, but the benefits of autoscaling are lost because there is currently no effective method of removing capacity without knocking out existing sessions.</p>
+
+<h2>What next</h2>
+
+<p>In a future series, I will demonstrate how to load test XAF applications cheaply and effectively by making use of Amazon Web Services. Stay tuned.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 4]]></title>
@@ -1282,155 +1345,6 @@ This post is part of an ongoing series about robots, past and present.  See <a h
 
 
 <p>The <a href="http://www.darpa.mil/NewsEvents/Releases/2012/02/07.aspx">DARPA website</a> says it can <strong>track a specific individual</strong>, so watch your back!</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Octopress on Windows and GitHub]]></title>
-    <link href="http://blog.zerosharp.com/setting-up-octopress-on-windows/"/>
-    <updated>2012-04-06T17:11:00+01:00</updated>
-    <id>http://blog.zerosharp.com/setting-up-octopress-on-windows</id>
-    <content type="html"><![CDATA[<p>This is quick guide to setting up <a href="http://octopress.org/">Octopress</a> on a Windows 7 machine to publish to GitHub pages.</p>
-
-<h3>Get with GitHub</h3>
-
-<p>First, get an account on GitHub and follow the excellent instructions for Windows here.  <a href="http://help.github.com/win-set-up-git/">here</a>.</p>
-
-<p>Once you are set up with GitHub, get <a href="https://github.com/scottmuc/yari">yari</a> by opening a command prompt:</p>
-
-<p>Then create a directory for all your github projects.  You could put this anywhere, e.g., <code>%USERPROFILE%\github</code>.  I chose to create a directory <code>C:\projects\github\</code>.</p>
-
-<h3>Installing Octopress</h3>
-
-<p><img class="right" src="http://blog.zerosharp.com/images/blog/octopress_logo.png"></p>
-
-<h4>Use yari instead of RVM/rbenv</h4>
-
-<p>Scott Muc has written <a href="https://github.com/scottmuc/yari">yari</a> which lets you switch between Windows Ruby versions.  Get it with the following command.</p>
-
-<pre><code>cd C:\projects\github\
-git clone git://github.com/scottmuc/yari.git yari
-</code></pre>
-
-<p>Once this has completed you can setup the required Ruby environment with the command:</p>
-
-<pre><code>yari 1.9.2
-</code></pre>
-
-<p>Then follow the rest of the instructions from <a href="http://octopress.org/docs/setup/">the Octopress setup instructions</a>.</p>
-
-<pre><code>git clone git://github.com/imathis/octopress.git octopress
-cd octopress
-ruby --version  # Should report Ruby 1.9.2 thanks to yari
-</code></pre>
-
-<p>Next install dependencies</p>
-
-<pre><code>gem install bundler
-bundle install
-</code></pre>
-
-<p>Install the default Octopress theme.</p>
-
-<pre><code>rake install
-</code></pre>
-
-<h3>Deploying to GitHub</h3>
-
-<p>The instructions are <a href="http://octopress.org/docs/deploying/github/">here</a>.  The only difficulty I had was working out which URL to use after:</p>
-
-<pre><code>rake setup_github_pages
-</code></pre>
-
-<p>This will ask you for your Github Pages repository url, but it is not clear that this is the SSH one, e.g., <code>git@github.com:ZeroSharp/zerosharp.github.com.git</code>.  You can find it near the top of <a href="https://github.com/ZeroSharp/zerosharp.github.com">the repository page</a>.</p>
-
-<h3>Configuring your blog</h3>
-
-<p>Follow the instructions <a href="http://octopress.org/docs/configuring/">here</a> to configure your blog.</p>
-
-<h4>Markdown</h4>
-
-<p>It is quite difficult to find good help on the markdown syntax other than for the codeblocks section.  For instance, it is not clear how to generate a codeblock with no line numbers, like this one:</p>
-
-<pre><code>How do I output a codeblock with no line numbers?
-</code></pre>
-
-<p>It turns out it either requires a <code>&lt;pre&gt;</code> tag instead of a <code>{ codeblock }</code> tag, or alternatively, start the line with four spaces.  The official syntax is <a href="http://daringfireball.net/projects/markdown/syntax">here</a>, but I also found <a href="http://warpedvisions.org/projects/markdown-cheat-sheet/">this cheat sheet</a>.</p>
-
-<h4>Fonts and Styles</h4>
-
-<p>See <a href="http://blog.bigdinosaur.org/changing-octopresss-header/">Lee&#8217;s Bigdinosaur blog</a>.</p>
-
-<h4>Problem with CodeBlocks</h4>
-
-<p>I had a problem with codeblocks which seems to be specific to Windows.  It seems that whenever you include a <code>lang</code> parameter in a <code>codeblock</code>, you get:</p>
-
-<pre><code>Liquid error: No such file or directory - python2.7 -c “import sys; print sys.executable”
-</code></pre>
-
-<p>There are two issues:</p>
-
-<ul>
-<li>Syntax highlighting requires Python which is not automatically installed.</li>
-<li>There is a problem with pythonexec.rb which does not seem to support Windows Python installations very well.</li>
-</ul>
-
-
-<p>Luckily we can fix them both.  Install <a href="http://www.python.org/getit/releases/2.7.2/">Python 2.7.2</a>.  Actually I used <a href="http://ninite.com/">ninite.com</a> to install it.</p>
-
-<p>Then modify the pythonrubyexec.rb which is in the depths of the yari subdirectory.  Try here: <code>.\yari\ruby-1.9.2-p290-i386-mingw32\lib\ruby\gems\1.9.1\gems\rubypython-0.5.1\lib\rubypython\pythonexec.rb</code></p>
-
-<p>At the top of pythonexec.rb, modify the file as follows:</p>
-
-<figure class='code'><figcaption><span>pythonexec.rb </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='rb'><span class='line'><span class="k">class</span> <span class="nc">RubyPython</span><span class="o">::</span><span class="no">PythonExec</span>
-</span><span class='line'>  <span class="c1"># Based on the name of or path to the \Python executable provided, will</span>
-</span><span class='line'>  <span class="c1"># determine:</span>
-</span><span class='line'>  <span class="c1">#</span>
-</span><span class='line'>  <span class="c1"># * The full path to the \Python executable.</span>
-</span><span class='line'>  <span class="c1"># * The version of \Python being run.</span>
-</span><span class='line'>  <span class="c1"># * The system prefix.</span>
-</span><span class='line'>  <span class="c1"># * The main loadable \Python library for this version.</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">python_executable</span><span class="p">)</span>
-</span><span class='line'>    <span class="vi">@python</span> <span class="o">=</span> <span class="n">python_executable</span> <span class="o">||</span> <span class="s2">&quot;python&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">+</span>    <span class="c1"># &lt;zerosharp+&gt; Start of modification</span>
-</span><span class='line'><span class="o">+</span>    <span class="k">if</span> <span class="p">(</span><span class="vi">@python</span><span class="o">.</span><span class="n">include?</span> <span class="s1">&#39;python2.7&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="o">+</span>      <span class="vi">@python</span> <span class="o">=</span> <span class="s2">&quot;python&quot;</span>
-</span><span class='line'><span class="o">+</span>    <span class="k">end</span>
-</span><span class='line'><span class="o">+</span>    <span class="c1"># &lt;zerosharp+&gt; End of modification</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="vi">@python</span> <span class="o">=</span> <span class="sx">%x(</span><span class="si">#{</span><span class="vi">@python</span><span class="si">}</span><span class="sx"> -c &quot;import sys; print sys.executable&quot;)</span><span class="o">.</span><span class="n">chomp</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>References</h4>
-
-<ul>
-<li><a href="http://blog.bigdinosaur.org/changing-octopresss-header/">Lee&#8217;s Bigdinosaur blog</a> helped with fonts and colours.</li>
-<li><a href="http://translate.googleusercontent.com/translate_c?hl=en&amp;ie=UTF8&amp;prev=_t&amp;rurl=translate.google.com&amp;sl=zh-CN&amp;tl=en&amp;twu=1&amp;u=http://blog.yesmryang.net/windows-octopress-python/&amp;usg=ALkJrhhFZMKpT5j6_L8NXOL1S9H9CGjHNw">This blog post</a> (translated from the Chinese via Google Translate) helped me solve the codeblock problem.</li>
-<li><a href="https://github.com/imathis/octopress/issues/262">This issue</a> and <a href="https://github.com/github/gollum/issues/225">this issue</a> also helped.</li>
-<li>Markdown <a href="http://daringfireball.net/projects/markdown/syntax">syntax</a> and <a href="http://warpedvisions.org/projects/markdown-cheat-sheet/">cheat sheet</a></li>
-</ul>
-
 ]]></content>
   </entry>
   

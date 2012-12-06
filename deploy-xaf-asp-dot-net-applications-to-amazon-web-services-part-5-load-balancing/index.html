@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Deploy XAF ASP.NET Applications to Amazon Web Services: Part 4 - ZeroSharp</title>
+  <title>Deploy XAF ASP.NET Applications to Amazon Web Services: Part 5 - ZeroSharp</title>
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="A tutorial for publishing the DevExpress expressAppFramework MainDemo to Amazon Web Services. This part discusses incremental deployment to the &hellip;">
+  <meta name="description" content="A tutorial for publishing the DevExpress expressAppFramework MainDemo to Amazon Web Services. This part covers load balancing.">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">
+  <link rel="canonical" href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -117,7 +117,7 @@
   
   <header>
     
-      <h1 class="entry-title">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 4</h1>
+      <h1 class="entry-title">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 5</h1>
     
     
       <p class="meta">
@@ -133,7 +133,7 @@
   
 
 
-<time datetime="2012-11-05T14:16:00+00:00" pubdate data-updated="true">Nov 5<span>th</span>, 2012</time>
+<time datetime="2012-12-05T11:03:00+00:00" pubdate data-updated="true">Dec 5<span>th</span>, 2012</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -142,41 +142,61 @@
   </header>
 
 
-<div class="entry-content"><h2>Part 4: Incremental Deployment</h2>
+<div class="entry-content"><h2>Part 5: Load balancing</h2>
 
-<p>This is the fourth post in a series about deploying ASP.NET applications to the Amazon cloud. In the first three posts covered deploying the XAF ASP.NET MainDemo to the Amazon cloud (<a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1</a>, <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2</a>, <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3</a>).</p>
+<p>This is the final post in this 5 part series about deploying XAF to the Amazon cloud. The other parts are:</p>
 
-<p>When we deployed to the Elastic Beanstalk in <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2</a>, we chose <em>not</em> to enable incremental deployment.</p>
+<ul>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1 - Creating a database in RDS</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2 - Deploying to ElasticBeanstalk</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3 - Troubleshooting</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
+</ul>
 
-<p><img src="/images/blog/aws/launch-aws-beanstalk-2.jpg" title="'figure 11'" ></p>
 
-<p>I want to explain this decision further.</p>
+<p>This part covers load balancing and autoscaling.</p>
 
-<p>If you choose not to deploy incrementally your deployment will take longer because the entire web deployment package needs to be uploaded every time you re-publish which takes about 4-5 minutes on my connection. The incremental deployment option creates a git repository in the target environment so that only the modified files are re-deployed. If you are frequently making changes and redploying, you can save considerable time. A re-deployment takes only a few seconds.</p>
+<h3>Load balancing</h3>
 
-<p>However, if you try to deploy from the default MainDemo location with incremental deployment enabled, you will probably get the following error</p>
+<p>In order to enable load balancing with DevExpress XAF applications, you must activate client affinity (sticky sessions) which you can do in the <strong>Load Balancer tab</strong>.</p>
 
-<pre><code>Commencing deployment for project MainDemo.Web
-...building deployment package obj\Release\Package\Archive...
-...deployment package created at C:\Users\Public\Documents\DXperience 12.1 Demos\eXpressApp Framework\MainDemo\CS\MainDemo.Web\obj\Release\Package\Archive
-...build of project archive completed succesfully
-...starting deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo'
-...starting incremental deployment to environment 'zerosharp-maindemo'
-Deployment to AWS Elastic Beanstalk failed with exception: Exception caught during execution of add command,
-Inner Exception Message: The specified path, file name, or both are too long. The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters.
-...
-Deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo' did not complete successfully
-</code></pre>
+<p><img src="/images/blog/aws/aws-autoscaling-2.jpg" title="'figure 19'" ></p>
 
-<p>The problem is with the NGit libraries that the AWS Toolkit uses. Presumably a fix will emerge, but the simplest workaround is to move the application to a shorter path. Then you can enable incremental deployment when you publish:</p>
+<p>This is because XAF relies http session variables (notably the <code>WebApplication</code>). With sticky sessions enabled, when a user first hits the Elastic Load Balancer, they are assigned a random server but all subsequent requests are routed to the same server instance.</p>
 
-<p><img src="/images/blog/aws/launch-aws-beanstalk-incremental-2.jpg" title="'figure 21'" ></p>
+<h2>Autoscaling</h2>
 
-<p>Note that you can toggle incremental deployment whenever you publish, so you&#8217;re not locked in either way.</p>
+<h3>Adding Capacity (Works)</h3>
 
-<h2>Next up</h2>
+<p>Switch to the <strong>Auto Scaling</strong> tab of the Elastic Beanstalk instance.</p>
 
-<p>In the next post we will enable load balancing (which is easy) and discuss the problems with autoscaling XAF applications (which is not).</p>
+<p><img src="/images/blog/aws/aws-autoscaling-1.jpg" title="'figure 19'" ></p>
+
+<p>The options for autoscaling are extensive and there is plenty information on the <a href="http://aws.amazon.com/autoscaling">Amazon website</a>. In the above screenshot we have the Elastic Load Balancer configured so that it will initially deploy 1 server (the Minimum Instance Count), but whenever the NetworkOut measurement of 600,000 bytes over a 5 minute interval, a new server launch is triggered up to a maximum of 4 servers. Adding capacity works fine with XAF applications.</p>
+
+<h3>Removing Capacity (Fails)</h3>
+
+<p>The configuration above also shows that if the NetworkOut drops to below 200,000 bytes over a period of 5 minutes then the number of servers should decrease. <strong>This will NOT work</strong>.</p>
+
+<p>The problem is that the Elastic Load Balancer will terminate the surplus server immediately (the equivalent of a <code>shutdown -s</code>). Any users connected to that server will immediately lose their session and will probably receive an ugly error.</p>
+
+<p>One workaround is to allow scaling out but to disable scaling in. To do this, set the &#8216;Lower Threshold&#8217; to zero.</p>
+
+<h3>Possible Improvements</h3>
+
+<p>There are a couple of potential longer term solutions to the problem of dropped sessions when scaling in.</p>
+
+<p>DevExpress could make the classes they use in the session variables serializable (e.g., <code>WebApplication</code>). When this is the case, the application can be configured to store the session variables to a persistent data store (SQL Server for instance) instead of in the session and then we could configure autoscaling to work correctly. There is <a href="http://www.devexpress.com/Support/Center/Question/Details/Q426045">an item in the Support Center in this regard</a> and <a href="http://www.devexpress.com/Support/Center/p/S36497.aspx">another one here</a>.</p>
+
+<p>Another solution would be if Amazon provided a new option to handle a server termination in a less brutal fashion. That is, stop routing new users to the surplus server but continue to server existing users until their sessions have all terminated. This approach is discussed in <a href="https://forums.aws.amazon.com/thread.jspa?threadID=61278">this AWS forum thread</a>.</p>
+
+<h2>Conclusions</h2>
+
+<p>The load balancing features of AWS work fine with XAF applications, but the benefits of autoscaling are lost because there is currently no effective method of removing capacity without knocking out existing sessions.</p>
+
+<h2>What next</h2>
+
+<p>In a future series, I will demonstrate how to load test XAF applications cheaply and effectively by making use of Amazon Web Services. Stay tuned.</p>
 </div>
 
 
@@ -199,7 +219,7 @@ Deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo' did not com
   
 
 
-<time datetime="2012-11-05T14:16:00+00:00" pubdate data-updated="true">Nov 5<span>th</span>, 2012</time>
+<time datetime="2012-12-05T11:03:00+00:00" pubdate data-updated="true">Dec 5<span>th</span>, 2012</time>
       
 
 <span class="categories">
@@ -213,7 +233,7 @@ Deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo' did not com
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/" data-via="8ctopus" data-counturl="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/" data-via="8ctopus" data-counturl="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -224,10 +244,8 @@ Deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo' did not com
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/" title="Previous Post: Deploy XAF ASP.NET Applications to Amazon Web Services: Part 3">&laquo; Deploy XAF ASP.NET Applications to Amazon Web Services: Part 3</a>
+        <a class="basic-alignment left" href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/" title="Previous Post: Deploy XAF ASP.NET Applications to Amazon Web Services: Part 4">&laquo; Deploy XAF ASP.NET Applications to Amazon Web Services: Part 4</a>
       
-      
-        <a class="basic-alignment right" href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/" title="Next Post: Deploy XAF ASP.NET Applications to Amazon Web Services: Part 5">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 5 &raquo;</a>
       
     </p>
   </footer>
@@ -263,8 +281,8 @@ Deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo' did not com
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/';
-        var disqus_url = 'http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/';
+        var disqus_identifier = 'http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/';
+        var disqus_url = 'http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/';
         var disqus_script = 'embed.js';
       
     (function () {
