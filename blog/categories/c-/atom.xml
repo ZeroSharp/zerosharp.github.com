@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c# | ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/blog/categories/c-/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2012-12-06T11:04:11+00:00</updated>
+  <updated>2013-01-04T13:12:25+00:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,38 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[How I went from C# Developer to iPhone Developer in a Weekend]]></title>
+    <link href="http://blog.zerosharp.com/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend/"/>
+    <updated>2013-01-04T10:35:00+00:00</updated>
+    <id>http://blog.zerosharp.com/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend</id>
+    <content type="html"><![CDATA[<p>Recently I took part in <a href="http://buenosaires.startupweekend.org/">Startup Weekend Buenos Aires</a>. It works just like most hackathons:</p>
+
+<p><a href="http://buenosaires.startupweekend.org/2012/11/12/ganadores-swba2012/"><span class='caption-wrapper right'><img class='caption' src='/images/blog/basw/BABingo-2puesto-SWBA2012.jpg' width='' height='' alt='New friends: Caro, Eze, Gus and me' title='New friends: Caro, Eze, Gus and me'><span class='caption-text'>New friends: Caro, Eze, Gus and me</span></span></a></p>
+
+<ul>
+<li>You give a one minute pitch on Friday evening.</li>
+<li>Winners put together a team.</li>
+<li>You work with your team on Saturday and Sunday to launch a product.</li>
+<li>Demo for the judges.</li>
+<li>Prizes. Beer. Sleep.</li>
+</ul>
+
+
+<p>On the Friday I spoke no Spanish and had no idea how to write an iPhone app. By Sunday I still spoke no Spanish, but <strong>I'd built my first app and it won second prize!</strong></p>
+
+<p>How did I learn Objective-C in a weekend? I didn't. I wrote it in C#.</p>
+
+<p><span class='pullquote-right' data-pullquote='Monotouch makes mobile development really easy for C# programmers.'>
+I downloaded <a href="http://xamarin.com/monotouch">Xamarin MonoTouch</a> onto my <a href="the-best-pc-laptop-is-a-mac">MacBook Pro</a> and was following the 'Hello World' tutorial within an hour. The MonoTouch <a href="http://docs.xamarin.com/iOS/Guides">documentation</a> is very clear and the <a href="http://docs2.xamarin.com/ios/samples">samples</a> are very useful. Very soon I had a multiple screen application built, including capturing an image from the camera.</p>
+
+<p>Monotouch makes mobile development really easy for C# programmers. It's also cross-platform so you can re-use big chunks of your code when you write the Android version.</p>
+
+<p>Check out <a href="http://blog.xamarin.com/eight-reasons-c-sharp-is-the-best-language-for-mobile-development/">this recent blog post from the guys at Xamarin</a>.
+</span></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 5]]></title>
@@ -115,7 +147,7 @@ Deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo' did not com
 
 <h2>Next up</h2>
 
-<p>In the next post we will enable load balancing (which is easy) and discuss the problems with autoscaling XAF applications (which is not).</p>
+<p>In the <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">next post</a> we will enable load balancing (which is easy) and discuss the problems with autoscaling XAF applications (which is not).</p>
 ]]></content>
   </entry>
   
@@ -226,7 +258,13 @@ Deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo' did not com
 
 <h2>Next up</h2>
 
-<p>The next post will cover incremental deployment options.</p>
+<p>The <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">next post</a> will cover incremental deployment options.</p>
+
+<ul>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Part 5 - Load balancing</a></li>
+</ul>
+
 ]]></content>
   </entry>
   
@@ -322,9 +360,9 @@ Amazon Elastic Beanstalk provides automatic capacity provisioning, load balancin
 <p>In the next posts we will look some additional details:</p>
 
 <ul>
-<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3</a>: Connecting to an EC2 instance via Remote Desktop (helpful for troubleshooting)</li>
-<li>Part 4: Incremental deployment</li>
-<li>Part 5: Sticky sessions and load balancing</li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3 - Troubleshooting</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Part 5 - Load balancing</a></li>
 </ul>
 
 
@@ -335,87 +373,6 @@ Amazon Elastic Beanstalk provides automatic capacity provisioning, load balancin
 <li>Nathanial Woolls has written an excellent similar article on hosting <a href="http://nwoolls.wordpress.com/2012/09/20/hosting-xaf-asp-net-projects-using-azure-web-sites/">XAF ASP.NET applications on Azure</a>.</li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 1]]></title>
-    <link href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/"/>
-    <updated>2012-10-23T12:52:00+01:00</updated>
-    <id>http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud</id>
-    <content type="html"><![CDATA[<h1>Part 1: Putting the Database in the Cloud</h1>
-
-<p>This is the first part of a tutorial for installing the DevExpress MainDemo.Web to Amazon Web Services, but the same principles apply to any ASP.NET web application.</p>
-
-<p>This part covers creating an Amazon RDS instance running SQL Server Express and connecting a (locally running) MainDemo to it.</p>
-
-<p>At the time of writing the DevExpress version is 12.1.7.</p>
-
-<h2>Amazon Web Services</h2>
-
-<p>If you have not already done so, you will need to sign up with <a href="http://aws.amazon.com/">Amazon Web Services</a>. There are costs associated with AWS, but the tutorial only uses very small cheap instances which cost as little as 2 cents per hour to run. Also, new customers get a load of hours for free as part of the <a href="http://aws.amazon.com/free/">AWS Free Usage Tier</a>. See the <a href="http://aws.amazon.com/ec2/pricing/">AWS pricing</a> for more information. Don't forget to terminate your instances when you have finished.</p>
-
-<h2>AWS Toolkit</h2>
-
-<p>Amazon have made it all easy by providing a Visual Studio add-in.</p>
-
-<p>Install the <a href="http://aws.amazon.com/visualstudio/">AWS Toolkit for Microsoft Visual Studio</a>. If you haven't used it before, then when you start a wizard it will ask you for your AWS fcredentials.</p>
-
-<p><img src="/images/blog/aws/publish-to-aws-1.jpg" title="'figure 1'" ></p>
-
-<p>The <strong>Display Name</strong> is the a name you give to the AWS account you are using. I set mine to <em>zerosharp</em>. This is helpful when you have multiple AWS accounts. The <strong>Access Key</strong> and the <strong>Secret Key</strong> are both available on the <a href="https://aws.amazon.com/security-credentials">security credentials page</a> - you will have to click <strong>Show</strong> in order to display the secret key.
-You can leave the account number blank.</p>
-
-<h2>The database</h2>
-
-<p>Now let's provision a new SQL Server Express database.</p>
-
-<p>In Visual Studio, open the AWS Explorer (<code>Ctrl+K,A</code> or in the <em>View</em> menu). You probably want to select a region near your physical location. I chose <em>EU West (Ireland)</em>. Right-click on 'Amazon RDS' and select 'Launch Instance'.</p>
-
-<p><img src="/images/blog/aws/aws-explorer-1.jpg" title="&#34;figure 2&#34;" alt="&#34;figure 2&#34;"></p>
-
-<p>At the following screen, select <strong>SQL Server Express</strong>. Note that we could just as easily provision the Standard or Enterprise editions as well as a host of other database options.</p>
-
-<p><img src="/images/blog/aws/launch-aws-rds-1.jpg" title="&#34;figure 3&#34;" alt="&#34;figure 3&#34;"></p>
-
-<p>Configure the settings for the connection. Choose an instance class of <strong>Micro</strong> which is fine for our needs. Note the <em>Master User Name</em> and the <em>Master User Password</em> will be needed when we modify the MainDemo's connection string.</p>
-
-<p><img src="/images/blog/aws/launch-aws-rds-2.jpg" title="&#34;figure 4&#34;" alt="&#34;figure 4&#34;"></p>
-
-<p>In this screen we configure settings for the port and security. In order to connect from our local MainDemo, you need to add the permission for the your CIDR route which will let you connect to the database from your local machine. It's easy to add it to the default group later (via DB Security Groups).</p>
-
-<p><img src="/images/blog/aws/launch-aws-rds-3.jpg" title="&#34;figure 5&#34;" alt="&#34;figure 5&#34;"></p>
-
-<p>Set the backup options to 'No backups'. Nice to have the option though.</p>
-
-<p><img src="/images/blog/aws/launch-aws-rds-4.jpg" title="&#34;figure 6&#34;" alt="&#34;figure 6&#34;"></p>
-
-<p>Review the options and click 'Launch'.</p>
-
-<p><img src="/images/blog/aws/launch-aws-rds-5.jpg" title="&#34;figure 7&#34;" alt="&#34;figure 7&#34;"></p>
-
-<p>The database instance will be available after a few minutes. You have to be patient here - there is not much feedback, just the yellow <em>creating</em> status. You can press 'Refresh' once in a while, but it's likely to take up to 15 minutes. Eventually you should see a green <em>created</em> status.</p>
-
-<h2>Modify the MainDemo connection string</h2>
-
-<p>Open the MainDemo in Visual Studio.  Open the web.config file and set the connection string to point to your Amazon RDS instance.</p>
-
-<p>The 'User ID' and 'Password' should be the same as the ones you entered above. The address is available from the Visual Studio Properties window as 'Endpoint' when you select the DB Instance in the AWS Explorer.</p>
-
-<p><img src="/images/blog/aws/aws-properties-1.jpg" title="&#34;figure 8&#34;" alt="&#34;figure 8&#34;"></p>
-
-<p>My connection string looks like this:</p>
-
-<pre><code>&lt;add name="ConnectionString" connectionString="User ID=zerosharp;Password=password;Pooling=false;Data Source=maindemo.c5uchpz3rigs.eu-west-1.rds.amazonaws.com;Initial Catalog=MainDemo_v12.1"/&gt;    
-</code></pre>
-
-<h2>Run the MainDemo locally</h2>
-
-<p>Now run the MainDemo locally. When you get to the login page, login as Sam (no password).  At this point, the MainDemo will connect to the Amazon RDS instance using the connection string we specified above and create the database (which takes at least 30 seconds on my machine). Afterwards the MainDemo will function as normal.</p>
-
-<h2>Next up</h2>
-
-<p>In the <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">next post</a> I explain how to publish the MainDemo application itself to an EC2 instance in the Amazon cloud.</p>
 ]]></content>
   </entry>
   

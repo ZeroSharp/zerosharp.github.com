@@ -74,31 +74,37 @@
         <loc>
             http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/
         </loc>
-        <lastmod>2012-10-31T15:01:06+00:00</lastmod>
+        <lastmod>2013-01-03T16:47:15+00:00</lastmod>
     </url>
     <url>
         <loc>
             http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/
         </loc>
-        <lastmod>2012-11-03T12:45:51+00:00</lastmod>
+        <lastmod>2013-01-03T16:50:27+00:00</lastmod>
     </url>
     <url>
         <loc>
             http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/
         </loc>
-        <lastmod>2012-11-03T12:52:30+00:00</lastmod>
+        <lastmod>2013-01-03T16:57:54+00:00</lastmod>
     </url>
     <url>
         <loc>
             http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/
         </loc>
-        <lastmod>2012-11-05T14:16:25+00:00</lastmod>
+        <lastmod>2013-01-03T16:50:17+00:00</lastmod>
     </url>
     <url>
         <loc>
             http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/
         </loc>
         <lastmod>2012-12-06T11:03:53+00:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://blog.zerosharp.com/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend/
+        </loc>
+        <lastmod>2013-01-04T13:11:44+00:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/about/</loc>
@@ -114,11 +120,11 @@
     </url>
     <url>
         <loc>http://blog.zerosharp.com/blog/archives/</loc>
-        <lastmod>2012-12-06T11:03:53+00:00</lastmod>
+        <lastmod>2013-01-04T13:11:44+00:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/</loc>
-        <lastmod>2012-12-06T11:03:53+00:00</lastmod>
+        <lastmod>2013-01-04T13:11:44+00:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/license/</loc>

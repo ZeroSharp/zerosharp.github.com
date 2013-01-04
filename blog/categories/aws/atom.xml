@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2012-12-06T11:04:11+00:00</updated>
+  <updated>2013-01-04T13:12:25+00:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -115,7 +115,7 @@ Deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo' did not com
 
 <h2>Next up</h2>
 
-<p>In the next post we will enable load balancing (which is easy) and discuss the problems with autoscaling XAF applications (which is not).</p>
+<p>In the <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">next post</a> we will enable load balancing (which is easy) and discuss the problems with autoscaling XAF applications (which is not).</p>
 ]]></content>
   </entry>
   
@@ -226,7 +226,13 @@ Deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo' did not com
 
 <h2>Next up</h2>
 
-<p>The next post will cover incremental deployment options.</p>
+<p>The <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">next post</a> will cover incremental deployment options.</p>
+
+<ul>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Part 5 - Load balancing</a></li>
+</ul>
+
 ]]></content>
   </entry>
   
@@ -322,9 +328,9 @@ Amazon Elastic Beanstalk provides automatic capacity provisioning, load balancin
 <p>In the next posts we will look some additional details:</p>
 
 <ul>
-<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3</a>: Connecting to an EC2 instance via Remote Desktop (helpful for troubleshooting)</li>
-<li>Part 4: Incremental deployment</li>
-<li>Part 5: Sticky sessions and load balancing</li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3 - Troubleshooting</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Part 5 - Load balancing</a></li>
 </ul>
 
 
@@ -416,6 +422,14 @@ You can leave the account number blank.</p>
 <h2>Next up</h2>
 
 <p>In the <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">next post</a> I explain how to publish the MainDemo application itself to an EC2 instance in the Amazon cloud.</p>
+
+<ul>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2 - Deploying to ElasticBeanstalk</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3 - Troubleshooting</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Part 5 - Load balancing</a></li>
+</ul>
+
 ]]></content>
   </entry>
   

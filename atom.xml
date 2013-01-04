@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2012-12-06T11:04:11+00:00</updated>
+  <updated>2013-01-04T13:12:25+00:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,38 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[How I went from C# Developer to iPhone Developer in a Weekend]]></title>
+    <link href="http://blog.zerosharp.com/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend/"/>
+    <updated>2013-01-04T10:35:00+00:00</updated>
+    <id>http://blog.zerosharp.com/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend</id>
+    <content type="html"><![CDATA[<p>Recently I took part in <a href="http://buenosaires.startupweekend.org/">Startup Weekend Buenos Aires</a>. It works just like most hackathons:</p>
+
+<p><a href="http://buenosaires.startupweekend.org/2012/11/12/ganadores-swba2012/"><span class='caption-wrapper right'><img class='caption' src='http://blog.zerosharp.com/images/blog/basw/BABingo-2puesto-SWBA2012.jpg' width='' height='' alt='New friends: Caro, Eze, Gus and me' title='New friends: Caro, Eze, Gus and me'><span class='caption-text'>New friends: Caro, Eze, Gus and me</span></span></a></p>
+
+<ul>
+<li>You give a one minute pitch on Friday evening.</li>
+<li>Winners put together a team.</li>
+<li>You work with your team on Saturday and Sunday to launch a product.</li>
+<li>Demo for the judges.</li>
+<li>Prizes. Beer. Sleep.</li>
+</ul>
+
+
+<p>On the Friday I spoke no Spanish and had no idea how to write an iPhone app. By Sunday I still spoke no Spanish, but <strong>I&#8217;d built my first app and it won second prize!</strong></p>
+
+<p>How did I learn Objective-C in a weekend? I didn&#8217;t. I wrote it in C#.</p>
+
+<p><span class='pullquote-right' data-pullquote='Monotouch makes mobile development really easy for C# programmers.'>
+I downloaded <a href="http://xamarin.com/monotouch">Xamarin MonoTouch</a> onto my <a href="the-best-pc-laptop-is-a-mac">MacBook Pro</a> and was following the &#8216;Hello World&#8217; tutorial within an hour. The MonoTouch <a href="http://docs.xamarin.com/iOS/Guides">documentation</a> is very clear and the <a href="http://docs2.xamarin.com/ios/samples">samples</a> are very useful. Very soon I had a multiple screen application built, including capturing an image from the camera.</p>
+
+<p>Monotouch makes mobile development really easy for C# programmers. It&#8217;s also cross-platform so you can re-use big chunks of your code when you write the Android version.</p>
+
+<p>Check out <a href="http://blog.xamarin.com/eight-reasons-c-sharp-is-the-best-language-for-mobile-development/">this recent blog post from the guys at Xamarin</a>.
+</span></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 5]]></title>
@@ -115,7 +147,7 @@ Deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo' did not com
 
 <h2>Next up</h2>
 
-<p>In the next post we will enable load balancing (which is easy) and discuss the problems with autoscaling XAF applications (which is not).</p>
+<p>In the <a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">next post</a> we will enable load balancing (which is easy) and discuss the problems with autoscaling XAF applications (which is not).</p>
 ]]></content>
   </entry>
   
@@ -217,7 +249,13 @@ Deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo' did not com
 
 <h2>Next up</h2>
 
-<p>The next post will cover incremental deployment options.</p>
+<p>The <a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">next post</a> will cover incremental deployment options.</p>
+
+<ul>
+<li><a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
+<li><a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Part 5 - Load balancing</a></li>
+</ul>
+
 ]]></content>
   </entry>
   
@@ -313,9 +351,9 @@ Amazon Elastic Beanstalk provides automatic capacity provisioning, load balancin
 <p>In the next posts we will look some additional details:</p>
 
 <ul>
-<li><a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3</a>: Connecting to an EC2 instance via Remote Desktop (helpful for troubleshooting)</li>
-<li>Part 4: Incremental deployment</li>
-<li>Part 5: Sticky sessions and load balancing</li>
+<li><a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3 - Troubleshooting</a></li>
+<li><a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
+<li><a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Part 5 - Load balancing</a></li>
 </ul>
 
 
@@ -407,6 +445,14 @@ You can leave the account number blank.</p>
 <h2>Next up</h2>
 
 <p>In the <a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">next post</a> I explain how to publish the MainDemo application itself to an EC2 instance in the Amazon cloud.</p>
+
+<ul>
+<li><a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2 - Deploying to ElasticBeanstalk</a></li>
+<li><a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3 - Troubleshooting</a></li>
+<li><a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
+<li><a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Part 5 - Load balancing</a></li>
+</ul>
+
 ]]></content>
   </entry>
   
@@ -1325,26 +1371,6 @@ This post is part of an ongoing series about robots, past and present.  See <a h
 <li>Images via Wikipedia</li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Friends, Robots, Countrymen]]></title>
-    <link href="http://blog.zerosharp.com/friends-robots-countrymen/"/>
-    <updated>2012-04-24T15:55:00+01:00</updated>
-    <id>http://blog.zerosharp.com/friends-robots-countrymen</id>
-    <content type="html"><![CDATA[<p>This is the first in a series of posts about robots, past and present.</p>
-
-<p>Since at least the 1950s, people have claimed that we are just around the corner from a robot revolution.  Perhaps it&#8217;s finally here!  The robots are coming!</p>
-
-<p>Recently there have been substantial advances in many different overlapping domains: the driverless car, unmanned drones, machine vision, machine translation, machine learning, speech recognition, facial recognition, swarm robotics, self-reconfiguring modular robots, powered exoskeletons, nanotechnology, etc.</p>
-
-<p>First up:  here&#8217;s the <strong>rather terrifying</strong> DARPA AlphaDog Legged Squad Support System (LS3).</p>
-
-<iframe width="640" height="390" src="http://www.youtube.com/embed/xY42w1w0TWk " frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>
-
-
-<p>The <a href="http://www.darpa.mil/NewsEvents/Releases/2012/02/07.aspx">DARPA website</a> says it can <strong>track a specific individual</strong>, so watch your back!</p>
 ]]></content>
   </entry>
   
