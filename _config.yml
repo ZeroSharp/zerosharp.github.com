@@ -100,11 +100,11 @@ pinboard_count: 3
 
 # Pinterest
 pinterest_user: shamp00
-pinterest_hidden: true
+pinterest_hidden: false
 
 # SpringPad
 springpad_user: shamp00
-springpad_hidden: false
+springpad_hidden: true
 
 # Delicious
 delicious_user:
