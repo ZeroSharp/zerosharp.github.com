@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>How I went from C# Developer to iPhone Developer in a Weekend - ZeroSharp</title>
+  <title>How to remove the trailing zeros of precision from a C# Decimal - ZeroSharp</title>
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Recently I took part in Startup Weekend Buenos Aires. It works just like most hackathons: New friends: Caro, Eze, Gus and me You give a one minute &hellip;">
+  <meta name="description" content="You may know that the C# Decimal type remembers any trailing zeros. So for instance: Console.WriteLine(123.45m);
+Console.WriteLine(123.45000m); &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://blog.zerosharp.com/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend/">
+  <link rel="canonical" href="http://blog.zerosharp.com/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -117,7 +118,7 @@
   
   <header>
     
-      <h1 class="entry-title">How I Went From C# Developer to iPhone Developer in a Weekend</h1>
+      <h1 class="entry-title">How to Remove the Trailing Zeros of Precision From a C# Decimal</h1>
     
     
       <p class="meta">
@@ -133,7 +134,7 @@
   
 
 
-<time datetime="2013-01-04T10:35:00+00:00" pubdate data-updated="true">Jan 4<span>th</span>, 2013</time>
+<time datetime="2013-01-09T17:45:00+00:00" pubdate data-updated="true">Jan 9<span>th</span>, 2013</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -142,30 +143,44 @@
   </header>
 
 
-<div class="entry-content"><p>Recently I took part in <a href="http://buenosaires.startupweekend.org/">Startup Weekend Buenos Aires</a>. It works just like most hackathons:</p>
+<div class="entry-content"><p>You may know that the C# <code>Decimal</code> type remembers any trailing zeros. So for instance:</p>
 
-<p><a href="http://buenosaires.startupweekend.org/2012/11/12/ganadores-swba2012/"><span class='caption-wrapper right'><img class='caption' src='/images/blog/basw/BABingo-2puesto-SWBA2012.jpg' width='' height='' alt='New friends: Caro, Eze, Gus and me' title='New friends: Caro, Eze, Gus and me'><span class='caption-text'>New friends: Caro, Eze, Gus and me</span></span></a></p>
+<pre><code>Console.WriteLine(123.45m);
+Console.WriteLine(123.45000m);
+Console.WriteLine(123.4500000m);
+</code></pre>
 
-<ul>
-<li>You give a one minute pitch on Friday evening.</li>
-<li>Winners put together a team.</li>
-<li>You work with your team on Saturday and Sunday to launch a product.</li>
-<li>Demo for the judges.</li>
-<li>Prizes. Beer. Sleep.</li>
-</ul>
+<p>results in</p>
 
+<pre><code>123.45
+123.45000
+123.4500000
+</code></pre>
 
-<p>On the Friday I spoke no Spanish and had no idea how to write an iPhone app. By Sunday I still spoke no Spanish, but <strong>I&#8217;d built my first app and it won second prize!</strong></p>
+<p>This is because the <code>Decimal</code> type is designed for representing a number including its accuracy.</p>
 
-<p>How did I learn Objective-C in a weekend? I didn&#8217;t. I wrote it in C#.</p>
+<p>However, it is quite tricky to find a good way of controlling this accuracy. For instance if I have <code>x = 123.45000</code>, how can I easily remove the trailing zeros so that <code>x.ToString()</code> outputs <code>123.45</code>. For a while it looked like I&#8217;d have to borrow some <a href="http://stackoverflow.com/a/4298787/1077279">Jon Skeet wizardry</a>.</p>
 
-<p><span class='pullquote-right' data-pullquote='Monotouch makes mobile development really easy for C# programmers.'>
-I downloaded <a href="http://xamarin.com/monotouch">Xamarin MonoTouch</a> onto my <a href="the-best-pc-laptop-is-a-mac">MacBook Pro</a> and was following the &#8216;Hello World&#8217; tutorial within an hour. The MonoTouch <a href="http://docs.xamarin.com/iOS/Guides">documentation</a> is very clear and the <a href="http://docs2.xamarin.com/ios/samples">samples</a> are very useful. Very soon I had a multiple screen application built, including capturing an image from the camera.</p>
+<p>It turns out you can use the following extension method.</p>
 
-<p>Monotouch makes mobile development really easy for C# programmers. It&#8217;s also cross-platform so you can re-use big chunks of your code when you write the Android version.</p>
+<pre><code>public static class DecimalExtensions
+{
+    public static Decimal Normalize(this Decimal value)
+    {
+        return value / 1.000000000000000000000000000000000m;
+    }
+}
+</code></pre>
 
-<p>Check out <a href="http://blog.xamarin.com/eight-reasons-c-sharp-is-the-best-language-for-mobile-development/">this recent blog post from the guys at Xamarin</a>.
-</span></p>
+<p>And if you need an exact number of trailing zeros, you can first <code>Normalize()</code> and then multiply.</p>
+
+<pre><code>Console.WriteLine(123.45m.Normalize() * 1.000m); 
+</code></pre>
+
+<p>will output the following.</p>
+
+<pre><code>123.45000
+</code></pre>
 </div>
 
 
@@ -188,12 +203,12 @@ I downloaded <a href="http://xamarin.com/monotouch">Xamarin MonoTouch</a> onto m
   
 
 
-<time datetime="2013-01-04T10:35:00+00:00" pubdate data-updated="true">Jan 4<span>th</span>, 2013</time>
+<time datetime="2013-01-09T17:45:00+00:00" pubdate data-updated="true">Jan 9<span>th</span>, 2013</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/ios/'>ios</a>, <a class='category' href='/blog/categories/iphone/'>iphone</a>, <a class='category' href='/blog/categories/monotouch/'>monotouch</a>
+    <a class='category' href='/blog/categories/c-/'>c#</a>
   
 </span>
 
@@ -202,7 +217,7 @@ I downloaded <a href="http://xamarin.com/monotouch">Xamarin MonoTouch</a> onto m
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://blog.zerosharp.com/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend/" data-via="8ctopus" data-counturl="http://blog.zerosharp.com/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://blog.zerosharp.com/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/" data-via="8ctopus" data-counturl="http://blog.zerosharp.com/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -213,10 +228,8 @@ I downloaded <a href="http://xamarin.com/monotouch">Xamarin MonoTouch</a> onto m
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/" title="Previous Post: Deploy XAF ASP.NET Applications to Amazon Web Services: Part 5">&laquo; Deploy XAF ASP.NET Applications to Amazon Web Services: Part 5</a>
+        <a class="basic-alignment left" href="/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend/" title="Previous Post: How I went from C# Developer to iPhone Developer in a Weekend">&laquo; How I went from C# Developer to iPhone Developer in a Weekend</a>
       
-      
-        <a class="basic-alignment right" href="/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/" title="Next Post: How to remove the trailing zeros of precision from a C# Decimal">How to remove the trailing zeros of precision from a C# Decimal &raquo;</a>
       
     </p>
   </footer>
@@ -252,8 +265,8 @@ I downloaded <a href="http://xamarin.com/monotouch">Xamarin MonoTouch</a> onto m
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://blog.zerosharp.com/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend/';
-        var disqus_url = 'http://blog.zerosharp.com/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend/';
+        var disqus_identifier = 'http://blog.zerosharp.com/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/';
+        var disqus_url = 'http://blog.zerosharp.com/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/';
         var disqus_script = 'embed.js';
       
     (function () {
