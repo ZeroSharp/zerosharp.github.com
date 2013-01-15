@@ -4,7 +4,7 @@
   <title><![CDATA[Category: devexpress | ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/blog/categories/devexpress/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2013-01-09T18:52:34+00:00</updated>
+  <updated>2013-01-15T18:06:24+00:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,222 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Better handling of Decimals in the XAF audit trail]]></title>
+    <link href="http://blog.zerosharp.com/better-handling-of-decimals-in-the-xaf-audit-trail/"/>
+    <updated>2013-01-15T10:29:00+00:00</updated>
+    <id>http://blog.zerosharp.com/better-handling-of-decimals-in-the-xaf-audit-trail</id>
+    <content type="html"><![CDATA[<p>The following screenshot shows the detail view of an object change from the DevExpress XAF Audit Trail. The <code>DecimalValue</code> property was changed from 123.45 to 543.22.</p>
+
+<p><img src="/images/blog/audit-trail-001.jpg"></p>
+
+<p>Why is the <code>OldValue</code> property is displayed with two trailing zeros? The corresponding property is defined as follows:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="p">&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;[</span><span class="n">DefaultClassOptions</span><span class="p">]</span>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">MyClass</span> <span class="p">:</span> <span class="n">XPObject</span>
+</span><span class='line'><span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="k">public</span> <span class="n">MyClass</span><span class="p">(</span><span class="n">Session</span> <span class="n">session</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//...</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">private</span> <span class="kt">decimal</span> <span class="n">_DecimalValue</span><span class="p">;</span>
+</span><span class='line'><span class="na">[ModelDefault(&quot;DisplayFormat&quot;, &quot;{0:n2}&quot;)]</span>
+</span><span class='line'><span class="k">public</span> <span class="kt">decimal</span> <span class="n">DecimalValue</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">get</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_DecimalValue</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">set</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">SetPropertyValue</span><span class="p">(</span><span class="s">&quot;DecimalValue&quot;</span><span class="p">,</span> <span class="k">ref</span> <span class="n">_DecimalValue</span><span class="p">,</span> <span class="k">value</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">private</span> <span class="n">XPCollection</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">AuditDataItemPersistent</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">_ChangeHistory</span><span class="p">;</span>
+</span><span class='line'><span class="k">public</span> <span class="n">XPCollection</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">AuditDataItemPersistent</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">ChangeHistory</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">get</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">_ChangeHistory</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">_ChangeHistory</span> <span class="p">=</span> <span class="n">AuditedObjectWeakReference</span><span class="p">.</span><span class="n">GetAuditTrail</span><span class="p">(</span><span class="n">Session</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_ChangeHistory</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>Explanation and fix</h3>
+
+<p>A C# <code>decimal</code> is a type which represents a number's value <em>and its precision</em>. It actually stores the number of trailing zeros along with the value. For the <code>NewValue</code>, it has stored the decimal value as the user entered it - with no trailing zeros. Howevever, for the <code>OldValue</code>, it has retrieved the value from the database and used the SQL column definition to determine the precision.</p>
+
+<p>The default SQL column type that XPO column type for properties of type <code>decimal</code> is <a href="http://msdn.microsoft.com/en-us/library/aa933242.aspx">the <code>money</code> type</a> which stores 4 decimal places of precision. If we override this with, say, a <code>DECIMAL(28, 13)</code>, the audit trail would show 13 decimal places of precision.</p>
+
+<p>From the user's perspective, this looks a little confusing, so let's fix it.</p>
+
+<p>During the initialization of your application (in Application_Start for a web application), add an event to the <code>AuditTrailService</code> as follows.</p>
+
+<pre><code>AuditTrailConfig.Initialize();
+</code></pre>
+
+<p>and then declare the <code>AuditTrailConfig</code> helper class as follows:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="p">&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;</span><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">AuditTrailConfig</span>
+</span><span class='line'><span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="n">Initialize</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">AuditTrailService</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">SaveAuditTrailData</span> <span class="p">+=</span> <span class="n">Instance_SaveAuditTrailData</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">static</span> <span class="k">void</span> <span class="nf">Instance_SaveAuditTrailData</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">SaveAuditTrailDataEventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NormalizeOldValuesDecimalPrecision</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">private</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">NormalizeOldValuesDecimalPrecision</span><span class="p">(</span><span class="n">SaveAuditTrailDataEventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">var</span> <span class="n">decimalAuditTrailDataItems</span> <span class="p">=</span> <span class="n">e</span><span class="p">.</span><span class="n">AuditTrailDataItems</span>
+</span><span class='line'>                                      <span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">i</span> <span class="p">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">i</span><span class="p">.</span><span class="n">OldValue</span> <span class="k">is</span> <span class="kt">decimal</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">foreach</span> <span class="p">(</span><span class="n">AuditDataItem</span> <span class="n">auditTrailItem</span> <span class="k">in</span> <span class="n">decimalAuditTrailDataItems</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// remove any trailing zeros from OldValue</span>
+</span><span class='line'>        <span class="n">auditTrailItem</span><span class="p">.</span><span class="n">OldValue</span> <span class="p">=</span> <span class="p">((</span><span class="kt">decimal</span><span class="p">)</span><span class="n">auditTrailItem</span><span class="p">.</span><span class="n">OldValue</span><span class="p">).</span><span class="n">Normalize</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>The <code>Normalize()</code> method is an extension method. See the <a href="how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal">trick in my last post</a> for more information.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="p">&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;</span><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">DecimalExtensions</span>
+</span><span class='line'><span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="k">public</span> <span class="k">static</span> <span class="kt">decimal</span> <span class="n">Normalize</span><span class="p">(</span><span class="k">this</span> <span class="kt">decimal</span> <span class="k">value</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">value</span> <span class="p">/</span> <span class="m">1.000000000000000000000000000000000</span><span class="n">m</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>And then the same change would be logged as follows.</p>
+
+<p><img src="/images/blog/audit-trail-002.jpg"></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 5]]></title>
@@ -339,95 +555,6 @@ Amazon Elastic Beanstalk provides automatic capacity provisioning, load balancin
 <ul>
 <li>The <a href="https://www.youtube.com/watch?v=z-N0z5K_WFI">Amazon tutorial for the AWS Visual Studio Toolkit</a></li>
 <li>Nathanial Woolls has written an excellent similar article on hosting <a href="http://nwoolls.wordpress.com/2012/09/20/hosting-xaf-asp-net-projects-using-azure-web-sites/">XAF ASP.NET applications on Azure</a>.</li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 1]]></title>
-    <link href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/"/>
-    <updated>2012-10-23T12:52:00+01:00</updated>
-    <id>http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud</id>
-    <content type="html"><![CDATA[<h1>Part 1: Putting the Database in the Cloud</h1>
-
-<p>This is the first part of a tutorial for installing the DevExpress MainDemo.Web to Amazon Web Services, but the same principles apply to any ASP.NET web application.</p>
-
-<p>This part covers creating an Amazon RDS instance running SQL Server Express and connecting a (locally running) MainDemo to it.</p>
-
-<p>At the time of writing the DevExpress version is 12.1.7.</p>
-
-<h2>Amazon Web Services</h2>
-
-<p>If you have not already done so, you will need to sign up with <a href="http://aws.amazon.com/">Amazon Web Services</a>. There are costs associated with AWS, but the tutorial only uses very small cheap instances which cost as little as 2 cents per hour to run. Also, new customers get a load of hours for free as part of the <a href="http://aws.amazon.com/free/">AWS Free Usage Tier</a>. See the <a href="http://aws.amazon.com/ec2/pricing/">AWS pricing</a> for more information. Don't forget to terminate your instances when you have finished.</p>
-
-<h2>AWS Toolkit</h2>
-
-<p>Amazon have made it all easy by providing a Visual Studio add-in.</p>
-
-<p>Install the <a href="http://aws.amazon.com/visualstudio/">AWS Toolkit for Microsoft Visual Studio</a>. If you haven't used it before, then when you start a wizard it will ask you for your AWS fcredentials.</p>
-
-<p><img src="/images/blog/aws/publish-to-aws-1.jpg" title="'figure 1'" ></p>
-
-<p>The <strong>Display Name</strong> is the a name you give to the AWS account you are using. I set mine to <em>zerosharp</em>. This is helpful when you have multiple AWS accounts. The <strong>Access Key</strong> and the <strong>Secret Key</strong> are both available on the <a href="https://aws.amazon.com/security-credentials">security credentials page</a> - you will have to click <strong>Show</strong> in order to display the secret key.
-You can leave the account number blank.</p>
-
-<h2>The database</h2>
-
-<p>Now let's provision a new SQL Server Express database.</p>
-
-<p>In Visual Studio, open the AWS Explorer (<code>Ctrl+K,A</code> or in the <em>View</em> menu). You probably want to select a region near your physical location. I chose <em>EU West (Ireland)</em>. Right-click on 'Amazon RDS' and select 'Launch Instance'.</p>
-
-<p><img src="/images/blog/aws/aws-explorer-1.jpg" title="&#34;figure 2&#34;" alt="&#34;figure 2&#34;"></p>
-
-<p>At the following screen, select <strong>SQL Server Express</strong>. Note that we could just as easily provision the Standard or Enterprise editions as well as a host of other database options.</p>
-
-<p><img src="/images/blog/aws/launch-aws-rds-1.jpg" title="&#34;figure 3&#34;" alt="&#34;figure 3&#34;"></p>
-
-<p>Configure the settings for the connection. Choose an instance class of <strong>Micro</strong> which is fine for our needs. Note the <em>Master User Name</em> and the <em>Master User Password</em> will be needed when we modify the MainDemo's connection string.</p>
-
-<p><img src="/images/blog/aws/launch-aws-rds-2.jpg" title="&#34;figure 4&#34;" alt="&#34;figure 4&#34;"></p>
-
-<p>In this screen we configure settings for the port and security. In order to connect from our local MainDemo, you need to add the permission for the your CIDR route which will let you connect to the database from your local machine. It's easy to add it to the default group later (via DB Security Groups).</p>
-
-<p><img src="/images/blog/aws/launch-aws-rds-3.jpg" title="&#34;figure 5&#34;" alt="&#34;figure 5&#34;"></p>
-
-<p>Set the backup options to 'No backups'. Nice to have the option though.</p>
-
-<p><img src="/images/blog/aws/launch-aws-rds-4.jpg" title="&#34;figure 6&#34;" alt="&#34;figure 6&#34;"></p>
-
-<p>Review the options and click 'Launch'.</p>
-
-<p><img src="/images/blog/aws/launch-aws-rds-5.jpg" title="&#34;figure 7&#34;" alt="&#34;figure 7&#34;"></p>
-
-<p>The database instance will be available after a few minutes. You have to be patient here - there is not much feedback, just the yellow <em>creating</em> status. You can press 'Refresh' once in a while, but it's likely to take up to 15 minutes. Eventually you should see a green <em>created</em> status.</p>
-
-<h2>Modify the MainDemo connection string</h2>
-
-<p>Open the MainDemo in Visual Studio.  Open the web.config file and set the connection string to point to your Amazon RDS instance.</p>
-
-<p>The 'User ID' and 'Password' should be the same as the ones you entered above. The address is available from the Visual Studio Properties window as 'Endpoint' when you select the DB Instance in the AWS Explorer.</p>
-
-<p><img src="/images/blog/aws/aws-properties-1.jpg" title="&#34;figure 8&#34;" alt="&#34;figure 8&#34;"></p>
-
-<p>My connection string looks like this:</p>
-
-<pre><code>&lt;add name="ConnectionString" connectionString="User ID=zerosharp;Password=password;Pooling=false;Data Source=maindemo.c5uchpz3rigs.eu-west-1.rds.amazonaws.com;Initial Catalog=MainDemo_v12.1"/&gt;    
-</code></pre>
-
-<h2>Run the MainDemo locally</h2>
-
-<p>Now run the MainDemo locally. When you get to the login page, login as Sam (no password).  At this point, the MainDemo will connect to the Amazon RDS instance using the connection string we specified above and create the database (which takes at least 30 seconds on my machine). Afterwards the MainDemo will function as normal.</p>
-
-<h2>Next up</h2>
-
-<p>In the <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">next post</a> I explain how to publish the MainDemo application itself to an EC2 instance in the Amazon cloud.</p>
-
-<ul>
-<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2 - Deploying to ElasticBeanstalk</a></li>
-<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3 - Troubleshooting</a></li>
-<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
-<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Part 5 - Load balancing</a></li>
 </ul>
 
 ]]></content>

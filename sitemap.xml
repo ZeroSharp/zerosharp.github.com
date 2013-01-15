@@ -2,7 +2,7 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://blog.zerosharp.com/setting-up-octopress-on-windows/</loc>
-        <lastmod>2012-10-11T12:48:55+01:00</lastmod>
+        <lastmod>2013-01-15T18:01:35+00:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/friends-robots-countrymen/</loc>
@@ -110,7 +110,11 @@
         <loc>
             http://blog.zerosharp.com/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/
         </loc>
-        <lastmod>2013-01-09T18:51:05+00:00</lastmod>
+        <lastmod>2013-01-15T12:15:29+00:00</lastmod>
+    </url>
+    <url>
+        <loc>http://blog.zerosharp.com/better-handling-of-decimals-in-the-xaf-audit-trail/</loc>
+        <lastmod>2013-01-15T17:25:54+00:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/about/</loc>
@@ -126,11 +130,11 @@
     </url>
     <url>
         <loc>http://blog.zerosharp.com/blog/archives/</loc>
-        <lastmod>2013-01-09T18:51:05+00:00</lastmod>
+        <lastmod>2013-01-15T18:01:35+00:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/</loc>
-        <lastmod>2013-01-09T18:51:05+00:00</lastmod>
+        <lastmod>2013-01-15T18:01:35+00:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/license/</loc>

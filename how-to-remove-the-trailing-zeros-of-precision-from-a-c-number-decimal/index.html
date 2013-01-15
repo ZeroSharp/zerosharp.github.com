@@ -9,8 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="You may know that the C# Decimal type remembers any trailing zeros. So for instance: Console.WriteLine(123.45m);
-Console.WriteLine(123.45000m); &hellip;">
+  <meta name="description" content="A quirky fix for C# decimal precision.">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -159,9 +158,9 @@ Console.WriteLine(123.4500000m);
 
 <p>This is because the <code>Decimal</code> type is designed for representing a number including its accuracy.</p>
 
-<p>However, it is quite tricky to find a good way of controlling this accuracy. For instance if I have <code>x = 123.45000</code>, how can I easily remove the trailing zeros so that <code>x.ToString()</code> outputs <code>123.45</code>. For a while it looked like I&#8217;d have to borrow some <a href="http://stackoverflow.com/a/4298787/1077279">Jon Skeet wizardry</a>.</p>
+<p>It is tricky to find a good way of controlling this accuracy. If I have <code>x = 123.45000</code>, how can I easily remove the trailing zeros so that <code>x.ToString()</code> outputs <code>123.45</code>?</p>
 
-<p>It turns out you can use the following extension method.</p>
+<p>For a while it looked like I&#8217;d have to perform some <a href="http://stackoverflow.com/a/4298787/1077279">Jon Skeet wizardry</a>, but there is a simpler solution. The following extension method will remove all the trailing zeros.</p>
 
 <pre><code>public static class DecimalExtensions
 {
@@ -230,6 +229,8 @@ Console.WriteLine(123.4500000m);
       
         <a class="basic-alignment left" href="/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend/" title="Previous Post: How I went from C# Developer to iPhone Developer in a Weekend">&laquo; How I went from C# Developer to iPhone Developer in a Weekend</a>
       
+      
+        <a class="basic-alignment right" href="/better-handling-of-decimals-in-the-xaf-audit-trail/" title="Next Post: Better handling of Decimals in the XAF audit trail">Better handling of Decimals in the XAF audit trail &raquo;</a>
       
     </p>
   </footer>
