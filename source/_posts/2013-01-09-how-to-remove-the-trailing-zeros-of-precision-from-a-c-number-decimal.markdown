@@ -4,6 +4,7 @@ title: "How to remove the trailing zeros of precision from a C# Decimal"
 date: 2013-01-09 17:45
 comments: true
 categories: c#
+description: A quirky fix for C# decimal precision.
 ---
 You may know that the C# `Decimal` type remembers any trailing zeros. So for instance:
 
@@ -19,9 +20,9 @@ results in
 
 This is because the `Decimal` type is designed for representing a number including its accuracy.
 
-However, it is quite tricky to find a good way of controlling this accuracy. For instance if I have `x = 123.45000`, how can I easily remove the trailing zeros so that `x.ToString()` outputs `123.45`. For a while it looked like I'd have to perform some [Jon Skeet wizardry](http://stackoverflow.com/a/4298787/1077279).
+It is tricky to find a good way of controlling this accuracy. If I have `x = 123.45000`, how can I easily remove the trailing zeros so that `x.ToString()` outputs `123.45`? 
 
-It turns out you can use the following extension method to remove all the trailing zeros.
+For a while it looked like I'd have to perform some [Jon Skeet wizardry](http://stackoverflow.com/a/4298787/1077279), but there is a simpler solution. The following extension method will remove all the trailing zeros.
 
     public static class DecimalExtensions
     {
