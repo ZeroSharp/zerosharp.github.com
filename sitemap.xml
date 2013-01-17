@@ -2,7 +2,7 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://blog.zerosharp.com/setting-up-octopress-on-windows/</loc>
-        <lastmod>2013-01-15T18:01:35+00:00</lastmod>
+        <lastmod>2013-01-15T18:16:40+00:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/friends-robots-countrymen/</loc>
@@ -117,6 +117,10 @@
         <lastmod>2013-01-15T17:25:54+00:00</lastmod>
     </url>
     <url>
+        <loc>http://blog.zerosharp.com/setting-up-octopress-on-windows-again/</loc>
+        <lastmod>2013-01-17T14:08:46+00:00</lastmod>
+    </url>
+    <url>
         <loc>http://blog.zerosharp.com/about/</loc>
         <lastmod>2012-10-11T12:48:55+01:00</lastmod>
     </url>
@@ -130,11 +134,11 @@
     </url>
     <url>
         <loc>http://blog.zerosharp.com/blog/archives/</loc>
-        <lastmod>2013-01-15T18:01:35+00:00</lastmod>
+        <lastmod>2013-01-17T14:08:46+00:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/</loc>
-        <lastmod>2013-01-15T18:01:35+00:00</lastmod>
+        <lastmod>2013-01-17T14:08:46+00:00</lastmod>
     </url>
     <url>
         <loc>http://blog.zerosharp.com/license/</loc>
