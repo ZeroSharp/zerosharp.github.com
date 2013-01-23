@@ -1,20 +1,15 @@
 ---
 layout: post
-title: "Octopress on Windows and GitHub"
-date: 2012-04-06 17:11
+title: "Setting up Octopress on Windows Again"
+date: 2013-01-17 11:20
 comments: true
 categories: [octopress, github]
 description: How to set up Octopress on Windows and host your blog with GitHub.
 ---
 
-{% blockquote January 2013 update: http://blog.zerosharp.com/setting-up-octopress-on-windows-again Setting up Octopress on Windows again %}
-<div STYLE="color:red">There is a more recent version of this post which covers ruby 1.9.3, python 2.7.3.</div>
-{% endblockquote %}
+My [very first blog post](setting-up-octopress-on-windows) was about setting up Octopress. The following is an updated version of those instructions for setting up Octopress with Windows, ruby 1.9.3, python 2.7.3.
 
-<div><BR></div>
----
-<div><BR></div>
-This is quick guide to setting up [Octopress](http://octopress.org/) on a Windows 7 machine to publish to GitHub pages. It relies on ruby 1.9.2 and python 2.7.2.
+This is quick guide to setting up [Octopress](http://octopress.org/) to publish to GitHub pages. I'm using Windows 8 64-bit, but the instructions should work with other versions of Windows.
 
 ### Get with GitHub ###
 
@@ -37,7 +32,7 @@ Scott Muc has written [yari](https://github.com/scottmuc/yari) which lets you sw
 
 Once this has completed you can setup the required Ruby environment with the command:
 
-    yari 1.9.2
+    yari 1.9.3
 
 Then follow the rest of the instructions from [the Octopress setup instructions](http://octopress.org/docs/setup/).
 
@@ -86,21 +81,14 @@ There are two issues:
  * Syntax highlighting requires Python which is not automatically installed.
  * There is a problem with pythonexec.rb which does not seem to support Windows Python installations very well.
 
-Luckily we can fix them both.  Install [Python 2.7.2](http://www.python.org/getit/releases/2.7.2/).  Actually I used [ninite.com](http://ninite.com/) to install it.
+Luckily we can fix them both.  Install [Python 2.7.3](http://www.python.org/getit/releases/2.7.3/).  Actually I used [ninite.com](http://ninite.com/) to install it.
 
-Then modify the pythonrubyexec.rb which is in the depths of the yari subdirectory.  Try here: `.\yari\ruby-1.9.2-p290-i386-mingw32\lib\ruby\gems\1.9.1\gems\rubypython-0.5.1\lib\rubypython\pythonexec.rb`
+Then modify the pythonrubyexec.rb which is in the depths of the yari subdirectory.  Try here: `.\yari\ruby-1.9.3-p194-i386-mingw32\lib\ruby\gems\1.9.3\gems\rubypython-0.5.3\lib\rubypython\pythonexec.rb`
 
 At the top of pythonexec.rb, modify the file as follows:
 
 {% codeblock pythonexec.rb lang:diff %}
 class RubyPython::PythonExec
-  # Based on the name of or path to the \Python executable provided, will
-  # determine:
-  #
-  # * The full path to the \Python executable.
-  # * The version of \Python being run.
-  # * The system prefix.
-  # * The main loadable \Python library for this version.
   def initialize(python_executable)
     @python = python_executable || "python"
 
@@ -109,12 +97,10 @@ class RubyPython::PythonExec
 +    end
 
     @python = %x(#{@python} -c "import sys; print sys.executable").chomp
+
+    @version = run_command "import sys; print '%d.%d' % sys.version_info[:2]"
+
+-    @dirname = File.dirname(@python)
++    @dirname = "C:/Python27"
+
 {% endcodeblock %}
-
-
-#### References ####
-
-* [Lee's Bigdinosaur blog](http://blog.bigdinosaur.org/changing-octopresss-header/) helped with fonts and colours.
-* [This blog post](http://translate.googleusercontent.com/translate_c?hl=en&ie=UTF8&prev=_t&rurl=translate.google.com&sl=zh-CN&tl=en&twu=1&u=http://blog.yesmryang.net/windows-octopress-python/&usg=ALkJrhhFZMKpT5j6_L8NXOL1S9H9CGjHNw) (translated from the Chinese via Google Translate) helped me solve the codeblock problem.
-* [This issue](https://github.com/imathis/octopress/issues/262) and [this issue](https://github.com/github/gollum/issues/225) also helped.
-* Markdown [syntax](http://daringfireball.net/projects/markdown/syntax) and [cheat sheet](http://warpedvisions.org/projects/markdown-cheat-sheet/)
