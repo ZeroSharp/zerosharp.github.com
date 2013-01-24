@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2013-01-24T12:01:04+00:00</updated>
+  <updated>2013-01-24T12:04:12+00:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -24,9 +24,11 @@
 
 <p><img src="http://blog.zerosharp.com/images/blog/facebook-graph-search-001.png"></p>
 
-<p>You can&#8217;t see any photos because their privacy settings are not set to &#8216;Public&#8217;.</p>
+<p>You can&#8217;t see any photos because their privacy settings are not set to &#8216;Public&#8217;. It&#8217;s what you&#8217;d expect.</p>
 
-<p>But if you put <em>Photos of &lt;name&gt;</em> or <em>Photos by &lt;name&gt;</em> into the new Facebook graph search <strong>you can see all their photos regardless of their privacy settings</strong>. This works even for friends who have put you on a &#8216;limited&#8217; profile.</p>
+<h4>Use Graph Search to bypass privacy</h4>
+
+<p>If you put <em>Photos of &lt;name&gt;</em> or <em>Photos by &lt;name&gt;</em> into the new Facebook graph search <strong>you can view all their photos regardless of their privacy settings</strong>. This works even for friends who have put you on a &#8216;limited&#8217; profile.</p>
 
 <p>Your boss/ex/grandma is probably checking out your private photos right now.</p>
 ]]></content>
