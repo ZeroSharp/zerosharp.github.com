@@ -227,7 +227,7 @@
 
 <p>A C# <code>decimal</code> is a type which represents a number&#8217;s value <em>and its precision</em>. It actually stores the number of trailing zeros along with the value. For the <code>NewValue</code>, it has stored the decimal value as the user entered it - with no trailing zeros. Howevever, for the <code>OldValue</code>, it has retrieved the value from the database and used the SQL column definition to determine the precision.</p>
 
-<p>The default SQL column type that XPO column type for properties of type <code>decimal</code> is <a href="http://msdn.microsoft.com/en-us/library/aa933242.aspx">the <code>money</code> type</a> which stores 4 decimal places of precision. If we override this with, say, a <code>DECIMAL(28, 13)</code>, the audit trail would show 13 decimal places of precision.</p>
+<p>The default SQL column type that XPO column type for properties of type <code>decimal</code> is the <code>money</code> type (<a href="http://msdn.microsoft.com/en-us/library/aa933242.aspx">see the MSDN documentation</a>) which stores 4 decimal places of precision. If we override this with, say, a <code>DECIMAL(28, 13)</code>, the audit trail would show 13 decimal places of precision.</p>
 
 <p>From the user&#8217;s perspective, this looks a little confusing, so let&#8217;s fix it.</p>
 
@@ -289,7 +289,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>The <code>Normalize()</code> method is an extension method. See the <a href="how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal">trick in my last post</a> for more information.</p>
+<p>The <code>Normalize()</code> method is an extension method. See the <a href="/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/">trick in my last post</a> for more information.</p>
 
 <figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: monotouch | ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/blog/categories/monotouch/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2013-01-24T12:04:12+00:00</updated>
+  <updated>2013-01-25T13:04:17+00:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -36,7 +36,7 @@
 <p>How did I learn Objective-C in a weekend? I didn't. I wrote it in C#.</p>
 
 <p><span class='pullquote-right' data-pullquote='Monotouch makes mobile development really easy for C# programmers.'>
-I downloaded <a href="http://xamarin.com/monotouch">Xamarin MonoTouch</a> onto my <a href="the-best-pc-laptop-is-a-mac">MacBook Pro</a> and was following the 'Hello World' tutorial within an hour. The MonoTouch <a href="http://docs.xamarin.com/iOS/Guides">documentation</a> is very clear and the <a href="http://docs2.xamarin.com/ios/samples">samples</a> are very useful. Very soon I had a multiple screen application built, including capturing an image from the camera.</p>
+I downloaded <a href="http://xamarin.com/monotouch">Xamarin MonoTouch</a> onto my <a href="/the-best-pc-laptop-is-a-mac/">MacBook Pro</a> and was following the 'Hello World' tutorial within an hour. The MonoTouch <a href="http://docs.xamarin.com/iOS/Guides">documentation</a> is very clear and the <a href="http://docs2.xamarin.com/ios/samples">samples</a> are very useful. Very soon I had a multiple screen application built, including capturing an image from the camera.</p>
 
 <p>Monotouch makes mobile development really easy for C# programmers. It's also cross-platform so you can re-use big chunks of your code when you write the Android version.</p>
 

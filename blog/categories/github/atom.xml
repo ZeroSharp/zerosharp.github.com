@@ -4,7 +4,7 @@
   <title><![CDATA[Category: github | ZeroSharp]]></title>
   <link href="http://blog.zerosharp.com/blog/categories/github/atom.xml" rel="self"/>
   <link href="http://blog.zerosharp.com/"/>
-  <updated>2013-01-24T12:04:12+00:00</updated>
+  <updated>2013-01-25T13:04:17+00:00</updated>
   <id>http://blog.zerosharp.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -18,7 +18,7 @@
     <link href="http://blog.zerosharp.com/setting-up-octopress-on-windows-again/"/>
     <updated>2013-01-17T11:20:00+00:00</updated>
     <id>http://blog.zerosharp.com/setting-up-octopress-on-windows-again</id>
-    <content type="html"><![CDATA[<p>My <a href="setting-up-octopress-on-windows">very first blog post</a> was about setting up Octopress. The following is an updated version of those instructions for setting up Octopress with Windows, ruby 1.9.3, python 2.7.3.</p>
+    <content type="html"><![CDATA[<p>My <a href="/setting-up-octopress-on-windows/">very first blog post</a> was about setting up Octopress. The following is an updated version of those instructions for setting up Octopress with Windows, ruby 1.9.3, python 2.7.3.</p>
 
 <p>This is quick guide to setting up <a href="http://octopress.org/">Octopress</a> to publish to GitHub pages. I'm using Windows 8 64-bit, but the instructions should work with other versions of Windows.</p>
 
