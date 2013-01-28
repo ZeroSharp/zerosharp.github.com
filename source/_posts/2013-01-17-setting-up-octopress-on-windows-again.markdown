@@ -7,7 +7,7 @@ categories: [octopress, github]
 description: How to set up Octopress on Windows and host your blog with GitHub.
 ---
 
-My [very first blog post](setting-up-octopress-on-windows) was about setting up Octopress. The following is an updated version of those instructions for setting up Octopress with Windows, ruby 1.9.3, python 2.7.3.
+My [very first blog post](/setting-up-octopress-on-windows/) was about setting up Octopress. The following is an updated version of those instructions for setting up Octopress with Windows, ruby 1.9.3, python 2.7.3.
 
 This is quick guide to setting up [Octopress](http://octopress.org/) to publish to GitHub pages. I'm using Windows 8 64-bit, but the instructions should work with other versions of Windows.
 

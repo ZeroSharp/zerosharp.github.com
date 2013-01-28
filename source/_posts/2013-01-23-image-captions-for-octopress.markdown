@@ -15,7 +15,7 @@ The following markdown
 
 will render like this.
 
-{% imgcap http://upload.wikimedia.org/wikipedia/commons/d/d7/Leonhard_Euler.jpg Leonhard Euler 'ja' %}
+{% imgcap http://upload.wikimedia.org/wikipedia/commons/d/d7/Leonhard_Euler.jpg Leonhard Euler %}
 
 It works with `left` and `right` too.
 

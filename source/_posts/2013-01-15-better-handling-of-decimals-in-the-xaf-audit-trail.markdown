@@ -55,7 +55,7 @@ public class MyClass : XPObject
 ### Explanation and fix ###
 A C# `decimal` is a type which represents a number's value *and its precision*. It actually stores the number of trailing zeros along with the value. For the `NewValue`, it has stored the decimal value as the user entered it - with no trailing zeros. Howevever, for the `OldValue`, it has retrieved the value from the database and used the SQL column definition to determine the precision.
 
-The default SQL column type that XPO column type for properties of type `decimal` is [the `money` type](http://msdn.microsoft.com/en-us/library/aa933242.aspx) which stores 4 decimal places of precision. If we override this with, say, a `DECIMAL(28, 13)`, the audit trail would show 13 decimal places of precision.
+The default SQL column type that XPO column type for properties of type `decimal` is the `money` type ([see the MSDN documentation](http://msdn.microsoft.com/en-us/library/aa933242.aspx)) which stores 4 decimal places of precision. If we override this with, say, a `DECIMAL(28, 13)`, the audit trail would show 13 decimal places of precision.
 
 From the user's perspective, this looks a little confusing, so let's fix it.
 
@@ -94,7 +94,7 @@ public static class AuditTrailConfig
 
 {% endcodeblock %}
 
-The `Normalize()` method is an extension method. See the [trick in my last post](how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal) for more information.
+The `Normalize()` method is an extension method. See the [trick in my last post](/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/) for more information.
 
 {% codeblock lang:csharp %}
 
