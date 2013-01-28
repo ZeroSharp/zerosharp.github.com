@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: devexpress | ZeroSharp]]></title>
+  <link href="http://blog.zerosharp.com/blog/categories/devexpress/atom.xml" rel="self"/>
+  <link href="http://blog.zerosharp.com/"/>
+  <updated>2013-01-25T13:04:17+00:00</updated>
+  <id>http://blog.zerosharp.com/</id>
+  <author>
+    <name><![CDATA[Robert Anderson]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Better handling of Decimals in the XAF audit trail]]></title>
+    <link href="http://blog.zerosharp.com/better-handling-of-decimals-in-the-xaf-audit-trail/"/>
+    <updated>2013-01-15T10:29:00+00:00</updated>
+    <id>http://blog.zerosharp.com/better-handling-of-decimals-in-the-xaf-audit-trail</id>
+    <content type="html"><![CDATA[<p>The following screenshot shows the detail view of an object change from the DevExpress XAF Audit Trail. The <code>DecimalValue</code> property was changed from 123.45 to 543.22.</p>
+
+<p><img src="/images/blog/audit-trail-001.jpg"></p>
+
+<p>Why is the <code>OldValue</code> property is displayed with two trailing zeros? The corresponding property is defined as follows:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="p">&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;[</span><span class="n">DefaultClassOptions</span><span class="p">]</span>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">MyClass</span> <span class="p">:</span> <span class="n">XPObject</span>
+</span><span class='line'><span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="k">public</span> <span class="n">MyClass</span><span class="p">(</span><span class="n">Session</span> <span class="n">session</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">//...</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">private</span> <span class="kt">decimal</span> <span class="n">_DecimalValue</span><span class="p">;</span>
+</span><span class='line'><span class="na">[ModelDefault(&quot;DisplayFormat&quot;, &quot;{0:n2}&quot;)]</span>
+</span><span class='line'><span class="k">public</span> <span class="kt">decimal</span> <span class="n">DecimalValue</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">get</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_DecimalValue</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">set</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">SetPropertyValue</span><span class="p">(</span><span class="s">&quot;DecimalValue&quot;</span><span class="p">,</span> <span class="k">ref</span> <span class="n">_DecimalValue</span><span class="p">,</span> <span class="k">value</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">private</span> <span class="n">XPCollection</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">AuditDataItemPersistent</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">_ChangeHistory</span><span class="p">;</span>
+</span><span class='line'><span class="k">public</span> <span class="n">XPCollection</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">AuditDataItemPersistent</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">ChangeHistory</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">get</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">_ChangeHistory</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">_ChangeHistory</span> <span class="p">=</span> <span class="n">AuditedObjectWeakReference</span><span class="p">.</span><span class="n">GetAuditTrail</span><span class="p">(</span><span class="n">Session</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_ChangeHistory</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>Explanation and fix</h3>
+
+<p>A C# <code>decimal</code> is a type which represents a number's value <em>and its precision</em>. It actually stores the number of trailing zeros along with the value. For the <code>NewValue</code>, it has stored the decimal value as the user entered it - with no trailing zeros. Howevever, for the <code>OldValue</code>, it has retrieved the value from the database and used the SQL column definition to determine the precision.</p>
+
+<p>The default SQL column type that XPO column type for properties of type <code>decimal</code> is the <code>money</code> type (<a href="http://msdn.microsoft.com/en-us/library/aa933242.aspx">see the MSDN documentation</a>) which stores 4 decimal places of precision. If we override this with, say, a <code>DECIMAL(28, 13)</code>, the audit trail would show 13 decimal places of precision.</p>
+
+<p>From the user's perspective, this looks a little confusing, so let's fix it.</p>
+
+<p>During the initialization of your application (in Application_Start for a web application), add an event to the <code>AuditTrailService</code> as follows.</p>
+
+<pre><code>AuditTrailConfig.Initialize();
+</code></pre>
+
+<p>and then declare the <code>AuditTrailConfig</code> helper class as follows:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="p">&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;</span><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">AuditTrailConfig</span>
+</span><span class='line'><span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="n">Initialize</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">AuditTrailService</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">SaveAuditTrailData</span> <span class="p">+=</span> <span class="n">Instance_SaveAuditTrailData</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">static</span> <span class="k">void</span> <span class="nf">Instance_SaveAuditTrailData</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">SaveAuditTrailDataEventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">NormalizeOldValuesDecimalPrecision</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">private</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">NormalizeOldValuesDecimalPrecision</span><span class="p">(</span><span class="n">SaveAuditTrailDataEventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">var</span> <span class="n">decimalAuditTrailDataItems</span> <span class="p">=</span> <span class="n">e</span><span class="p">.</span><span class="n">AuditTrailDataItems</span>
+</span><span class='line'>                                      <span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">i</span> <span class="p">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">i</span><span class="p">.</span><span class="n">OldValue</span> <span class="k">is</span> <span class="kt">decimal</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">foreach</span> <span class="p">(</span><span class="n">AuditDataItem</span> <span class="n">auditTrailItem</span> <span class="k">in</span> <span class="n">decimalAuditTrailDataItems</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// remove any trailing zeros from OldValue</span>
+</span><span class='line'>        <span class="n">auditTrailItem</span><span class="p">.</span><span class="n">OldValue</span> <span class="p">=</span> <span class="p">((</span><span class="kt">decimal</span><span class="p">)</span><span class="n">auditTrailItem</span><span class="p">.</span><span class="n">OldValue</span><span class="p">).</span><span class="n">Normalize</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>The <code>Normalize()</code> method is an extension method. See the <a href="/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/">trick in my last post</a> for more information.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="p">&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;</span><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">DecimalExtensions</span>
+</span><span class='line'><span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="k">public</span> <span class="k">static</span> <span class="kt">decimal</span> <span class="n">Normalize</span><span class="p">(</span><span class="k">this</span> <span class="kt">decimal</span> <span class="k">value</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">value</span> <span class="p">/</span> <span class="m">1.000000000000000000000000000000000</span><span class="n">m</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>And then the same change would be logged as follows.</p>
+
+<p><img src="/images/blog/audit-trail-002.jpg"></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 5]]></title>
+    <link href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/"/>
+    <updated>2012-12-05T11:03:00+00:00</updated>
+    <id>http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing</id>
+    <content type="html"><![CDATA[<h2>Part 5: Load balancing</h2>
+
+<p>This is the final post in this 5 part series about deploying XAF to the Amazon cloud. The other parts are:</p>
+
+<ul>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1 - Creating a database in RDS</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2 - Deploying to ElasticBeanstalk</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3 - Troubleshooting</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
+</ul>
+
+
+<p>This part covers load balancing and autoscaling.</p>
+
+<h3>Load balancing</h3>
+
+<p>In order to enable load balancing with DevExpress XAF applications, you must activate client affinity (sticky sessions) which you can do in the <strong>Load Balancer tab</strong>.</p>
+
+<p><img src="/images/blog/aws/aws-autoscaling-2.jpg" title="'figure 19'" ></p>
+
+<p>This is because XAF relies http session variables (notably the <code>WebApplication</code>). With sticky sessions enabled, when a user first hits the Elastic Load Balancer, they are assigned a random server but all subsequent requests are routed to the same server instance.</p>
+
+<h2>Autoscaling</h2>
+
+<h3>Adding Capacity (Works)</h3>
+
+<p>Switch to the <strong>Auto Scaling</strong> tab of the Elastic Beanstalk instance.</p>
+
+<p><img src="/images/blog/aws/aws-autoscaling-1.jpg" title="'figure 19'" ></p>
+
+<p>The options for autoscaling are extensive and there is plenty information on the <a href="http://aws.amazon.com/autoscaling">Amazon website</a>. In the above screenshot we have the Elastic Load Balancer configured so that it will initially deploy 1 server (the Minimum Instance Count), but whenever the NetworkOut measurement of 600,000 bytes over a 5 minute interval, a new server launch is triggered up to a maximum of 4 servers. Adding capacity works fine with XAF applications.</p>
+
+<h3>Removing Capacity (Fails)</h3>
+
+<p>The configuration above also shows that if the NetworkOut drops to below 200,000 bytes over a period of 5 minutes then the number of servers should decrease. <strong>This will NOT work</strong>.</p>
+
+<p>The problem is that the Elastic Load Balancer will terminate the surplus server immediately (the equivalent of a <code>shutdown -s</code>). Any users connected to that server will immediately lose their session and will probably receive an ugly error.</p>
+
+<p>One workaround is to allow scaling out but to disable scaling in. To do this, set the 'Lower Threshold' to zero.</p>
+
+<h3>Possible Improvements</h3>
+
+<p>There are a couple of potential longer term solutions to the problem of dropped sessions when scaling in.</p>
+
+<p>DevExpress could make the classes they use in the session variables serializable (e.g., <code>WebApplication</code>). When this is the case, the application can be configured to store the session variables to a persistent data store (SQL Server for instance) instead of in the session and then we could configure autoscaling to work correctly. There is <a href="http://www.devexpress.com/Support/Center/Question/Details/Q426045">an item in the Support Center in this regard</a> and <a href="http://www.devexpress.com/Support/Center/p/S36497.aspx">another one here</a>.</p>
+
+<p>Another solution would be if Amazon provided a new option to handle a server termination in a less brutal fashion. That is, stop routing new users to the surplus server but continue to server existing users until their sessions have all terminated. This approach is discussed in <a href="https://forums.aws.amazon.com/thread.jspa?threadID=61278">this AWS forum thread</a>.</p>
+
+<h2>Conclusions</h2>
+
+<p>The load balancing features of AWS work fine with XAF applications, but the benefits of autoscaling are lost because there is currently no effective method of removing capacity without knocking out existing sessions.</p>
+
+<h2>What next</h2>
+
+<p>In a future series, I will demonstrate how to load test XAF applications cheaply and effectively by making use of Amazon Web Services. Stay tuned.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 4]]></title>
+    <link href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/"/>
+    <updated>2012-11-05T14:16:00+00:00</updated>
+    <id>http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment</id>
+    <content type="html"><![CDATA[<h2>Part 4: Incremental Deployment</h2>
+
+<p>This is the fourth post in a series about deploying ASP.NET applications to the Amazon cloud. In the first three posts covered deploying the XAF ASP.NET MainDemo to the Amazon cloud (<a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1</a>, <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2</a>, <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3</a>).</p>
+
+<p>When we deployed to the Elastic Beanstalk in <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2</a>, we chose <em>not</em> to enable incremental deployment.</p>
+
+<p><img src="/images/blog/aws/launch-aws-beanstalk-2.jpg" title="'figure 11'" ></p>
+
+<p>I want to explain this decision further.</p>
+
+<p>If you choose not to deploy incrementally your deployment will take longer because the entire web deployment package needs to be uploaded every time you re-publish which takes about 4-5 minutes on my connection. The incremental deployment option creates a git repository in the target environment so that only the modified files are re-deployed. If you are frequently making changes and redploying, you can save considerable time. A re-deployment takes only a few seconds.</p>
+
+<p>However, if you try to deploy from the default MainDemo location with incremental deployment enabled, you will probably get the following error</p>
+
+<pre><code>Commencing deployment for project MainDemo.Web
+...building deployment package obj\Release\Package\Archive...
+...deployment package created at C:\Users\Public\Documents\DXperience 12.1 Demos\eXpressApp Framework\MainDemo\CS\MainDemo.Web\obj\Release\Package\Archive
+...build of project archive completed succesfully
+...starting deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo'
+...starting incremental deployment to environment 'zerosharp-maindemo'
+Deployment to AWS Elastic Beanstalk failed with exception: Exception caught during execution of add command,
+Inner Exception Message: The specified path, file name, or both are too long. The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters.
+...
+Deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo' did not complete successfully
+</code></pre>
+
+<p>The problem is with the NGit libraries that the AWS Toolkit uses. Presumably a fix will emerge, but the simplest workaround is to move the application to a shorter path. Then you can enable incremental deployment when you publish:</p>
+
+<p><img src="/images/blog/aws/launch-aws-beanstalk-incremental-2.jpg" title="'figure 21'" ></p>
+
+<p>Note that you can toggle incremental deployment whenever you publish, so you're not locked in either way.</p>
+
+<h2>Next up</h2>
+
+<p>In the <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">next post</a> we will enable load balancing (which is easy) and discuss the problems with autoscaling XAF applications (which is not).</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 3]]></title>
+    <link href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/"/>
+    <updated>2012-11-02T17:54:00+00:00</updated>
+    <id>http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop</id>
+    <content type="html"><![CDATA[<h1>Part 3: Troubleshooting</h1>
+
+<p>This is the third post in a series about deploying ASP.NET applications to the Amazon cloud.</p>
+
+<p>In <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1</a> we created an Amazon RDS instance of SQL Server to act as the database for the deployment.</p>
+
+<p>In <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2</a> we published the DevExpress MainDemo.Web to the Amazon Elastic Beanstalk.</p>
+
+<p>In this part we will look at troubleshooting methods and in particular how to connect to an EC2 instance in order to troubleshoot installations.</p>
+
+<h2>The Beanstalk Events tab</h2>
+
+<p>When there is a problem with the deployment, the first place to look is in the Elastic Beanstalk events tab. You will find warnings and error messages which frequently point to the source of any problem.</p>
+
+<p><img src="/images/blog/aws/aws-events-1.jpg" title="'figure 18'" ></p>
+
+<p>Sometimes, the events window point to a log file which is automatically generated in an S3 bucket. By opening S3 in the AWS Explorer, you can find and download the log file which usually has excellent error information in it, for instance:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>An example log file </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;/p>
+</span><span class='line'>
+</span><span class='line'>&lt;pre>&lt;code>2012-11-02T12:37:13.000Z Warning 3:Web Event ASP.NET 4.0.30319.0 - Event code: 3008
+</span><span class='line'>Event message: A configuration error has occurred.
+</span><span class='line'>[...]
+</span><span class='line'>
+</span><span class='line'>Application information:
+</span><span class='line'>Application domain: /LM/W3SVC/1/ROOT/MainDemo.Web_deploy-2-129963334311133960
+</span><span class='line'>Trust level: Full
+</span><span class='line'>Application Virtual Path: /MainDemo.Web_deploy
+</span><span class='line'>Application Path: C:\inetpub\wwwroot\MainDemo.Web_deploy\
+</span><span class='line'>Machine name: AMAZONA-C6H7CEI
+</span><span class='line'>
+</span><span class='line'>Process information:
+</span><span class='line'>Process ID: 2436
+</span><span class='line'>Process name: w3wp.exe
+</span><span class='line'>Account name: IIS APPPOOL\DefaultAppPool
+</span><span class='line'>
+</span><span class='line'>Exception information:
+</span><span class='line'>Exception type: ConfigurationErrorsException
+</span><span class='line'>Exception message: Could not load file or assembly 'DevExpress.ExpressApp.AuditTrail.v12.1, Version=12.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a' or one of its dependencies. The system cannot find the file specified. (C:\inetpub\wwwroot\MainDemo.Web_deploy\web.config line 94)
+</span><span class='line'>  at System.Web.Configuration.CompilationSection.LoadAssemblyHelper(String assemblyName, Boolean starDirective)
+</span><span class='line'>  at System.Web.Configuration.AssemblyInfo.get_AssemblyInternal()
+</span><span class='line'>  at System.Web.Compilation.BuildManager.GetReferencedAssemblies(CompilationSection compConfig)
+</span><span class='line'>  at System.Web.Compilation.BuildManager.CallPreStartInitMethods(String preStartInitListPath)
+</span><span class='line'>  at System.Web.Compilation.BuildManager.ExecutePreAppStart()
+</span><span class='line'>  at System.Web.Hosting.HostingEnvironment.Initialize(ApplicationManager appManager, IApplicationHost appHost, IConfigMapPathFactory configMapPathFactory, HostingEnvironmentParameters hostingParameters, PolicyLevel policyLevel, Exception appDomainCreationException)
+</span><span class='line'>[...]
+</span><span class='line'>&lt;/code>&lt;/pre>
+</span><span class='line'>
+</span><span class='line'>&lt;p></span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h2>Connecting via Remote Desktop</h2>
+
+<p>If you're still in the dark, you can use Windows Remote Desktop to connect to the EC2 machine to troubleshoot.</p>
+
+<p>In the AWS Explorer, go to <strong>Amazon EC2/Instances</strong>.</p>
+
+<p>There are two ways of connecting. You can <strong>Get Windows Passwords</strong>, but this takes about an hour for the password to be decrypted.</p>
+
+<p><img src="/images/blog/aws/aws-troubleshooting-1.jpg" title="'figure 19'" ></p>
+
+<p>Alternatively, you can <strong>Open Remote Desktop</strong> and then <strong>Use EC2 keypair to logon</strong>. You should have the <em>.pem</em> private key file associated with the EC2 key pair that was used to launch the instance (it was created when you created your AWS account or when you launched your first EC2 instance). Whenever an EC2 instance is provisioned, it is launched with an EC2 key pair (you selected a keypair to use in the wizard above). You can open the .pem file and cut and paste the key into the remote desktop window.</p>
+
+<p>You will then be logged in as an Administrator on the EC2 Instance running Windows 2008 R2. You can perform whatever operations you see fit - install software, change Control Panel options, restart IIS, <em>etc.</em> The changes will last until you terminate the instance (by deleting the Elastic Beanstalk stack for example).</p>
+
+<p><img src="/images/blog/aws/aws-troubleshooting-2.jpg" title="'figure 20'" ></p>
+
+<p>Note that it is easy to create new key pairs if you can't find the .pem file, but you cannot change the key pair of a running instance. (You should terminate and launch again with the new key pair). One nice feature of the AWS Toolkit, is that if you create a new key pair within Visual Studio, you can choose to store the private key in the Toolkit.</p>
+
+<h2>Next up</h2>
+
+<p>The <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">next post</a> will cover incremental deployment options.</p>
+
+<ul>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Part 5 - Load balancing</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 2]]></title>
+    <link href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/"/>
+    <updated>2012-10-31T12:52:00+00:00</updated>
+    <id>http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo</id>
+    <content type="html"><![CDATA[<h1>Part 2: Publishing MainDemo</h1>
+
+<p>This is the second post in a series about deploying ASP.NET applications to the <a href="http://aws.amazon.com/">Amazon cloud</a>.</p>
+
+<p>In <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1</a> we created an Amazon RDS instance of SQL Server to act as the database for the deployment. Make sure this is up and running before continuing.</p>
+
+<p>This part guides you through publishing the <a href="http://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a> MainDemo application to the Amazon Elastic Beanstalk.</p>
+
+<h2>Amazon Elastic Beanstalk</h2>
+
+<p><span class='pullquote-right' data-pullquote='Amazon Elastic Beanstalk provides automatic capacity provisioning, load balancing, auto-scaling, and application health monitoring.'>
+Amazon Elastic Beanstalk provides automatic capacity provisioning, load balancing, auto-scaling, and application health monitoring. <strong>That sounds like a lot of features we don't really need</strong> for the MainDemo, so let me explain.</p>
+
+<p>With Amazon Web Services, the choices are endless. An Amazon EC2 instance is a virtual machine running an actual Windows (or other) operating system that you can connect to with Remote Desktop and configure however you want. It might seem that the simplest would be to put everything on a 'single machine' instance. However, the default 'single machine' does not have SQL Server Express installed. We could connect to it and install it, but it ends up being a lot of extra steps. There are other Amazon Machine Images (AMIs) that include SQL Server Express, but these don't support automatic deployment from Visual Studio.
+</span></p>
+
+<p>In fact (and Amazon should advertise this better), the Elastic Beanstalk is designed to make it very simple to deploy applications quickly <strong>even if you have no intention of ever needing more than a single little instance</strong>. It is the recommended starting point for all new deployments regardless of size. Ignore the long list of amazing additional features for now, (but one day you might need them.)</p>
+
+<h2>Prepare the MainDemo for deployment</h2>
+
+<p>First we need to fix a few problems with the MainDemo. (These will cause deployment in problems any environment, not just Amazon Web Services.)</p>
+
+<ul>
+<li>remove the reference to <em>stdole</em> in the web.config <em>&lt;assemblies&gt;</em> section</li>
+<li>add a reference to the project <em>DevExpress.XtraPrinting.v12.1</em></li>
+<li>add a reference to the project <em>DevExpress.XtraNavBar.v12.1</em></li>
+<li>add a reference to the project <em>DevExpress.Utils.v12.1.UI</em></li>
+<li>set the <em>CopyLocal</em> flag to true for all DevExpress assemblies</li>
+</ul>
+
+
+<p>(Some of these might have been fixed if you are using a newer release of XAF than 12.1.7.)</p>
+
+<p>Also, if there are any errors, we don't get much useful feedback unless we turn custom errors off. Go to the web.config and add a tag just before the end of the <em>&lt;system.web&gt;</em> section.</p>
+
+<pre><code>    ...
+      &lt;customErrors mode="Off"/&gt;
+    &lt;/system.web&gt;
+</code></pre>
+
+<p>Make sure you can build without errors.</p>
+
+<h2>Deploy to Elastic Beanstalk</h2>
+
+<p>You might like to switch to <strong>Release</strong> mode since we will be publishing. Right click on the MainDemo.Web project in the Solution Explorer and select <strong>Publish to AWS...</strong></p>
+
+<p><img src="/images/blog/aws/aws-solution-explorer-1.jpg" title="'figure 9'" ></p>
+
+<p>This opens the AWS publishing wizard. Select the <strong>AWS Elastic Beanstalk</strong> template.  I have also selected to deploy in the <strong>EU West (Ireland)</strong> region. Click <strong>Next</strong>.</p>
+
+<p><img src="/images/blog/aws/launch-aws-beanstalk-1.jpg" title="'figure 10'" ></p>
+
+<p>Make sure you uncheck the <strong>Deploy application incrementally</strong> checkbox (see the upcoming Part 4 for more information on this option).</p>
+
+<p><img src="/images/blog/aws/launch-aws-beanstalk-2.jpg" title="'figure 11'" ></p>
+
+<p>The next few screens are self-explanatory.</p>
+
+<p><img src="/images/blog/aws/launch-aws-beanstalk-3.jpg" title="'figure 12'" ></p>
+
+<p>(Note the keypair property is referred to in <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3</a> in the section about connecting via Remote Desktop.)</p>
+
+<p><img src="/images/blog/aws/launch-aws-beanstalk-4.jpg" title="'figure 13'" ></p>
+
+<p><img src="/images/blog/aws/launch-aws-beanstalk-6.jpg" title="'figure 14'" ></p>
+
+<p>The following screen appears only if we have active RDS instances running (whcih you should if you followed <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1</a>). It allows us to add a permission for the application to access the database. This can also be done manually via the <em>Security Groups</em> section in the AWS Explorer.</p>
+
+<p><img src="/images/blog/aws/launch-aws-beanstalk-7.jpg" title="'figure 15'" ></p>
+
+<p>The last screen summarizes all the choices so far.</p>
+
+<p><img src="/images/blog/aws/launch-aws-beanstalk-8.jpg" title="'figure 16'" ></p>
+
+<p>After you click <strong>Launch</strong>, you can follow the progress in the Amazon Web Services output window. It will upload the MainDemo web deployment package to a temporary S3 bucket. It will then provision an EC2 instance and install the application to it. It will also provision an Elastic Load Balancer and connect up all the pieces. This will all take a few minutes.</p>
+
+<h2>Navigate to the Deployed MainDemo</h2>
+
+<p>Launch your browser and navigate to the instance web address which will look something like <strong>http://zerosharp-maindemo.elasticbeanstalk.com/</strong>. It should forward you to the login page. Login as Sam. Depending on whether the database needs to be created, this may take a couple of minutes and may even time out. I had to wait a minute and then click Login again before I was in.</p>
+
+<p>When you have finished <strong>don't forget to terminate both the Elastic Beanstalk application and the DB Instance</strong> (right click and 'Delete' from the AWS Explorer) otherwise you will be charged for the time the machines are provisioned. You can always check that everything has terminated properly in the <a href="https://console.aws.amazon.com/">AWS Console</a>.</p>
+
+<h2>Next up</h2>
+
+<p>In the next posts we will look some additional details:</p>
+
+<ul>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3 - Troubleshooting</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Part 5 - Load balancing</a></li>
+</ul>
+
+
+<h4>References</h4>
+
+<ul>
+<li>The <a href="https://www.youtube.com/watch?v=z-N0z5K_WFI">Amazon tutorial for the AWS Visual Studio Toolkit</a></li>
+<li>Nathanial Woolls has written an excellent similar article on hosting <a href="http://nwoolls.wordpress.com/2012/09/20/hosting-xaf-asp-net-projects-using-azure-web-sites/">XAF ASP.NET applications on Azure</a>.</li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>

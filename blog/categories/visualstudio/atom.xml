@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: visualstudio | ZeroSharp]]></title>
+  <link href="http://blog.zerosharp.com/blog/categories/visualstudio/atom.xml" rel="self"/>
+  <link href="http://blog.zerosharp.com/"/>
+  <updated>2013-01-25T13:04:17+00:00</updated>
+  <id>http://blog.zerosharp.com/</id>
+  <author>
+    <name><![CDATA[Robert Anderson]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[NuGet 1.8 Installation Problem]]></title>
+    <link href="http://blog.zerosharp.com/nuget-1-dot-8-installation-problem/"/>
+    <updated>2012-05-25T00:26:00+01:00</updated>
+    <id>http://blog.zerosharp.com/nuget-1-dot-8-installation-problem</id>
+    <content type="html"><![CDATA[<p>The NuGet team just released NuGet 1.8.  Unfortunately there is an issue when upgrading it via the NuGet package manager.  The following message appears and the installation fails.</p>
+
+<pre>
+VSIXInstaller.SignatureMismatchException: The installed version of 'NuGet Package Manager' 
+is signed, but the update version has an invalid signature. Therefore, Extension Manager 
+cannot install the update. 
+
+  at VSIXInstaller.Common.VerifyMatchingExtensionSignatures(IInstalledExtension installedExtension, 
+    IInstallableExtension updateExtension) 
+  at VSIXInstaller.InstallProgressPage.BeginInstallVSIX(SupportedVSSKU targetAppID)
+</pre>
+
+
+<p></p>
+
+<p>As explained in the <a href="http://docs.nuget.org/docs/release-notes/nuget-1.8">NuGet release notes</a>, one solution is to uninstall NuGet from the VS Extension Gallery before reinstalling.  Note: If Visual Studio won't allow you to uninstall the extension (the Uninstall button is disabled), then you likely need to restart Visual Studio using "Run as Administrator."</p>
+
+<p>Another alternative (courtesy of <a href="http://jeffhandley.com/">Jeff Handley</a>) is to install <a href="http://connect.microsoft.com/VisualStudio/Downloads/DownloadDetails.aspx?DownloadID=38654">this Visual Studio hotfix</a> and the next time you start Visual Studio, updating via the package manager will work.</p>
+]]></content>
+  </entry>
+  
+</feed>
