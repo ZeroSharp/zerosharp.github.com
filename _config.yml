@@ -84,15 +84,15 @@ google_plus_one_size: medium
 # Google Plus Profile
 # Hidden: No visible button, just add author information to search results
 googleplus_user: 112685056596124127572
-googleplus_hidden: false
+googleplus_hidden: true
 
 # Last.fm
 lastfm_user: nosredna
-lastfm_hidden: false
+lastfm_hidden: true
 
 # LinkedIn
 linkedin_user: 926740
-linkedin_hidden: false
+linkedin_hidden: true
 
 # Pinboard
 pinboard_user:
@@ -100,7 +100,7 @@ pinboard_count: 3
 
 # Pinterest
 pinterest_user: shamp00
-pinterest_hidden: false
+pinterest_hidden: true
 
 # SpringPad
 springpad_user: shamp00
@@ -118,4 +118,4 @@ disqus_show_comment_count: true
 google_analytics_tracking_id: UA-30564687-1
 
 # Facebook Like
-facebook_like: false
+facebook_like: true
