@@ -74,10 +74,12 @@ Rbenv handles the installation of multiple Ruby environments.
 
 If I try to install Ruby immediately, I get 
 
-    <span STYLE="color:red">ERROR:</span> This package must be compiled with GCC, but ruby-build
-    couldn't find a suitable `gcc` executable on your system.
-    Please install GCC and try again.
-    ...
+<pre>
+<span STYLE="color:red">ERROR:</span> This package must be compiled with GCC, but ruby-build
+couldn't find a suitable `gcc` executable on your system.
+Please install GCC and try again.
+...
+</pre>
 
 XCode used to ship with a compatible gcc, but no longer does. We can install it with Homebrew.
 
