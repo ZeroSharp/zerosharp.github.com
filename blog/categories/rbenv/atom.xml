@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rbenv | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/rbenv/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-01-31T17:56:38+00:00</updated>
+  <updated>2013-01-31T18:38:38+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -102,11 +102,13 @@ $ brew install ruby-build
 
 <p>If I try to install Ruby immediately, I get</p>
 
-<pre><code>&lt;span STYLE="color:red"&gt;ERROR:&lt;/span&gt; This package must be compiled with GCC, but ruby-build
+<pre>
+<span STYLE="color:red">ERROR:</span> This package must be compiled with GCC, but ruby-build
 couldn't find a suitable `gcc` executable on your system.
 Please install GCC and try again.
 ...
-</code></pre>
+</pre>
+
 
 <p>XCode used to ship with a compatible gcc, but no longer does. We can install it with Homebrew.</p>
 
