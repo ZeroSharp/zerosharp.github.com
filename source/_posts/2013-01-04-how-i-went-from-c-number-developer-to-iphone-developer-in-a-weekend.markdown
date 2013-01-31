@@ -3,7 +3,7 @@ layout: post
 title: "How I went from C# Developer to iPhone Developer in a Weekend"
 date: 2013-01-04 10:35
 comments: true
-categories: [c#, ios, iphone, monotouch]
+categories: [c#, ios, iphone, monotouch, mobile]
 ---
 Recently I took part in [Startup Weekend Buenos Aires](http://buenosaires.startupweekend.org/). It works just like most hackathons:
 
