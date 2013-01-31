@@ -1,0 +1,410 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Installing Ruby with Homebrew and rbenv on Mac OS X Mountain Lion - ZeroSharp</title>
+  <meta name="author" content="Robert Anderson">
+
+  
+  <meta name="description" content="Install Ruby with rbenv I decided to setup Octopress on my Mac so that I can publish blog posts from either Windows or MacOS. I&#8217;m on OS X 10.8. &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ZeroSharp.github.com/installing-ruby-with-homebrew-and-rbenv-on-mac-os-x-mountain-lion/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="http://feeds.feedburner.com/zerosharp" rel="alternate" title="ZeroSharp" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> 
+
+<!-- <ra+> -->
+<link href="http://fonts.googleapis.com/css?family=Ubuntu:500" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
+
+<link href="/stylesheets/custom/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+<!-- </ra+> -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-30564687-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <!--<h1><a href="/">ZeroSharp</a></h1>-->
+  <a href="http://www.zerosharp.com/"><h1>ZeroSharp</h1></a>
+  
+    <h2>Rob Anderson's ones and zeros</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ZeroSharp.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/license/">License</a></li>  
+</ul>
+<ul class="subscription">
+    <li><a href="https://plus.google.com/112685056596124127572?rel=author">
+      <img src="/images/asides/googleplus.png" width="24" height="24" alt="Rob on Google+">
+    </a></li>    
+    <li><a rel="me" href="http://twitter.com/8ctopus">
+      <img src="/images/asides/twitter.png" width="24" height="24" alt="Rob on Twitter" />
+    </a></li>
+    <!--<li><a rel="me" href="http://stackoverflow.com/users/1077279/shamp00">
+      <img src="/images/asides/stackoverflow.png" width="24" height="24" alt="Rob on StackOverflow" />
+    </a></li>
+    <li><a rel="me" href="https://github.com/zerosharp">
+      <img src="/images/asides/github.png" width="24" height="24" alt="Rob on GitHub" />
+    </a></li>
+    <li><a rel="me" href="http://www.linkedin.com/profile/view?id=926740"  class ="googleplus-hidden" >
+      <img src="/images/asides/linkedin.png" width="24" height="24" alt="Rob on LinkedIn" />
+    </a></li>
+    <li><a rel="me" href="http://springpad.com/#!/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/springpad.png" width="24" height="24" alt="Rob on SpringPad" />
+    </a></li>    
+    <li><a rel="me" href="http://pinterest.com/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/pinterest.png" width="24" height="24" alt="Rob on Pinterest" />
+    </a></li>
+    <li><a rel="me" href="http://www.last.fm/user/nosredna"  class ="googleplus-hidden" >
+      <img src="/images/asides/lastfm.png" width="24" height="24" alt="Rob on Last.fm" />
+    </a></li>-->
+    <li><a href="http://feeds.feedburner.com/zerosharp">
+      <img src="/images/asides/rss.png" rel="subscribe-rss" width="24" height="24" alt="RSS Feed" />
+    </a></li>
+</ul>
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Installing Ruby With Homebrew and Rbenv on Mac OS X Mountain Lion</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-31T17:38:00+00:00" pubdate data-updated="true">Jan 31<span>st</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h2>Install Ruby with rbenv</h2>
+
+<p>I decided to setup Octopress on my Mac so that I can publish blog posts from either Windows or MacOS. I&#8217;m on OS X 10.8.2.</p>
+
+<p>I tried to follow the <a href="http://octopress.org/docs/setup/rbenv/">Octopress instructions</a> for installing Ruby but ran into a few problems.</p>
+
+<h3>Install Homebrew</h3>
+
+<p><a href="http://mxcl.github.com/homebrew/">Homebrew</a> is a package manager for OS X. Open Terminal and install Homebrew with:</p>
+
+<pre><code>$ ruby -e "$(curl -fsSkL raw.github.com/mxcl/homebrew/go)"
+</code></pre>
+
+<p>Once the installation is successful, you can run the following command to check your environment.</p>
+
+<pre><code>$ brew doctor
+</code></pre>
+
+<p>Apparently, you should see:</p>
+
+<pre><code>Your system is raring to brew
+</code></pre>
+
+<p>But instead I had 3 warnings.</p>
+
+<pre>
+<span STYLE="color:red">Warning:</span> /usr/bin occurs before /usr/local/bin
+This means that system-provided programs will be used instead of those
+provided by Homebrew. The following tools exist at both paths:
+
+    gcov-4.2
+
+Consider amending your PATH so that /usr/local/bin
+occurs before /usr/bin in your PATH.
+</pre>
+
+
+<p>This one can be fixed by modifying your <code>.profile</code> file. Create it if it doesn&#8217;t already exist. Use <code>nano ~/.profile</code> if you don&#8217;t have a preferred editor.</p>
+
+<figure class='code'><figcaption><span>.profile </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Fix $PATH for homebrew</span>
+</span><span class='line'><span class="nv">homebrew</span><span class="o">=</span>/usr/local/bin:/usr/local/sbin
+</span><span class='line'><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$homebrew</span>:<span class="nv">$PATH</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Google tells me the other two warnings are related to Mono being installed and can be ignored.</p>
+
+<pre>
+<span STYLE="color:red">Warning:</span> /Library/Frameworks/Mono.framework detected
+This can be picked up by CMake's build system and likely cause the build to
+fail. You may need to move this file out of the way to compile CMake.
+
+<span STYLE="color:red">Warning:</span> You have a non-Homebrew 'pkg-config' in your PATH:
+  /usr/bin/pkg-config => /Library/Frameworks/Mono.framework/Versions/2.10.9/bin/pkg-config
+
+This was most likely created by the Mono installer. `./configure` may
+have problems finding brew-installed packages using this other pkg-config.
+</pre>
+
+
+<p>Ploughing on&#8230;</p>
+
+<h2>Install rbenv</h2>
+
+<p>Rbenv handles the installation of multiple Ruby environments.</p>
+
+<pre><code>$ brew update
+$ brew install rbenv
+$ brew install ruby-build
+</code></pre>
+
+<h2>Install gcc</h2>
+
+<p>If I try to install Ruby immediately, I get</p>
+
+<pre><code>&lt;span STYLE="color:red"&gt;ERROR:&lt;/span&gt; This package must be compiled with GCC, but ruby-build
+couldn't find a suitable `gcc` executable on your system.
+Please install GCC and try again.
+...
+</code></pre>
+
+<p>XCode used to ship with a compatible gcc, but no longer does. We can install it with Homebrew.</p>
+
+<pre><code>$ brew update
+$ brew tap homebrew/dupes
+$ brew install autoconf automake apple-gcc42
+</code></pre>
+
+<p>The new gcc will coexist happily alongside the default one.</p>
+
+<h2>Install Ruby 1.9.3</h2>
+
+<p>Now we can install Ruby.</p>
+
+<pre><code>$ rbenv install 1.9.3-p194
+$ rbenv rehash
+</code></pre>
+
+<p>Next run</p>
+
+<pre><code>$ ruby --version
+</code></pre>
+
+<p>Hmm&#8230; I get</p>
+
+<pre><code>ruby 1.8.7 (2012-02-08 patchlevel 358) [universal-darwin12.0]
+</code></pre>
+
+<p>Shouldn&#8217;t it say ruby 1.9.3? It turns out you need to add the following to the end of your <code>.profile</code>.</p>
+
+<figure class='code'><figcaption><span>.profile </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Initialize rbenv</span>
+</span><span class='line'><span class="k">if </span>which rbenv &gt; /dev/null; <span class="k">then </span><span class="nb">eval</span> <span class="s2">&quot;$(rbenv init -)&quot;</span>; <span class="k">fi</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now quit and restart Terminal.</p>
+
+<pre><code>$ rbenv global 1.9.3-p194
+$ ruby --version
+ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-darwin12.2.1]
+</code></pre>
+
+<p>Ruby 1.9.3 is installed correctly. If I quit and restart Terminal, <code>ruby --version</code> is still 1.9.3.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-31T17:38:00+00:00" pubdate data-updated="true">Jan 31<span>st</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/homebrew/'>homebrew</a>, <a class='category' href='/blog/categories/mac/'>mac</a>, <a class='category' href='/blog/categories/octopress/'>octopress</a>, <a class='category' href='/blog/categories/rbenv/'>rbenv</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/installing-ruby-with-homebrew-and-rbenv-on-mac-os-x-mountain-lion/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/installing-ruby-with-homebrew-and-rbenv-on-mac-os-x-mountain-lion/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/a-c-number-developers-adventures-in-ios-getting-started/" title="Previous Post: A C# Developer's Adventures in iOS - Getting Started">&laquo; A C# Developer's Adventures in iOS - Getting Started</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Robert Anderson
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'zerosharp';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/installing-ruby-with-homebrew-and-rbenv-on-mac-os-x-mountain-lion/';
+        var disqus_url = 'http://ZeroSharp.github.com/installing-ruby-with-homebrew-and-rbenv-on-mac-os-x-mountain-lion/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

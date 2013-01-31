@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: xcode | ZeroSharp]]></title>
+  <link href="http://ZeroSharp.github.com/blog/categories/xcode/atom.xml" rel="self"/>
+  <link href="http://ZeroSharp.github.com/"/>
+  <updated>2013-01-31T17:56:38+00:00</updated>
+  <id>http://ZeroSharp.github.com/</id>
+  <author>
+    <name><![CDATA[Robert Anderson]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[A C# Developer's Adventures in iOS - Getting Started]]></title>
+    <link href="http://ZeroSharp.github.com/a-c-number-developers-adventures-in-ios-getting-started/"/>
+    <updated>2013-01-30T11:18:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/a-c-number-developers-adventures-in-ios-getting-started</id>
+    <content type="html"><![CDATA[<h2>First steps in iPhone development</h2>
+
+<p>This is the first in a series of posts about developing an iOS application from the perspective of a Windows C# developer.</p>
+
+<h3>Startup Weekend</h3>
+
+<p>On a recent month-long trip to South America, I took part in the <a href="http://buenosaires.startupweekend.org/">Buenos Aires Startup Weekend</a> hackathon and my team came second!](/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend). The application we built is a treasure hunt game for tourists which helps them discover Buenos Aires. At the beginning of the weekend I knew nothing about mobile development. It was the first time I developed software using a Mac.</p>
+
+<p>First, let's look at the basic requirements for the environment.</p>
+
+<p><img class="right" src="/images/blog/adventures-in-ios-getting-started-001.png" width="450"></p>
+
+<h3>Xamarin MonoTouch</h3>
+
+<p><a href="http://xamarin.com/monotouch">MonoTouch</a> is the easiest approach for C# developers. It allowed me to write a basic native iPhone app in a weekend with no prior mobile development experience. I'd never used MonoDevelop or XCode either.</p>
+
+<p>MonoTouch is a software development kit for MacOS that cleverly enables you to use C# and the common .NET libraries (via Mono) along with bindings for the <a href="https://developer.apple.com/technologies/ios/cocoa-touch.html">Apple Cocoa Touch</a> framework to create native applications for iPhone, iPad and iPod. A lot of the tools are the same as for Objective-C developers: you use the iPhone Simulator and the XCode Interface Builder.</p>
+
+<p>If you are a C# developer still wondering whether to learn Objective-C, there is <a href="http://stackoverflow.com/a/1634592/1077279">a magnificent StackOverflow answer</a> comparing MonoTouch and Objective-C.</p>
+
+<h3>Costs</h3>
+
+<p>There are some costs associated with becoming a MonoTouch iOS developer.</p>
+
+<p>You need a Mac. I'm using a 15" MacBook Pro. I have it configured for dual boot, but I'm using the MacOS side for this project.</p>
+
+<p>You will need to sign up as an iOS developer with Apple. This costs <strong>$99</strong> per year. More information about <a href="https://developer.apple.com/programs/">Apple developer programs on their site</a>.</p>
+
+<p>You will need Xamarin MonoTouch which currently costs <strong>$399</strong> for a one year single seat license for a single developer. More information on pricing at the <a href="https://store.xamarin.com/">Xamarin store</a>.</p>
+
+<h3>Setting up the environment</h3>
+
+<p>Xamarin have an <a href="http://docs.xamarin.com/ios/Guides/Getting_Started/Installation">excellent installation guide</a> which guides you through installing both XCode and MonoTouch.</p>
+
+<h3>Hello World</h3>
+
+<p>The next step is to create your first iOS application running in the iPhone simulator. Go through the samples in the <a href="http://docs.xamarin.com/ios/guides/getting_started">MonoTouch getting started guide</a>.</p>
+
+<h3>Next up</h3>
+
+<p>Over the next few weeks I'm aiming to finish the app I built for Startup Weekend and I'll be sharing what I learn along the way.</p>
+]]></content>
+  </entry>
+  
+</feed>

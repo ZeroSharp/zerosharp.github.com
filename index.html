@@ -1,1 +1,1353 @@
-My Octopress Page is coming soon &hellip;
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>ZeroSharp</title>
+  <meta name="author" content="Robert Anderson">
+
+  
+  <meta name="description" content="Install Ruby with rbenv I decided to setup Octopress on my Mac so that I can publish blog posts from either Windows or MacOS. I&#8217;m on OS X 10.8. &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ZeroSharp.github.com/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="http://feeds.feedburner.com/zerosharp" rel="alternate" title="ZeroSharp" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> 
+
+<!-- <ra+> -->
+<link href="http://fonts.googleapis.com/css?family=Ubuntu:500" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
+
+<link href="/stylesheets/custom/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+<!-- </ra+> -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-30564687-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <!--<h1><a href="/">ZeroSharp</a></h1>-->
+  <a href="http://www.zerosharp.com/"><h1>ZeroSharp</h1></a>
+  
+    <h2>Rob Anderson's ones and zeros</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ZeroSharp.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/license/">License</a></li>  
+</ul>
+<ul class="subscription">
+    <li><a href="https://plus.google.com/112685056596124127572?rel=author">
+      <img src="/images/asides/googleplus.png" width="24" height="24" alt="Rob on Google+">
+    </a></li>    
+    <li><a rel="me" href="http://twitter.com/8ctopus">
+      <img src="/images/asides/twitter.png" width="24" height="24" alt="Rob on Twitter" />
+    </a></li>
+    <!--<li><a rel="me" href="http://stackoverflow.com/users/1077279/shamp00">
+      <img src="/images/asides/stackoverflow.png" width="24" height="24" alt="Rob on StackOverflow" />
+    </a></li>
+    <li><a rel="me" href="https://github.com/zerosharp">
+      <img src="/images/asides/github.png" width="24" height="24" alt="Rob on GitHub" />
+    </a></li>
+    <li><a rel="me" href="http://www.linkedin.com/profile/view?id=926740"  class ="googleplus-hidden" >
+      <img src="/images/asides/linkedin.png" width="24" height="24" alt="Rob on LinkedIn" />
+    </a></li>
+    <li><a rel="me" href="http://springpad.com/#!/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/springpad.png" width="24" height="24" alt="Rob on SpringPad" />
+    </a></li>    
+    <li><a rel="me" href="http://pinterest.com/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/pinterest.png" width="24" height="24" alt="Rob on Pinterest" />
+    </a></li>
+    <li><a rel="me" href="http://www.last.fm/user/nosredna"  class ="googleplus-hidden" >
+      <img src="/images/asides/lastfm.png" width="24" height="24" alt="Rob on Last.fm" />
+    </a></li>-->
+    <li><a href="http://feeds.feedburner.com/zerosharp">
+      <img src="/images/asides/rss.png" rel="subscribe-rss" width="24" height="24" alt="RSS Feed" />
+    </a></li>
+</ul>
+</nav>
+  <div id="main">
+    <div id="content">
+      <div class="blog-index">
+  
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/installing-ruby-with-homebrew-and-rbenv-on-mac-os-x-mountain-lion/">Installing Ruby With Homebrew and Rbenv on Mac OS X Mountain Lion</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-31T17:38:00+00:00" pubdate data-updated="true">Jan 31<span>st</span>, 2013</time>
+        
+         | <a href="/installing-ruby-with-homebrew-and-rbenv-on-mac-os-x-mountain-lion/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>Install Ruby with rbenv</h2>
+
+<p>I decided to setup Octopress on my Mac so that I can publish blog posts from either Windows or MacOS. I&#8217;m on OS X 10.8.2.</p>
+
+<p>I tried to follow the <a href="http://octopress.org/docs/setup/rbenv/">Octopress instructions</a> for installing Ruby but ran into a few problems.</p>
+
+<h3>Install Homebrew</h3>
+
+<p><a href="http://mxcl.github.com/homebrew/">Homebrew</a> is a package manager for OS X. Open Terminal and install Homebrew with:</p>
+
+<pre><code>$ ruby -e "$(curl -fsSkL raw.github.com/mxcl/homebrew/go)"
+</code></pre>
+
+<p>Once the installation is successful, you can run the following command to check your environment.</p>
+
+<pre><code>$ brew doctor
+</code></pre>
+
+<p>Apparently, you should see:</p>
+
+<pre><code>Your system is raring to brew
+</code></pre>
+
+<p>But instead I had 3 warnings.</p>
+
+<pre>
+<span STYLE="color:red">Warning:</span> /usr/bin occurs before /usr/local/bin
+This means that system-provided programs will be used instead of those
+provided by Homebrew. The following tools exist at both paths:
+
+    gcov-4.2
+
+Consider amending your PATH so that /usr/local/bin
+occurs before /usr/bin in your PATH.
+</pre>
+
+
+<p>This one can be fixed by modifying your <code>.profile</code> file. Create it if it doesn&#8217;t already exist. Use <code>nano ~/.profile</code> if you don&#8217;t have a preferred editor.</p>
+
+<figure class='code'><figcaption><span>.profile </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Fix $PATH for homebrew</span>
+</span><span class='line'><span class="nv">homebrew</span><span class="o">=</span>/usr/local/bin:/usr/local/sbin
+</span><span class='line'><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$homebrew</span>:<span class="nv">$PATH</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Google tells me the other two warnings are related to Mono being installed and can be ignored.</p>
+
+<pre>
+<span STYLE="color:red">Warning:</span> /Library/Frameworks/Mono.framework detected
+This can be picked up by CMake's build system and likely cause the build to
+fail. You may need to move this file out of the way to compile CMake.
+
+<span STYLE="color:red">Warning:</span> You have a non-Homebrew 'pkg-config' in your PATH:
+  /usr/bin/pkg-config => /Library/Frameworks/Mono.framework/Versions/2.10.9/bin/pkg-config
+
+This was most likely created by the Mono installer. `./configure` may
+have problems finding brew-installed packages using this other pkg-config.
+</pre>
+
+
+<p>Ploughing on&#8230;</p>
+
+<h2>Install rbenv</h2>
+
+<p>Rbenv handles the installation of multiple Ruby environments.</p>
+
+<pre><code>$ brew update
+$ brew install rbenv
+$ brew install ruby-build
+</code></pre>
+
+<h2>Install gcc</h2>
+
+<p>If I try to install Ruby immediately, I get</p>
+
+<pre><code>&lt;span STYLE="color:red"&gt;ERROR:&lt;/span&gt; This package must be compiled with GCC, but ruby-build
+couldn't find a suitable `gcc` executable on your system.
+Please install GCC and try again.
+...
+</code></pre>
+
+<p>XCode used to ship with a compatible gcc, but no longer does. We can install it with Homebrew.</p>
+
+<pre><code>$ brew update
+$ brew tap homebrew/dupes
+$ brew install autoconf automake apple-gcc42
+</code></pre>
+
+<p>The new gcc will coexist happily alongside the default one.</p>
+
+<h2>Install Ruby 1.9.3</h2>
+
+<p>Now we can install Ruby.</p>
+
+<pre><code>$ rbenv install 1.9.3-p194
+$ rbenv rehash
+</code></pre>
+
+<p>Next run</p>
+
+<pre><code>$ ruby --version
+</code></pre>
+
+<p>Hmm&#8230; I get</p>
+
+<pre><code>ruby 1.8.7 (2012-02-08 patchlevel 358) [universal-darwin12.0]
+</code></pre>
+
+<p>Shouldn&#8217;t it say ruby 1.9.3? It turns out you need to add the following to the end of your <code>.profile</code>.</p>
+
+<figure class='code'><figcaption><span>.profile </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Initialize rbenv</span>
+</span><span class='line'><span class="k">if </span>which rbenv &gt; /dev/null; <span class="k">then </span><span class="nb">eval</span> <span class="s2">&quot;$(rbenv init -)&quot;</span>; <span class="k">fi</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now quit and restart Terminal.</p>
+
+<pre><code>$ rbenv global 1.9.3-p194
+$ ruby --version
+ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-darwin12.2.1]
+</code></pre>
+
+<p>Ruby 1.9.3 is installed correctly. If I quit and restart Terminal, <code>ruby --version</code> is still 1.9.3.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/a-c-number-developers-adventures-in-ios-getting-started/">A C# Developer&#8217;s Adventures in iOS - Getting Started</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-30T11:18:00+00:00" pubdate data-updated="true">Jan 30<span>th</span>, 2013</time>
+        
+         | <a href="/a-c-number-developers-adventures-in-ios-getting-started/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>First steps in iPhone development</h2>
+
+<p>This is the first in a series of posts about developing an iOS application from the perspective of a Windows C# developer.</p>
+
+<h3>Startup Weekend</h3>
+
+<p>On a recent month-long trip to South America, I took part in the <a href="http://buenosaires.startupweekend.org/">Buenos Aires Startup Weekend</a> hackathon and my team came second!](/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend). The application we built is a treasure hunt game for tourists which helps them discover Buenos Aires. At the beginning of the weekend I knew nothing about mobile development. It was the first time I developed software using a Mac.</p>
+
+<p>First, let&#8217;s look at the basic requirements for the environment.</p>
+
+<p><img class="right" src="/images/blog/adventures-in-ios-getting-started-001.png" width="450"></p>
+
+<h3>Xamarin MonoTouch</h3>
+
+<p><a href="http://xamarin.com/monotouch">MonoTouch</a> is the easiest approach for C# developers. It allowed me to write a basic native iPhone app in a weekend with no prior mobile development experience. I&#8217;d never used MonoDevelop or XCode either.</p>
+
+<p>MonoTouch is a software development kit for MacOS that cleverly enables you to use C# and the common .NET libraries (via Mono) along with bindings for the <a href="https://developer.apple.com/technologies/ios/cocoa-touch.html">Apple Cocoa Touch</a> framework to create native applications for iPhone, iPad and iPod. A lot of the tools are the same as for Objective-C developers: you use the iPhone Simulator and the XCode Interface Builder.</p>
+
+<p>If you are a C# developer still wondering whether to learn Objective-C, there is <a href="http://stackoverflow.com/a/1634592/1077279">a magnificent StackOverflow answer</a> comparing MonoTouch and Objective-C.</p>
+
+<h3>Costs</h3>
+
+<p>There are some costs associated with becoming a MonoTouch iOS developer.</p>
+
+<p>You need a Mac. I&#8217;m using a 15&#8221; MacBook Pro. I have it configured for dual boot, but I&#8217;m using the MacOS side for this project.</p>
+
+<p>You will need to sign up as an iOS developer with Apple. This costs <strong>$99</strong> per year. More information about <a href="https://developer.apple.com/programs/">Apple developer programs on their site</a>.</p>
+
+<p>You will need Xamarin MonoTouch which currently costs <strong>$399</strong> for a one year single seat license for a single developer. More information on pricing at the <a href="https://store.xamarin.com/">Xamarin store</a>.</p>
+
+<h3>Setting up the environment</h3>
+
+<p>Xamarin have an <a href="http://docs.xamarin.com/ios/Guides/Getting_Started/Installation">excellent installation guide</a> which guides you through installing both XCode and MonoTouch.</p>
+
+<h3>Hello World</h3>
+
+<p>The next step is to create your first iOS application running in the iPhone simulator. Go through the samples in the <a href="http://docs.xamarin.com/ios/guides/getting_started">MonoTouch getting started guide</a>.</p>
+
+<h3>Next up</h3>
+
+<p>Over the next few weeks I&#8217;m aiming to finish the app I built for Startup Weekend and I&#8217;ll be sharing what I learn along the way.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/my-amateur-git-skills-have-lead-to-an-rss-deluge/">My Amateur Git Skills Have Lead to an RSS Deluge</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-29T11:31:00+00:00" pubdate data-updated="true">Jan 29<span>th</span>, 2013</time>
+        
+         | <a href="/my-amateur-git-skills-have-lead-to-an-rss-deluge/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I was trying to upgrade to the latest Octopress version but it seems I did something with the atom.xml file and some of you got every single post as &#8216;new&#8217; in your RSS readers. Not sure what I did, but sorry for any extra mouse clicks. All working now.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/facebook-graph-search-pwns-your-privacy/">Facebook Graph Search Pwns Your Privacy</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-24T11:10:00+00:00" pubdate data-updated="true">Jan 24<span>th</span>, 2013</time>
+        
+         | <a href="/facebook-graph-search-pwns-your-privacy/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Facebook&#8217;s new Graph Search allows you to easily see anybody&#8217;s photos.</p>
+
+<p>First, search for someone who is not a friend. Most often, if you navigate to their photos, you see something like this:</p>
+
+<p><img src="/images/blog/facebook-graph-search-001.png"></p>
+
+<p>You can&#8217;t see any photos because their privacy settings are not set to &#8216;Public&#8217;. It&#8217;s what you&#8217;d expect.</p>
+
+<h4>Use Graph Search to bypass privacy</h4>
+
+<p>If you put <em>Photos of &lt;name&gt;</em> or <em>Photos by &lt;name&gt;</em> into the new Facebook graph search <strong>you can view all their photos regardless of their privacy settings</strong>. This works even for friends who have put you on a &#8216;limited&#8217; profile.</p>
+
+<p>Your boss/ex/grandma is probably checking out your private photos right now.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/image-captions-for-octopress/">Image Captions for Octopress</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-23T11:56:00+00:00" pubdate data-updated="true">Jan 23<span>rd</span>, 2013</time>
+        
+         | <a href="/image-captions-for-octopress/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I wanted to add captions to some of my images and came across <a href="https://github.com/imathis/octopress/issues/124">this forum thread</a>, from which I was able to piece together <a href="http://tedkulp.com/">Ted Kulp</a>&#8217;s slick solution.</p>
+
+<p>The following markdown</p>
+
+<pre><code> {% imgcap http://some.url.com/pic.jpg Leonhard Euler %} 
+</code></pre>
+
+<p>will render like this.</p>
+
+<p><span class='caption-wrapper'><img class='caption' src='http://upload.wikimedia.org/wikipedia/commons/d/d7/Leonhard_Euler.jpg' width='' height='' alt='Leonhard Euler' title='Leonhard Euler'><span class='caption-text'>Leonhard Euler</span></span></p>
+
+<p>It works with <code>left</code> and <code>right</code> too.</p>
+
+<h3>The changes</h3>
+
+<p>First, create the image_caption_tag plugin and put it in the plugins subfolder.</p>
+
+<figure class='code'><figcaption><span>plugins/image_caption_tag.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># Title: Image tag with caption for Jekyll</span>
+</span><span class='line'><span class="c1"># Description: Easily output images with captions</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">module</span> <span class="nn">Jekyll</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">class</span> <span class="nc">CaptionImageTag</span> <span class="o">&lt;</span> <span class="no">Liquid</span><span class="o">::</span><span class="no">Tag</span>
+</span><span class='line'>    <span class="vi">@img</span> <span class="o">=</span> <span class="kp">nil</span>
+</span><span class='line'>    <span class="vi">@title</span> <span class="o">=</span> <span class="kp">nil</span>
+</span><span class='line'>    <span class="vi">@class</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>    <span class="vi">@width</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>    <span class="vi">@height</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">tag_name</span><span class="p">,</span> <span class="n">markup</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
+</span><span class='line'>      <span class="k">if</span> <span class="n">markup</span> <span class="o">=~</span> <span class="sr">/(\S.*\s+)?(https?:\/\/|\/)(\S+)(\s+\d+\s+\d+)?(\s+.+)?/i</span>
+</span><span class='line'>        <span class="vi">@class</span> <span class="o">=</span> <span class="vg">$1</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span>
+</span><span class='line'>        <span class="vi">@img</span> <span class="o">=</span> <span class="vg">$2</span> <span class="o">+</span> <span class="vg">$3</span>
+</span><span class='line'>        <span class="k">if</span> <span class="vg">$5</span>
+</span><span class='line'>          <span class="vi">@title</span> <span class="o">=</span> <span class="vg">$5</span><span class="o">.</span><span class="n">strip</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>        <span class="k">if</span> <span class="vg">$4</span> <span class="o">=~</span> <span class="sr">/\s*(\d+)\s+(\d+)/</span>
+</span><span class='line'>          <span class="vi">@width</span> <span class="o">=</span> <span class="vg">$1</span>
+</span><span class='line'>          <span class="vi">@height</span> <span class="o">=</span> <span class="vg">$2</span>
+</span><span class='line'>        <span class="k">end</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>      <span class="k">super</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">output</span> <span class="o">=</span> <span class="k">super</span>
+</span><span class='line'>      <span class="k">if</span> <span class="vi">@img</span>
+</span><span class='line'>        <span class="s2">&quot;&lt;span class=&#39;</span><span class="si">#{</span><span class="p">(</span><span class="s1">&#39;caption-wrapper &#39;</span> <span class="o">+</span> <span class="vi">@class</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="si">}</span><span class="s2">&#39;&gt;&quot;</span> <span class="o">+</span>
+</span><span class='line'>          <span class="s2">&quot;&lt;img class=&#39;caption&#39; src=&#39;</span><span class="si">#{</span><span class="vi">@img</span><span class="si">}</span><span class="s2">&#39; width=&#39;</span><span class="si">#{</span><span class="vi">@width</span><span class="si">}</span><span class="s2">&#39; height=&#39;</span><span class="si">#{</span><span class="vi">@height</span><span class="si">}</span><span class="s2">&#39; alt=&#39;</span><span class="si">#{</span><span class="vi">@title</span><span class="si">}</span><span class="s2">&#39; title=&#39;</span><span class="si">#{</span><span class="vi">@title</span><span class="si">}</span><span class="s2">&#39;&gt;&quot;</span> <span class="o">+</span>
+</span><span class='line'>          <span class="s2">&quot;&lt;span class=&#39;caption-text&#39;&gt;</span><span class="si">#{</span><span class="vi">@title</span><span class="si">}</span><span class="s2">&lt;/span&gt;&quot;</span> <span class="o">+</span>
+</span><span class='line'>        <span class="s2">&quot;&lt;/span&gt;&quot;</span>
+</span><span class='line'>      <span class="k">else</span>
+</span><span class='line'>        <span class="s2">&quot;Error processing input, expected syntax: &lt;img class=&quot;</span><span class="o">[</span><span class="k">class</span> <span class="nb">name</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">]</span><span class="s2">&quot; src=&quot;</span><span class="o">/</span><span class="n">url</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">image</span><span class="s2">&quot; title=&quot;</span><span class="o">[</span><span class="n">width</span> <span class="n">height</span><span class="o">]</span> <span class="o">[</span><span class="n">title</span> <span class="n">text</span><span class="o">]</span><span class="s2">&quot; &gt;&quot;</span>
+</span><span class='line'>      <span class="k">end</span>
+</span><span class='line'>    <span class="k">end</span>
+</span><span class='line'>  <span class="k">end</span>
+</span><span class='line'><span class="k">end</span>
+</span><span class='line'>
+</span><span class='line'><span class="no">Liquid</span><span class="o">::</span><span class="no">Template</span><span class="o">.</span><span class="n">register_tag</span><span class="p">(</span><span class="s1">&#39;imgcap&#39;</span><span class="p">,</span> <span class="no">Jekyll</span><span class="o">::</span><span class="no">CaptionImageTag</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Next, modify the _utilities.scss file as follows.</p>
+
+<figure class='code'><figcaption><span>sass/base/_utilities.scss  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>   border: $border;
+</span><span class='line'> }
+</span><span class='line'>
+</span><span class='line'><span class="gi">+@mixin reset-shadow-box() {</span>
+</span><span class='line'><span class="gi">+  @include shadow-box(0px, 0px, 0px);</span>
+</span><span class='line'><span class="gi">+}</span>
+</span><span class='line'><span class="gi">+</span>
+</span><span class='line'> @mixin selection($bg, $color: inherit, $text-shadow: none){
+</span><span class='line'>   * {
+</span><span class='line'>     &amp;::-moz-selection { background: $bg; color: $color; text-shadow: $text-shadow; }
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Finally, apply the following changes to the _blog.scss file.</p>
+
+<figure class='code'><figcaption><span>sass/partials/_blog.scss  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>   article {
+</span><span class='line'>     font-size: 2.0em; font-style: italic;
+</span><span class='line'>     line-height: 1.3em;
+</span><span class='line'>   }
+</span><span class='line'><span class="gd">-  img, video, .flash-video {</span>
+</span><span class='line'><span class="gi">+  img, video, .flash-video, .caption-wrapper {</span>
+</span><span class='line'>     @extend .flex-content;
+</span><span class='line'>     @extend .basic-alignment;
+</span><span class='line'>     @include shadow-box;
+</span><span class='line'><span class="gi">+    &amp;.caption {</span>
+</span><span class='line'><span class="gi">+      @include reset-shadow-box;</span>
+</span><span class='line'><span class="gi">+    }</span>
+</span><span class='line'><span class="gi">+  }</span>
+</span><span class='line'><span class="gi">+  .caption-wrapper {</span>
+</span><span class='line'><span class="gi">+    display: inline-block;</span>
+</span><span class='line'><span class="gi">+    margin-bottom: 10px;</span>
+</span><span class='line'><span class="gi">+    .caption-text {</span>
+</span><span class='line'><span class="gi">+      background: #fff;</span>
+</span><span class='line'><span class="gi">+      text-align: center;</span>
+</span><span class='line'><span class="gi">+      font-size: .8em;</span>
+</span><span class='line'><span class="gi">+      color: #666;</span>
+</span><span class='line'><span class="gi">+      display: block;</span>
+</span><span class='line'><span class="gi">+    }</span>
+</span><span class='line'>   }
+</span><span class='line'>   video, .flash-video { margin: 0 auto 1.5em; }
+</span><span class='line'>   video { display: block; width: 100%; }
+</span><span class='line'>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Regenerate your Octopress site and you can start using <code>imgcap</code> instead of <code>img</code>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/setting-up-octopress-on-windows-again/">Setting Up Octopress on Windows Again</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-17T11:20:00+00:00" pubdate data-updated="true">Jan 17<span>th</span>, 2013</time>
+        
+         | <a href="/setting-up-octopress-on-windows-again/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>My <a href="/setting-up-octopress-on-windows/">very first blog post</a> was about setting up Octopress. The following is an updated version of those instructions for setting up Octopress with Windows, ruby 1.9.3, python 2.7.3.</p>
+
+<p>This is quick guide to setting up <a href="http://octopress.org/">Octopress</a> to publish to GitHub pages. I&#8217;m using Windows 8 64-bit, but the instructions should work with other versions of Windows.</p>
+
+<h3>Get with GitHub</h3>
+
+<p>First, get an account on GitHub and follow the excellent instructions for Windows here.  <a href="http://help.github.com/win-set-up-git/">here</a>.</p>
+
+<p>Once you are set up with GitHub, get <a href="https://github.com/scottmuc/yari">yari</a> by opening a command prompt:</p>
+
+<p>Then create a directory for all your github projects.  You could put this anywhere, e.g., <code>%USERPROFILE%\github</code>.  I chose to create a directory <code>C:\projects\github\</code>.</p>
+
+<h3>Installing Octopress</h3>
+
+<p><img class="right" src="/images/blog/octopress_logo.png"></p>
+
+<h4>Use yari instead of RVM/rbenv</h4>
+
+<p>Scott Muc has written <a href="https://github.com/scottmuc/yari">yari</a> which lets you switch between Windows Ruby versions.  Get it with the following command.</p>
+
+<pre><code>cd C:\projects\github\
+git clone git://github.com/scottmuc/yari.git yari
+</code></pre>
+
+<p>Once this has completed you can setup the required Ruby environment with the command:</p>
+
+<pre><code>yari 1.9.3
+</code></pre>
+
+<p>Then follow the rest of the instructions from <a href="http://octopress.org/docs/setup/">the Octopress setup instructions</a>.</p>
+
+<pre><code>git clone git://github.com/imathis/octopress.git octopress
+cd octopress
+ruby --version  # Should report Ruby 1.9.2 thanks to yari
+</code></pre>
+
+<p>Next install dependencies</p>
+
+<pre><code>gem install bundler
+bundle install
+</code></pre>
+
+<p>Install the default Octopress theme.</p>
+
+<pre><code>rake install
+</code></pre>
+
+<h3>Deploying to GitHub</h3>
+
+<p>The instructions are <a href="http://octopress.org/docs/deploying/github/">here</a>.  The only difficulty I had was working out which URL to use after:</p>
+
+<pre><code>rake setup_github_pages
+</code></pre>
+
+<p>This will ask you for your Github Pages repository url, but it is not clear that this is the SSH one, e.g., <code>git@github.com:ZeroSharp/zerosharp.github.com.git</code>.  You can find it near the top of <a href="https://github.com/ZeroSharp/zerosharp.github.com">the repository page</a>.</p>
+
+<h3>Configuring your blog</h3>
+
+<p>Follow the instructions <a href="http://octopress.org/docs/configuring/">here</a> to configure your blog.</p>
+
+<h4>Markdown</h4>
+
+<p>It is quite difficult to find good help on the markdown syntax other than for the codeblocks section.  For instance, it is not clear how to generate a codeblock with no line numbers, like this one:</p>
+
+<pre><code>How do I output a codeblock with no line numbers?
+</code></pre>
+
+<p>It turns out it either requires a <code>&lt;pre&gt;</code> tag instead of a <code>{ codeblock }</code> tag, or alternatively, start the line with four spaces.  The official syntax is <a href="http://daringfireball.net/projects/markdown/syntax">here</a>, but I also found <a href="http://warpedvisions.org/projects/markdown-cheat-sheet/">this cheat sheet</a>.</p>
+
+<h4>Fonts and Styles</h4>
+
+<p>See <a href="http://blog.bigdinosaur.org/changing-octopresss-header/">Lee&#8217;s Bigdinosaur blog</a>.</p>
+
+<h4>Problem with CodeBlocks</h4>
+
+<p>I had a problem with codeblocks which seems to be specific to Windows.  It seems that whenever you include a <code>lang</code> parameter in a <code>codeblock</code>, you get:</p>
+
+<pre><code>Liquid error: No such file or directory - python2.7 -c “import sys; print sys.executable”
+</code></pre>
+
+<p>There are two issues:</p>
+
+<ul>
+<li>Syntax highlighting requires Python which is not automatically installed.</li>
+<li>There is a problem with pythonexec.rb which does not seem to support Windows Python installations very well.</li>
+</ul>
+
+
+<p>Luckily we can fix them both.  Install <a href="http://www.python.org/getit/releases/2.7.3/">Python 2.7.3</a>.  Actually I used <a href="http://ninite.com/">ninite.com</a> to install it.</p>
+
+<p>Then modify the pythonrubyexec.rb which is in the depths of the yari subdirectory.  Try here: <code>.\yari\ruby-1.9.3-p194-i386-mingw32\lib\ruby\gems\1.9.3\gems\rubypython-0.5.3\lib\rubypython\pythonexec.rb</code></p>
+
+<p>At the top of pythonexec.rb, modify the file as follows:</p>
+
+<figure class='code'><figcaption><span>pythonexec.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>class RubyPython::PythonExec
+</span><span class='line'>  def initialize(python_executable)
+</span><span class='line'>    @python = python_executable || &quot;python&quot;
+</span><span class='line'>
+</span><span class='line'><span class="gi">+    if (@python.include? &#39;python2.7&#39;)</span>
+</span><span class='line'><span class="gi">+      @python = &quot;python&quot;</span>
+</span><span class='line'><span class="gi">+    end</span>
+</span><span class='line'>
+</span><span class='line'>    @python = %x(#{@python} -c &quot;import sys; print sys.executable&quot;).chomp
+</span><span class='line'>
+</span><span class='line'>    @version = run_command &quot;import sys; print &#39;%d.%d&#39; % sys.version_info[:2]&quot;
+</span><span class='line'>
+</span><span class='line'><span class="gd">-    @dirname = File.dirname(@python)</span>
+</span><span class='line'><span class="gi">+    @dirname = &quot;C:/Python27&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/better-handling-of-decimals-in-the-xaf-audit-trail/">Better Handling of Decimals in the XAF Audit Trail</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-15T10:29:00+00:00" pubdate data-updated="true">Jan 15<span>th</span>, 2013</time>
+        
+         | <a href="/better-handling-of-decimals-in-the-xaf-audit-trail/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>The following screenshot shows the detail view of an object change from the DevExpress XAF Audit Trail. The <code>DecimalValue</code> property was changed from 123.45 to 543.22.</p>
+
+<p><img src="/images/blog/audit-trail-001.jpg"></p>
+
+<p>Why is the <code>OldValue</code> property is displayed with two trailing zeros? The corresponding property is defined as follows:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="na">[DefaultClassOptions]</span>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">MyClass</span> <span class="p">:</span> <span class="n">XPObject</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">MyClass</span><span class="p">(</span><span class="n">Session</span> <span class="n">session</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//...</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="kt">decimal</span> <span class="n">_DecimalValue</span><span class="p">;</span>
+</span><span class='line'><span class="na">    [ModelDefault(&quot;DisplayFormat&quot;, &quot;{0:n2}&quot;)]</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">decimal</span> <span class="n">DecimalValue</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">get</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">_DecimalValue</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">set</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">SetPropertyValue</span><span class="p">(</span><span class="s">&quot;DecimalValue&quot;</span><span class="p">,</span> <span class="k">ref</span> <span class="n">_DecimalValue</span><span class="p">,</span> <span class="k">value</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="n">XPCollection</span><span class="p">&lt;</span><span class="n">AuditDataItemPersistent</span><span class="p">&gt;</span> <span class="n">_ChangeHistory</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">public</span> <span class="n">XPCollection</span><span class="p">&lt;</span><span class="n">AuditDataItemPersistent</span><span class="p">&gt;</span> <span class="n">ChangeHistory</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">get</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">_ChangeHistory</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="n">_ChangeHistory</span> <span class="p">=</span> <span class="n">AuditedObjectWeakReference</span><span class="p">.</span><span class="n">GetAuditTrail</span><span class="p">(</span><span class="n">Session</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">_ChangeHistory</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Explanation and fix</h3>
+
+<p>A C# <code>decimal</code> is a type which represents a number&#8217;s value <em>and its precision</em>. It actually stores the number of trailing zeros along with the value. For the <code>NewValue</code>, it has stored the decimal value as the user entered it - with no trailing zeros. Howevever, for the <code>OldValue</code>, it has retrieved the value from the database and used the SQL column definition to determine the precision.</p>
+
+<p>The default SQL column type that XPO column type for properties of type <code>decimal</code> is the <code>money</code> type (<a href="http://msdn.microsoft.com/en-us/library/aa933242.aspx">see the MSDN documentation</a>) which stores 4 decimal places of precision. If we override this with, say, a <code>DECIMAL(28, 13)</code>, the audit trail would show 13 decimal places of precision.</p>
+
+<p>From the user&#8217;s perspective, this looks a little confusing, so let&#8217;s fix it.</p>
+
+<p>During the initialization of your application (in Application_Start for a web application), add an event to the <code>AuditTrailService</code> as follows.</p>
+
+<pre><code>AuditTrailConfig.Initialize();
+</code></pre>
+
+<p>and then declare the <code>AuditTrailConfig</code> helper class as follows:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">AuditTrailConfig</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">Initialize</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">AuditTrailService</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">SaveAuditTrailData</span> <span class="p">+=</span> <span class="n">Instance_SaveAuditTrailData</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">static</span> <span class="k">void</span> <span class="nf">Instance_SaveAuditTrailData</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">SaveAuditTrailDataEventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">NormalizeOldValuesDecimalPrecision</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">NormalizeOldValuesDecimalPrecision</span><span class="p">(</span><span class="n">SaveAuditTrailDataEventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="kt">var</span> <span class="n">decimalAuditTrailDataItems</span> <span class="p">=</span> <span class="n">e</span><span class="p">.</span><span class="n">AuditTrailDataItems</span>
+</span><span class='line'>                                          <span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">OldValue</span> <span class="k">is</span> <span class="kt">decimal</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">foreach</span> <span class="p">(</span><span class="n">AuditDataItem</span> <span class="n">auditTrailItem</span> <span class="k">in</span> <span class="n">decimalAuditTrailDataItems</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="c1">// remove any trailing zeros from OldValue</span>
+</span><span class='line'>            <span class="n">auditTrailItem</span><span class="p">.</span><span class="n">OldValue</span> <span class="p">=</span> <span class="p">((</span><span class="kt">decimal</span><span class="p">)</span><span class="n">auditTrailItem</span><span class="p">.</span><span class="n">OldValue</span><span class="p">).</span><span class="n">Normalize</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>Normalize()</code> method is an extension method. See the <a href="/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/">trick in my last post</a> for more information.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">DecimalExtensions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="kt">decimal</span> <span class="nf">Normalize</span><span class="p">(</span><span class="k">this</span> <span class="kt">decimal</span> <span class="k">value</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">value</span> <span class="p">/</span> <span class="m">1.000000000000000000000000000000000</span><span class="n">m</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And then the same change would be logged as follows.</p>
+
+<p><img src="/images/blog/audit-trail-002.jpg"></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/">How to Remove the Trailing Zeros of Precision From a C# Decimal</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-09T17:45:00+00:00" pubdate data-updated="true">Jan 9<span>th</span>, 2013</time>
+        
+         | <a href="/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>You may know that the C# <code>Decimal</code> type remembers any trailing zeros. So for instance:</p>
+
+<pre><code>Console.WriteLine(123.45m);
+Console.WriteLine(123.45000m);
+Console.WriteLine(123.4500000m);
+</code></pre>
+
+<p>results in</p>
+
+<pre><code>123.45
+123.45000
+123.4500000
+</code></pre>
+
+<p>This is because the <code>Decimal</code> type is designed for representing a number including its accuracy.</p>
+
+<p>It is tricky to find a good way of controlling this accuracy. If I have <code>x = 123.45000</code>, how can I easily remove the trailing zeros so that <code>x.ToString()</code> outputs <code>123.45</code>?</p>
+
+<p>For a while it looked like I&#8217;d have to perform some <a href="http://stackoverflow.com/a/4298787/1077279">Jon Skeet wizardry</a>, but there is a simpler solution. The following extension method will remove all the trailing zeros.</p>
+
+<pre><code>public static class DecimalExtensions
+{
+    public static Decimal Normalize(this Decimal value)
+    {
+        return value / 1.000000000000000000000000000000000m;
+    }
+}
+</code></pre>
+
+<p>And if you need an exact number of trailing zeros, you can first <code>Normalize()</code> and then multiply.</p>
+
+<pre><code>Console.WriteLine(123.45m.Normalize() * 1.000m); 
+</code></pre>
+
+<p>will output the following.</p>
+
+<pre><code>123.45000
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend/">How I Went From C# Developer to iPhone Developer in a Weekend</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-04T10:35:00+00:00" pubdate data-updated="true">Jan 4<span>th</span>, 2013</time>
+        
+         | <a href="/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Recently I took part in <a href="http://buenosaires.startupweekend.org/">Startup Weekend Buenos Aires</a>. It works just like most hackathons:</p>
+
+<p><a href="http://buenosaires.startupweekend.org/2012/11/12/ganadores-swba2012/"><span class='caption-wrapper right'><img class='caption' src='/images/blog/basw/BABingo-2puesto-SWBA2012.jpg' width='' height='' alt='New friends: Caro, Eze, Gus and me' title='New friends: Caro, Eze, Gus and me'><span class='caption-text'>New friends: Caro, Eze, Gus and me</span></span></a></p>
+
+<ul>
+<li>You give a one minute pitch on Friday evening.</li>
+<li>Winners put together a team.</li>
+<li>You work with your team on Saturday and Sunday to launch a product.</li>
+<li>Demo for the judges.</li>
+<li>Prizes. Beer. Sleep.</li>
+</ul>
+
+
+<p>On the Friday I spoke no Spanish and had no idea how to write an iPhone app. By Sunday I still spoke no Spanish, but <strong>I&#8217;d built my first app and it won second prize!</strong></p>
+
+<p>How did I learn Objective-C in a weekend? I didn&#8217;t. I wrote it in C#.</p>
+
+<p><span class='pullquote-right' data-pullquote='Monotouch makes mobile development really easy for C# programmers.'>
+I downloaded <a href="http://xamarin.com/monotouch">Xamarin MonoTouch</a> onto my <a href="/the-best-pc-laptop-is-a-mac/">MacBook Pro</a> and was following the &#8216;Hello World&#8217; tutorial within an hour. The MonoTouch <a href="http://docs.xamarin.com/iOS/Guides">documentation</a> is very clear and the <a href="http://docs2.xamarin.com/ios/samples">samples</a> are very useful. Very soon I had a multiple screen application built, including capturing an image from the camera.</p>
+
+<p>Monotouch makes mobile development really easy for C# programmers. It&#8217;s also cross-platform so you can re-use big chunks of your code when you write the Android version.</p>
+
+<p>Check out <a href="http://blog.xamarin.com/eight-reasons-c-sharp-is-the-best-language-for-mobile-development/">this recent blog post from the guys at Xamarin</a>.
+</span></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 5</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-12-05T11:03:00+00:00" pubdate data-updated="true">Dec 5<span>th</span>, 2012</time>
+        
+         | <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>Part 5: Load balancing</h2>
+
+<p>This is the final post in this 5 part series about deploying XAF to the Amazon cloud. The other parts are:</p>
+
+<ul>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1 - Creating a database in RDS</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2 - Deploying to ElasticBeanstalk</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3 - Troubleshooting</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
+</ul>
+
+
+<p>This part covers load balancing and autoscaling.</p>
+
+<h3>Load balancing</h3>
+
+<p>In order to enable load balancing with DevExpress XAF applications, you must activate client affinity (sticky sessions) which you can do in the <strong>Load Balancer tab</strong>.</p>
+
+<p><img src="/images/blog/aws/aws-autoscaling-2.jpg" title="'figure 19'" ></p>
+
+<p>This is because XAF relies http session variables (notably the <code>WebApplication</code>). With sticky sessions enabled, when a user first hits the Elastic Load Balancer, they are assigned a random server but all subsequent requests are routed to the same server instance.</p>
+
+<h2>Autoscaling</h2>
+
+<h3>Adding Capacity (Works)</h3>
+
+<p>Switch to the <strong>Auto Scaling</strong> tab of the Elastic Beanstalk instance.</p>
+
+<p><img src="/images/blog/aws/aws-autoscaling-1.jpg" title="'figure 19'" ></p>
+
+<p>The options for autoscaling are extensive and there is plenty information on the <a href="http://aws.amazon.com/autoscaling">Amazon website</a>. In the above screenshot we have the Elastic Load Balancer configured so that it will initially deploy 1 server (the Minimum Instance Count), but whenever the NetworkOut measurement of 600,000 bytes over a 5 minute interval, a new server launch is triggered up to a maximum of 4 servers. Adding capacity works fine with XAF applications.</p>
+
+<h3>Removing Capacity (Fails)</h3>
+
+<p>The configuration above also shows that if the NetworkOut drops to below 200,000 bytes over a period of 5 minutes then the number of servers should decrease. <strong>This will NOT work</strong>.</p>
+
+<p>The problem is that the Elastic Load Balancer will terminate the surplus server immediately (the equivalent of a <code>shutdown -s</code>). Any users connected to that server will immediately lose their session and will probably receive an ugly error.</p>
+
+<p>One workaround is to allow scaling out but to disable scaling in. To do this, set the &#8216;Lower Threshold&#8217; to zero.</p>
+
+<h3>Possible Improvements</h3>
+
+<p>There are a couple of potential longer term solutions to the problem of dropped sessions when scaling in.</p>
+
+<p>DevExpress could make the classes they use in the session variables serializable (e.g., <code>WebApplication</code>). When this is the case, the application can be configured to store the session variables to a persistent data store (SQL Server for instance) instead of in the session and then we could configure autoscaling to work correctly. There is <a href="http://www.devexpress.com/Support/Center/Question/Details/Q426045">an item in the Support Center in this regard</a> and <a href="http://www.devexpress.com/Support/Center/p/S36497.aspx">another one here</a>.</p>
+
+<p>Another solution would be if Amazon provided a new option to handle a server termination in a less brutal fashion. That is, stop routing new users to the surplus server but continue to server existing users until their sessions have all terminated. This approach is discussed in <a href="https://forums.aws.amazon.com/thread.jspa?threadID=61278">this AWS forum thread</a>.</p>
+
+<h2>Conclusions</h2>
+
+<p>The load balancing features of AWS work fine with XAF applications, but the benefits of autoscaling are lost because there is currently no effective method of removing capacity without knocking out existing sessions.</p>
+
+<h2>What next</h2>
+
+<p>In a future series, I will demonstrate how to load test XAF applications cheaply and effectively by making use of Amazon Web Services. Stay tuned.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  <div class="pagination">
+    
+      <a class="prev" href="/blog/page/2/">&larr; Older</a>
+    
+    <a href="/blog/archives">Blog Archives</a>
+    
+  </div>
+</div>
+<aside class="sidebar">
+  
+    
+  
+</aside>
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Robert Anderson
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'zerosharp';
+      
+        
+        var disqus_script = 'count.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

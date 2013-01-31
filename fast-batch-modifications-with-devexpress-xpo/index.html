@@ -1,0 +1,547 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Fast batch modifications with DevExpress XPO - ZeroSharp</title>
+  <meta name="author" content="Robert Anderson">
+
+  
+  <meta name="description" content="An undocumented method of performing fast batch modifications with DevExpress XPO.">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ZeroSharp.github.com/fast-batch-modifications-with-devexpress-xpo/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="http://feeds.feedburner.com/zerosharp" rel="alternate" title="ZeroSharp" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> 
+
+<!-- <ra+> -->
+<link href="http://fonts.googleapis.com/css?family=Ubuntu:500" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
+
+<link href="/stylesheets/custom/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+<!-- </ra+> -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-30564687-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <!--<h1><a href="/">ZeroSharp</a></h1>-->
+  <a href="http://www.zerosharp.com/"><h1>ZeroSharp</h1></a>
+  
+    <h2>Rob Anderson's ones and zeros</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ZeroSharp.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/license/">License</a></li>  
+</ul>
+<ul class="subscription">
+    <li><a href="https://plus.google.com/112685056596124127572?rel=author">
+      <img src="/images/asides/googleplus.png" width="24" height="24" alt="Rob on Google+">
+    </a></li>    
+    <li><a rel="me" href="http://twitter.com/8ctopus">
+      <img src="/images/asides/twitter.png" width="24" height="24" alt="Rob on Twitter" />
+    </a></li>
+    <!--<li><a rel="me" href="http://stackoverflow.com/users/1077279/shamp00">
+      <img src="/images/asides/stackoverflow.png" width="24" height="24" alt="Rob on StackOverflow" />
+    </a></li>
+    <li><a rel="me" href="https://github.com/zerosharp">
+      <img src="/images/asides/github.png" width="24" height="24" alt="Rob on GitHub" />
+    </a></li>
+    <li><a rel="me" href="http://www.linkedin.com/profile/view?id=926740"  class ="googleplus-hidden" >
+      <img src="/images/asides/linkedin.png" width="24" height="24" alt="Rob on LinkedIn" />
+    </a></li>
+    <li><a rel="me" href="http://springpad.com/#!/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/springpad.png" width="24" height="24" alt="Rob on SpringPad" />
+    </a></li>    
+    <li><a rel="me" href="http://pinterest.com/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/pinterest.png" width="24" height="24" alt="Rob on Pinterest" />
+    </a></li>
+    <li><a rel="me" href="http://www.last.fm/user/nosredna"  class ="googleplus-hidden" >
+      <img src="/images/asides/lastfm.png" width="24" height="24" alt="Rob on Last.fm" />
+    </a></li>-->
+    <li><a href="http://feeds.feedburner.com/zerosharp">
+      <img src="/images/asides/rss.png" rel="subscribe-rss" width="24" height="24" alt="RSS Feed" />
+    </a></li>
+</ul>
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Fast Batch Modifications With DevExpress XPO</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-24T14:02:00+01:00" pubdate data-updated="true">Jul 24<span>th</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Last week I wrote about <a href="/fast-batch-deletions-with-devexpress-xpo/">fast batch deletions</a>. In this post I&#8217;ll show how to do the same for modifications.</p>
+
+<p>Let&#8217;s assume we want to replace the &#8216;State&#8217; property with &#8216;CA&#8217; and CostCenter with 123 for all records where the &#8216;City&#8217; is &#8216;San Francisco&#8217;.  The recommended DevExpress approach would be something like the following:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">using</span> <span class="p">(</span><span class="n">UnitOfWork</span> <span class="n">uow</span> <span class="p">=</span> <span class="k">new</span> <span class="n">UnitOfWork</span><span class="p">())</span>
+</span><span class='line'><span class="p">{</span>  
+</span><span class='line'>  <span class="kt">var</span> <span class="n">xpCollection</span> <span class="p">=</span> <span class="k">new</span> <span class="n">XPCollection</span><span class="p">&lt;</span><span class="n">MyObject</span><span class="p">&gt;(</span><span class="n">uow</span><span class="p">,</span> <span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;City == &#39;San Francisco&#39;&quot;</span><span class="p">));</span>
+</span><span class='line'>    <span class="k">foreach</span> <span class="p">(</span><span class="n">MyObject</span> <span class="n">myObject</span> <span class="k">in</span> <span class="n">xpCollection</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">myObject</span><span class="p">.</span><span class="n">State</span> <span class="p">=</span> <span class="s">&quot;CA&quot;</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">myObject</span><span class="p">.</span><span class="n">CostCenter</span> <span class="p">=</span> <span class="m">123</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="n">uow</span><span class="p">.</span><span class="n">CommitChanges</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The problem with the above code is that every record must be loaded and then an individual <code>UPDATE</code> command is generated for each modification.  This is necessary for the business logic to be applied correctly (such as the code in methods such as <code>OnSaving()</code>). It is also necessary to handle record locking.</p>
+
+<p>If you know that your objects do not require any of this processing, you can use use direct SQL <a href="http://documentation.devexpress.com/#XPO/CustomDocument8914">as described in the XPO documentation</a>. This however requires knowledge of the underlying database table and is not very versatile, (although the <code>DevExpress.Data.Filtering.CriteriaToWhereClauseHelper()</code> can help if you choose this route).</p>
+
+<p>However, there is a method similar to the one described in the previous post which is equivalent to the direct SQL approach, but is much easier to use. The approach makes use of an extension method on the <code>Session</code> class.</p>
+
+<h4>Example</h4>
+
+<p>Since the extension method is somewhat more complicated than for the <code>Delete</code> case, I will start by showing an example of use before drilling into the supporting code.</p>
+
+<p>The above example would now look like this:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">using</span> <span class="p">(</span><span class="n">UnitOfWork</span> <span class="n">uow</span> <span class="p">=</span> <span class="k">new</span> <span class="n">UnitOfWork</span><span class="p">())</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="n">uow</span><span class="p">.</span><span class="n">Update</span><span class="p">&lt;</span><span class="n">MyObject</span><span class="p">&gt;(</span>
+</span><span class='line'>        <span class="p">()</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="n">MyObject</span><span class="p">(</span><span class="n">uow</span><span class="p">)</span>
+</span><span class='line'>                  <span class="p">{</span>
+</span><span class='line'>                     <span class="n">State</span> <span class="p">=</span> <span class="s">&quot;CA&quot;</span><span class="p">,</span>
+</span><span class='line'>                     <span class="n">CostCenter</span> <span class="p">=</span> <span class="m">123</span>
+</span><span class='line'>                  <span class="p">},</span>
+</span><span class='line'>        <span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;City == &#39;San Francisco&#39;&quot;</span><span class="p">));</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The Update<T> method takes an <code>Expression&lt;Func&lt;T&gt;&gt;</code> as the first parameter which allows us to pass in an anonymous type which serves as a template for the modification. This way we get strong typing for the property values.</p>
+
+<h4>The extensions method</h4>
+
+<p>Now for the guts of it:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">PropertyValueStore</span> <span class="p">:</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">KeyValuePair</span><span class="p">&lt;</span><span class="n">XPMemberInfo</span><span class="p">,</span> <span class="n">Object</span><span class="p">&gt;&gt;</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">SessionExtensions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="n">PropertyValueStore</span> <span class="nf">CreatePropertyValueStore</span><span class="p">(</span><span class="n">XPClassInfo</span> <span class="n">classInfo</span><span class="p">,</span> <span class="n">MemberInitExpression</span> <span class="n">memberInitExpression</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">PropertyValueStore</span> <span class="n">propertyValueStore</span> <span class="p">=</span> <span class="k">new</span> <span class="n">PropertyValueStore</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">/// Parse each expression binding within the anonymous class.  </span>
+</span><span class='line'>        <span class="c1">/// Each binding represents a property assignment within the IXPObject.</span>
+</span><span class='line'>        <span class="c1">/// Add a KeyValuePair for the corresponding MemberInfo and (invoked) value.</span>
+</span><span class='line'>        <span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">binding</span> <span class="k">in</span> <span class="n">memberInitExpression</span><span class="p">.</span><span class="n">Bindings</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="kt">var</span> <span class="n">assignment</span> <span class="p">=</span> <span class="n">binding</span> <span class="k">as</span> <span class="n">MemberAssignment</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">binding</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="k">throw</span> <span class="k">new</span> <span class="nf">NotImplementedException</span><span class="p">(</span><span class="s">&quot;All bindings inside the MemberInitExpression are expected to be of type MemberAssignment.&quot;</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c1">// Get the memberInfo corresponding to the property name.</span>
+</span><span class='line'>            <span class="kt">string</span> <span class="n">memberName</span> <span class="p">=</span> <span class="n">binding</span><span class="p">.</span><span class="n">Member</span><span class="p">.</span><span class="n">Name</span><span class="p">;</span>
+</span><span class='line'>            <span class="n">XPMemberInfo</span> <span class="n">memberInfo</span> <span class="p">=</span> <span class="n">classInfo</span><span class="p">.</span><span class="n">GetMember</span><span class="p">(</span><span class="n">memberName</span><span class="p">);</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">memberInfo</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>                <span class="k">throw</span> <span class="k">new</span> <span class="nf">ArgumentOutOfRangeException</span><span class="p">(</span><span class="n">memberName</span><span class="p">,</span> <span class="n">String</span><span class="p">.</span><span class="n">Format</span><span class="p">(</span><span class="s">&quot;The member {0} of the {1} class could not be found.&quot;</span><span class="p">,</span> <span class="n">memberName</span><span class="p">,</span> <span class="n">classInfo</span><span class="p">.</span><span class="n">FullName</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(!</span><span class="n">memberInfo</span><span class="p">.</span><span class="n">IsPersistent</span><span class="p">)</span>
+</span><span class='line'>                <span class="k">throw</span> <span class="k">new</span> <span class="nf">ArgumentException</span><span class="p">(</span><span class="n">memberName</span><span class="p">,</span> <span class="n">String</span><span class="p">.</span><span class="n">Format</span><span class="p">(</span><span class="s">&quot;The member {0} of the {1} class is not persistent.&quot;</span><span class="p">,</span> <span class="n">memberName</span><span class="p">,</span> <span class="n">classInfo</span><span class="p">.</span><span class="n">FullName</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c1">// Compile and invoke the assignment expression to obtain the contant value to add as a parameter.</span>
+</span><span class='line'>            <span class="kt">var</span> <span class="n">constant</span> <span class="p">=</span> <span class="n">Expression</span><span class="p">.</span><span class="n">Lambda</span><span class="p">(</span><span class="n">assignment</span><span class="p">.</span><span class="n">Expression</span><span class="p">,</span> <span class="k">null</span><span class="p">).</span><span class="n">Compile</span><span class="p">().</span><span class="n">DynamicInvoke</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="c1">// Add the </span>
+</span><span class='line'>            <span class="n">propertyValueStore</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="k">new</span> <span class="n">KeyValuePair</span><span class="p">&lt;</span><span class="n">XPMemberInfo</span><span class="p">,</span> <span class="n">Object</span><span class="p">&gt;(</span><span class="n">memberInfo</span><span class="p">,</span> <span class="n">constant</span><span class="p">));</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">propertyValueStore</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="n">ModificationResult</span> <span class="n">Update</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span><span class="k">this</span> <span class="n">Session</span> <span class="n">session</span><span class="p">,</span> <span class="n">Expression</span><span class="p">&lt;</span><span class="n">Func</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;&gt;</span> <span class="n">evaluator</span><span class="p">,</span> <span class="n">CriteriaOperator</span> <span class="n">criteria</span><span class="p">)</span> <span class="k">where</span> <span class="n">T</span> <span class="p">:</span> <span class="n">IXPObject</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">ReferenceEquals</span><span class="p">(</span><span class="n">criteria</span><span class="p">,</span> <span class="k">null</span><span class="p">))</span>
+</span><span class='line'>            <span class="n">criteria</span> <span class="p">=</span> <span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;True&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">XPClassInfo</span> <span class="n">classInfo</span> <span class="p">=</span> <span class="n">session</span><span class="p">.</span><span class="n">GetClassInfo</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">T</span><span class="p">));</span>
+</span><span class='line'>        <span class="kt">var</span> <span class="n">batchWideData</span> <span class="p">=</span> <span class="k">new</span> <span class="n">BatchWideDataHolder4Modification</span><span class="p">(</span><span class="n">session</span><span class="p">);</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">recordsAffected</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">session</span><span class="p">.</span><span class="n">Evaluate</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span><span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;Count()&quot;</span><span class="p">),</span> <span class="n">criteria</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">/// Parse the Expression.</span>
+</span><span class='line'>        <span class="c1">/// Expect to find a single MemberInitExpression.</span>
+</span><span class='line'>        <span class="n">PropertyValueStore</span> <span class="n">propertyValueStore</span> <span class="p">=</span> <span class="k">null</span><span class="p">;</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">memberInitCount</span> <span class="p">=</span> <span class="m">1</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">evaluator</span><span class="p">.</span><span class="n">Visit</span><span class="p">&lt;</span><span class="n">MemberInitExpression</span><span class="p">&gt;(</span><span class="n">expression</span> <span class="p">=&gt;</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="k">if</span> <span class="p">(</span><span class="n">memberInitCount</span> <span class="p">&gt;</span> <span class="m">1</span><span class="p">)</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="k">throw</span> <span class="k">new</span> <span class="nf">NotImplementedException</span><span class="p">(</span><span class="s">&quot;Only a single MemberInitExpression is allowed for the evaluator parameter.&quot;</span><span class="p">);</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>                <span class="n">memberInitCount</span><span class="p">++;</span>
+</span><span class='line'>                <span class="n">propertyValueStore</span> <span class="p">=</span> <span class="n">CreatePropertyValueStore</span><span class="p">(</span><span class="n">classInfo</span><span class="p">,</span> <span class="n">expression</span><span class="p">);</span>
+</span><span class='line'>                <span class="k">return</span> <span class="n">expression</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">MemberInfoCollection</span> <span class="n">properties</span> <span class="p">=</span> <span class="k">new</span> <span class="n">MemberInfoCollection</span><span class="p">(</span><span class="n">classInfo</span><span class="p">,</span> <span class="n">propertyValueStore</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Key</span><span class="p">).</span><span class="n">ToArray</span><span class="p">());</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">List</span><span class="p">&lt;</span><span class="n">ModificationStatement</span><span class="p">&gt;</span> <span class="n">collection</span> <span class="p">=</span> <span class="n">UpdateQueryGenerator</span><span class="p">.</span><span class="n">GenerateUpdate</span><span class="p">(</span><span class="n">classInfo</span><span class="p">,</span> <span class="n">properties</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">batchWideData</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">foreach</span> <span class="p">(</span><span class="n">UpdateStatement</span> <span class="n">updateStatement</span> <span class="k">in</span> <span class="n">collection</span><span class="p">.</span><span class="n">OfType</span><span class="p">&lt;</span><span class="n">UpdateStatement</span><span class="p">&gt;())</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="p">=</span> <span class="m">0</span><span class="p">;</span> <span class="n">i</span> <span class="p">&lt;</span> <span class="n">updateStatement</span><span class="p">.</span><span class="n">Parameters</span><span class="p">.</span><span class="n">Count</span><span class="p">;</span> <span class="n">i</span><span class="p">++)</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="n">Object</span> <span class="k">value</span> <span class="p">=</span> <span class="n">propertyValueStore</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">Value</span><span class="p">;</span>
+</span><span class='line'>                <span class="k">if</span> <span class="p">(</span><span class="k">value</span> <span class="k">is</span> <span class="n">IXPObject</span><span class="p">)</span>
+</span><span class='line'>                    <span class="n">updateStatement</span><span class="p">.</span><span class="n">Parameters</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">Value</span> <span class="p">=</span> <span class="p">((</span><span class="n">IXPObject</span><span class="p">)(</span><span class="k">value</span><span class="p">)).</span><span class="n">ClassInfo</span><span class="p">.</span><span class="n">GetId</span><span class="p">(</span><span class="k">value</span><span class="p">);</span>
+</span><span class='line'>                <span class="k">else</span>
+</span><span class='line'>                    <span class="n">updateStatement</span><span class="p">.</span><span class="n">Parameters</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">Value</span> <span class="p">=</span> <span class="k">value</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="n">updateStatement</span><span class="p">.</span><span class="n">RecordsAffected</span> <span class="p">=</span> <span class="n">recordsAffected</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">session</span><span class="p">.</span><span class="n">DataLayer</span><span class="p">.</span><span class="n">ModifyData</span><span class="p">(</span><span class="n">collection</span><span class="p">.</span><span class="n">ToArray</span><span class="p">&lt;</span><span class="n">ModificationStatement</span><span class="p">&gt;());</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Limitations</h4>
+
+<p>There is currently no way to refer to another field within the assignment expressions - you can only set the value to an <code>OperandValue</code>.  So you cannot do</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'>   <span class="n">uow</span><span class="p">.</span><span class="n">Update</span><span class="p">&lt;</span><span class="n">MyObject</span><span class="p">&gt;(</span>
+</span><span class='line'>        <span class="n">o</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="n">MyObject</span><span class="p">(</span><span class="n">uow</span><span class="p">)</span>
+</span><span class='line'>                  <span class="p">{</span>
+</span><span class='line'>                     <span class="c1">// Does not Compile !!!</span>
+</span><span class='line'>                     <span class="n">Property1</span> <span class="p">=</span> <span class="n">o</span><span class="p">.</span><span class="n">Property2</span><span class="p">,</span>
+</span><span class='line'>                     <span class="c1">// Neither does this !!!</span>
+</span><span class='line'>                     <span class="n">Property3</span> <span class="p">=</span> <span class="n">o</span><span class="p">.</span><span class="n">Property3</span> <span class="p">+</span> <span class="m">1</span>
+</span><span class='line'>                  <span class="p">},</span>
+</span><span class='line'>        <span class="k">null</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In order to fix this, the <code>evaluator</code> has to be of type <code>Expression&lt;Func&lt;T, T&gt;&gt;</code> instead of <code>Expression&lt;Func&lt;T&gt;&gt;</code>, and then you can use expression trees to get an assignment expression. But then there is no way to pass it to a DevExpress <code>UpdateStatement.Parameter</code> as an <code>OperandValue</code>.</p>
+
+<p><strong>Update:</strong> The <a href="https://github.com/ZeroSharp/XpoBatch">source code is now available on GitHub</a>.</p>
+
+<h4>References</h4>
+
+<p>The code was inspired by <a href="http://www.aneyfamily.com/terryandann/post/2008/04/Batch-Updates-and-Deletes-with-LINQ-to-SQL.aspx">an old blog post Terry Aney</a> in which he describes a similar approach for LINQ to SQL.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-24T14:02:00+01:00" pubdate data-updated="true">Jul 24<span>th</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/performance/'>performance</a>, <a class='category' href='/blog/categories/xpo/'>xpo</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/fast-batch-modifications-with-devexpress-xpo/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/fast-batch-modifications-with-devexpress-xpo/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/fast-batch-deletions-with-devexpress-xpo/" title="Previous Post: Fast batch deletions with DevExpress XPO">&laquo; Fast batch deletions with DevExpress XPO</a>
+      
+      
+        <a class="basic-alignment right" href="/xpobatch-source-code-available/" title="Next Post: XpoBatch source code available">XpoBatch source code available &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Robert Anderson
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'zerosharp';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/fast-batch-modifications-with-devexpress-xpo/';
+        var disqus_url = 'http://ZeroSharp.github.com/fast-batch-modifications-with-devexpress-xpo/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

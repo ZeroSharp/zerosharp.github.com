@@ -1,0 +1,363 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Deploy XAF ASP.NET Applications to Amazon Web Services: Part 1 - ZeroSharp</title>
+  <meta name="author" content="Robert Anderson">
+
+  
+  <meta name="description" content="A tutorial for publishing the DevExpress expressAppFramework MainDemo to Amazon Web Services. This part covers setting up an Amazon RDS instance of &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="http://feeds.feedburner.com/zerosharp" rel="alternate" title="ZeroSharp" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> 
+
+<!-- <ra+> -->
+<link href="http://fonts.googleapis.com/css?family=Ubuntu:500" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
+
+<link href="/stylesheets/custom/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+<!-- </ra+> -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-30564687-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <!--<h1><a href="/">ZeroSharp</a></h1>-->
+  <a href="http://www.zerosharp.com/"><h1>ZeroSharp</h1></a>
+  
+    <h2>Rob Anderson's ones and zeros</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ZeroSharp.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/license/">License</a></li>  
+</ul>
+<ul class="subscription">
+    <li><a href="https://plus.google.com/112685056596124127572?rel=author">
+      <img src="/images/asides/googleplus.png" width="24" height="24" alt="Rob on Google+">
+    </a></li>    
+    <li><a rel="me" href="http://twitter.com/8ctopus">
+      <img src="/images/asides/twitter.png" width="24" height="24" alt="Rob on Twitter" />
+    </a></li>
+    <!--<li><a rel="me" href="http://stackoverflow.com/users/1077279/shamp00">
+      <img src="/images/asides/stackoverflow.png" width="24" height="24" alt="Rob on StackOverflow" />
+    </a></li>
+    <li><a rel="me" href="https://github.com/zerosharp">
+      <img src="/images/asides/github.png" width="24" height="24" alt="Rob on GitHub" />
+    </a></li>
+    <li><a rel="me" href="http://www.linkedin.com/profile/view?id=926740"  class ="googleplus-hidden" >
+      <img src="/images/asides/linkedin.png" width="24" height="24" alt="Rob on LinkedIn" />
+    </a></li>
+    <li><a rel="me" href="http://springpad.com/#!/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/springpad.png" width="24" height="24" alt="Rob on SpringPad" />
+    </a></li>    
+    <li><a rel="me" href="http://pinterest.com/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/pinterest.png" width="24" height="24" alt="Rob on Pinterest" />
+    </a></li>
+    <li><a rel="me" href="http://www.last.fm/user/nosredna"  class ="googleplus-hidden" >
+      <img src="/images/asides/lastfm.png" width="24" height="24" alt="Rob on Last.fm" />
+    </a></li>-->
+    <li><a href="http://feeds.feedburner.com/zerosharp">
+      <img src="/images/asides/rss.png" rel="subscribe-rss" width="24" height="24" alt="RSS Feed" />
+    </a></li>
+</ul>
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 1</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-23T12:52:00+01:00" pubdate data-updated="true">Oct 23<span>rd</span>, 2012</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><h1>Part 1: Putting the Database in the Cloud</h1>
+
+<p>This is the first part of a tutorial for installing the DevExpress MainDemo.Web to Amazon Web Services, but the same principles apply to any ASP.NET web application.</p>
+
+<p>This part covers creating an Amazon RDS instance running SQL Server Express and connecting a (locally running) MainDemo to it.</p>
+
+<p>At the time of writing the DevExpress version is 12.1.7.</p>
+
+<h2>Amazon Web Services</h2>
+
+<p>If you have not already done so, you will need to sign up with <a href="http://aws.amazon.com/">Amazon Web Services</a>. There are costs associated with AWS, but the tutorial only uses very small cheap instances which cost as little as 2 cents per hour to run. Also, new customers get a load of hours for free as part of the <a href="http://aws.amazon.com/free/">AWS Free Usage Tier</a>. See the <a href="http://aws.amazon.com/ec2/pricing/">AWS pricing</a> for more information. Don&#8217;t forget to terminate your instances when you have finished.</p>
+
+<h2>AWS Toolkit</h2>
+
+<p>Amazon have made it all easy by providing a Visual Studio add-in.</p>
+
+<p>Install the <a href="http://aws.amazon.com/visualstudio/">AWS Toolkit for Microsoft Visual Studio</a>. If you haven&#8217;t used it before, then when you start a wizard it will ask you for your AWS fcredentials.</p>
+
+<p><img src="/images/blog/aws/publish-to-aws-1.jpg" title="'figure 1'" ></p>
+
+<p>The <strong>Display Name</strong> is the a name you give to the AWS account you are using. I set mine to <em>zerosharp</em>. This is helpful when you have multiple AWS accounts. The <strong>Access Key</strong> and the <strong>Secret Key</strong> are both available on the <a href="https://aws.amazon.com/security-credentials">security credentials page</a> - you will have to click <strong>Show</strong> in order to display the secret key.
+You can leave the account number blank.</p>
+
+<h2>The database</h2>
+
+<p>Now let&#8217;s provision a new SQL Server Express database.</p>
+
+<p>In Visual Studio, open the AWS Explorer (<code>Ctrl+K,A</code> or in the <em>View</em> menu). You probably want to select a region near your physical location. I chose <em>EU West (Ireland)</em>. Right-click on &#8216;Amazon RDS&#8217; and select &#8216;Launch Instance&#8217;.</p>
+
+<p><img src="/images/blog/aws/aws-explorer-1.jpg" title="&#34;figure 2&#34;" alt="&#34;figure 2&#34;"></p>
+
+<p>At the following screen, select <strong>SQL Server Express</strong>. Note that we could just as easily provision the Standard or Enterprise editions as well as a host of other database options.</p>
+
+<p><img src="/images/blog/aws/launch-aws-rds-1.jpg" title="&#34;figure 3&#34;" alt="&#34;figure 3&#34;"></p>
+
+<p>Configure the settings for the connection. Choose an instance class of <strong>Micro</strong> which is fine for our needs. Note the <em>Master User Name</em> and the <em>Master User Password</em> will be needed when we modify the MainDemo&#8217;s connection string.</p>
+
+<p><img src="/images/blog/aws/launch-aws-rds-2.jpg" title="&#34;figure 4&#34;" alt="&#34;figure 4&#34;"></p>
+
+<p>In this screen we configure settings for the port and security. In order to connect from our local MainDemo, you need to add the permission for the your CIDR route which will let you connect to the database from your local machine. It&#8217;s easy to add it to the default group later (via DB Security Groups).</p>
+
+<p><img src="/images/blog/aws/launch-aws-rds-3.jpg" title="&#34;figure 5&#34;" alt="&#34;figure 5&#34;"></p>
+
+<p>Set the backup options to &#8216;No backups&#8217;. Nice to have the option though.</p>
+
+<p><img src="/images/blog/aws/launch-aws-rds-4.jpg" title="&#34;figure 6&#34;" alt="&#34;figure 6&#34;"></p>
+
+<p>Review the options and click &#8216;Launch&#8217;.</p>
+
+<p><img src="/images/blog/aws/launch-aws-rds-5.jpg" title="&#34;figure 7&#34;" alt="&#34;figure 7&#34;"></p>
+
+<p>The database instance will be available after a few minutes. You have to be patient here - there is not much feedback, just the yellow <em>creating</em> status. You can press &#8216;Refresh&#8217; once in a while, but it&#8217;s likely to take up to 15 minutes. Eventually you should see a green <em>created</em> status.</p>
+
+<h2>Modify the MainDemo connection string</h2>
+
+<p>Open the MainDemo in Visual Studio.  Open the web.config file and set the connection string to point to your Amazon RDS instance.</p>
+
+<p>The &#8216;User ID&#8217; and &#8216;Password&#8217; should be the same as the ones you entered above. The address is available from the Visual Studio Properties window as &#8216;Endpoint&#8217; when you select the DB Instance in the AWS Explorer.</p>
+
+<p><img src="/images/blog/aws/aws-properties-1.jpg" title="&#34;figure 8&#34;" alt="&#34;figure 8&#34;"></p>
+
+<p>My connection string looks like this:</p>
+
+<pre><code>&lt;add name="ConnectionString" connectionString="User ID=zerosharp;Password=password;Pooling=false;Data Source=maindemo.c5uchpz3rigs.eu-west-1.rds.amazonaws.com;Initial Catalog=MainDemo_v12.1"/&gt;    
+</code></pre>
+
+<h2>Run the MainDemo locally</h2>
+
+<p>Now run the MainDemo locally. When you get to the login page, login as Sam (no password).  At this point, the MainDemo will connect to the Amazon RDS instance using the connection string we specified above and create the database (which takes at least 30 seconds on my machine). Afterwards the MainDemo will function as normal.</p>
+
+<h2>Next up</h2>
+
+<p>In the <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">next post</a> I explain how to publish the MainDemo application itself to an EC2 instance in the Amazon cloud.</p>
+
+<ul>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2 - Deploying to ElasticBeanstalk</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3 - Troubleshooting</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
+<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Part 5 - Load balancing</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-10-23T12:52:00+01:00" pubdate data-updated="true">Oct 23<span>rd</span>, 2012</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/incompatible-character-encodings-when-generating-octopress/" title="Previous Post: Incompatible character encodings when generating Octopress">&laquo; Incompatible character encodings when generating Octopress</a>
+      
+      
+        <a class="basic-alignment right" href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/" title="Next Post: Deploy XAF ASP.NET Applications to Amazon Web Services: Part 2">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 2 &raquo;</a>
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Robert Anderson
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'zerosharp';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/';
+        var disqus_url = 'http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
