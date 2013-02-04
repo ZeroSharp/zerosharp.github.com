@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-01-31T18:38:38+00:00</updated>
+  <updated>2013-02-04T09:51:04+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,77 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Clone your Octopress to blog from two places]]></title>
+    <link href="http://ZeroSharp.github.com/clone-your-octopress-to-blog-from-two-places/"/>
+    <updated>2013-02-01T11:59:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/clone-your-octopress-to-blog-from-two-places</id>
+    <content type="html"><![CDATA[<p><img class="right" src="http://ZeroSharp.github.com/images/blog/clone-your-octopress-001.png"></p>
+
+<p>This post covers how recreate a local repository of your Octopress blog. Perhaps you&#8217;ve accidentally lost it, or perhaps you would like to be able to blog from two different places. Recently <a href="http://ZeroSharp.github.com/the-best-pc-laptop-is-a-mac/">I bought a new computer</a> and I wanted to be able to blog from both my desktop and my laptop.</p>
+
+<h3>How Octopress works</h3>
+
+<p>Octopress repositories have two branches, <code>source</code> and <code>master</code>. The <code>source</code> branch contains the files that are used to generate the blog and the <code>master</code> contains the blog itself.</p>
+
+<p>When the local folders are initially configured according to the <a href="http://octopress.org/docs/setup/">Octopress Setup Guide</a>, the <code>master</code> branch is stored in a subfolder named &#8216;_deploy&#8217;. Since the folder name begins with an underscore, it is ignored when you <code>git push origin source</code>. Instead, the <code>master</code> branch (which contains your blog posts) gets updated when you <code>rake deploy</code>.</p>
+
+<h2>Recreating a local Octopress repository</h2>
+
+<p>To recreate the local directory structure of an existing Octopress blog, follow these instructions.</p>
+
+<h3>Clone your blog to the new machine</h3>
+
+<p>First you need to clone the <code>source</code> branch to the local octopress folder.</p>
+
+<pre><code>$ git clone -b source git@github.com:username/username.github.com.git octopress
+</code></pre>
+
+<p>Then clone the <code>master</code> branch to the _deploy subfolder.</p>
+
+<pre><code>$ cd octopress
+$ git clone git@github.com:username/username.github.com.git _deploy 
+</code></pre>
+
+<p>Then run the rake installation to configure everything</p>
+
+<pre><code>$ gem install bundler
+$ rbenv rehash    # If you use rbenv, rehash to be able to run the bundle command
+$ bundle install
+$ rake setup_github_pages
+</code></pre>
+
+<p>It will prompt you for your repository URL.</p>
+
+<pre><code>Enter the read/write url for your repository
+(For example, 'git@github.com:your_username/your_username.github.com)
+</code></pre>
+
+<p>That&#8217;s you setup with a new local copy of your Octopress blog.</p>
+
+<h3>Pushing changes from two different machines</h3>
+
+<p>If you want to blog from more than one computer, you need to make sure that you push everything before switching computers. From the first machine do the following whenever you&#8217;ve made changes:</p>
+
+<pre><code>$ rake generate
+$ git add .
+$ git commit -am "Some comment here." 
+$ git push origin source  # update the remote source branch 
+$ rake deploy             # update the remote master branch
+</code></pre>
+
+<p>Then on the other machine, you need to pull those changes.</p>
+
+<pre><code>$ cd octopress
+$ git pull origin source  # update the local source branch
+$ cd ./_deploy
+$ git pull origin master  # update the local master branch
+</code></pre>
+
+<p>Of course, it might be easier to deploy everything from a thumb drive instead&#8230;</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Installing Ruby with Homebrew and rbenv on Mac OS X Mountain Lion]]></title>
@@ -1723,85 +1794,6 @@ I can&#8217;t even find the on/off switch.</p>
 <h4>References</h4>
 
 <p>The code was inspired by <a href="http://www.aneyfamily.com/terryandann/post/2008/04/Batch-Updates-and-Deletes-with-LINQ-to-SQL.aspx">an old blog post Terry Aney</a> in which he describes a similar approach for LINQ to SQL.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Fast batch deletions with DevExpress XPO]]></title>
-    <link href="http://ZeroSharp.github.com/fast-batch-deletions-with-devexpress-xpo/"/>
-    <updated>2012-07-12T17:00:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/fast-batch-deletions-with-devexpress-xpo</id>
-    <content type="html"><![CDATA[<p>When deleting a collection of objects, DevExpress recommends using <a href="http://documentation.devexpress.com/#XPO/DevExpressXpoSession_Deletetopic116"><code>Session.Delete(ICollection objects)</code></a>. This has the same effect as calling the <code>Delete()</code> method for every object in the collection so that the business logic is applied correctly. The business logic in this context refers to code such as that in the <code>OnDeleting()</code>, <code>OnDeleted()</code> methods, but it also includes the clearing of references to the object by other objects. This approach is slow, but ensures the integrity of the data.</p>
-
-<p>If you know that your objects do not require any of this processing, you can use use direct SQL <a href="http://documentation.devexpress.com/#XPO/CustomDocument8914">as described in the XPO documentation</a>. This however requires knowledge of the underlying database table and is not very versatile, (although the <code>DevExpress.Data.Filtering.CriteriaToWhereClauseHelper()</code> can help if you choose this route).</p>
-
-<p>An alternative is to use the extension method below:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">SessionExtensions</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="n">ModificationResult</span> <span class="n">Delete</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span><span class="k">this</span> <span class="n">Session</span> <span class="n">session</span><span class="p">,</span> <span class="n">CriteriaOperator</span> <span class="n">criteria</span> <span class="p">=</span> <span class="k">null</span><span class="p">)</span> <span class="k">where</span> <span class="n">T</span> <span class="p">:</span> <span class="n">IXPObject</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">ReferenceEquals</span><span class="p">(</span><span class="n">criteria</span><span class="p">,</span> <span class="k">null</span><span class="p">))</span>
-</span><span class='line'>            <span class="n">criteria</span> <span class="p">=</span> <span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;True&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">XPClassInfo</span> <span class="n">classInfo</span> <span class="p">=</span> <span class="n">session</span><span class="p">.</span><span class="n">GetClassInfo</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">T</span><span class="p">));</span>
-</span><span class='line'>        <span class="kt">var</span> <span class="n">batchWideData</span> <span class="p">=</span> <span class="k">new</span> <span class="n">BatchWideDataHolder4Modification</span><span class="p">(</span><span class="n">session</span><span class="p">);</span>
-</span><span class='line'>        <span class="kt">int</span> <span class="n">recordsAffected</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">session</span><span class="p">.</span><span class="n">Evaluate</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span><span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;Count()&quot;</span><span class="p">),</span> <span class="n">criteria</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">List</span><span class="p">&lt;</span><span class="n">ModificationStatement</span><span class="p">&gt;</span> <span class="n">collection</span> <span class="p">=</span> <span class="n">DeleteQueryGenerator</span><span class="p">.</span><span class="n">GenerateDelete</span><span class="p">(</span><span class="n">classInfo</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">batchWideData</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">foreach</span> <span class="p">(</span><span class="n">ModificationStatement</span> <span class="n">item</span> <span class="k">in</span> <span class="n">collection</span><span class="p">)</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="n">item</span><span class="p">.</span><span class="n">RecordsAffected</span> <span class="p">=</span> <span class="n">recordsAffected</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">ModificationStatement</span><span class="p">[]</span> <span class="n">collectionToArray</span> <span class="p">=</span> <span class="n">collection</span><span class="p">.</span><span class="n">ToArray</span><span class="p">&lt;</span><span class="n">ModificationStatement</span><span class="p">&gt;();</span>
-</span><span class='line'>        <span class="n">ModificationResult</span> <span class="n">result</span> <span class="p">=</span> <span class="n">session</span><span class="p">.</span><span class="n">DataLayer</span><span class="p">.</span><span class="n">ModifyData</span><span class="p">(</span><span class="n">collectionToArray</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Here is an example of how to call the method:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">using</span> <span class="p">(</span><span class="n">UnitOfWork</span> <span class="n">uow</span> <span class="p">=</span> <span class="k">new</span> <span class="n">UnitOfWork</span><span class="p">())</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">uow</span><span class="p">.</span><span class="n">Delete</span><span class="p">&lt;</span><span class="n">MyObject</span><span class="p">&gt;(</span><span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;City != &#39;Chicago&#39;&quot;</span><span class="p">));</span>
-</span><span class='line'>    <span class="n">uow</span><span class="p">.</span><span class="n">CommitChanges</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This achieves the same as result and similar performance to direct SQL, but with cleaner syntax and support for criteria.  Also, since it uses a <code>ModificationStatement[]</code>, it works with a remote <code>IDataStore</code>.</p>
-
-<p>See the next post for <a href="http://ZeroSharp.github.com/fast-batch-modifications-with-devexpress-xpo/">a similar approach for fast batch modifications</a>.</p>
-
-<p><strong>Update:</strong> The <a href="https://github.com/ZeroSharp/XpoBatch">source code is now available on GitHub</a>.</p>
 ]]></content>
   </entry>
   

@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="My new keyboarf keyboard has no labels on the keys! On a normal keyboard, I can type at about 60 wpm, but I only use three or four fingers and I &hellip;">
+  <meta name="description" content="When deleting a collection of objects, DevExpress recommends using Session.Delete(ICollection objects). This has the same effect as calling the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -114,6 +114,114 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/fast-batch-deletions-with-devexpress-xpo/">Fast Batch Deletions With DevExpress XPO</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-07-12T17:00:00+01:00" pubdate data-updated="true">Jul 12<span>th</span>, 2012</time>
+        
+         | <a href="/fast-batch-deletions-with-devexpress-xpo/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>When deleting a collection of objects, DevExpress recommends using <a href="http://documentation.devexpress.com/#XPO/DevExpressXpoSession_Deletetopic116"><code>Session.Delete(ICollection objects)</code></a>. This has the same effect as calling the <code>Delete()</code> method for every object in the collection so that the business logic is applied correctly. The business logic in this context refers to code such as that in the <code>OnDeleting()</code>, <code>OnDeleted()</code> methods, but it also includes the clearing of references to the object by other objects. This approach is slow, but ensures the integrity of the data.</p>
+
+<p>If you know that your objects do not require any of this processing, you can use use direct SQL <a href="http://documentation.devexpress.com/#XPO/CustomDocument8914">as described in the XPO documentation</a>. This however requires knowledge of the underlying database table and is not very versatile, (although the <code>DevExpress.Data.Filtering.CriteriaToWhereClauseHelper()</code> can help if you choose this route).</p>
+
+<p>An alternative is to use the extension method below:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">SessionExtensions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="n">ModificationResult</span> <span class="n">Delete</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span><span class="k">this</span> <span class="n">Session</span> <span class="n">session</span><span class="p">,</span> <span class="n">CriteriaOperator</span> <span class="n">criteria</span> <span class="p">=</span> <span class="k">null</span><span class="p">)</span> <span class="k">where</span> <span class="n">T</span> <span class="p">:</span> <span class="n">IXPObject</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">ReferenceEquals</span><span class="p">(</span><span class="n">criteria</span><span class="p">,</span> <span class="k">null</span><span class="p">))</span>
+</span><span class='line'>            <span class="n">criteria</span> <span class="p">=</span> <span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;True&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">XPClassInfo</span> <span class="n">classInfo</span> <span class="p">=</span> <span class="n">session</span><span class="p">.</span><span class="n">GetClassInfo</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">T</span><span class="p">));</span>
+</span><span class='line'>        <span class="kt">var</span> <span class="n">batchWideData</span> <span class="p">=</span> <span class="k">new</span> <span class="n">BatchWideDataHolder4Modification</span><span class="p">(</span><span class="n">session</span><span class="p">);</span>
+</span><span class='line'>        <span class="kt">int</span> <span class="n">recordsAffected</span> <span class="p">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">session</span><span class="p">.</span><span class="n">Evaluate</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span><span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;Count()&quot;</span><span class="p">),</span> <span class="n">criteria</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">List</span><span class="p">&lt;</span><span class="n">ModificationStatement</span><span class="p">&gt;</span> <span class="n">collection</span> <span class="p">=</span> <span class="n">DeleteQueryGenerator</span><span class="p">.</span><span class="n">GenerateDelete</span><span class="p">(</span><span class="n">classInfo</span><span class="p">,</span> <span class="n">criteria</span><span class="p">,</span> <span class="n">batchWideData</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">foreach</span> <span class="p">(</span><span class="n">ModificationStatement</span> <span class="n">item</span> <span class="k">in</span> <span class="n">collection</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">item</span><span class="p">.</span><span class="n">RecordsAffected</span> <span class="p">=</span> <span class="n">recordsAffected</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">ModificationStatement</span><span class="p">[]</span> <span class="n">collectionToArray</span> <span class="p">=</span> <span class="n">collection</span><span class="p">.</span><span class="n">ToArray</span><span class="p">&lt;</span><span class="n">ModificationStatement</span><span class="p">&gt;();</span>
+</span><span class='line'>        <span class="n">ModificationResult</span> <span class="n">result</span> <span class="p">=</span> <span class="n">session</span><span class="p">.</span><span class="n">DataLayer</span><span class="p">.</span><span class="n">ModifyData</span><span class="p">(</span><span class="n">collectionToArray</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here is an example of how to call the method:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">using</span> <span class="p">(</span><span class="n">UnitOfWork</span> <span class="n">uow</span> <span class="p">=</span> <span class="k">new</span> <span class="n">UnitOfWork</span><span class="p">())</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">uow</span><span class="p">.</span><span class="n">Delete</span><span class="p">&lt;</span><span class="n">MyObject</span><span class="p">&gt;(</span><span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;City != &#39;Chicago&#39;&quot;</span><span class="p">));</span>
+</span><span class='line'>    <span class="n">uow</span><span class="p">.</span><span class="n">CommitChanges</span><span class="p">();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This achieves the same as result and similar performance to direct SQL, but with cleaner syntax and support for criteria.  Also, since it uses a <code>ModificationStatement[]</code>, it works with a remote <code>IDataStore</code>.</p>
+
+<p>See the next post for <a href="/fast-batch-modifications-with-devexpress-xpo/">a similar approach for fast batch modifications</a>.</p>
+
+<p><strong>Update:</strong> The <a href="https://github.com/ZeroSharp/XpoBatch">source code is now available on GitHub</a>.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -742,194 +850,9 @@ This post is part of an ongoing series about robots, past and present.  See <a h
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/setting-up-octopress-on-windows/">Octopress on Windows and GitHub</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-04-06T17:11:00+01:00" pubdate data-updated="true">Apr 6<span>th</span>, 2012</time>
-        
-         | <a href="/setting-up-octopress-on-windows/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><blockquote><p><div STYLE="color:red">There is a more recent version of this post which covers ruby 1.9.3, python 2.7.3.</div></p><footer><strong>January 2013 update:</strong> <cite><a href='http://blog.zerosharp.com/setting-up-octopress-on-windows-again'>Setting Up Octopress on Windows Again</a></cite></footer></blockquote>
-
-
-
-
-<div><BR></div>
-
-
-<hr />
-
-<div><BR></div>
-
-
-<p>This is quick guide to setting up <a href="http://octopress.org/">Octopress</a> on a Windows 7 machine to publish to GitHub pages. It relies on ruby 1.9.2 and python 2.7.2.</p>
-
-<h3>Get with GitHub</h3>
-
-<p>First, get an account on GitHub and follow the excellent instructions for Windows here.  <a href="http://help.github.com/win-set-up-git/">here</a>.</p>
-
-<p>Once you are set up with GitHub, get <a href="https://github.com/scottmuc/yari">yari</a> by opening a command prompt:</p>
-
-<p>Then create a directory for all your github projects.  You could put this anywhere, e.g., <code>%USERPROFILE%\github</code>.  I chose to create a directory <code>C:\projects\github\</code>.</p>
-
-<h3>Installing Octopress</h3>
-
-<p><img class="right" src="/images/blog/octopress_logo.png"></p>
-
-<h4>Use yari instead of RVM/rbenv</h4>
-
-<p>Scott Muc has written <a href="https://github.com/scottmuc/yari">yari</a> which lets you switch between Windows Ruby versions.  Get it with the following command.</p>
-
-<pre><code>cd C:\projects\github\
-git clone git://github.com/scottmuc/yari.git yari
-</code></pre>
-
-<p>Once this has completed you can setup the required Ruby environment with the command:</p>
-
-<pre><code>yari 1.9.2
-</code></pre>
-
-<p>Then follow the rest of the instructions from <a href="http://octopress.org/docs/setup/">the Octopress setup instructions</a>.</p>
-
-<pre><code>git clone git://github.com/imathis/octopress.git octopress
-cd octopress
-ruby --version  # Should report Ruby 1.9.2 thanks to yari
-</code></pre>
-
-<p>Next install dependencies</p>
-
-<pre><code>gem install bundler
-bundle install
-</code></pre>
-
-<p>Install the default Octopress theme.</p>
-
-<pre><code>rake install
-</code></pre>
-
-<h3>Deploying to GitHub</h3>
-
-<p>The instructions are <a href="http://octopress.org/docs/deploying/github/">here</a>.  The only difficulty I had was working out which URL to use after:</p>
-
-<pre><code>rake setup_github_pages
-</code></pre>
-
-<p>This will ask you for your Github Pages repository url, but it is not clear that this is the SSH one, e.g., <code>git@github.com:ZeroSharp/zerosharp.github.com.git</code>.  You can find it near the top of <a href="https://github.com/ZeroSharp/zerosharp.github.com">the repository page</a>.</p>
-
-<h3>Configuring your blog</h3>
-
-<p>Follow the instructions <a href="http://octopress.org/docs/configuring/">here</a> to configure your blog.</p>
-
-<h4>Markdown</h4>
-
-<p>It is quite difficult to find good help on the markdown syntax other than for the codeblocks section.  For instance, it is not clear how to generate a codeblock with no line numbers, like this one:</p>
-
-<pre><code>How do I output a codeblock with no line numbers?
-</code></pre>
-
-<p>It turns out it either requires a <code>&lt;pre&gt;</code> tag instead of a <code>{ codeblock }</code> tag, or alternatively, start the line with four spaces.  The official syntax is <a href="http://daringfireball.net/projects/markdown/syntax">here</a>, but I also found <a href="http://warpedvisions.org/projects/markdown-cheat-sheet/">this cheat sheet</a>.</p>
-
-<h4>Fonts and Styles</h4>
-
-<p>See <a href="http://blog.bigdinosaur.org/changing-octopresss-header/">Lee&#8217;s Bigdinosaur blog</a>.</p>
-
-<h4>Problem with CodeBlocks</h4>
-
-<p>I had a problem with codeblocks which seems to be specific to Windows.  It seems that whenever you include a <code>lang</code> parameter in a <code>codeblock</code>, you get:</p>
-
-<pre><code>Liquid error: No such file or directory - python2.7 -c “import sys; print sys.executable”
-</code></pre>
-
-<p>There are two issues:</p>
-
-<ul>
-<li>Syntax highlighting requires Python which is not automatically installed.</li>
-<li>There is a problem with pythonexec.rb which does not seem to support Windows Python installations very well.</li>
-</ul>
-
-
-<p>Luckily we can fix them both.  Install <a href="http://www.python.org/getit/releases/2.7.2/">Python 2.7.2</a>.  Actually I used <a href="http://ninite.com/">ninite.com</a> to install it.</p>
-
-<p>Then modify the pythonrubyexec.rb which is in the depths of the yari subdirectory.  Try here: <code>.\yari\ruby-1.9.2-p290-i386-mingw32\lib\ruby\gems\1.9.1\gems\rubypython-0.5.1\lib\rubypython\pythonexec.rb</code></p>
-
-<p>At the top of pythonexec.rb, modify the file as follows:</p>
-
-<figure class='code'><figcaption><span>pythonexec.rb  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='diff'><span class='line'>class RubyPython::PythonExec
-</span><span class='line'>  # Based on the name of or path to the \Python executable provided, will
-</span><span class='line'>  # determine:
-</span><span class='line'>  #
-</span><span class='line'>  # * The full path to the \Python executable.
-</span><span class='line'>  # * The version of \Python being run.
-</span><span class='line'>  # * The system prefix.
-</span><span class='line'>  # * The main loadable \Python library for this version.
-</span><span class='line'>  def initialize(python_executable)
-</span><span class='line'>    @python = python_executable || &quot;python&quot;
-</span><span class='line'>
-</span><span class='line'><span class="gi">+    if (@python.include? &#39;python2.7&#39;)</span>
-</span><span class='line'><span class="gi">+      @python = &quot;python&quot;</span>
-</span><span class='line'><span class="gi">+    end</span>
-</span><span class='line'>
-</span><span class='line'>    @python = %x(#{@python} -c &quot;import sys; print sys.executable&quot;).chomp
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>References</h4>
-
-<ul>
-<li><a href="http://blog.bigdinosaur.org/changing-octopresss-header/">Lee&#8217;s Bigdinosaur blog</a> helped with fonts and colours.</li>
-<li><a href="http://translate.googleusercontent.com/translate_c?hl=en&amp;ie=UTF8&amp;prev=_t&amp;rurl=translate.google.com&amp;sl=zh-CN&amp;tl=en&amp;twu=1&amp;u=http://blog.yesmryang.net/windows-octopress-python/&amp;usg=ALkJrhhFZMKpT5j6_L8NXOL1S9H9CGjHNw">This blog post</a> (translated from the Chinese via Google Translate) helped me solve the codeblock problem.</li>
-<li><a href="https://github.com/imathis/octopress/issues/262">This issue</a> and <a href="https://github.com/github/gollum/issues/225">this issue</a> also helped.</li>
-<li>Markdown <a href="http://daringfireball.net/projects/markdown/syntax">syntax</a> and <a href="http://warpedvisions.org/projects/markdown-cheat-sheet/">cheat sheet</a></li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
+    
+      <a class="prev" href="/blog/page/4/">&larr; Older</a>
     
     <a href="/blog/archives">Blog Archives</a>
     
