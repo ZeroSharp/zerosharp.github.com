@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ios | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/ios/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-02-04T09:57:38+00:00</updated>
+  <updated>2013-02-08T15:46:26+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,129 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[A C# Developer's Adventures in iOS - Integrating Git and MonoDevelop]]></title>
+    <link href="http://ZeroSharp.github.com/a-c-number-developers-adventures-in-ios-integrating-git-and-monodevelop/"/>
+    <updated>2013-02-08T14:52:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/a-c-number-developers-adventures-in-ios-integrating-git-and-monodevelop</id>
+    <content type="html"><![CDATA[<p>This is the second post in a series about iOS development from the perspective of a C# developer.</p>
+
+<p>In the <a href="/a-c-number-developers-adventures-in-ios-getting-started/">previous post in the series</a> we got started with MonoTouch and installed MonoDevelop and XCode. In this post, we'll look at how to set up version control for an existing MonoTouch solution.</p>
+
+<h2>Version Control</h2>
+
+<p>I didn't have enough time <a href="/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend/">at the hackathon</a> to learn how to set up version control for MonoDevelop on a Mac. So let's fix that straight away.</p>
+
+<h3>Git</h3>
+
+<p>I'm much more familiar with Mercurial, and while it's possible to get TortoiseHg to run on a Mac, it seems that the Mac world prefers Git. MonoDevelop has Git integrated which I like very much so I'll go with Git for now. I can always switch later.</p>
+
+<h3>Ignore files</h3>
+
+<p>Open a terminal and navigate to the root of your existing source code folder.</p>
+
+<pre><code>$ cd Projects/Babingo # replace with /path/to/your/repo
+</code></pre>
+
+<p>We need a .gitignore file to avoid version controlling compiled sources and user settings unnecessarily.</p>
+
+<p>Create a new file .gitignore as follows. You can type <code>nano .gitignore</code> if you don't have a favourite text editor.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>.gitignore </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;/p>
+</span><span class='line'>
+</span><span class='line'>&lt;h1>OSX specific&lt;/h1>
+</span><span class='line'>
+</span><span class='line'>&lt;p>.DS_Store
+</span><span class='line'>&lt;em>.lock
+</span><span class='line'>&lt;/em>.swp
+</span><span class='line'>*.lock&lt;/p>
+</span><span class='line'>
+</span><span class='line'>&lt;h1>Build folders&lt;/h1>
+</span><span class='line'>
+</span><span class='line'>&lt;p>[Bb]in/
+</span><span class='line'>[Oo]bj/&lt;/p>
+</span><span class='line'>
+</span><span class='line'>&lt;h1>User specific&lt;/h1>
+</span><span class='line'>
+</span><span class='line'>&lt;p>&lt;em>.userprefs
+</span><span class='line'>&lt;/em>.usertasks&lt;/p>
+</span><span class='line'>
+</span><span class='line'>&lt;h1>Mono project files&lt;/h1>
+</span><span class='line'>
+</span><span class='line'>&lt;p>&lt;em>~
+</span><span class='line'>&lt;/em>.pidb
+</span><span class='line'>*.resources
+</span><span class='line'>test-results/</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<h3>Initial commit</h3>
+
+<p>Now we initialise a repository for our existing source code and commit it.</p>
+
+<pre><code>$ git init
+$ git add .
+$ git commit -m "Initial commit."
+</code></pre>
+
+<h3>BitBucket</h3>
+
+<p>Next I create a private repository on BitBucket.</p>
+
+<p><img src="/images/blog/adventures-in-ios-bitbucket-001.png"></p>
+
+<p>Then, from my terminal, I push my code to the bitbucket remote repository. Replace 'shamp00' below (twice) with your username and babingo with your repo name.</p>
+
+<pre><code>$ git remote add origin https://shamp00@bitbucket.org/shamp00/babingo.git     
+$ git push -u origin --all
+</code></pre>
+
+<h3>Integration with MonoDevelop</h3>
+
+<p>First, get the address for your repository from the BitBucket page circled in red below.</p>
+
+<p><img src="/images/blog/adventures-in-ios-bitbucket-003.png"></p>
+
+<p>Open your solution in MonoDevelop and select the <code>Checkout...</code> option from the <code>Version Control</code> menu.</p>
+
+<p><img src="/images/blog/adventures-in-ios-bitbucket-002.png"></p>
+
+<p>Select <code>Git</code> as the type of repository and put the address to your git repository in the <code>Url</code> field. The rest of the fields are populated automatically. You need to set the <code>Target Directory</code> to the location of your local repository including the trailing slash.</p>
+
+<p>When you click Ok, you will be prompted for your BitBucket credentials.</p>
+
+<p><img class="left" src="/images/blog/adventures-in-ios-bitbucket-004.png"></p>
+
+<p>That's it. Now Git is integrated into your MonoDevelop environment. For instance, you can right-click in the editor to view the diff or the log of the current file, push changes, commit messages locally, etc.</p>
+
+<p>Note that instead of BitBucket, it would have been just as straightforward to host the repository on GitHub instead.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[A C# Developer's Adventures in iOS - Getting Started]]></title>
