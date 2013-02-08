@@ -161,7 +161,7 @@
 <pre><code>$ cd Projects/Babingo # replace with /path/to/your/repo
 </code></pre>
 
-<p>We need a .gitignore file to avoid version controlling compiled sources and user settings unnecessarily.</p>
+<p>You need a .gitignore file to avoid version controlling compiled sources and user settings unnecessarily.</p>
 
 <p>Create a new file .gitignore as follows. You can type <code>nano .gitignore</code> if you don&#8217;t have a favourite text editor.</p>
 
@@ -208,7 +208,7 @@
 
 <h3>Initial commit</h3>
 
-<p>Now we initialise a repository for our existing source code and commit it.</p>
+<p>Now initialise a repository for your existing source code and commit it.</p>
 
 <pre><code>$ git init
 $ git add .
@@ -217,21 +217,21 @@ $ git commit -m "Initial commit."
 
 <h3>BitBucket</h3>
 
-<p>Next I create a private repository on BitBucket.</p>
+<p>Next create a private repository on BitBucket.</p>
 
 <p><img src="/images/blog/adventures-in-ios-bitbucket-001.png"></p>
 
-<p>Then, from my terminal, I push my code to the bitbucket remote repository. Replace &#8216;shamp00&#8217; below (twice) with your username and babingo with your repo name.</p>
+<p>You will need the address for your repository from the BitBucket page circled in red below.</p>
+
+<p><img src="/images/blog/adventures-in-ios-bitbucket-003.png"></p>
+
+<p>Then, from the terminal, push the code to BitBucket. Replace the Url below with the address of your your own repository.</p>
 
 <pre><code>$ git remote add origin https://shamp00@bitbucket.org/shamp00/babingo.git     
 $ git push -u origin --all
 </code></pre>
 
 <h3>Integration with MonoDevelop</h3>
-
-<p>First, get the address for your repository from the BitBucket page circled in red below.</p>
-
-<p><img src="/images/blog/adventures-in-ios-bitbucket-003.png"></p>
 
 <p>Open your solution in MonoDevelop and select the <code>Checkout...</code> option from the <code>Version Control</code> menu.</p>
 
