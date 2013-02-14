@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-02-08T16:00:55+00:00</updated>
+  <updated>2013-02-14T05:15:19+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,18 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Colourful git command line]]></title>
+    <link href="http://ZeroSharp.github.com/colourful-git-command-line/"/>
+    <updated>2013-02-14T05:10:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/colourful-git-command-line</id>
+    <content type="html"><![CDATA[<p>For Valentine&#8217;s Day, why not make your git command line a little more colourful.</p>
+
+<pre><code>git config --global color.ui true
+</code></pre>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[A C# Developer's Adventures in iOS - Integrating Git and MonoDevelop]]></title>
@@ -1614,25 +1626,6 @@ I can&#8217;t even find the on/off switch.</p>
 <p>Then the analysis is back up to 93. The advantage of IIS dynamic compression in IIS 7 is that it turns itself off automatically when the CPU load is high. See <a href="http://www.codeproject.com/Articles/242133/Making-the-most-out-of-IIS-compression-Part-1-conf">Matt Perdeck&#8217;s series of articles about IIS Compression</a> for more information.</p>
 
 <p>One mysterious point: if you navigate to the <a href="http://demos.devexpress.com/XAF/MainDemo/default.aspx">online version of the MainDemo</a> and run the analysis there you will notice that compression resource merging must be turned off for some reason and the overall score is only 75. Perhaps someone from DevExpress can explain&#8230;</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[XpoBatch source code available]]></title>
-    <link href="http://ZeroSharp.github.com/xpobatch-source-code-available/"/>
-    <updated>2012-07-25T16:24:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/xpobatch-source-code-available</id>
-    <content type="html"><![CDATA[<p>The source code for the fast batch operations with DevExpress XPO <a href="https://github.com/ZeroSharp/XpoBatch">is now available on on GitHub</a>.</p>
-
-<p>It includes unit tests that can be run against SQL Server or in memory. It runs against DevExpress 12.1.7, but it will work against 11.2 (and possibly earlier versions) with a couple of minor modifications which are documented in the code.</p>
-
-<h4>References</h4>
-
-<ul>
-<li><a href="http://ZeroSharp.github.com/fast-batch-deletions-with-devexpress-xpo/">Fast batch deletions</a></li>
-<li><a href="http://ZeroSharp.github.com/fast-batch-modifications-with-devexpress-xpo/">Fast batch modifications</a></li>
-</ul>
-
 ]]></content>
   </entry>
   
