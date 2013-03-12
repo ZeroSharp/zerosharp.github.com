@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-02-28T17:57:03+00:00</updated>
+  <updated>2013-03-12T18:35:49+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,49 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Load Testing XAF: Overview]]></title>
+    <link href="http://ZeroSharp.github.com/load-testing-xaf-overview/"/>
+    <updated>2013-03-12T18:20:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/load-testing-xaf-overview</id>
+    <content type="html"><![CDATA[<p>Over the next few posts, I will demonstrate how to load test XAF web applications.</p>
+
+<h2>History</h2>
+
+<p>Performance testing has traditionally been difficult and expensive. A few years ago, to do it well required a powerful piece of dedicated load testing software such as HP LoadRunner (typical cost back in 2007: USD 50,000-100,000 or more per year!). This software was capable of simulating multiple virtual users via the use of recorded scripts and providing detailed performance statistics. Usually the cost was increased further increased by the need for powerful hardware to be able to run the application.</p>
+
+<p>In 2007 we were required by a big customer (a global bank) to provide load testing statistics for our expressApp Framework application. We could not afford anything as sophisticated as LoadRunner so we went with a cheaper alternative (NeoLoad, which was still several thousand per year). It was extremely painstaking work to produce a test. The approach was to record the http requests (as a stream of text values) and write a script to check the http response. Since there was no real browser involved, it was very difficult to determine if our test was really representative. Several machines in the office had to be dedicated to simulating virtual users. Nobody was allowed to use the internet for fear of skewing the results during a test. If an error occurred, it was almost impossible to determine what went wrong. We wrestled with it and managed to fulfill our requirements, but it was all a lot of effort for no real return.</p>
+
+<p>Part of the problem was certainly that XAF is complex to test. The user interface is rich and makes use of complex controls. Most of these load testing tools work better when targetting a simple <code>&lt;INPUT type="button"&gt;</code> rather than an image of a button that sometimes is not even clickable until the mouse has hovered over it. DevExpress have made it easy to run tests via their EasyTests, but no load testing tool supports them yet. (They have informed me it's in their plans...)</p>
+
+<h2>Enter the cloud</h2>
+
+<p><span class='pullquote-right' data-pullquote='The increased availability of cheap cloud-based virtualised machines has revolutionised load testing.'></p>
+
+<p>The basic idea is this: instead of simulating users with specialised software, why not fire up a virtual machine and test with a real browser instance which is 'remote controlled' via a script.</p>
+
+<p>The increased availability of cheap cloud-based virtualised machines has revolutionised load testing. The rental of the virtualised machines is not free, but it is very cheap.  In about 2008, I started using the Amazon cloud to perform load tests. Our basic test costs us about USD 10.00 per run. We probably run this a dozen times a year, so our total cost is about USD 120.00 per year.
+</span></p>
+
+<p>We get better statistics than we ever got out of NeoLoad. We are confident that the test is realistic and we can compare with the actual performance of our production environments. We have been able to find and solve memory leak problems and various tricky multiuser problems with these tests.</p>
+
+<p>Load testing is still a complex business. There are a lot of pieces to put together, but with the cloud, each piece is relatively simple and cheap.</p>
+
+<h2>The solution</h2>
+
+<ul>
+<li>In Part 1, we install the DevExpress MainDemo on an Amazon EC2 instance.</li>
+<li>In Part 2, we use Selenium to write a script which will run on the client machines to control a real browser instance.</li>
+<li>In Part 3, we create a NeuStar Web Performance test and validate the script.</li>
+<li>In Part 4, we launch a performance test and monitor the server.</li>
+<li>In Part 5, we analyse the results of the clients.</li>
+</ul>
+
+
+<p>If you follow all the steps, expect to pay a handful of dollars in Amazon EC2 costs and a few more in Neustar costs. You could alternatively skip step 1 and target one of your own development machines instead.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 5]]></title>
@@ -339,95 +382,6 @@ Amazon Elastic Beanstalk provides automatic capacity provisioning, load balancin
 <ul>
 <li>The <a href="https://www.youtube.com/watch?v=z-N0z5K_WFI">Amazon tutorial for the AWS Visual Studio Toolkit</a></li>
 <li>Nathanial Woolls has written an excellent similar article on hosting <a href="http://nwoolls.wordpress.com/2012/09/20/hosting-xaf-asp-net-projects-using-azure-web-sites/">XAF ASP.NET applications on Azure</a>.</li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 1]]></title>
-    <link href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/"/>
-    <updated>2012-10-23T12:52:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud</id>
-    <content type="html"><![CDATA[<h1>Part 1: Putting the Database in the Cloud</h1>
-
-<p>This is the first part of a tutorial for installing the DevExpress MainDemo.Web to Amazon Web Services, but the same principles apply to any ASP.NET web application.</p>
-
-<p>This part covers creating an Amazon RDS instance running SQL Server Express and connecting a (locally running) MainDemo to it.</p>
-
-<p>At the time of writing the DevExpress version is 12.1.7.</p>
-
-<h2>Amazon Web Services</h2>
-
-<p>If you have not already done so, you will need to sign up with <a href="http://aws.amazon.com/">Amazon Web Services</a>. There are costs associated with AWS, but the tutorial only uses very small cheap instances which cost as little as 2 cents per hour to run. Also, new customers get a load of hours for free as part of the <a href="http://aws.amazon.com/free/">AWS Free Usage Tier</a>. See the <a href="http://aws.amazon.com/ec2/pricing/">AWS pricing</a> for more information. Don't forget to terminate your instances when you have finished.</p>
-
-<h2>AWS Toolkit</h2>
-
-<p>Amazon have made it all easy by providing a Visual Studio add-in.</p>
-
-<p>Install the <a href="http://aws.amazon.com/visualstudio/">AWS Toolkit for Microsoft Visual Studio</a>. If you haven't used it before, then when you start a wizard it will ask you for your AWS fcredentials.</p>
-
-<p><img src="/images/blog/aws/publish-to-aws-1.jpg" title="'figure 1'" ></p>
-
-<p>The <strong>Display Name</strong> is the a name you give to the AWS account you are using. I set mine to <em>zerosharp</em>. This is helpful when you have multiple AWS accounts. The <strong>Access Key</strong> and the <strong>Secret Key</strong> are both available on the <a href="https://aws.amazon.com/security-credentials">security credentials page</a> - you will have to click <strong>Show</strong> in order to display the secret key.
-You can leave the account number blank.</p>
-
-<h2>The database</h2>
-
-<p>Now let's provision a new SQL Server Express database.</p>
-
-<p>In Visual Studio, open the AWS Explorer (<code>Ctrl+K,A</code> or in the <em>View</em> menu). You probably want to select a region near your physical location. I chose <em>EU West (Ireland)</em>. Right-click on 'Amazon RDS' and select 'Launch Instance'.</p>
-
-<p><img src="/images/blog/aws/aws-explorer-1.jpg" title="&#34;figure 2&#34;" alt="&#34;figure 2&#34;"></p>
-
-<p>At the following screen, select <strong>SQL Server Express</strong>. Note that we could just as easily provision the Standard or Enterprise editions as well as a host of other database options.</p>
-
-<p><img src="/images/blog/aws/launch-aws-rds-1.jpg" title="&#34;figure 3&#34;" alt="&#34;figure 3&#34;"></p>
-
-<p>Configure the settings for the connection. Choose an instance class of <strong>Micro</strong> which is fine for our needs. Note the <em>Master User Name</em> and the <em>Master User Password</em> will be needed when we modify the MainDemo's connection string.</p>
-
-<p><img src="/images/blog/aws/launch-aws-rds-2.jpg" title="&#34;figure 4&#34;" alt="&#34;figure 4&#34;"></p>
-
-<p>In this screen we configure settings for the port and security. In order to connect from our local MainDemo, you need to add the permission for the your CIDR route which will let you connect to the database from your local machine. It's easy to add it to the default group later (via DB Security Groups).</p>
-
-<p><img src="/images/blog/aws/launch-aws-rds-3.jpg" title="&#34;figure 5&#34;" alt="&#34;figure 5&#34;"></p>
-
-<p>Set the backup options to 'No backups'. Nice to have the option though.</p>
-
-<p><img src="/images/blog/aws/launch-aws-rds-4.jpg" title="&#34;figure 6&#34;" alt="&#34;figure 6&#34;"></p>
-
-<p>Review the options and click 'Launch'.</p>
-
-<p><img src="/images/blog/aws/launch-aws-rds-5.jpg" title="&#34;figure 7&#34;" alt="&#34;figure 7&#34;"></p>
-
-<p>The database instance will be available after a few minutes. You have to be patient here - there is not much feedback, just the yellow <em>creating</em> status. You can press 'Refresh' once in a while, but it's likely to take up to 15 minutes. Eventually you should see a green <em>created</em> status.</p>
-
-<h2>Modify the MainDemo connection string</h2>
-
-<p>Open the MainDemo in Visual Studio.  Open the web.config file and set the connection string to point to your Amazon RDS instance.</p>
-
-<p>The 'User ID' and 'Password' should be the same as the ones you entered above. The address is available from the Visual Studio Properties window as 'Endpoint' when you select the DB Instance in the AWS Explorer.</p>
-
-<p><img src="/images/blog/aws/aws-properties-1.jpg" title="&#34;figure 8&#34;" alt="&#34;figure 8&#34;"></p>
-
-<p>My connection string looks like this:</p>
-
-<pre><code>&lt;add name="ConnectionString" connectionString="User ID=zerosharp;Password=password;Pooling=false;Data Source=maindemo.c5uchpz3rigs.eu-west-1.rds.amazonaws.com;Initial Catalog=MainDemo_v12.1"/&gt;    
-</code></pre>
-
-<h2>Run the MainDemo locally</h2>
-
-<p>Now run the MainDemo locally. When you get to the login page, login as Sam (no password).  At this point, the MainDemo will connect to the Amazon RDS instance using the connection string we specified above and create the database (which takes at least 30 seconds on my machine). Afterwards the MainDemo will function as normal.</p>
-
-<h2>Next up</h2>
-
-<p>In the <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">next post</a> I explain how to publish the MainDemo application itself to an EC2 instance in the Amazon cloud.</p>
-
-<ul>
-<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2 - Deploying to ElasticBeanstalk</a></li>
-<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3 - Troubleshooting</a></li>
-<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
-<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Part 5 - Load balancing</a></li>
 </ul>
 
 ]]></content>

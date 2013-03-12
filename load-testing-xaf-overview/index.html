@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: aws - ZeroSharp</title>
+  <title>Load Testing XAF: Overview - ZeroSharp</title>
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Category: aws">
+  <meta name="description" content="An overview of a new series of posts about load testing an ASP.NET application based on DevExpress XAF.">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ZeroSharp.github.comblog/categories/aws/">
+  <link rel="canonical" href="http://ZeroSharp.github.com/load-testing-xaf-overview/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -113,109 +113,131 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Aws</h1>
+    
+      <h1 class="entry-title">Load Testing XAF: Overview</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-12T18:20:00+00:00" pubdate data-updated="true">Mar 12<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>Over the next few posts, I will demonstrate how to load test XAF web applications.</p>
 
-  
-  <h2>2013</h2>
+<h2>History</h2>
 
-<article>
-  
-<h1><a href="/load-testing-xaf-overview/">Load Testing XAF: Overview</a></h1>
-<time datetime="2013-03-12T18:20:00+00:00" pubdate><span class='month'>Mar</span> <span class='day'>12</span> <span class='year'>2013</span></time>
+<p>Performance testing has traditionally been difficult and expensive. A few years ago, to do it well required a powerful piece of dedicated load testing software such as HP LoadRunner (typical cost back in 2007: USD 50,000-100,000 or more per year!). This software was capable of simulating multiple virtual users via the use of recorded scripts and providing detailed performance statistics. Usually the cost was increased further increased by the need for powerful hardware to be able to run the application.</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/neustar/'>neustar</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
+<p>In 2007 we were required by a big customer (a global bank) to provide load testing statistics for our expressApp Framework application. We could not afford anything as sophisticated as LoadRunner so we went with a cheaper alternative (NeoLoad, which was still several thousand per year). It was extremely painstaking work to produce a test. The approach was to record the http requests (as a stream of text values) and write a script to check the http response. Since there was no real browser involved, it was very difficult to determine if our test was really representative. Several machines in the office had to be dedicated to simulating virtual users. Nobody was allowed to use the internet for fear of skewing the results during a test. If an error occurred, it was almost impossible to determine what went wrong. We wrestled with it and managed to fulfill our requirements, but it was all a lot of effort for no real return.</p>
 
+<p>Part of the problem was certainly that XAF is complex to test. The user interface is rich and makes use of complex controls. Most of these load testing tools work better when targetting a simple <code>&lt;INPUT type="button"&gt;</code> rather than an image of a button that sometimes is not even clickable until the mouse has hovered over it. DevExpress have made it easy to run tests via their EasyTests, but no load testing tool supports them yet. (They have informed me it&#8217;s in their plans&#8230;)</p>
 
-</article>
+<h2>Enter the cloud</h2>
 
+<p><span class='pullquote-right' data-pullquote='The increased availability of cheap cloud-based virtualised machines has revolutionised load testing.'></p>
 
+<p>The basic idea is this: instead of simulating users with specialised software, why not fire up a virtual machine and test with a real browser instance which is &#8216;remote controlled&#8217; via a script.</p>
 
-  
-  <h2>2012</h2>
+<p>The increased availability of cheap cloud-based virtualised machines has revolutionised load testing. The rental of the virtualised machines is not free, but it is very cheap.  In about 2008, I started using the Amazon cloud to perform load tests. Our basic test costs us about USD 10.00 per run. We probably run this a dozen times a year, so our total cost is about USD 120.00 per year.
+</span></p>
 
-<article>
-  
-<h1><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 5</a></h1>
-<time datetime="2012-12-05T11:03:00+00:00" pubdate><span class='month'>Dec</span> <span class='day'>05</span> <span class='year'>2012</span></time>
+<p>We get better statistics than we ever got out of NeoLoad. We are confident that the test is realistic and we can compare with the actual performance of our production environments. We have been able to find and solve memory leak problems and various tricky multiuser problems with these tests.</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
+<p>Load testing is still a complex business. There are a lot of pieces to put together, but with the cloud, each piece is relatively simple and cheap.</p>
 
+<h2>The solution</h2>
 
-</article>
-
-
-
-<article>
-  
-<h1><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 4</a></h1>
-<time datetime="2012-11-05T14:16:00+00:00" pubdate><span class='month'>Nov</span> <span class='day'>05</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
+<ul>
+<li>In Part 1, we install the DevExpress MainDemo on an Amazon EC2 instance.</li>
+<li>In Part 2, we use Selenium to write a script which will run on the client machines to control a real browser instance.</li>
+<li>In Part 3, we create a NeuStar Web Performance test and validate the script.</li>
+<li>In Part 4, we launch a performance test and monitor the server.</li>
+<li>In Part 5, we analyse the results of the clients.</li>
+</ul>
 
 
-</article>
-
-
-
-<article>
-  
-<h1><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 3</a></h1>
-<time datetime="2012-11-02T17:54:00+00:00" pubdate><span class='month'>Nov</span> <span class='day'>02</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 2</a></h1>
-<time datetime="2012-10-31T12:52:00+00:00" pubdate><span class='month'>Oct</span> <span class='day'>31</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 1</a></h1>
-<time datetime="2012-10-23T12:52:00+01:00" pubdate><span class='month'>Oct</span> <span class='day'>23</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
-
-
-</article>
-
+<p>If you follow all the steps, expect to pay a handful of dollars in Amazon EC2 costs and a few more in Neustar costs. You could alternatively skip step 1 and target one of your own development machines instead.</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-12T18:20:00+00:00" pubdate data-updated="true">Mar 12<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/neustar/'>neustar</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/load-testing-xaf-overview/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/load-testing-xaf-overview/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/how-to-recursively-change-file-ownership/" title="Previous Post: How to recursively change file ownership">&laquo; How to recursively change file ownership</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -240,7 +262,10 @@
       var disqus_shortname = 'zerosharp';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/load-testing-xaf-overview/';
+        var disqus_url = 'http://ZeroSharp.github.com/load-testing-xaf-overview/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
