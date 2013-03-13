@@ -38,7 +38,7 @@ Then follow the rest of the instructions from [the Octopress setup instructions]
 
     git clone git://github.com/imathis/octopress.git octopress
     cd octopress
-    ruby --version  # Should report Ruby 1.9.2 thanks to yari
+    ruby --version  # Should report Ruby 1.9.3 thanks to yari
 
 Next install dependencies
 
