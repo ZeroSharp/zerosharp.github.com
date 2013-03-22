@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: aws - ZeroSharp</title>
+  <title>Load Testing XAF: Part 1 - Deploying - ZeroSharp</title>
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Category: aws">
+  <meta name="description" content="How to deploy the XAF MainDemo ready for load testing.">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ZeroSharp.github.comblog/categories/aws/">
+  <link rel="canonical" href="http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -113,123 +113,125 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Aws</h1>
+    
+      <h1 class="entry-title">Load Testing XAF: Part 1 - Deploying</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-22T11:21:00+00:00" pubdate data-updated="true">Mar 22<span>nd</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>This is the first part of a tutorial about load testing XAF applications. See the <a href="/load-testing-xaf-overview/">overview</a> for a bit of background. In this post we set up the target webserver.</p>
 
-  
-  <h2>2013</h2>
+<p>You can target any machine which has a publicly available web address, but for this tutorial, I&#8217;m&#8217; deploying the MainDemo to the Amazon cloud, by following the instructions in <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1</a> and <a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2</a> of my previous series about Amazon Web Services.</p>
 
-<article>
-  
-<h1><a href="/load-testing-xaf-part-1-deploying/">Load Testing XAF: Part 1 - Deploying</a></h1>
-<time datetime="2013-03-22T11:21:00+00:00" pubdate><span class='month'>Mar</span> <span class='day'>22</span> <span class='year'>2013</span></time>
+<p>I am using version 12.2.7 of the DevExpress XAF MainDemo. There are a couple of extra changes to make to the web.config.</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/neustar/'>neustar</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
+<ul>
+<li>Set debug to false <code>&lt;compilation targetFramework="4.0" debug="false"&gt;</code> in the <code>&lt;compilation&gt;</code> section of <code>&lt;system.web&gt;</code></li>
+<li>Switch to <em>Release</em> mode before deploying.</li>
+</ul>
 
 
-</article>
+<p>There are a couple of differences compared to the tutorial:</p>
+
+<ul>
+<li>I chose a <em>Medium</em> instance instead of a <em>Micro</em> instance for EC2 (the web server) and deployed it against IIS 8.</li>
+<li>For RDS (the database), I stuck with a <em>Micro</em> instance.</li>
+</ul>
 
 
+<p><img src="/images/blog/load-testing/load-testing-001.png"></p>
 
-<article>
-  
-<h1><a href="/load-testing-xaf-overview/">Load Testing XAF: Overview</a></h1>
-<time datetime="2013-03-12T18:20:00+00:00" pubdate><span class='month'>Mar</span> <span class='day'>12</span> <span class='year'>2013</span></time>
+<p>For the load test, it is also important to disable the automatic health checks performed by the load balancer.</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/neustar/'>neustar</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
+<p><img src="/images/blog/load-testing/load-testing-002.png"></p>
 
+<p>The reason for this is that we are trying to determine the breaking point of our application. If the elastic load balancer detects that a system is struggling, it might automatically flag it as unhealthy and replace it with a newly launched instance. While this behaviour might be desirable for a production system, it doesn&#8217;t make sense for a load test.</p>
 
-</article>
-
-
-
-  
-  <h2>2012</h2>
-
-<article>
-  
-<h1><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 5</a></h1>
-<time datetime="2012-12-05T11:03:00+00:00" pubdate><span class='month'>Dec</span> <span class='day'>05</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 4</a></h1>
-<time datetime="2012-11-05T14:16:00+00:00" pubdate><span class='month'>Nov</span> <span class='day'>05</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 3</a></h1>
-<time datetime="2012-11-02T17:54:00+00:00" pubdate><span class='month'>Nov</span> <span class='day'>02</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 2</a></h1>
-<time datetime="2012-10-31T12:52:00+00:00" pubdate><span class='month'>Oct</span> <span class='day'>31</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 1</a></h1>
-<time datetime="2012-10-23T12:52:00+01:00" pubdate><span class='month'>Oct</span> <span class='day'>23</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
-
-
-</article>
-
+<p>Make sure you can connect to your installation from a web browser before continuing. I chose to deploy to a Windows 2012 instance running IIS 8.0 (which was not available when I wrote my previous XAF AWS tutorial) and I had a little trouble with the URL. If I navigate to the application&#8217;s base URL (<em>http://zerosharp-maindemo.elasticbeanstalk.com/</em> in my case), then I get forwarding problems after logging in. Instead, I navigate to the full address <em>http://zerosharp-maindemo.elasticbeanstalk.com/MainDemo.Web_deploy/Default.aspx</em> and everything works. I&#8217;ll try to look into it later, but it&#8217;s not important for the load testing.</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-22T11:21:00+00:00" pubdate data-updated="true">Mar 22<span>nd</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/neustar/'>neustar</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/load-testing-xaf-overview/" title="Previous Post: Load Testing XAF: Overview">&laquo; Load Testing XAF: Overview</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -254,7 +256,10 @@
       var disqus_shortname = 'zerosharp';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/';
+        var disqus_url = 'http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
