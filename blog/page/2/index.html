@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="I wanted to add captions to some of my images and came across this forum thread, from which I was able to piece together Ted Kulp&#8217;s slick &hellip;">
+  <meta name="description" content="Facebook&#8217;s new Graph Search allows you to easily see anybody&#8217;s photos. First, search for someone who is not a friend. Most often, if you &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -114,6 +114,56 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/facebook-graph-search-pwns-your-privacy/">Facebook Graph Search Pwns Your Privacy</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-24T11:10:00+00:00" pubdate data-updated="true">Jan 24<span>th</span>, 2013</time>
+        
+         | <a href="/facebook-graph-search-pwns-your-privacy/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Facebook&#8217;s new Graph Search allows you to easily see anybody&#8217;s photos.</p>
+
+<p>First, search for someone who is not a friend. Most often, if you navigate to their photos, you see something like this:</p>
+
+<p><img src="/images/blog/facebook-graph-search-001.png"></p>
+
+<p>You can&#8217;t see any photos because their privacy settings are not set to &#8216;Public&#8217;. It&#8217;s what you&#8217;d expect.</p>
+
+<h4>Use Graph Search to bypass privacy</h4>
+
+<p>If you put <em>Photos of &lt;name&gt;</em> or <em>Photos by &lt;name&gt;</em> into the new Facebook graph search <strong>you can view all their photos regardless of their privacy settings</strong>. This works even for friends who have put you on a &#8216;limited&#8217; profile.</p>
+
+<p>Your boss/ex/grandma is probably checking out your private photos right now.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1279,124 +1329,6 @@ Amazon Elastic Beanstalk provides automatic capacity provisioning, load balancin
 <ul>
 <li>The <a href="https://www.youtube.com/watch?v=z-N0z5K_WFI">Amazon tutorial for the AWS Visual Studio Toolkit</a></li>
 <li>Nathanial Woolls has written an excellent similar article on hosting <a href="http://nwoolls.wordpress.com/2012/09/20/hosting-xaf-asp-net-projects-using-azure-web-sites/">XAF ASP.NET applications on Azure</a>.</li>
-</ul>
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 1</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-23T12:52:00+01:00" pubdate data-updated="true">Oct 23<span>rd</span>, 2012</time>
-        
-         | <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h1>Part 1: Putting the Database in the Cloud</h1>
-
-<p>This is the first part of a tutorial for installing the DevExpress MainDemo.Web to Amazon Web Services, but the same principles apply to any ASP.NET web application.</p>
-
-<p>This part covers creating an Amazon RDS instance running SQL Server Express and connecting a (locally running) MainDemo to it.</p>
-
-<p>At the time of writing the DevExpress version is 12.1.7.</p>
-
-<h2>Amazon Web Services</h2>
-
-<p>If you have not already done so, you will need to sign up with <a href="http://aws.amazon.com/">Amazon Web Services</a>. There are costs associated with AWS, but the tutorial only uses very small cheap instances which cost as little as 2 cents per hour to run. Also, new customers get a load of hours for free as part of the <a href="http://aws.amazon.com/free/">AWS Free Usage Tier</a>. See the <a href="http://aws.amazon.com/ec2/pricing/">AWS pricing</a> for more information. Don&#8217;t forget to terminate your instances when you have finished.</p>
-
-<h2>AWS Toolkit</h2>
-
-<p>Amazon have made it all easy by providing a Visual Studio add-in.</p>
-
-<p>Install the <a href="http://aws.amazon.com/visualstudio/">AWS Toolkit for Microsoft Visual Studio</a>. If you haven&#8217;t used it before, then when you start a wizard it will ask you for your AWS fcredentials.</p>
-
-<p><img src="/images/blog/aws/publish-to-aws-1.jpg" title="'figure 1'" ></p>
-
-<p>The <strong>Display Name</strong> is the a name you give to the AWS account you are using. I set mine to <em>zerosharp</em>. This is helpful when you have multiple AWS accounts. The <strong>Access Key</strong> and the <strong>Secret Key</strong> are both available on the <a href="https://aws.amazon.com/security-credentials">security credentials page</a> - you will have to click <strong>Show</strong> in order to display the secret key.
-You can leave the account number blank.</p>
-
-<h2>The database</h2>
-
-<p>Now let&#8217;s provision a new SQL Server Express database.</p>
-
-<p>In Visual Studio, open the AWS Explorer (<code>Ctrl+K,A</code> or in the <em>View</em> menu). You probably want to select a region near your physical location. I chose <em>EU West (Ireland)</em>. Right-click on &#8216;Amazon RDS&#8217; and select &#8216;Launch Instance&#8217;.</p>
-
-<p><img src="/images/blog/aws/aws-explorer-1.jpg" title="&#34;figure 2&#34;" alt="&#34;figure 2&#34;"></p>
-
-<p>At the following screen, select <strong>SQL Server Express</strong>. Note that we could just as easily provision the Standard or Enterprise editions as well as a host of other database options.</p>
-
-<p><img src="/images/blog/aws/launch-aws-rds-1.jpg" title="&#34;figure 3&#34;" alt="&#34;figure 3&#34;"></p>
-
-<p>Configure the settings for the connection. Choose an instance class of <strong>Micro</strong> which is fine for our needs. Note the <em>Master User Name</em> and the <em>Master User Password</em> will be needed when we modify the MainDemo&#8217;s connection string.</p>
-
-<p><img src="/images/blog/aws/launch-aws-rds-2.jpg" title="&#34;figure 4&#34;" alt="&#34;figure 4&#34;"></p>
-
-<p>In this screen we configure settings for the port and security. In order to connect from our local MainDemo, you need to add the permission for the your CIDR route which will let you connect to the database from your local machine. It&#8217;s easy to add it to the default group later (via DB Security Groups).</p>
-
-<p><img src="/images/blog/aws/launch-aws-rds-3.jpg" title="&#34;figure 5&#34;" alt="&#34;figure 5&#34;"></p>
-
-<p>Set the backup options to &#8216;No backups&#8217;. Nice to have the option though.</p>
-
-<p><img src="/images/blog/aws/launch-aws-rds-4.jpg" title="&#34;figure 6&#34;" alt="&#34;figure 6&#34;"></p>
-
-<p>Review the options and click &#8216;Launch&#8217;.</p>
-
-<p><img src="/images/blog/aws/launch-aws-rds-5.jpg" title="&#34;figure 7&#34;" alt="&#34;figure 7&#34;"></p>
-
-<p>The database instance will be available after a few minutes. You have to be patient here - there is not much feedback, just the yellow <em>creating</em> status. You can press &#8216;Refresh&#8217; once in a while, but it&#8217;s likely to take up to 15 minutes. Eventually you should see a green <em>created</em> status.</p>
-
-<h2>Modify the MainDemo connection string</h2>
-
-<p>Open the MainDemo in Visual Studio.  Open the web.config file and set the connection string to point to your Amazon RDS instance.</p>
-
-<p>The &#8216;User ID&#8217; and &#8216;Password&#8217; should be the same as the ones you entered above. The address is available from the Visual Studio Properties window as &#8216;Endpoint&#8217; when you select the DB Instance in the AWS Explorer.</p>
-
-<p><img src="/images/blog/aws/aws-properties-1.jpg" title="&#34;figure 8&#34;" alt="&#34;figure 8&#34;"></p>
-
-<p>My connection string looks like this:</p>
-
-<pre><code>&lt;add name="ConnectionString" connectionString="User ID=zerosharp;Password=password;Pooling=false;Data Source=maindemo.c5uchpz3rigs.eu-west-1.rds.amazonaws.com;Initial Catalog=MainDemo_v12.1"/&gt;    
-</code></pre>
-
-<h2>Run the MainDemo locally</h2>
-
-<p>Now run the MainDemo locally. When you get to the login page, login as Sam (no password).  At this point, the MainDemo will connect to the Amazon RDS instance using the connection string we specified above and create the database (which takes at least 30 seconds on my machine). Afterwards the MainDemo will function as normal.</p>
-
-<h2>Next up</h2>
-
-<p>In the <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">next post</a> I explain how to publish the MainDemo application itself to an EC2 instance in the Amazon cloud.</p>
-
-<ul>
-<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2 - Deploying to ElasticBeanstalk</a></li>
-<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3 - Troubleshooting</a></li>
-<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
-<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Part 5 - Load balancing</a></li>
 </ul>
 
 </div>
