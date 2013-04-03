@@ -318,7 +318,6 @@
 <span class='line-number'>118</span>
 <span class='line-number'>119</span>
 <span class='line-number'>120</span>
-<span class='line-number'>121</span>
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="cm">/* global test */</span>
 </span><span class='line'>
 </span><span class='line'><span class="c1">// Settings for Neustar:</span>
@@ -360,8 +359,7 @@
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="kd">function</span> <span class="nx">waitForCallbacks</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForCondition</span><span class="p">(</span><span class="s2">&quot;typeof selenium.browserbot.getUserWindow().xafHasPendingCallbacks == &#39;function&#39;;&quot;</span><span class="p">,</span> <span class="nx">timeout</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForCondition</span><span class="p">(</span><span class="s2">&quot;selenium.browserbot.getUserWindow().xafHasPendingCallbacks() == false;&quot;</span><span class="p">,</span> <span class="nx">timeout</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForCondition</span><span class="p">(</span><span class="s2">&quot;(typeof selenium.browserbot.getUserWindow().xafHasPendingCallbacks === &#39;function&#39;) &amp;&amp; (selenium.browserbot.getUserWindow().xafHasPendingCallbacks() === false);&quot;</span><span class="p">,</span> <span class="nx">timeout</span><span class="p">);</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'>
@@ -551,6 +549,8 @@
       
         <a class="basic-alignment left" href="/load-testing-xaf-part-1-deploying/" title="Previous Post: Load Testing XAF: Part 1 - Deploying">&laquo; Load Testing XAF: Part 1 - Deploying</a>
       
+      
+        <a class="basic-alignment right" href="/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/" title="Next Post: Load Testing XAF: Part 3 - Uploading and Validating the Virtual User Script">Load Testing XAF: Part 3 - Uploading and Validating the Virtual User Script &raquo;</a>
       
     </p>
   </footer>

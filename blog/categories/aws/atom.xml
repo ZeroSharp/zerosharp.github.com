@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-03-28T17:55:56+00:00</updated>
+  <updated>2013-04-03T18:46:56+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,40 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Load Testing XAF: Part 3 - Uploading and Validating the Virtual User Script]]></title>
+    <link href="http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/"/>
+    <updated>2013-04-03T16:39:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script</id>
+    <content type="html"><![CDATA[<p>This is another post in a series about load testing XAF applications.  Previously in the series:</p>
+
+<ul>
+<li><a href="/load-testing-xaf-overview/">Load Testing XAF: Overview</a></li>
+<li><a href="/load-testing-xaf-part-1-deploying/">Part 1: Deploying the target webserver</a></li>
+<li><a href="/load-testing-xaf-part-2-selenium/">Part 2: Selenium</a></li>
+</ul>
+
+
+<p>In this part, we will load test the application we set up in <a href="/load-testing-xaf-part-1-deploying/">Part 1</a>, using the Selenium load test we created in <a href="/load-testing-xaf-part-2-selenium/">Part 2</a>.</p>
+
+<h2>Neustar Web Performance Management</h2>
+
+<p>NeuStar (formerly BrowserMob) are a company specialised in web application performance monitoring. We are interested in their <a href="https://home.wpm.neustar.biz/">web performance module</a>. It is free to create an account. To run a test with less than 25 virtual users costs only $0.15 per virtual user. Tests with more than 25 users (up to 5000) require an additional paid plan.</p>
+
+<h2>Create a script</h2>
+
+<p>In order to run a load test, we first need to create the script and validate it. Go to the <a href="https://script.wpm.neustar.biz/">scripting</a> page and select 'Create a new script'. Then cut and paste the <a href="https://gist.github.com/shamp00/5302223">Selenium code for <code>MainDemo_CycleThroughTabs.js</code></a> from the <a href="/load-testing-xaf-part-2-selenium/">previous post</a>.</p>
+
+<p>Now change the <code>targetHost</code> variable near the top of the file to point to the location of your MainDemo installation. You can then validate the script. This will actually run through the Selenium test on a newly provisioned Amazon instance to ensure that it passes.</p>
+
+<p><img src="/images/blog/load-testing/load-testing-004.png"></p>
+
+<p>If you get a green icon, you can proceed with setting up a load test, otherwise you can see what went wrong in a video of the user session.</p>
+
+<p>In the next post we will configure and launch the load test.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Load Testing XAF: Part 2 - Selenium]]></title>
@@ -225,7 +259,6 @@
 <span class='line-number'>142</span>
 <span class='line-number'>143</span>
 <span class='line-number'>144</span>
-<span class='line-number'>145</span>
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="err">/&lt;em&gt; global test &lt;/em&gt;/&lt;/p&gt;</span>
@@ -273,8 +306,7 @@
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">waitForCallbacks</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
 </span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForCondition</span><span class="p">(</span><span class="s2">&quot;typeof selenium.browserbot.getUserWindow().xafHasPendingCallbacks == &#39;function&#39;;&quot;</span><span class="p">,</span> <span class="nx">timeout</span><span class="p">);</span>
-</span><span class='line'><span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForCondition</span><span class="p">(</span><span class="s2">&quot;selenium.browserbot.getUserWindow().xafHasPendingCallbacks() == false;&quot;</span><span class="p">,</span> <span class="nx">timeout</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForCondition</span><span class="p">(</span><span class="s2">&quot;(typeof selenium.browserbot.getUserWindow().xafHasPendingCallbacks === &#39;function&#39;) &amp;amp;&amp;amp; (selenium.browserbot.getUserWindow().xafHasPendingCallbacks() === false);&quot;</span><span class="p">,</span> <span class="nx">timeout</span><span class="p">);</span>
 </span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
@@ -569,49 +601,6 @@ ttp://localhost:58404/Default.aspx' (CycleThroughTabs.js#50)
 <h2>What next</h2>
 
 <p>In a future series, I will demonstrate how to load test XAF applications cheaply and effectively by making use of Amazon Web Services. Stay tuned.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 4]]></title>
-    <link href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/"/>
-    <updated>2012-11-05T14:16:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment</id>
-    <content type="html"><![CDATA[<h2>Part 4: Incremental Deployment</h2>
-
-<p>This is the fourth post in a series about deploying ASP.NET applications to the Amazon cloud. In the first three posts covered deploying the XAF ASP.NET MainDemo to the Amazon cloud (<a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1</a>, <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2</a>, <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3</a>).</p>
-
-<p>When we deployed to the Elastic Beanstalk in <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2</a>, we chose <em>not</em> to enable incremental deployment.</p>
-
-<p><img src="/images/blog/aws/launch-aws-beanstalk-2.jpg" title="'figure 11'" ></p>
-
-<p>I want to explain this decision further.</p>
-
-<p>If you choose not to deploy incrementally your deployment will take longer because the entire web deployment package needs to be uploaded every time you re-publish which takes about 4-5 minutes on my connection. The incremental deployment option creates a git repository in the target environment so that only the modified files are re-deployed. If you are frequently making changes and redploying, you can save considerable time. A re-deployment takes only a few seconds.</p>
-
-<p>However, if you try to deploy from the default MainDemo location with incremental deployment enabled, you will probably get the following error</p>
-
-<pre><code>Commencing deployment for project MainDemo.Web
-...building deployment package obj\Release\Package\Archive...
-...deployment package created at C:\Users\Public\Documents\DXperience 12.1 Demos\eXpressApp Framework\MainDemo\CS\MainDemo.Web\obj\Release\Package\Archive
-...build of project archive completed succesfully
-...starting deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo'
-...starting incremental deployment to environment 'zerosharp-maindemo'
-Deployment to AWS Elastic Beanstalk failed with exception: Exception caught during execution of add command,
-Inner Exception Message: The specified path, file name, or both are too long. The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters.
-...
-Deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo' did not complete successfully
-</code></pre>
-
-<p>The problem is with the NGit libraries that the AWS Toolkit uses. Presumably a fix will emerge, but the simplest workaround is to move the application to a shorter path. Then you can enable incremental deployment when you publish:</p>
-
-<p><img src="/images/blog/aws/launch-aws-beanstalk-incremental-2.jpg" title="'figure 21'" ></p>
-
-<p>Note that you can toggle incremental deployment whenever you publish, so you're not locked in either way.</p>
-
-<h2>Next up</h2>
-
-<p>In the <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">next post</a> we will enable load balancing (which is easy) and discuss the problems with autoscaling XAF applications (which is not).</p>
 ]]></content>
   </entry>
   

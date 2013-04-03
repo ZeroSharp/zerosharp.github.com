@@ -174,7 +174,13 @@
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/</loc>
-        <lastmod>2013-03-28T17:55:38+00:00</lastmod>
+        <lastmod>2013-04-03T16:24:06+01:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/
+        </loc>
+        <lastmod>2013-04-03T18:44:26+01:00</lastmod>
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/about/</loc>
@@ -190,11 +196,11 @@
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/blog/archives/</loc>
-        <lastmod>2013-03-28T17:55:38+00:00</lastmod>
+        <lastmod>2013-04-03T18:44:26+01:00</lastmod>
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/</loc>
-        <lastmod>2013-03-28T17:55:38+00:00</lastmod>
+        <lastmod>2013-04-03T18:44:26+01:00</lastmod>
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/license/</loc>

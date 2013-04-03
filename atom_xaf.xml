@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-03-28T17:55:56+00:00</updated>
+  <updated>2013-04-03T18:46:56+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,40 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Load Testing XAF: Part 3 - Uploading and Validating the Virtual User Script]]></title>
+    <link href="http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/"/>
+    <updated>2013-04-03T16:39:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script</id>
+    <content type="html"><![CDATA[<p>This is another post in a series about load testing XAF applications.  Previously in the series:</p>
+
+<ul>
+<li><a href="http://ZeroSharp.github.com/load-testing-xaf-overview/">Load Testing XAF: Overview</a></li>
+<li><a href="http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/">Part 1: Deploying the target webserver</a></li>
+<li><a href="http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/">Part 2: Selenium</a></li>
+</ul>
+
+
+<p>In this part, we will load test the application we set up in <a href="http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/">Part 1</a>, using the Selenium load test we created in <a href="http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/">Part 2</a>.</p>
+
+<h2>Neustar Web Performance Management</h2>
+
+<p>NeuStar (formerly BrowserMob) are a company specialised in web application performance monitoring. We are interested in their <a href="https://home.wpm.neustar.biz/">web performance module</a>. It is free to create an account. To run a test with less than 25 virtual users costs only $0.15 per virtual user. Tests with more than 25 users (up to 5000) require an additional paid plan.</p>
+
+<h2>Create a script</h2>
+
+<p>In order to run a load test, we first need to create the script and validate it. Go to the <a href="https://script.wpm.neustar.biz/">scripting</a> page and select &#8216;Create a new script&#8217;. Then cut and paste the <a href="https://gist.github.com/shamp00/5302223">Selenium code for <code>MainDemo_CycleThroughTabs.js</code></a> from the <a href="http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/">previous post</a>.</p>
+
+<p>Now change the <code>targetHost</code> variable near the top of the file to point to the location of your MainDemo installation. You can then validate the script. This will actually run through the Selenium test on a newly provisioned Amazon instance to ensure that it passes.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/load-testing/load-testing-004.png"></p>
+
+<p>If you get a green icon, you can proceed with setting up a load test, otherwise you can see what went wrong in a video of the user session.</p>
+
+<p>In the next post we will configure and launch the load test.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Load Testing XAF: Part 2 - Selenium]]></title>
@@ -194,7 +228,6 @@
 <span class='line-number'>118</span>
 <span class='line-number'>119</span>
 <span class='line-number'>120</span>
-<span class='line-number'>121</span>
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="cm">/* global test */</span>
 </span><span class='line'>
 </span><span class='line'><span class="c1">// Settings for Neustar:</span>
@@ -236,8 +269,7 @@
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="kd">function</span> <span class="nx">waitForCallbacks</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForCondition</span><span class="p">(</span><span class="s2">&quot;typeof selenium.browserbot.getUserWindow().xafHasPendingCallbacks == &#39;function&#39;;&quot;</span><span class="p">,</span> <span class="nx">timeout</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForCondition</span><span class="p">(</span><span class="s2">&quot;selenium.browserbot.getUserWindow().xafHasPendingCallbacks() == false;&quot;</span><span class="p">,</span> <span class="nx">timeout</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForCondition</span><span class="p">(</span><span class="s2">&quot;(typeof selenium.browserbot.getUserWindow().xafHasPendingCallbacks === &#39;function&#39;) &amp;&amp; (selenium.browserbot.getUserWindow().xafHasPendingCallbacks() === false);&quot;</span><span class="p">,</span> <span class="nx">timeout</span><span class="p">);</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'>

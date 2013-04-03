@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-03-28T17:55:56+00:00</updated>
+  <updated>2013-04-03T18:46:56+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,40 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Load Testing XAF: Part 3 - Uploading and Validating the Virtual User Script]]></title>
+    <link href="http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/"/>
+    <updated>2013-04-03T16:39:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script</id>
+    <content type="html"><![CDATA[<p>This is another post in a series about load testing XAF applications.  Previously in the series:</p>
+
+<ul>
+<li><a href="http://ZeroSharp.github.com/load-testing-xaf-overview/">Load Testing XAF: Overview</a></li>
+<li><a href="http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/">Part 1: Deploying the target webserver</a></li>
+<li><a href="http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/">Part 2: Selenium</a></li>
+</ul>
+
+
+<p>In this part, we will load test the application we set up in <a href="http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/">Part 1</a>, using the Selenium load test we created in <a href="http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/">Part 2</a>.</p>
+
+<h2>Neustar Web Performance Management</h2>
+
+<p>NeuStar (formerly BrowserMob) are a company specialised in web application performance monitoring. We are interested in their <a href="https://home.wpm.neustar.biz/">web performance module</a>. It is free to create an account. To run a test with less than 25 virtual users costs only $0.15 per virtual user. Tests with more than 25 users (up to 5000) require an additional paid plan.</p>
+
+<h2>Create a script</h2>
+
+<p>In order to run a load test, we first need to create the script and validate it. Go to the <a href="https://script.wpm.neustar.biz/">scripting</a> page and select &#8216;Create a new script&#8217;. Then cut and paste the <a href="https://gist.github.com/shamp00/5302223">Selenium code for <code>MainDemo_CycleThroughTabs.js</code></a> from the <a href="http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/">previous post</a>.</p>
+
+<p>Now change the <code>targetHost</code> variable near the top of the file to point to the location of your MainDemo installation. You can then validate the script. This will actually run through the Selenium test on a newly provisioned Amazon instance to ensure that it passes.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/load-testing/load-testing-004.png"></p>
+
+<p>If you get a green icon, you can proceed with setting up a load test, otherwise you can see what went wrong in a video of the user session.</p>
+
+<p>In the next post we will configure and launch the load test.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Load Testing XAF: Part 2 - Selenium]]></title>
@@ -194,7 +228,6 @@
 <span class='line-number'>118</span>
 <span class='line-number'>119</span>
 <span class='line-number'>120</span>
-<span class='line-number'>121</span>
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="cm">/* global test */</span>
 </span><span class='line'>
 </span><span class='line'><span class="c1">// Settings for Neustar:</span>
@@ -236,8 +269,7 @@
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'><span class="kd">function</span> <span class="nx">waitForCallbacks</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForCondition</span><span class="p">(</span><span class="s2">&quot;typeof selenium.browserbot.getUserWindow().xafHasPendingCallbacks == &#39;function&#39;;&quot;</span><span class="p">,</span> <span class="nx">timeout</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForCondition</span><span class="p">(</span><span class="s2">&quot;selenium.browserbot.getUserWindow().xafHasPendingCallbacks() == false;&quot;</span><span class="p">,</span> <span class="nx">timeout</span><span class="p">);</span>
+</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForCondition</span><span class="p">(</span><span class="s2">&quot;(typeof selenium.browserbot.getUserWindow().xafHasPendingCallbacks === &#39;function&#39;) &amp;&amp; (selenium.browserbot.getUserWindow().xafHasPendingCallbacks() === false);&quot;</span><span class="p">,</span> <span class="nx">timeout</span><span class="p">);</span>
 </span><span class='line'><span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'>
@@ -1705,114 +1737,6 @@ Deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo' did not com
 <ul>
 <li><a href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
 <li><a href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Part 5 - Load balancing</a></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 2]]></title>
-    <link href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/"/>
-    <updated>2012-10-31T12:52:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo</id>
-    <content type="html"><![CDATA[<h1>Part 2: Publishing MainDemo</h1>
-
-<p>This is the second post in a series about deploying ASP.NET applications to the <a href="http://aws.amazon.com/">Amazon cloud</a>.</p>
-
-<p>In <a href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1</a> we created an Amazon RDS instance of SQL Server to act as the database for the deployment. Make sure this is up and running before continuing.</p>
-
-<p>This part guides you through publishing the <a href="http://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a> MainDemo application to the Amazon Elastic Beanstalk.</p>
-
-<h2>Amazon Elastic Beanstalk</h2>
-
-<p><span class='pullquote-right' data-pullquote='Amazon Elastic Beanstalk provides automatic capacity provisioning, load balancing, auto-scaling, and application health monitoring.'>
-Amazon Elastic Beanstalk provides automatic capacity provisioning, load balancing, auto-scaling, and application health monitoring. <strong>That sounds like a lot of features we don&#8217;t really need</strong> for the MainDemo, so let me explain.</p>
-
-<p>With Amazon Web Services, the choices are endless. An Amazon EC2 instance is a virtual machine running an actual Windows (or other) operating system that you can connect to with Remote Desktop and configure however you want. It might seem that the simplest would be to put everything on a &#8216;single machine&#8217; instance. However, the default &#8216;single machine&#8217; does not have SQL Server Express installed. We could connect to it and install it, but it ends up being a lot of extra steps. There are other Amazon Machine Images (AMIs) that include SQL Server Express, but these don&#8217;t support automatic deployment from Visual Studio.
-</span></p>
-
-<p>In fact (and Amazon should advertise this better), the Elastic Beanstalk is designed to make it very simple to deploy applications quickly <strong>even if you have no intention of ever needing more than a single little instance</strong>. It is the recommended starting point for all new deployments regardless of size. Ignore the long list of amazing additional features for now, (but one day you might need them.)</p>
-
-<h2>Prepare the MainDemo for deployment</h2>
-
-<p>First we need to fix a few problems with the MainDemo. (These will cause deployment in problems any environment, not just Amazon Web Services.)</p>
-
-<ul>
-<li>remove the reference to <em>stdole</em> in the web.config <em>&lt;assemblies&gt;</em> section</li>
-<li>add a reference to the project <em>DevExpress.XtraPrinting.v12.1</em></li>
-<li>add a reference to the project <em>DevExpress.XtraNavBar.v12.1</em></li>
-<li>add a reference to the project <em>DevExpress.Utils.v12.1.UI</em></li>
-<li>set the <em>CopyLocal</em> flag to true for all DevExpress assemblies</li>
-</ul>
-
-
-<p>(Some of these might have been fixed if you are using a newer release of XAF than 12.1.7.)</p>
-
-<p>Also, if there are any errors, we don&#8217;t get much useful feedback unless we turn custom errors off. Go to the web.config and add a tag just before the end of the <em>&lt;system.web&gt;</em> section.</p>
-
-<pre><code>    ...
-      &lt;customErrors mode="Off"/&gt;
-    &lt;/system.web&gt;
-</code></pre>
-
-<p>Make sure you can build without errors.</p>
-
-<h2>Deploy to Elastic Beanstalk</h2>
-
-<p>You might like to switch to <strong>Release</strong> mode since we will be publishing. Right click on the MainDemo.Web project in the Solution Explorer and select <strong>Publish to AWS&#8230;</strong></p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/aws/aws-solution-explorer-1.jpg" title="'figure 9'" ></p>
-
-<p>This opens the AWS publishing wizard. Select the <strong>AWS Elastic Beanstalk</strong> template.  I have also selected to deploy in the <strong>EU West (Ireland)</strong> region. Click <strong>Next</strong>.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/aws/launch-aws-beanstalk-1.jpg" title="'figure 10'" ></p>
-
-<p>Make sure you uncheck the <strong>Deploy application incrementally</strong> checkbox (see the upcoming Part 4 for more information on this option).</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/aws/launch-aws-beanstalk-2.jpg" title="'figure 11'" ></p>
-
-<p>The next few screens are self-explanatory.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/aws/launch-aws-beanstalk-3.jpg" title="'figure 12'" ></p>
-
-<p>(Note the keypair property is referred to in <a href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3</a> in the section about connecting via Remote Desktop.)</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/aws/launch-aws-beanstalk-4.jpg" title="'figure 13'" ></p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/aws/launch-aws-beanstalk-6.jpg" title="'figure 14'" ></p>
-
-<p>The following screen appears only if we have active RDS instances running (whcih you should if you followed <a href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1</a>). It allows us to add a permission for the application to access the database. This can also be done manually via the <em>Security Groups</em> section in the AWS Explorer.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/aws/launch-aws-beanstalk-7.jpg" title="'figure 15'" ></p>
-
-<p>The last screen summarizes all the choices so far.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/aws/launch-aws-beanstalk-8.jpg" title="'figure 16'" ></p>
-
-<p>After you click <strong>Launch</strong>, you can follow the progress in the Amazon Web Services output window. It will upload the MainDemo web deployment package to a temporary S3 bucket. It will then provision an EC2 instance and install the application to it. It will also provision an Elastic Load Balancer and connect up all the pieces. This will all take a few minutes.</p>
-
-<h2>Navigate to the Deployed MainDemo</h2>
-
-<p>Launch your browser and navigate to the instance web address which will look something like <strong>http://zerosharp-maindemo.elasticbeanstalk.com/</strong>. It should forward you to the login page. Login as Sam. Depending on whether the database needs to be created, this may take a couple of minutes and may even time out. I had to wait a minute and then click Login again before I was in.</p>
-
-<p>When you have finished <strong>don&#8217;t forget to terminate both the Elastic Beanstalk application and the DB Instance</strong> (right click and &#8216;Delete&#8217; from the AWS Explorer) otherwise you will be charged for the time the machines are provisioned. You can always check that everything has terminated properly in the <a href="https://console.aws.amazon.com/">AWS Console</a>.</p>
-
-<h2>Next up</h2>
-
-<p>In the next posts we will look some additional details:</p>
-
-<ul>
-<li><a href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3 - Troubleshooting</a></li>
-<li><a href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
-<li><a href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Part 5 - Load balancing</a></li>
-</ul>
-
-
-<h4>References</h4>
-
-<ul>
-<li>The <a href="https://www.youtube.com/watch?v=z-N0z5K_WFI">Amazon tutorial for the AWS Visual Studio Toolkit</a></li>
-<li>Nathanial Woolls has written an excellent similar article on hosting <a href="http://nwoolls.wordpress.com/2012/09/20/hosting-xaf-asp-net-projects-using-azure-web-sites/">XAF ASP.NET applications on Azure</a>.</li>
 </ul>
 
 ]]></content>

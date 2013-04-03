@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: neustar - ZeroSharp</title>
+  <title>Load Testing XAF: Part 3 - Uploading and Validating the Virtual User Script - ZeroSharp</title>
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Category: neustar">
+  <meta name="description" content="How to upload and validate a script using NeuStar Web Performance Management.">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ZeroSharp.github.comblog/categories/neustar/">
+  <link rel="canonical" href="http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -113,78 +113,122 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Neustar</h1>
+    
+      <h1 class="entry-title">Load Testing XAF: Part 3 - Uploading and Validating the Virtual User Script</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-03T16:39:00+01:00" pubdate data-updated="true">Apr 3<span>rd</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>This is another post in a series about load testing XAF applications.  Previously in the series:</p>
 
-  
-  <h2>2013</h2>
-
-<article>
-  
-<h1><a href="/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Load Testing XAF: Part 3 - Uploading and Validating the Virtual User Script</a></h1>
-<time datetime="2013-04-03T16:39:00+01:00" pubdate><span class='month'>Apr</span> <span class='day'>03</span> <span class='year'>2013</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/neustar/'>neustar</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
+<ul>
+<li><a href="/load-testing-xaf-overview/">Load Testing XAF: Overview</a></li>
+<li><a href="/load-testing-xaf-part-1-deploying/">Part 1: Deploying the target webserver</a></li>
+<li><a href="/load-testing-xaf-part-2-selenium/">Part 2: Selenium</a></li>
+</ul>
 
 
-</article>
+<p>In this part, we will load test the application we set up in <a href="/load-testing-xaf-part-1-deploying/">Part 1</a>, using the Selenium load test we created in <a href="/load-testing-xaf-part-2-selenium/">Part 2</a>.</p>
 
+<h2>Neustar Web Performance Management</h2>
 
+<p>NeuStar (formerly BrowserMob) are a company specialised in web application performance monitoring. We are interested in their <a href="https://home.wpm.neustar.biz/">web performance module</a>. It is free to create an account. To run a test with less than 25 virtual users costs only $0.15 per virtual user. Tests with more than 25 users (up to 5000) require an additional paid plan.</p>
 
-<article>
-  
-<h1><a href="/load-testing-xaf-part-2-selenium/">Load Testing XAF: Part 2 - Selenium</a></h1>
-<time datetime="2013-03-28T16:56:00+00:00" pubdate><span class='month'>Mar</span> <span class='day'>28</span> <span class='year'>2013</span></time>
+<h2>Create a script</h2>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/neustar/'>neustar</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
+<p>In order to run a load test, we first need to create the script and validate it. Go to the <a href="https://script.wpm.neustar.biz/">scripting</a> page and select &#8216;Create a new script&#8217;. Then cut and paste the <a href="https://gist.github.com/shamp00/5302223">Selenium code for <code>MainDemo_CycleThroughTabs.js</code></a> from the <a href="/load-testing-xaf-part-2-selenium/">previous post</a>.</p>
 
+<p>Now change the <code>targetHost</code> variable near the top of the file to point to the location of your MainDemo installation. You can then validate the script. This will actually run through the Selenium test on a newly provisioned Amazon instance to ensure that it passes.</p>
 
-</article>
+<p><img src="/images/blog/load-testing/load-testing-004.png"></p>
 
+<p>If you get a green icon, you can proceed with setting up a load test, otherwise you can see what went wrong in a video of the user session.</p>
 
-
-<article>
-  
-<h1><a href="/load-testing-xaf-part-1-deploying/">Load Testing XAF: Part 1 - Deploying</a></h1>
-<time datetime="2013-03-22T11:21:00+00:00" pubdate><span class='month'>Mar</span> <span class='day'>22</span> <span class='year'>2013</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/neustar/'>neustar</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/load-testing-xaf-overview/">Load Testing XAF: Overview</a></h1>
-<time datetime="2013-03-12T18:20:00+00:00" pubdate><span class='month'>Mar</span> <span class='day'>12</span> <span class='year'>2013</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/neustar/'>neustar</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
-
-
-</article>
-
+<p>In the next post we will configure and launch the load test.</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-03T16:39:00+01:00" pubdate data-updated="true">Apr 3<span>rd</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/neustar/'>neustar</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/load-testing-xaf-part-2-selenium/" title="Previous Post: Load Testing XAF: Part 2 - Selenium">&laquo; Load Testing XAF: Part 2 - Selenium</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -209,7 +253,10 @@
       var disqus_shortname = 'zerosharp';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/';
+        var disqus_url = 'http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
