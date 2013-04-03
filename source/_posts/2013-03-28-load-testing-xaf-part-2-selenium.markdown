@@ -90,8 +90,7 @@ function think() {
 }
 
 function waitForCallbacks() {
-    selenium.waitForCondition("typeof selenium.browserbot.getUserWindow().xafHasPendingCallbacks == 'function';", timeout);
-    selenium.waitForCondition("selenium.browserbot.getUserWindow().xafHasPendingCallbacks() == false;", timeout);
+    selenium.waitForCondition("(typeof selenium.browserbot.getUserWindow().xafHasPendingCallbacks === 'function') && (selenium.browserbot.getUserWindow().xafHasPendingCallbacks() === false);", timeout);
 }
 
 
