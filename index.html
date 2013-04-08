@@ -121,6 +121,66 @@ Part 1: Deploying the &hellip;">
       
   <header>
     
+      <h1 class="entry-title"><a href="/load-testing-xaf-part-4-launching-the-load-test/">Load Testing XAF: Part 4 - Launching the Load Test</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-08T11:19:00+01:00" pubdate data-updated="true">Apr 8<span>th</span>, 2013</time>
+        
+         | <a href="/load-testing-xaf-part-4-launching-the-load-test/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This is another post in a series about load testing XAF applications.  Previously in the series:</p>
+
+<ul>
+<li><a href="/load-testing-xaf-overview/">Load Testing XAF: Overview</a></li>
+<li><a href="/load-testing-xaf-part-1-deploying/">Part 1: Deploying the target webserver</a></li>
+<li><a href="/load-testing-xaf-part-2-selenium/">Part 2: Selenium</a></li>
+<li><a href="/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Part 3: Uploading and validating a script</a></li>
+</ul>
+
+
+<p>In this part, we will launch a 1 hour test with 25 virtual users using the <a href="http://home.wpm.neustar.biz/">NeuStar Web Performance Management</a> module.</p>
+
+<h2>Schedule and launch a test</h2>
+
+<p>From the script validation screen, click on <em>Schedule a load test with this script</em>. The defaults are good, but you can specify in detail how to run your load test. For instance, you can coordinate multiple Selenium scripts to simulate different types of activity on your site.</p>
+
+<p><img src="/images/blog/load-testing/load-testing-005.png"></p>
+
+<p>Notice that the load test cost for 25 users for an hour will be only $3.75.</p>
+
+<p>When you click <code>Launch</code>, Neustar takes 7 or 8 minutes to provision the Amazon machines and stage the test, after which you will get realtime detail information about response times, bandwidth and errors.</p>
+
+<p>In the next post we&#8217;ll analyse the results of this test.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Load Testing XAF: Part 3 - Uploading and Validating the Virtual User Script</a></h1>
     
     
@@ -1216,84 +1276,6 @@ ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-darwin12.2.1]
 </code></pre>
 
 <p>Ruby 1.9.3 is installed correctly. If I quit and restart Terminal, <code>ruby --version</code> is still 1.9.3.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/a-c-number-developers-adventures-in-ios-getting-started/">A C# Developer&#8217;s Adventures in iOS - Getting Started</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-30T11:18:00+00:00" pubdate data-updated="true">Jan 30<span>th</span>, 2013</time>
-        
-         | <a href="/a-c-number-developers-adventures-in-ios-getting-started/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>First steps in iPhone development</h2>
-
-<p>This is the first in a series of posts about developing an iOS application from the perspective of a Windows C# developer.</p>
-
-<h3>Startup Weekend</h3>
-
-<p>On a recent month-long trip to South America, I took part in the <a href="http://buenosaires.startupweekend.org/">Buenos Aires Startup Weekend</a> hackathon and my team came second!](/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend). The application we built is a treasure hunt game for tourists which helps them discover Buenos Aires. At the beginning of the weekend I knew nothing about mobile development. It was the first time I developed software using a Mac.</p>
-
-<p>First, let&#8217;s look at the basic requirements for the environment.</p>
-
-<p><img class="right" src="/images/blog/adventures-in-ios-getting-started-001.png" width="450"></p>
-
-<h3>Xamarin MonoTouch</h3>
-
-<p><a href="http://xamarin.com/monotouch">MonoTouch</a> is the easiest approach for C# developers. It allowed me to write a basic native iPhone app in a weekend with no prior mobile development experience. I&#8217;d never used MonoDevelop or XCode either.</p>
-
-<p>MonoTouch is a software development kit for MacOS that cleverly enables you to use C# and the common .NET libraries (via Mono) along with bindings for the <a href="https://developer.apple.com/technologies/ios/cocoa-touch.html">Apple Cocoa Touch</a> framework to create native applications for iPhone, iPad and iPod. A lot of the tools are the same as for Objective-C developers: you use the iPhone Simulator and the XCode Interface Builder.</p>
-
-<p>If you are a C# developer still wondering whether to learn Objective-C, there is <a href="http://stackoverflow.com/a/1634592/1077279">a magnificent StackOverflow answer</a> comparing MonoTouch and Objective-C.</p>
-
-<h3>Costs</h3>
-
-<p>There are some costs associated with becoming a MonoTouch iOS developer.</p>
-
-<p>You need a Mac. I&#8217;m using a 15&#8221; MacBook Pro. I have it configured for dual boot, but I&#8217;m using the MacOS side for this project.</p>
-
-<p>You will need to sign up as an iOS developer with Apple. This costs <strong>$99</strong> per year. More information about <a href="https://developer.apple.com/programs/">Apple developer programs on their site</a>.</p>
-
-<p>You will need Xamarin MonoTouch which currently costs <strong>$399</strong> for a one year single seat license for a single developer. More information on pricing at the <a href="https://store.xamarin.com/">Xamarin store</a>.</p>
-
-<h3>Setting up the environment</h3>
-
-<p>Xamarin have an <a href="http://docs.xamarin.com/ios/Guides/Getting_Started/Installation">excellent installation guide</a> which guides you through installing both XCode and MonoTouch.</p>
-
-<h3>Hello World</h3>
-
-<p>The next step is to create your first iOS application running in the iPhone simulator. Go through the samples in the <a href="http://docs.xamarin.com/ios/guides/getting_started">MonoTouch getting started guide</a>.</p>
-
-<h3>Next up</h3>
-
-<p>Over the next few weeks I&#8217;m aiming to finish the app I built for Startup Weekend and I&#8217;ll be sharing what I learn along the way.</p>
 </div>
   
   

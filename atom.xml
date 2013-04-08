@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-04-03T18:46:56+01:00</updated>
+  <updated>2013-04-08T15:41:23+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,37 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Load Testing XAF: Part 4 - Launching the load test]]></title>
+    <link href="http://ZeroSharp.github.com/load-testing-xaf-part-4-launching-the-load-test/"/>
+    <updated>2013-04-08T11:19:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/load-testing-xaf-part-4-launching-the-load-test</id>
+    <content type="html"><![CDATA[<p>This is another post in a series about load testing XAF applications.  Previously in the series:</p>
+
+<ul>
+<li><a href="http://ZeroSharp.github.com/load-testing-xaf-overview/">Load Testing XAF: Overview</a></li>
+<li><a href="http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/">Part 1: Deploying the target webserver</a></li>
+<li><a href="http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/">Part 2: Selenium</a></li>
+<li><a href="http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Part 3: Uploading and validating a script</a></li>
+</ul>
+
+
+<p>In this part, we will launch a 1 hour test with 25 virtual users using the <a href="http://home.wpm.neustar.biz/">NeuStar Web Performance Management</a> module.</p>
+
+<h2>Schedule and launch a test</h2>
+
+<p>From the script validation screen, click on <em>Schedule a load test with this script</em>. The defaults are good, but you can specify in detail how to run your load test. For instance, you can coordinate multiple Selenium scripts to simulate different types of activity on your site.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/load-testing/load-testing-005.png"></p>
+
+<p>Notice that the load test cost for 25 users for an hour will be only $3.75.</p>
+
+<p>When you click <code>Launch</code>, Neustar takes 7 or 8 minutes to provision the Amazon machines and stage the test, after which you will get realtime detail information about response times, bandwidth and errors.</p>
+
+<p>In the next post we&#8217;ll analyse the results of this test.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Load Testing XAF: Part 3 - Uploading and Validating the Virtual User Script]]></title>
@@ -1631,114 +1662,6 @@ Deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo' did not com
 <h2>Next up</h2>
 
 <p>In the <a href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">next post</a> we will enable load balancing (which is easy) and discuss the problems with autoscaling XAF applications (which is not).</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 3]]></title>
-    <link href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/"/>
-    <updated>2012-11-02T17:54:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop</id>
-    <content type="html"><![CDATA[<h1>Part 3: Troubleshooting</h1>
-
-<p>This is the third post in a series about deploying ASP.NET applications to the Amazon cloud.</p>
-
-<p>In <a href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1</a> we created an Amazon RDS instance of SQL Server to act as the database for the deployment.</p>
-
-<p>In <a href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2</a> we published the DevExpress MainDemo.Web to the Amazon Elastic Beanstalk.</p>
-
-<p>In this part we will look at troubleshooting methods and in particular how to connect to an EC2 instance in order to troubleshoot installations.</p>
-
-<h2>The Beanstalk Events tab</h2>
-
-<p>When there is a problem with the deployment, the first place to look is in the Elastic Beanstalk events tab. You will find warnings and error messages which frequently point to the source of any problem.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/aws/aws-events-1.jpg" title="'figure 18'" ></p>
-
-<p>Sometimes, the events window point to a log file which is automatically generated in an S3 bucket. By opening S3 in the AWS Explorer, you can find and download the log file which usually has excellent error information in it, for instance:</p>
-
-<figure class='code'><figcaption><span>An example log file </span></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>2012-11-02T12:37:13.000Z Warning 3:Web Event ASP.NET 4.0.30319.0 - Event code: 3008
-</span><span class='line'>    Event message: A configuration error has occurred.
-</span><span class='line'>    [...]
-</span><span class='line'>
-</span><span class='line'>    Application information:
-</span><span class='line'>    Application domain: /LM/W3SVC/1/ROOT/MainDemo.Web_deploy-2-129963334311133960
-</span><span class='line'>    Trust level: Full
-</span><span class='line'>    Application Virtual Path: /MainDemo.Web_deploy
-</span><span class='line'>    Application Path: C:\inetpub\wwwroot\MainDemo.Web_deploy\
-</span><span class='line'>    Machine name: AMAZONA-C6H7CEI
-</span><span class='line'>
-</span><span class='line'>    Process information:
-</span><span class='line'>    Process ID: 2436
-</span><span class='line'>    Process name: w3wp.exe
-</span><span class='line'>    Account name: IIS APPPOOL\DefaultAppPool
-</span><span class='line'>
-</span><span class='line'>    Exception information:
-</span><span class='line'>    Exception type: ConfigurationErrorsException
-</span><span class='line'>    Exception message: Could not load file or assembly 'DevExpress.ExpressApp.AuditTrail.v12.1, Version=12.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a' or one of its dependencies. The system cannot find the file specified. (C:\inetpub\wwwroot\MainDemo.Web_deploy\web.config line 94)
-</span><span class='line'>      at System.Web.Configuration.CompilationSection.LoadAssemblyHelper(String assemblyName, Boolean starDirective)
-</span><span class='line'>      at System.Web.Configuration.AssemblyInfo.get_AssemblyInternal()
-</span><span class='line'>      at System.Web.Compilation.BuildManager.GetReferencedAssemblies(CompilationSection compConfig)
-</span><span class='line'>      at System.Web.Compilation.BuildManager.CallPreStartInitMethods(String preStartInitListPath)
-</span><span class='line'>      at System.Web.Compilation.BuildManager.ExecutePreAppStart()
-</span><span class='line'>      at System.Web.Hosting.HostingEnvironment.Initialize(ApplicationManager appManager, IApplicationHost appHost, IConfigMapPathFactory configMapPathFactory, HostingEnvironmentParameters hostingParameters, PolicyLevel policyLevel, Exception appDomainCreationException)
-</span><span class='line'>    [...]</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Connecting via Remote Desktop</h2>
-
-<p>If you&#8217;re still in the dark, you can use Windows Remote Desktop to connect to the EC2 machine to troubleshoot.</p>
-
-<p>In the AWS Explorer, go to <strong>Amazon EC2/Instances</strong>.</p>
-
-<p>There are two ways of connecting. You can <strong>Get Windows Passwords</strong>, but this takes about an hour for the password to be decrypted.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/aws/aws-troubleshooting-1.jpg" title="'figure 19'" ></p>
-
-<p>Alternatively, you can <strong>Open Remote Desktop</strong> and then <strong>Use EC2 keypair to logon</strong>. You should have the <em>.pem</em> private key file associated with the EC2 key pair that was used to launch the instance (it was created when you created your AWS account or when you launched your first EC2 instance). Whenever an EC2 instance is provisioned, it is launched with an EC2 key pair (you selected a keypair to use in the wizard above). You can open the .pem file and cut and paste the key into the remote desktop window.</p>
-
-<p>You will then be logged in as an Administrator on the EC2 Instance running Windows 2008 R2. You can perform whatever operations you see fit - install software, change Control Panel options, restart IIS, <em>etc.</em> The changes will last until you terminate the instance (by deleting the Elastic Beanstalk stack for example).</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/aws/aws-troubleshooting-2.jpg" title="'figure 20'" ></p>
-
-<p>Note that it is easy to create new key pairs if you can&#8217;t find the .pem file, but you cannot change the key pair of a running instance. (You should terminate and launch again with the new key pair). One nice feature of the AWS Toolkit, is that if you create a new key pair within Visual Studio, you can choose to store the private key in the Toolkit.</p>
-
-<h2>Next up</h2>
-
-<p>The <a href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">next post</a> will cover incremental deployment options.</p>
-
-<ul>
-<li><a href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
-<li><a href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Part 5 - Load balancing</a></li>
-</ul>
-
 ]]></content>
   </entry>
   
