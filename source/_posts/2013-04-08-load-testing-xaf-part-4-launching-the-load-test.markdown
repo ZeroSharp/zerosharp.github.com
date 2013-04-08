@@ -5,7 +5,6 @@ date: 2013-04-08 11:19
 comments: true
 categories: [c#, devexpress, xaf, aws, neustar]
 description: How to launch a load test using NeuStar Web Performance Management.
-published: false
 ---
 This is another post in a series about load testing XAF applications.  Previously in the series: 
 
@@ -24,7 +23,7 @@ From the script validation screen, click on _Schedule a load test with this scri
 
 Notice that the load test cost for 25 users for an hour will be only $3.75.
 
-When you click `Launch`, Neustar takes 7 or 8 minutes to provision the Amazon machines and stage the test, after which you will get realtime detail information about response times, bandwidth an errors. 
+When you click `Launch`, Neustar takes 7 or 8 minutes to provision the Amazon machines and stage the test, after which you will get realtime detail information about response times, bandwidth and errors. 
 
 In the next post we'll analyse the results of this test.
 
