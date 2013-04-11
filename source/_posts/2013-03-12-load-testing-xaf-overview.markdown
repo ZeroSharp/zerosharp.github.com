@@ -26,16 +26,16 @@ The basic idea is this: instead of simulating users with specialised software, w
 {"The increased availability of cheap cloud-based virtualised machines has revolutionised load testing."} The rental of the virtualised machines is not free, but it is very cheap.  In about 2008, I started using the Amazon cloud to perform load tests. Our basic test costs us about USD 10.00 per run. We probably run this a dozen times a year, so our total cost is about USD 120.00 per year.
 {% endpullquote %}
 
-We get better statistics than we ever got out of NeoLoad. We are confident that the test is realistic and we can compare with the actual performance of our production environments. We have been able to find and solve memory leak problems and various tricky multiuser problems with these tests.
+We get better statistics than we ever got out of NeoLoad. We are confident that the test is realistic and we can compare with the actual performance of our production environments. We have been able to find and solve memory leak problems and various tricky multi-user problems with these tests.
 
 Load testing is still a complex business. There are a lot of pieces to put together, but with the cloud, each piece is relatively simple and cheap.
 
 ## The solution ##
 
-* In Part 1, we install the DevExpress MainDemo on an Amazon EC2 instance.
-* In Part 2, we use Selenium to write a script which will run on the client machines to control a real browser instance.
-* In Part 3, we create a NeuStar Web Performance test and validate the script.
-* In Part 4, we launch a performance test and monitor the server.
-* In Part 5, we analyse the results of the clients.
+* In [Part 1](/load-testing-xaf-part-1-deploying/), we install the DevExpress MainDemo on an Amazon EC2 instance.
+* In [Part 2](/load-testing-xaf-part-2-selenium/), we use Selenium to write a script which will run on the client machines to control a real browser instance.
+* In [Part 3](/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/), we create a NeuStar Web Performance test and validate the script.
+* In [Part 4](/load-testing-xaf-part-4-launching-the-load-test/), we launch a performance test and monitor the server.
+* In [Part 5](/load-testing-xaf-part-5-analysis/), we analyse the results of the clients.
 
 If you follow all the steps, expect to pay a handful of dollars in Amazon EC2 costs and a few more in Neustar costs. You could alternatively skip step 1 and target one of your own development machines instead.

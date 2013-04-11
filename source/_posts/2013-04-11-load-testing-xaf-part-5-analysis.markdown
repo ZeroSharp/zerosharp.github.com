@@ -5,7 +5,6 @@ date: 2013-04-14 07:37
 comments: true
 categories: [c#, devexpress, xaf, aws, neustar]
 description: Analysis of the load test we ran against the DevExpress XAF MainDemo.
-published: false
 ---
 This is the final post in a series about load testing XAF applications.  Previously in the series: 
 
@@ -13,7 +12,7 @@ This is the final post in a series about load testing XAF applications.  Previou
 * [Part 1: Deploying the target webserver](/load-testing-xaf-part-1-deploying/)
 * [Part 2: Selenium](/load-testing-xaf-part-2-selenium/)
 * [Part 3: Uploading and validating a script](/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/)
-* [Part 4: Launching the load test](/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/)
+* [Part 4: Launching the load test](/load-testing-xaf-part-4-launching-the-load-test/)
 
 In this part, we analyse the results of the load test we ran in [Part 4](/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/).
 
@@ -52,11 +51,11 @@ Lets look more closely at the errors.
 
 {% img /images/blog/load-testing/load-testing-007.png %}
 
-The first type of error we can see from the screenshot occurred at the login page. This error happened 6 times and was very similar to another error which occurred once. In fact, all 6 of these errors happened at the very end of the test. As such, they can be ignored, because it is likely that the load test was scaling down and interrupting sessions at this point.
+The first type of error we can see from the screen-shot occurred at the login page. This error happened 6 times and was very similar to another error which occurred once. In fact, all 6 of these errors happened at the very end of the test. As such, they can be ignored, because it is likely that the load test was scaling down and interrupting sessions at this point.
 
 {% img /images/blog/load-testing/load-testing-008.png %}
 
-One of the very nice features of NeuStar's load testing solution is that you not only get a screenshot, but also a video which shows you exactly what the user experienced when an error occurs. By clicking on the second error, it looks like there may be a problem  when the system is under load. There were 6 errors and it is clear in the video that the errors occur when attempting to navigate away from the _Scheduler Event_ view to the _My Details_ view. The screenshot gives us some useful information. DevExpress? Any ideas?
+One of the very nice features of NeuStar's load testing solution is that you not only get a screenshot, but also a video which shows you exactly what the user experienced when an error occurs. By clicking on the second error, it looks like there may be a problem  when the system is under load. There were 6 errors and it is clear in the video that the errors occur when attempting to navigate away from the _Scheduler Event_ view to the _My Details_ view. The screen-shot gives us some useful information. DevExpress? Any ideas?
 
 {% img /images/blog/load-testing/load-testing-011.jpg %}
 
@@ -75,8 +74,20 @@ For instance
 * Experiment with/without compression (IIS or via the `web.config`)
 * Experiment with/without caching (both at the http level, and via the [cached data store](http://documentation.devexpress.com/#XPO/CustomDocument9892)
 
+There are also many ways of improving XAF performance that are not in the MainDemo. These include:
+
+* [Server mode](http://documentation.devexpress.com/#wpf/CustomDocument6279) in all grids
+* [XPO Caching](http://community.devexpress.com/blogs/xpo/archive/2006/03/27/session-management-and-caching.aspx)
+* Where possible, move any heavy operations to a separate asynchronous web service call
+
+We have implemented all of these in our production application.
+
 ## A note about concurrency ##
 
-In our experience, people tend to over estimate the number of concurrent users for their application. Our application has probably upwards of 4000 users defined, but we know from our logs that there have never been more than 80 simultaneously logged in. Also, even with 80 concurrent users, they have a much slower 'think time' than 3 seconds on average.
+In our experience, people tend to over estimate the number of concurrent users for their application. Our application has probably upwards of 5000 users defined, but we know from our logs that there have never been more than 80 simultaneously logged in. Also, even with 80 concurrent users, they have a much longer 'think time' than 3 seconds on average.
 
-For our production environment, we run at least one 25 user test for every major release and ensure the performance is at least as good as the previous release. In production, the system is load balanced (with sticky sessions) and we know from experience that this is sufficient.
+For the production environment, we run at least one 25 user test for every major release and ensure the performance is at least as good as the previous release. We have occasionally run tests with up to 200 simultaneous users. The response time goes down to unacceptable levels (~30 seconds), but the application behaves. In production, the system is load balanced (with sticky sessions) and we know from previous experience that this is sufficient for our application.
+
+## Conclusion ##
+
+This concludes my series on load testing. We've managed to get some very useful information with some very low-cost tools. The largest part of effort is the writing of the Selenium script which is certainly tricky. In the future I'd really like to harness the DevExpress EasyTests to replace the script but I haven't yet found a way of doing this. Feel free to use my Selenium script as a starting point for testing your own XAF applications, and let us know of any interesting results!
