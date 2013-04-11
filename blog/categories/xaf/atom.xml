@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-04-08T15:41:23+01:00</updated>
+  <updated>2013-04-11T10:42:56+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,107 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Load Testing XAF: Part 5 - Analysis]]></title>
+    <link href="http://ZeroSharp.github.com/load-testing-xaf-part-5-analysis/"/>
+    <updated>2013-04-14T07:37:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/load-testing-xaf-part-5-analysis</id>
+    <content type="html"><![CDATA[<p>This is the final post in a series about load testing XAF applications.  Previously in the series:</p>
+
+<ul>
+<li><a href="/load-testing-xaf-overview/">Load Testing XAF: Overview</a></li>
+<li><a href="/load-testing-xaf-part-1-deploying/">Part 1: Deploying the target webserver</a></li>
+<li><a href="/load-testing-xaf-part-2-selenium/">Part 2: Selenium</a></li>
+<li><a href="/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Part 3: Uploading and validating a script</a></li>
+<li><a href="/load-testing-xaf-part-4-launching-the-load-test/">Part 4: Launching the load test</a></li>
+</ul>
+
+
+<p>In this part, we analyse the results of the load test we ran in <a href="/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Part 4</a>.</p>
+
+<h2>Results</h2>
+
+<p>The results of the test we ran are <a href="https://load.wpm.neustar.biz/load/test/share/e0f547d711624168bc7fa0a69ddd8283">here</a>. The graphs are interactive and give quite interesting data about the load tests. Feel free to have a look and play around with the results.</p>
+
+<h2>The Performance Graphs</h2>
+
+<p><img src="/images/blog/load-testing/load-testing-006.png"></p>
+
+<p>The above graph shows the basic information about the test. We can see there were 649 transactions (the Selenium script was run 649 times) and there were 17 errors.</p>
+
+<p>You can see that the test managed to follow the planned scenario (the actual number of users follows the yellow line). You can also see information about the throughput in bytes during the test.</p>
+
+<h2>The Script Performance Graphs</h2>
+
+<p>Here we see information pertaining to the script we chose to run. Had we run multiple different scripts, we would be able to isolate each one.</p>
+
+<p><img src="/images/blog/load-testing/load-testing-009.png"></p>
+
+<p>It is clear that the transaction time rises quite slowly with the load until about 12:17 when there is a jump. More on that later.</p>
+
+<p>First, I have removed the plot of the total transaction time, so that we can see more detail from the remaining steps. Two things seem to be clear: the response time for each individual step does not seem to be much affected by the load, but the login step rises gradually.</p>
+
+<p><img src="/images/blog/load-testing/load-testing-010.png"></p>
+
+<p>Now back to the spike at 12:17, if you look at the transaction data more closely (not shown here but available on the <a href="https://load.wpm.neustar.biz/load/test/share/e0f547d711624168bc7fa0a69ddd8283">NeuStar results page</a>, it looks like several transactions finished at the same time and that the jump coincides with several simultaneous logins.</p>
+
+<p>So again, it seems that login is the 'weakest link', i.e., the most resource intensive step and the one that suffers the most under load.</p>
+
+<h2>The Errors</h2>
+
+<p>Lets look more closely at the errors.</p>
+
+<p><img src="/images/blog/load-testing/load-testing-007.png"></p>
+
+<p>The first type of error we can see from the screen-shot occurred at the login page. This error happened 6 times and was very similar to another error which occurred once. In fact, all 6 of these errors happened at the very end of the test. As such, they can be ignored, because it is likely that the load test was scaling down and interrupting sessions at this point.</p>
+
+<p><img src="/images/blog/load-testing/load-testing-008.png"></p>
+
+<p>One of the very nice features of NeuStar's load testing solution is that you not only get a screenshot, but also a video which shows you exactly what the user experienced when an error occurs. By clicking on the second error, it looks like there may be a problem  when the system is under load. There were 6 errors and it is clear in the video that the errors occur when attempting to navigate away from the <em>Scheduler Event</em> view to the <em>My Details</em> view. The screen-shot gives us some useful information. DevExpress? Any ideas?</p>
+
+<p><img src="/images/blog/load-testing/load-testing-011.jpg"></p>
+
+<p>There are a couple of other errors, but I think these are most likely a result of problems with the Selenium script rather than XAF. The AJAX update panels make it quite hard to detect when the page is fully ready and although we try to accommodate this with <code>selenium.waitForCondition()</code> my feeling is that the <code>click()</code> occurred before everything was properly wired up.</p>
+
+<h2>Further tests</h2>
+
+<p>This series has covered the process of load testing XAF applications in its entirety, but in some ways, it feels like only the beginning. There are many other configurations and tests which would be interesting.</p>
+
+<p>For instance</p>
+
+<ul>
+<li>Reduce think time which is currently set to 3 seconds per step</li>
+<li>Use a smaller/larger EC2 instance</li>
+<li>Increase the number of virtual users</li>
+<li>Try load balancing with sticky sessions</li>
+<li>Experiment with/without compression (IIS or via the <code>web.config</code>)</li>
+<li>Experiment with/without caching (both at the http level, and via the <a href="http://documentation.devexpress.com/#XPO/CustomDocument9892">cached data store</a></li>
+</ul>
+
+
+<p>There are also many ways of improving XAF performance that are not in the MainDemo. These include:</p>
+
+<ul>
+<li><a href="http://documentation.devexpress.com/#wpf/CustomDocument6279">Server mode</a> in all grids</li>
+<li><a href="http://community.devexpress.com/blogs/xpo/archive/2006/03/27/session-management-and-caching.aspx">XPO Caching</a></li>
+<li>Where possible, move any heavy operations to a separate asynchronous web service call</li>
+</ul>
+
+
+<p>We have implemented all of these in our production application.</p>
+
+<h2>A note about concurrency</h2>
+
+<p>In our experience, people tend to over estimate the number of concurrent users for their application. Our application has probably upwards of 5000 users defined, but we know from our logs that there have never been more than 80 simultaneously logged in. Also, even with 80 concurrent users, they have a much longer 'think time' than 3 seconds on average.</p>
+
+<p>For the production environment, we run at least one 25 user test for every major release and ensure the performance is at least as good as the previous release. We have occasionally run tests with up to 200 simultaneous users. The response time goes down to unacceptable levels (~30 seconds), but the application behaves. In production, the system is load balanced (with sticky sessions) and we know from previous experience that this is sufficient for our application.</p>
+
+<h2>Conclusion</h2>
+
+<p>This concludes my series on load testing. We've managed to get some very useful information with some very low-cost tools. The largest part of effort is the writing of the Selenium script which is certainly tricky. In the future I'd really like to harness the DevExpress EasyTests to replace the script but I haven't yet found a way of doing this. Feel free to use my Selenium script as a starting point for testing your own XAF applications, and let us know of any interesting results!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Load Testing XAF: Part 4 - Launching the load test]]></title>
@@ -526,49 +627,6 @@ ttp://localhost:58404/Default.aspx' (CycleThroughTabs.js#50)
 <p>The reason for this is that we are trying to determine the breaking point of our application. If the elastic load balancer detects that a system is struggling, it might automatically flag it as unhealthy and replace it with a newly launched instance. While this behaviour might be desirable for a production system, it doesn't make sense for a load test.</p>
 
 <p>Make sure you can connect to your installation from a web browser before continuing. I chose to deploy to a Windows 2012 instance running IIS 8.0 (which was not available when I wrote my previous XAF AWS tutorial) and I had a little trouble with the URL. If I navigate to the application's base URL (<em>http://zerosharp-maindemo.elasticbeanstalk.com/</em> in my case), then I get forwarding problems after logging in. Instead, I navigate to the full address <em>http://zerosharp-maindemo.elasticbeanstalk.com/MainDemo.Web_deploy/Default.aspx</em> and everything works. I'll try to look into it later, but it's not important for the load testing.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Load Testing XAF: Overview]]></title>
-    <link href="http://ZeroSharp.github.com/load-testing-xaf-overview/"/>
-    <updated>2013-03-12T18:20:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/load-testing-xaf-overview</id>
-    <content type="html"><![CDATA[<p>Over the next few posts, I will demonstrate how to load test XAF web applications.</p>
-
-<h2>History</h2>
-
-<p>Performance testing has traditionally been difficult and expensive. A few years ago, to do it well required a powerful piece of dedicated load testing software such as HP LoadRunner (typical cost back in 2007: USD 50,000-100,000 or more per year!). This software was capable of simulating multiple virtual users via the use of recorded scripts and providing detailed performance statistics. Usually the cost was increased further increased by the need for powerful hardware to be able to run the application.</p>
-
-<p>In 2007 we were required by a big customer (a global bank) to provide load testing statistics for our expressApp Framework application. We could not afford anything as sophisticated as LoadRunner so we went with a cheaper alternative (NeoLoad, which was still several thousand per year). It was extremely painstaking work to produce a test. The approach was to record the http requests (as a stream of text values) and write a script to check the http response. Since there was no real browser involved, it was very difficult to determine if our test was really representative. Several machines in the office had to be dedicated to simulating virtual users. Nobody was allowed to use the internet for fear of skewing the results during a test. If an error occurred, it was almost impossible to determine what went wrong. We wrestled with it and managed to fulfill our requirements, but it was all a lot of effort for no real return.</p>
-
-<p>Part of the problem was certainly that XAF is complex to test. The user interface is rich and makes use of complex controls. Most of these load testing tools work better when targetting a simple <code>&lt;INPUT type="button"&gt;</code> rather than an image of a button that sometimes is not even clickable until the mouse has hovered over it. DevExpress have made it easy to run tests via their EasyTests, but no load testing tool supports them yet. (They have informed me it's in their plans...)</p>
-
-<h2>Enter the cloud</h2>
-
-<p><span class='pullquote-right' data-pullquote='The increased availability of cheap cloud-based virtualised machines has revolutionised load testing.'></p>
-
-<p>The basic idea is this: instead of simulating users with specialised software, why not fire up a virtual machine and test with a real browser instance which is 'remote controlled' via a script.</p>
-
-<p>The increased availability of cheap cloud-based virtualised machines has revolutionised load testing. The rental of the virtualised machines is not free, but it is very cheap.  In about 2008, I started using the Amazon cloud to perform load tests. Our basic test costs us about USD 10.00 per run. We probably run this a dozen times a year, so our total cost is about USD 120.00 per year.
-</span></p>
-
-<p>We get better statistics than we ever got out of NeoLoad. We are confident that the test is realistic and we can compare with the actual performance of our production environments. We have been able to find and solve memory leak problems and various tricky multiuser problems with these tests.</p>
-
-<p>Load testing is still a complex business. There are a lot of pieces to put together, but with the cloud, each piece is relatively simple and cheap.</p>
-
-<h2>The solution</h2>
-
-<ul>
-<li>In Part 1, we install the DevExpress MainDemo on an Amazon EC2 instance.</li>
-<li>In Part 2, we use Selenium to write a script which will run on the client machines to control a real browser instance.</li>
-<li>In Part 3, we create a NeuStar Web Performance test and validate the script.</li>
-<li>In Part 4, we launch a performance test and monitor the server.</li>
-<li>In Part 5, we analyse the results of the clients.</li>
-</ul>
-
-
-<p>If you follow all the steps, expect to pay a handful of dollars in Amazon EC2 costs and a few more in Neustar costs. You could alternatively skip step 1 and target one of your own development machines instead.</p>
 ]]></content>
   </entry>
   
