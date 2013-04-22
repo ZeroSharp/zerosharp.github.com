@@ -37,5 +37,7 @@ Load testing is still a complex business. There are a lot of pieces to put toget
 * In [Part 3](/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/), we create a NeuStar Web Performance test and validate the script.
 * In [Part 4](/load-testing-xaf-part-4-launching-the-load-test/), we launch a performance test and monitor the server.
 * In [Part 5](/load-testing-xaf-part-5-analysis/), we analyse the results of the clients.
+* In [a bonus part](/load-testing-xaf-bonus-simultaneous-easytests/), we learn how to run multiple simultaneous EasyTests as an alternative method of isolating performance and concurrency problems.
+
 
 If you follow all the steps, expect to pay a handful of dollars in Amazon EC2 costs and a few more in Neustar costs. You could alternatively skip step 1 and target one of your own development machines instead.

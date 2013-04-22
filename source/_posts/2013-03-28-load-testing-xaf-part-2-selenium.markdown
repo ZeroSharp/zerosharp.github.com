@@ -24,6 +24,8 @@ The DevExpress recommended method of writing functional tests is to use the Easy
 
 However, one feature which is not (yet) available is the ability to use EasyTests for load testing.
 
+__UPDATE__: See my [more recent post](/load-testing-xaf-bonus-simultaneous-easytests) on how run multiple simultaneous EasyTests.
+
 ## Modifications to the MainDemo ##
 
 The sample script I have written assumes the MainDemo is running with _Horizontal Navigation_ rather than vertical. You can modify the script to add support for vertical navigation or you can change Global.asax.cs Application_Start as follows:
