@@ -166,7 +166,7 @@
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/load-testing-xaf-overview/</loc>
-        <lastmod>2013-04-11T10:40:37+01:00</lastmod>
+        <lastmod>2013-04-22T16:49:24+01:00</lastmod>
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/</loc>
@@ -174,7 +174,7 @@
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/</loc>
-        <lastmod>2013-04-03T16:24:06+01:00</lastmod>
+        <lastmod>2013-04-22T16:56:37+01:00</lastmod>
     </url>
     <url>
         <loc>
@@ -191,6 +191,10 @@
         <lastmod>2013-04-11T10:42:06+01:00</lastmod>
     </url>
     <url>
+        <loc>http://ZeroSharp.github.com/load-testing-xaf-bonus-simultaneous-easytests/</loc>
+        <lastmod>2013-04-22T16:55:45+01:00</lastmod>
+    </url>
+    <url>
         <loc>http://ZeroSharp.github.com/about/</loc>
         <lastmod>2013-01-31T16:02:21+00:00</lastmod>
     </url>
@@ -204,11 +208,11 @@
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/blog/archives/</loc>
-        <lastmod>2013-04-11T10:42:06+01:00</lastmod>
+        <lastmod>2013-04-22T16:56:37+01:00</lastmod>
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/</loc>
-        <lastmod>2013-04-11T10:42:06+01:00</lastmod>
+        <lastmod>2013-04-22T16:56:37+01:00</lastmod>
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/license/</loc>
