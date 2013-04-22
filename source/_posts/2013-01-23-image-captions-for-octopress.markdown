@@ -60,7 +60,7 @@ module Jekyll
           "<span class='caption-text'>#{@title}</span>" +
         "</span>"
       else
-        "Error processing input, expected syntax: {% img [class name(s)] /url/to/image [width height] [title text] %}"
+        {% raw %}"Error processing input, expected syntax: {% img [class name(s)] /url/to/image [width height] [title text] %}"{% endraw %}
       end
     end
   end
