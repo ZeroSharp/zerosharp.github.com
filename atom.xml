@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-04-22T16:57:21+01:00</updated>
+  <updated>2013-04-22T17:34:41+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -1435,7 +1435,7 @@ ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-darwin12.2.1]
 </span><span class='line'>          <span class="s2">&quot;&lt;span class=&#39;caption-text&#39;&gt;</span><span class="si">#{</span><span class="vi">@title</span><span class="si">}</span><span class="s2">&lt;/span&gt;&quot;</span> <span class="o">+</span>
 </span><span class='line'>        <span class="s2">&quot;&lt;/span&gt;&quot;</span>
 </span><span class='line'>      <span class="k">else</span>
-</span><span class='line'>        <span class="s2">&quot;Error processing input, expected syntax: &lt;img class=&quot;</span><span class="o">[</span><span class="k">class</span> <span class="nb">name</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">]</span><span class="s2">&quot; src=&quot;</span><span class="o">/</span><span class="n">url</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">image</span><span class="s2">&quot; title=&quot;</span><span class="o">[</span><span class="n">width</span> <span class="n">height</span><span class="o">]</span> <span class="o">[</span><span class="n">title</span> <span class="n">text</span><span class="o">]</span><span class="s2">&quot; &gt;&quot;</span>
+</span><span class='line'>        <span class="s2">&quot;Error processing input, expected syntax: {% img [class name(s)] /url/to/image [width height] [title text] %}&quot;</span>
 </span><span class='line'>      <span class="k">end</span>
 </span><span class='line'>    <span class="k">end</span>
 </span><span class='line'>  <span class="k">end</span>
