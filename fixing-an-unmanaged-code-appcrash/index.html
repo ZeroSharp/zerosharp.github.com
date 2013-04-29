@@ -1,0 +1,365 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Fixing an unmanaged code AppCrash - ZeroSharp</title>
+  <meta name="author" content="Robert Anderson">
+
+  
+  <meta name="description" content="Debugging an AppCrash related to incorrect string marshalling in an external dll call.">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ZeroSharp.github.com/fixing-an-unmanaged-code-appcrash/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="http://feeds.feedburner.com/zerosharp" rel="alternate" title="ZeroSharp" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> 
+
+<!-- <ra+> -->
+<link href="http://fonts.googleapis.com/css?family=Ubuntu:500" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
+
+<link href="/stylesheets/custom/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+<!-- </ra+> -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-30564687-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <!--<h1><a href="/">ZeroSharp</a></h1>-->
+  <a href="http://www.zerosharp.com/"><h1>ZeroSharp</h1></a>
+  
+    <h2>Rob Anderson's ones and zeros</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">  
+</ul>
+  
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ZeroSharp.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+  
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/license/">License</a></li>  
+</ul>
+<ul class="subscription">
+    <li><a href="https://plus.google.com/112685056596124127572?rel=author">
+      <img src="/images/asides/googleplus.png" width="24" height="24" alt="Rob on Google+">
+    </a></li>    
+    <li><a rel="me" href="http://twitter.com/8ctopus">
+      <img src="/images/asides/twitter.png" width="24" height="24" alt="Rob on Twitter" />
+    </a></li>
+    <!--<li><a rel="me" href="http://stackoverflow.com/users/1077279/shamp00">
+      <img src="/images/asides/stackoverflow.png" width="24" height="24" alt="Rob on StackOverflow" />
+    </a></li>
+    <li><a rel="me" href="https://github.com/zerosharp">
+      <img src="/images/asides/github.png" width="24" height="24" alt="Rob on GitHub" />
+    </a></li>
+    <li><a rel="me" href="http://www.linkedin.com/profile/view?id=926740"  class ="googleplus-hidden" >
+      <img src="/images/asides/linkedin.png" width="24" height="24" alt="Rob on LinkedIn" />
+    </a></li>
+    <li><a rel="me" href="http://springpad.com/#!/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/springpad.png" width="24" height="24" alt="Rob on SpringPad" />
+    </a></li>    
+    <li><a rel="me" href="http://pinterest.com/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/pinterest.png" width="24" height="24" alt="Rob on Pinterest" />
+    </a></li>
+    <li><a rel="me" href="http://www.last.fm/user/nosredna"  class ="googleplus-hidden" >
+      <img src="/images/asides/lastfm.png" width="24" height="24" alt="Rob on Last.fm" />
+    </a></li>-->
+    <li><a href="http://feeds.feedburner.com/zerosharp">
+      <img src="/images/asides/rss.png" rel="subscribe-rss" width="24" height="24" alt="RSS Feed" />
+    </a></li>
+</ul>
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Fixing an Unmanaged Code AppCrash</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-29T16:21:00+01:00" pubdate data-updated="true">Apr 29<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>This post is the result of a recent bug hunt in which I came across a tricky bug, found a debugging switch I&#8217;d completely forgotten existed and learned a little about calling <code>extern</code> string functions from C#.</p>
+
+<p>I love bug hunting. It&#8217;s like a murder mystery: you&#8217;ve got your suspects and you try to eliminate them one at a time until, as a famous bug hunter said:</p>
+
+<blockquote><p>&#8230; when you have eliminated the impossible, whatever remains, however improbable, must be the truth.</p><footer><strong>Sherlock Holmes</strong> <cite>The Sign of Four</cite></footer></blockquote>
+
+
+<p>Between about 1995 and 2006, I used a data library called Apollo almost every day. It was a bunch of C++ drivers for dBase files with some more advanced options for encryption and indexing and was a popular option for <a href="http://en.wikipedia.org/wiki/Clipper_(programming_language">Clipper</a>) programmers. I joined a software project which was based on Clipper and Apollo in 1995. Apollo went through many different incarnations SuccessWare, Luxent, Vista, ApolloDB. All of these companies were essentially providing wrappers for different languages (Delphi, .NET) but the core C++ drivers always remained more or less the same <a href="http://www.apollodb.com/products.asp">and it&#8217;s still going</a>, but it&#8217;s not really actively maintained.</p>
+
+<p>Fast forward to 2013 and we have a legacy console utility for migrating data from the old format, which traverses the Apollo tables and converts the data to our model (DevExpress XPO objects). This code hardly ever changes, but when I converted all our core libraries to .NET 4.5., I found I had to jump in and fix it one last time.</p>
+
+<p>When I tried to run the upgraded .NET 4.5 library I got a mysterious app crash.</p>
+
+<p><img src="/images/blog/appcrash/app-crash-001.png"></p>
+
+<p>The application would then close without any error message or stack trace. Nothing I did was allowing me catch any exception. None of the signatures, e.g., the <code>c0000374</code> exception code show up on Google. It shows up in the Windows event log, but apparently EventID 1000 is a very generic error message.</p>
+
+<p><img src="/images/blog/appcrash/app-crash-002.png"></p>
+
+<p>I had a suspicion the problem was something to do with the Apollo assembly and I also knew that Apollo was not all managed code. I stumbled over the <em>Enable native code debugging</em> in the project settings. I&#8217;ve never used this setting. (My next approach would have been to use tracing to try to pinpoint the location of the crash.)</p>
+
+<p><img src="/images/blog/appcrash/app-crash-003.png"></p>
+
+<p>Visual Studio really impresses with its debugging capabilities. When we run again, we get a stack trace and an error message.</p>
+
+<p><img src="/images/blog/appcrash/app-crash-004.png"></p>
+
+<p>Well Google didn&#8217;t seem to have much to say about <em>&#8216;This may be due to a corruption of the heap&#8217;</em>. But the problem seems to do with <code>apolloTable.FieldName(i)</code>. With a decompiler I had a look at its definition.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="kt">string</span> <span class="nf">FieldName</span><span class="p">(</span><span class="kt">short</span> <span class="n">fieldNum</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//...</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">ApolloAPI</span><span class="p">.</span><span class="n">sx_FieldName</span><span class="p">(</span><span class="n">fieldNum</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">//...</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Let&#8217;s find <code>ApolloAPI.sx_FieldName(fieldNum);</code></p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="na">[DllImport(&quot;SDE7.dll&quot;, CharSet=CharSet.Ansi, ExactSpelling=true)]</span>
+</span><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">extern</span> <span class="kt">string</span> <span class="nf">sx_FieldName</span><span class="p">(</span><span class="kt">short</span> <span class="n">uiFieldNum</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now, knowing that SDE7.dll is written in C++, I guessed it might be having trouble with the return value being a <code>string</code>. The C++ memory management of the returned string might be getting in the way. <a href="http://stackoverflow.com/a/8242828/1077279">A bit of StackOverflow</a> gave me this trick: declare the return type as <code>IntPtr</code> and use <code>Marshal.PtrToStringAnsi()</code> to get a C# <code>string</code> from the pointer. (It seems that .NET 4.5 is stricter about marshalling than earlier frameworks. Perhaps someone can enlighten me why the error did not occur with .NET 4.0?) I wrote a new extension method for <code>ApolloTable</code> and changed the code to use <code>apolloTable.SafeFieldName(i)</code> instead.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">TApolloTableExtensions</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'><span class="na">        [DllImport(&quot;SDE7.dll&quot;, CharSet = CharSet.Ansi, ExactSpelling = true)]</span>
+</span><span class='line'>        <span class="k">public</span> <span class="k">static</span> <span class="k">extern</span> <span class="n">IntPtr</span> <span class="nf">sx_FieldName</span><span class="p">(</span><span class="kt">short</span> <span class="n">uiFieldNum</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">public</span> <span class="k">static</span> <span class="kt">string</span> <span class="nf">SafeFieldName</span><span class="p">(</span><span class="k">this</span> <span class="n">ApolloTable</span> <span class="n">apolloTable</span><span class="p">,</span> <span class="kt">short</span> <span class="n">fieldNum</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>          <span class="c1">//...</span>
+</span><span class='line'>            <span class="n">IntPtr</span> <span class="n">strPtr</span> <span class="p">=</span> <span class="n">sx_FieldName</span><span class="p">(</span><span class="n">fieldNum</span><span class="p">);</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">Marshal</span><span class="p">.</span><span class="n">PtrToStringAnsi</span><span class="p">(</span><span class="n">strPtr</span><span class="p">);</span>
+</span><span class='line'>            <span class="c1">//...</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And bingo! The application now runs without error.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-29T16:21:00+01:00" pubdate data-updated="true">Apr 29<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/apollodb/'>apollodb</a>, <a class='category' href='/blog/categories/bug/'>bug</a>, <a class='category' href='/blog/categories/c-/'>c#</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/fixing-an-unmanaged-code-appcrash/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/fixing-an-unmanaged-code-appcrash/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/load-testing-xaf-bonus-simultaneous-easytests/" title="Previous Post: Load Testing XAF: Bonus - Simultaneous EasyTests">&laquo; Load Testing XAF: Bonus - Simultaneous EasyTests</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Robert Anderson
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'zerosharp';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/fixing-an-unmanaged-code-appcrash/';
+        var disqus_url = 'http://ZeroSharp.github.com/fixing-an-unmanaged-code-appcrash/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
