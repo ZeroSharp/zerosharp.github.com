@@ -4,7 +4,7 @@
   <title><![CDATA[Category: bug | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/bug/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-04-29T16:57:00+01:00</updated>
+  <updated>2013-04-30T12:28:53+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -24,7 +24,7 @@
 
 <p><blockquote><p>... when you have eliminated the impossible, whatever remains, however improbable, must be the truth.</p><footer><strong>Sherlock Holmes</strong> <cite>The Sign of Four</cite></footer></blockquote></p>
 
-<p>Between about 1995 and 2006, I used a data library called Apollo almost every day. It was a bunch of C++ drivers for dBase files with some more advanced options for encryption and indexing and was a popular option for <a href="http://en.wikipedia.org/wiki/Clipper_(programming_language">Clipper</a>) programmers. I joined a software project which was based on Clipper and Apollo in 1995. Apollo went through many different incarnations SuccessWare, Luxent, Vista, ApolloDB. All of these companies were essentially providing wrappers for different languages (Delphi, .NET) but the core C++ drivers always remained more or less the same <a href="http://www.apollodb.com/products.asp">and it's still going</a>, but it's not really actively maintained.</p>
+<p>Between about 1995 and 2006, I used a data library called Apollo almost every day. It was a bunch of C++ drivers for dBase files with some more advanced options for encryption and indexing and was a popular option for <a href="http://en.wikipedia.org/wiki/Clipper_(programming_language">Clipper</a>) programmers. I joined a software project which was based on Clipper and Apollo in 1995. Apollo went through many different incarnations SuccessWare, Luxent, Vista, ApolloDB. All of these companies were essentially providing wrappers for different languages (Delphi, .NET) but the core C++ drivers always remained more or less the same <a href="http://www.apollodb.com/products.asp">and it's still going</a>.</p>
 
 <p>Fast forward to 2013 and we have a legacy console utility for migrating data from the old format, which traverses the Apollo tables and converts the data to our model (DevExpress XPO objects). This code hardly ever changes, but when I converted all our core libraries to .NET 4.5., I found I had to jump in and fix it one last time.</p>
 
