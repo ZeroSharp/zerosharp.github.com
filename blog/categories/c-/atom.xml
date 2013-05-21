@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c# | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/c-/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-05-21T16:20:41+01:00</updated>
+  <updated>2013-05-21T16:25:11+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -139,7 +139,7 @@ The ability to create reports using a report writer is a very powerful feature o
 
 <p>In addition, each repx will have been transformed into two correpsonding files. All the generated files are highlighted in yellow:</p>
 
-<p><img class="right" src="/images/blog/xaf-report-sync-002.png"></p>
+<p><img src="/images/blog/xaf-report-sync-002.png"></p>
 
 <p>Now the scripts have been deserialized from the repx and put in a partial class and the remainder of the repx has been transformed into a corresponding <code>XafReport</code> descendant. See for instance, <em>ContactsGroupedByPosition.cs</em> (which stored its scripts as a string) is as follows:</p>
 
