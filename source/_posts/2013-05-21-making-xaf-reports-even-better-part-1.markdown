@@ -88,7 +88,7 @@ Time elapsed: 00:00:02.1762029
 
 In addition, each repx will have been transformed into two correpsonding files. All the generated files are highlighted in yellow:
 
-{% img right /images/blog/xaf-report-sync-002.png %}
+{% img /images/blog/xaf-report-sync-002.png %}
 
 Now the scripts have been deserialized from the repx and put in a partial class and the remainder of the repx has been transformed into a corresponding `XafReport` descendant. See for instance, _ContactsGroupedByPosition.cs_ (which stored its scripts as a string) is as follows:
 
