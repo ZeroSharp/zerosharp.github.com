@@ -9,7 +9,8 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Recently I took part in Startup Weekend Buenos Aires. It works just like most hackathons: New friends: Caro, Eze, Gus and me You give a one minute &hellip;">
+  <meta name="description" content="You may know that the C# Decimal type remembers any trailing zeros. So for instance: Console.WriteLine(123.45m);
+Console.WriteLine(123.45000m); &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -114,6 +115,81 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/">How to Remove the Trailing Zeros of Precision From a C# Decimal</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-09T17:45:00+00:00" pubdate data-updated="true">Jan 9<span>th</span>, 2013</time>
+        
+         | <a href="/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>You may know that the C# <code>Decimal</code> type remembers any trailing zeros. So for instance:</p>
+
+<pre><code>Console.WriteLine(123.45m);
+Console.WriteLine(123.45000m);
+Console.WriteLine(123.4500000m);
+</code></pre>
+
+<p>results in</p>
+
+<pre><code>123.45
+123.45000
+123.4500000
+</code></pre>
+
+<p>This is because the <code>Decimal</code> type is designed for representing a number including its accuracy.</p>
+
+<p>It is tricky to find a good way of controlling this accuracy. If I have <code>x = 123.45000</code>, how can I easily remove the trailing zeros so that <code>x.ToString()</code> outputs <code>123.45</code>?</p>
+
+<p>For a while it looked like I&#8217;d have to perform some <a href="http://stackoverflow.com/a/4298787/1077279">Jon Skeet wizardry</a>, but there is a simpler solution. The following extension method will remove all the trailing zeros.</p>
+
+<pre><code>public static class DecimalExtensions
+{
+    public static Decimal Normalize(this Decimal value)
+    {
+        return value / 1.000000000000000000000000000000000m;
+    }
+}
+</code></pre>
+
+<p>And if you need an exact number of trailing zeros, you can first <code>Normalize()</code> and then multiply.</p>
+
+<pre><code>Console.WriteLine(123.45m.Normalize() * 1.000m); 
+</code></pre>
+
+<p>will output the following.</p>
+
+<pre><code>123.45000
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1013,54 +1089,6 @@ I can&#8217;t even find the on/off switch.</p>
 <p>Then the analysis is back up to 93. The advantage of IIS dynamic compression in IIS 7 is that it turns itself off automatically when the CPU load is high. See <a href="http://www.codeproject.com/Articles/242133/Making-the-most-out-of-IIS-compression-Part-1-conf">Matt Perdeck&#8217;s series of articles about IIS Compression</a> for more information.</p>
 
 <p>One mysterious point: if you navigate to the <a href="http://demos.devexpress.com/XAF/MainDemo/default.aspx">online version of the MainDemo</a> and run the analysis there you will notice that compression resource merging must be turned off for some reason and the overall score is only 75. Perhaps someone from DevExpress can explain&#8230;</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/xpobatch-source-code-available/">XpoBatch Source Code Available</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-25T16:24:00+01:00" pubdate data-updated="true">Jul 25<span>th</span>, 2012</time>
-        
-         | <a href="/xpobatch-source-code-available/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>The source code for the fast batch operations with DevExpress XPO <a href="https://github.com/ZeroSharp/XpoBatch">is now available on on GitHub</a>.</p>
-
-<p>It includes unit tests that can be run against SQL Server or in memory. It runs against DevExpress 12.1.7, but it will work against 11.2 (and possibly earlier versions) with a couple of minor modifications which are documented in the code.</p>
-
-<h4>References</h4>
-
-<ul>
-<li><a href="/fast-batch-deletions-with-devexpress-xpo/">Fast batch deletions</a></li>
-<li><a href="/fast-batch-modifications-with-devexpress-xpo/">Fast batch modifications</a></li>
-</ul>
-
 </div>
   
   
