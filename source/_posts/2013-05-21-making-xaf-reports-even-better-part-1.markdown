@@ -18,16 +18,17 @@ One of the projects I work on has over 100 reports in it. Even though we make us
 These aspects of XAF reports give rise to several development headaches. 
 
 * While script syntax can be checked within the report writer at design time (via the Validate button in the scripts tab), the script code is still brittle.
-* Errors that result from Script syntax is sometimes only discovered at run time (you can write a unit test to check during build, but we really want to the compiler to tell us).
-* Refactoring any classes used in scripts can result in considerable work with the report writer to apply any changes to the code within the scripts.
+* Errors that result from Script syntax are sometimes only discovered at run time (you can write a unit test to check during build, but we really want to the compiler to tell us).
+* Refactoring any classes requires a considerable amount of work with the report writer in order to apply any changes to the code within the scripts.
+* There is no Intellisense in the report writer.
 * Version control diff comparisons and merging are impossible.
 
-{"The aim of these posts is to provide a two-way conversion process between .repx and C# files."} In order to accomplish this we'll be relying on Visual Studio's excellent T4 templating engine along with Oleg Sych's T4 Toolbox extension.
+{"The aim of these posts is to provide a two-way conversion process between .repx and C# files."} In order to accomplish this we'll be relying on Visual Studio's excellent T4 templating engine.
 {% endpullquote %}
 
 ## Installing T4Toolbox ##
 
-[T4 Text Templates](http://msdn.microsoft.com/en-us/library/vstudio/bb126445.aspx) is a template based code generation framework which is included with Visual Studio. On top of this [Oleg Sych](http://www.olegsych.com/) provides a Visual Studio extension called [T4 Toolbox](http://visualstudiogallery.msdn.microsoft.com/7f9bd62f-2505-4aa4-9378-ee7830371684) which adds some additional features.
+[T4 Text Transformation Toolkit](http://msdn.microsoft.com/en-us/library/vstudio/bb126445.aspx) is a template based code generation framework which is included with Visual Studio. On top of this [Oleg Sych](http://www.olegsych.com/) provides a Visual Studio extension called [T4 Toolbox](http://visualstudiogallery.msdn.microsoft.com/7f9bd62f-2505-4aa4-9378-ee7830371684) which adds some additional features.
 
 Install T4 Toolbox by selecting **Tools/Extensions and Updates** from Visual Studio and searching for it.
 
@@ -77,8 +78,8 @@ The template will generate two types of output. First, it generates the followin
 {% codeblock lang:text %}
 (This is an automatically generated file which should be excluded from version control)
 
-Summary of process repx files
-=============================
+Summary of repx transformation
+==============================
 Total repx files found                                      :  2
   Total reports generated                                   :  2
   Total reports skipped because unchanged                   :  0
