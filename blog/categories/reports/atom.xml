@@ -4,7 +4,7 @@
   <title><![CDATA[Category: reports | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/reports/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-05-21T23:11:26+01:00</updated>
+  <updated>2013-05-28T10:10:24+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,79 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Making XAF reports even better - Part 2]]></title>
+    <link href="http://ZeroSharp.github.com/making-xaf-reports-even-better-part-2/"/>
+    <updated>2013-05-28T11:51:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/making-xaf-reports-even-better-part-2</id>
+    <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='Repx files with embedded scripts are now much more maintainable. You can correct syntax errors, refactor, version control, merge versions easily.'>
+Good news. The conversion is now two-way. Get the source code <a href="https://github.com/ZeroSharp/Xaf_MainDemo_ReportSync">from GitHub</a>. Make sure you have built MainDemo.Reports project.</p>
+
+<p>You will find there are now two T4 transforms in the project. <em>RepxToCSharp.tt</em> is covered in the <a href="/making-xaf-reports-even-better-part-1">Part 1</a>. It searches for any <em>.repx</em> files in the solution and converts the scripts into compilable C#.</p>
+
+<p>The second transform is new. <em>CSharpToRepx.tt</em> copies any changes to the script part back into the original <em>.repx</em> files. Again, there are performance optimisations via checksums to prevent overwriting unchanged files.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>(This is an automatically generated file which should be excluded from version control)&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;Summary of C# transformation&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;Total C# files found                                        :  2
+</span><span class='line'>  Total reports injected                                    :  1
+</span><span class='line'>  Total reports missing                                     :  0
+</span><span class='line'>  Total reports skipped because unchanged                   :  1&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;Time elapsed: 00:00:02.3483264
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Repx files with embedded scripts are now much more maintainable. You can correct syntax errors, refactor, version control, merge versions easily. You could even write unit tests against the code in the scripts.</p>
+
+<p></span></p>
+
+<p>Currently the easiest way of running these scripts is to open them and save them with <code>Ctrl+S</code>. This is because T4 templates were originally designed as a Visual Studio tool.</p>
+
+<p>In the future I'm hoping to improve the integration further. There are ways of including the transformations into the build instead, most of which are covered in <a href="http://www.olegsych.com/2010/04/understanding-t4-msbuild-integration">a blog post by Mr T4, Oleg Sych</a>. I like the idea of it being a NuGet package that can be easily added to any XAF project, but there's a but I'll need some more time to work out how best to achieve this.</p>
+
+<h2>Basic usage summary</h2>
+
+<p>Until then, here are some basic usage instructions.</p>
+
+<ul>
+<li>Add the T4 Toolbox extension to Visual Studio</li>
+<li>Add a copy of the MainDemo.Reports project to your own solution</li>
+<li>Make sure you build it before running the transforms</li>
+<li>Open <em>RepxToCSharp.tt</em> in Visual Studio.</li>
+<li>Save it with <code>Ctrl+S</code> to run the transform. It will search all the folders in your Solution for <em>.repx</em> files and add corresponding C# classes.</li>
+<li>Make any changes you like to the script section (anything outside of <code>// -- Start of embedded scripts --</code> and <code>// -- End of embedded scripts --</code>) will be ignored.</li>
+<li>Open <em>CSharpToRepx.tt</em> and run it with <code>Ctrl+S</code>. The changes will be saved back to the corresponding <em>.repx</em>.</li>
+</ul>
+
+
+<h2>Even more power?</h2>
+
+<p>You may notice that if you reload the MainDemo.Reports project, you can now see <code>View in Designer</code> in the context menu when you right-click on the <em>.repx.cs</em> file.</p>
+
+<p><img src="/images/blog/xaf-report-sync-003.png"></p>
+
+<p>Let's click it and see what happens. It opens directly in Visual Studio (like an <code>XtraReport</code>).</p>
+
+<p><img src="/images/blog/xaf-report-sync-004.png"></p>
+
+<p>Now, this is all highly experimental. You can see there are some warnings... Also, there is no connection with XPO, so the <em>Preview</em> is always empty.</p>
+
+<p>That said, it doesn't seem like too much of a stretch to eventually allow far more Visual Studio integration for XAF reports...</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Making XAF reports even better - Part 1]]></title>
@@ -129,7 +202,7 @@ The ability to create reports using a report writer is a very powerful feature o
 <span class='line-number'>9</span>
 </pre></td><td class='code'><pre><code class='text'><span class='line'>(This is an automatically generated file which should be excluded from version control)&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'>&lt;h1&gt;Summary of process repx files&lt;/h1&gt;
+</span><span class='line'>&lt;h1&gt;Summary of repx transformation&lt;/h1&gt;
 </span><span class='line'>
 </span><span class='line'>&lt;p&gt;Total repx files found                                      :  2
 </span><span class='line'>  Total reports generated                                   :  2
