@@ -4,7 +4,7 @@
   <title><![CDATA[Category: octopress | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/octopress/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-05-28T10:10:24+01:00</updated>
+  <updated>2013-07-09T09:35:28+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,85 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Removing the RSS subscription icon from Octopress]]></title>
+    <link href="http://ZeroSharp.github.com/removing-the-rss-subscription-icon-from-octopress/"/>
+    <updated>2013-07-09T09:13:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/removing-the-rss-subscription-icon-from-octopress</id>
+    <content type="html"><![CDATA[<p>A <a href="https://twitter.com/tlaynes">fellow Octopress blogger</a> recently asked how I removed the RSS subscription icon from the Octopress navigation bar.</p>
+
+<p>First, create a new site variable <code>show_feeds</code> by adding a line to the <em>_config.yml</em> file which is in the root folder of the Octopress source.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>_config.yml  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>  # RSS / Email (optional) subscription links (change if using something like Feedburner)
+</span><span class='line'><span class="gi">+ show_feeds: false</span>
+</span><span class='line'>  subscribe_rss: http://feeds.feedburner.com/zerosharp
+</span><span class='line'>  subscribe_email:
+</span><span class='line'>  # RSS feeds can list your email address if you like
+</span><span class='line'>  email:
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Then modify the <em>source/_includes/navigation.html</em> as follows</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>navigation.html  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'><span class="gi">+ {% if site.show_feeds %}</span>
+</span><span class='line'>  &lt;ul class=&quot;subscription&quot; data-subscription=&quot;rss&quot;&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;&amp;lt;li&amp;gt;&amp;lt;a href=&quot;http://feeds.feedburner.com/zerosharp&quot; rel=&quot;subscribe-rss&quot; title=&quot;subscribe via RSS&quot;&amp;gt;RSS&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
+</span><span class='line'>{% if site.subscribe_email %}
+</span><span class='line'>  &amp;lt;li&amp;gt;&amp;lt;a href=&quot;&quot; rel=&quot;subscribe-email&quot; title=&quot;subscribe via email&quot;&amp;gt;Email&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
+</span><span class='line'>{% endif %}
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;  &lt;/ul&gt;
+</span><span class='line'><span class="gi">+ {% endif %}</span>
+</span><span class='line'>  {% if site.simple_search %}
+</span><span class='line'>  &lt;form action=&quot;http://google.com/search&quot; method=&quot;get&quot;&gt;&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;&amp;lt;fieldset role=&quot;search&quot;&amp;gt;
+</span><span class='line'>  &amp;lt;input type=&quot;hidden&quot; name=&quot;q&quot; value=&quot;site:ZeroSharp.github.com&quot; /&amp;gt;
+</span><span class='line'>  &amp;lt;input class=&quot;search&quot; type=&quot;text&quot; name=&quot;q&quot; results=&quot;0&quot; placeholder=&quot;Search&quot;/&amp;gt;
+</span><span class='line'>&amp;lt;/fieldset&amp;gt;
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;  &lt;/form&gt;
+</span><span class='line'>  {% endif %}
+</span><span class='line'>  {% include custom/navigation.html %}
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Then you can toggle the visibility of the feed icon by changing the <code>show_feeds</code> setting in the <code>_config.yml</code> file.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Clone your Octopress to blog from two places]]></title>
@@ -485,150 +564,6 @@ ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-darwin12.2.1]
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Regenerate your Octopress site and you can start using <code>imgcap</code> instead of <code>img</code>.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Setting up Octopress on Windows Again]]></title>
-    <link href="http://ZeroSharp.github.com/setting-up-octopress-on-windows-again/"/>
-    <updated>2013-01-17T11:20:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/setting-up-octopress-on-windows-again</id>
-    <content type="html"><![CDATA[<p>My <a href="/setting-up-octopress-on-windows/">very first blog post</a> was about setting up Octopress. The following is an updated version of those instructions for setting up Octopress with Windows, ruby 1.9.3, python 2.7.3.</p>
-
-<p>This is quick guide to setting up <a href="http://octopress.org/">Octopress</a> to publish to GitHub pages. I'm using Windows 8 64-bit, but the instructions should work with other versions of Windows.</p>
-
-<h3>Get with GitHub</h3>
-
-<p>First, get an account on GitHub and follow the excellent instructions for Windows here.  <a href="http://help.github.com/win-set-up-git/">here</a>.</p>
-
-<p>Once you are set up with GitHub, get <a href="https://github.com/scottmuc/yari">yari</a> by opening a command prompt:</p>
-
-<p>Then create a directory for all your github projects.  You could put this anywhere, e.g., <code>%USERPROFILE%\github</code>.  I chose to create a directory <code>C:\projects\github\</code>.</p>
-
-<h3>Installing Octopress</h3>
-
-<p><img class="right" src="/images/blog/octopress_logo.png"></p>
-
-<h4>Use yari instead of RVM/rbenv</h4>
-
-<p>Scott Muc has written <a href="https://github.com/scottmuc/yari">yari</a> which lets you switch between Windows Ruby versions.  Get it with the following command.</p>
-
-<pre><code>cd C:\projects\github\
-git clone git://github.com/scottmuc/yari.git yari
-</code></pre>
-
-<p>Once this has completed you can setup the required Ruby environment with the command:</p>
-
-<pre><code>yari 1.9.3
-</code></pre>
-
-<p>Then follow the rest of the instructions from <a href="http://octopress.org/docs/setup/">the Octopress setup instructions</a>.</p>
-
-<pre><code>git clone git://github.com/imathis/octopress.git octopress
-cd octopress
-ruby --version  # Should report Ruby 1.9.3 thanks to yari
-</code></pre>
-
-<p>Next install dependencies</p>
-
-<pre><code>gem install bundler
-bundle install
-</code></pre>
-
-<p>Install the default Octopress theme.</p>
-
-<pre><code>rake install
-</code></pre>
-
-<h3>Deploying to GitHub</h3>
-
-<p>The instructions are <a href="http://octopress.org/docs/deploying/github/">here</a>.  The only difficulty I had was working out which URL to use after:</p>
-
-<pre><code>rake setup_github_pages
-</code></pre>
-
-<p>This will ask you for your Github Pages repository url, but it is not clear that this is the SSH one, e.g., <code>git@github.com:ZeroSharp/zerosharp.github.com.git</code>.  You can find it near the top of <a href="https://github.com/ZeroSharp/zerosharp.github.com">the repository page</a>.</p>
-
-<h3>Configuring your blog</h3>
-
-<p>Follow the instructions <a href="http://octopress.org/docs/configuring/">here</a> to configure your blog.</p>
-
-<h4>Markdown</h4>
-
-<p>It is quite difficult to find good help on the markdown syntax other than for the codeblocks section.  For instance, it is not clear how to generate a codeblock with no line numbers, like this one:</p>
-
-<pre><code>How do I output a codeblock with no line numbers?
-</code></pre>
-
-<p>It turns out it either requires a <code>&lt;pre&gt;</code> tag instead of a <code>{ codeblock }</code> tag, or alternatively, start the line with four spaces.  The official syntax is <a href="http://daringfireball.net/projects/markdown/syntax">here</a>, but I also found <a href="http://warpedvisions.org/projects/markdown-cheat-sheet/">this cheat sheet</a>.</p>
-
-<h4>Fonts and Styles</h4>
-
-<p>See <a href="http://blog.bigdinosaur.org/changing-octopresss-header/">Lee's Bigdinosaur blog</a>.</p>
-
-<h4>Problem with CodeBlocks</h4>
-
-<p>I had a problem with codeblocks which seems to be specific to Windows.  It seems that whenever you include a <code>lang</code> parameter in a <code>codeblock</code>, you get:</p>
-
-<pre><code>Liquid error: No such file or directory - python2.7 -c “import sys; print sys.executable”
-</code></pre>
-
-<p>There are two issues:</p>
-
-<ul>
-<li>Syntax highlighting requires Python which is not automatically installed.</li>
-<li>There is a problem with pythonexec.rb which does not seem to support Windows Python installations very well.</li>
-</ul>
-
-
-<p>Luckily we can fix them both.  Install <a href="http://www.python.org/getit/releases/2.7.3/">Python 2.7.3</a>.  Actually I used <a href="http://ninite.com/">ninite.com</a> to install it.</p>
-
-<p>Then modify the pythonrubyexec.rb which is in the depths of the yari subdirectory.  Try here: <code>.\yari\ruby-1.9.3-p194-i386-mingw32\lib\ruby\gems\1.9.3\gems\rubypython-0.5.3\lib\rubypython\pythonexec.rb</code></p>
-
-<p>At the top of pythonexec.rb, modify the file as follows:</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>pythonexec.rb  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='diff'><span class='line'>class RubyPython::PythonExec
-</span><span class='line'>  def initialize(python_executable)&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;pre&gt;&lt;code&gt;@python = python_executable || &quot;python&quot;
-</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;ul&gt;
-</span><span class='line'>&lt;li&gt; if (@python.include? &#39;python2.7&#39;)&lt;/li&gt;
-</span><span class='line'>&lt;li&gt;   @python = &quot;python&quot;&lt;/li&gt;
-</span><span class='line'>&lt;li&gt;&lt;p&gt; end&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;@python = %x(#{@python} -c &quot;import sys; print sys.executable&quot;).chomp&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;@version = run_command &quot;import sys; print &#39;%d.%d&#39; % sys.version_info[:2]&quot;&lt;/p&gt;&lt;/li&gt;
-</span><span class='line'>&lt;li&gt;&lt;p&gt; @dirname = File.dirname(@python)&lt;/p&gt;&lt;/li&gt;
-</span><span class='line'>&lt;li&gt; @dirname = &quot;C:/Python27&quot;&lt;/li&gt;
-</span><span class='line'>&lt;/ul&gt;
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 ]]></content>
   </entry>
   

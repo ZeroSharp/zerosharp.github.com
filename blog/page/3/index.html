@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="The following screenshot shows the detail view of an object change from the DevExpress XAF Audit Trail. The DecimalValue property was changed from &hellip;">
+  <meta name="description" content="My very first blog post was about setting up Octopress. The following is an updated version of those instructions for setting up Octopress with &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -65,15 +65,14 @@
 
 </header>
   <nav role="navigation">  
-</ul>
-  
+
 <form action="http://google.com/search" method="get">
   <fieldset role="search">
     <input type="hidden" name="q" value="site:ZeroSharp.github.com" />
     <input class="search" type="text" name="q" results="0" placeholder="Search"/>
   </fieldset>
 </form>
-  
+
 <ul class="main-navigation">
   <li><a href="/">Blog</a></li>
   <li><a href="/blog/archives">Archives</a></li>
@@ -114,6 +113,170 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/setting-up-octopress-on-windows-again/">Setting Up Octopress on Windows Again</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-17T11:20:00+00:00" pubdate data-updated="true">Jan 17<span>th</span>, 2013</time>
+        
+         | <a href="/setting-up-octopress-on-windows-again/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>My <a href="/setting-up-octopress-on-windows/">very first blog post</a> was about setting up Octopress. The following is an updated version of those instructions for setting up Octopress with Windows, ruby 1.9.3, python 2.7.3.</p>
+
+<p>This is quick guide to setting up <a href="http://octopress.org/">Octopress</a> to publish to GitHub pages. I&#8217;m using Windows 8 64-bit, but the instructions should work with other versions of Windows.</p>
+
+<h3>Get with GitHub</h3>
+
+<p>First, get an account on GitHub and follow the excellent instructions for Windows here.  <a href="http://help.github.com/win-set-up-git/">here</a>.</p>
+
+<p>Once you are set up with GitHub, get <a href="https://github.com/scottmuc/yari">yari</a> by opening a command prompt:</p>
+
+<p>Then create a directory for all your github projects.  You could put this anywhere, e.g., <code>%USERPROFILE%\github</code>.  I chose to create a directory <code>C:\projects\github\</code>.</p>
+
+<h3>Installing Octopress</h3>
+
+<p><img class="right" src="/images/blog/octopress_logo.png"></p>
+
+<h4>Use yari instead of RVM/rbenv</h4>
+
+<p>Scott Muc has written <a href="https://github.com/scottmuc/yari">yari</a> which lets you switch between Windows Ruby versions.  Get it with the following command.</p>
+
+<pre><code>cd C:\projects\github\
+git clone git://github.com/scottmuc/yari.git yari
+</code></pre>
+
+<p>Once this has completed you can setup the required Ruby environment with the command:</p>
+
+<pre><code>yari 1.9.3
+</code></pre>
+
+<p>Then follow the rest of the instructions from <a href="http://octopress.org/docs/setup/">the Octopress setup instructions</a>.</p>
+
+<pre><code>git clone git://github.com/imathis/octopress.git octopress
+cd octopress
+ruby --version  # Should report Ruby 1.9.3 thanks to yari
+</code></pre>
+
+<p>Next install dependencies</p>
+
+<pre><code>gem install bundler
+bundle install
+</code></pre>
+
+<p>Install the default Octopress theme.</p>
+
+<pre><code>rake install
+</code></pre>
+
+<h3>Deploying to GitHub</h3>
+
+<p>The instructions are <a href="http://octopress.org/docs/deploying/github/">here</a>.  The only difficulty I had was working out which URL to use after:</p>
+
+<pre><code>rake setup_github_pages
+</code></pre>
+
+<p>This will ask you for your Github Pages repository url, but it is not clear that this is the SSH one, e.g., <code>git@github.com:ZeroSharp/zerosharp.github.com.git</code>.  You can find it near the top of <a href="https://github.com/ZeroSharp/zerosharp.github.com">the repository page</a>.</p>
+
+<h3>Configuring your blog</h3>
+
+<p>Follow the instructions <a href="http://octopress.org/docs/configuring/">here</a> to configure your blog.</p>
+
+<h4>Markdown</h4>
+
+<p>It is quite difficult to find good help on the markdown syntax other than for the codeblocks section.  For instance, it is not clear how to generate a codeblock with no line numbers, like this one:</p>
+
+<pre><code>How do I output a codeblock with no line numbers?
+</code></pre>
+
+<p>It turns out it either requires a <code>&lt;pre&gt;</code> tag instead of a <code>{ codeblock }</code> tag, or alternatively, start the line with four spaces.  The official syntax is <a href="http://daringfireball.net/projects/markdown/syntax">here</a>, but I also found <a href="http://warpedvisions.org/projects/markdown-cheat-sheet/">this cheat sheet</a>.</p>
+
+<h4>Fonts and Styles</h4>
+
+<p>See <a href="http://blog.bigdinosaur.org/changing-octopresss-header/">Lee&#8217;s Bigdinosaur blog</a>.</p>
+
+<h4>Problem with CodeBlocks</h4>
+
+<p>I had a problem with codeblocks which seems to be specific to Windows.  It seems that whenever you include a <code>lang</code> parameter in a <code>codeblock</code>, you get:</p>
+
+<pre><code>Liquid error: No such file or directory - python2.7 -c “import sys; print sys.executable”
+</code></pre>
+
+<p>There are two issues:</p>
+
+<ul>
+<li>Syntax highlighting requires Python which is not automatically installed.</li>
+<li>There is a problem with pythonexec.rb which does not seem to support Windows Python installations very well.</li>
+</ul>
+
+
+<p>Luckily we can fix them both.  Install <a href="http://www.python.org/getit/releases/2.7.3/">Python 2.7.3</a>.  Actually I used <a href="http://ninite.com/">ninite.com</a> to install it.</p>
+
+<p>Then modify the pythonrubyexec.rb which is in the depths of the yari subdirectory.  Try here: <code>.\yari\ruby-1.9.3-p194-i386-mingw32\lib\ruby\gems\1.9.3\gems\rubypython-0.5.3\lib\rubypython\pythonexec.rb</code></p>
+
+<p>At the top of pythonexec.rb, modify the file as follows:</p>
+
+<figure class='code'><figcaption><span>pythonexec.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>class RubyPython::PythonExec
+</span><span class='line'>  def initialize(python_executable)
+</span><span class='line'>    @python = python_executable || &quot;python&quot;
+</span><span class='line'>
+</span><span class='line'><span class="gi">+    if (@python.include? &#39;python2.7&#39;)</span>
+</span><span class='line'><span class="gi">+      @python = &quot;python&quot;</span>
+</span><span class='line'><span class="gi">+    end</span>
+</span><span class='line'>
+</span><span class='line'>    @python = %x(#{@python} -c &quot;import sys; print sys.executable&quot;).chomp
+</span><span class='line'>
+</span><span class='line'>    @version = run_command &quot;import sys; print &#39;%d.%d&#39; % sys.version_info[:2]&quot;
+</span><span class='line'>
+</span><span class='line'><span class="gd">-    @dirname = File.dirname(@python)</span>
+</span><span class='line'><span class="gi">+    @dirname = &quot;C:/Python27&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1058,129 +1221,6 @@ LANG = en_US.UTF-8
 </code></pre>
 
 <p>Now my blog generates without error.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/the-best-pc-laptop-is-a-mac/">The Best PC Laptop Is a Mac</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-09T17:09:00+01:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
-        
-         | <a href="/the-best-pc-laptop-is-a-mac/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>A month ago</h3>
-
-<p>I&#8217;ve never liked laptops. The screen seems so small. A powerful laptop is too heavy; a light one doesn&#8217;t cut the mustard.
-I can&#8217;t even find the on/off switch.</p>
-
-<p>Then there are those fancy new <strong>Macbook Pro</strong>s with retina displays. They seem light and powerful and the screen looks great. I don&#8217;t know much about Macs, but I&#8217;d like to learn.</p>
-
-<blockquote><p>But I need Microsoft Windows and Visual Studio. I know theoretically I can run a virtual machine or setup a dual boot, but I&#8217;ll bet it&#8217;s all a bit of a hassle and rather clunky&#8230;</p></blockquote>
-
-
-<h3>Three hours after my Macbook Pro arrived</h3>
-
-<p>Windows 8 is installed and looks absolutely beautiful! The font is small, but the screen is so sharp that it is quite readable. Visual Studio looks great with the font size in the editor Window set to 14 or 15.</p>
-
-<p>The installation was much simpler than most other Windows installations I&#8217;ve done. I followed <a href="http://www.iclarified.com/entry/index.php?enid=20961">this tutorial on iClarified</a> to set up a dual boot. You use a tool called the Bootcamp Advisor which is already installed on your Mac to create an bootable USB for installing Windows. Since all Macs are the same, the Bootcamp Advisor sets up all the drivers correctly for you.</p>
-
-<h3>Three weeks later</h3>
-
-<blockquote><p>This is by far the most pleasant laptop I&#8217;ve ever used for development.</p></blockquote>
-
-
-<p>The screen is wonderful - the machine seems very fast and it is no weight to carry around.</p>
-
-<h3>A tiny little gripe</h3>
-
-<p>There is a little annoyance with the Bootcamp Control Panel which won&#8217;t start properly, but Thomas Jespersen found a <a href="http://apple.stackexchange.com/a/59132/30710">workaround</a>, <a href="https://gist.github.com/3859956">which I&#8217;ve put in a batch file</a>. You need this to make the F1-12 keys work as they would in Windows.</p>
-
-<h3>Some help with the Mac keyboard and trackpad</h3>
-
-<p>I&#8217;m very picky about keyboards and I need to be able to find all my Visual Studio shortcuts in the same places. All in all I find the keyboard fine to work with.</p>
-
-<p>The <code>delete</code> key works like a PC <code>backspace</code> so you have to do <code>fn+delete</code> to delete forwards. Here&#8217;s a list of other shortcuts:</p>
-
-<table>
-<thead>
-<tr>
-<th align="left">PC (running Windows)       </th>
-<th align="left"> &nbsp;Macbook (running Windows)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left"><code>Windows</code> key              </td>
-<td align="left"> &nbsp;<code>command</code></td>
-</tr>
-<tr>
-<td align="left"><code>Del</code>                      </td>
-<td align="left"> &nbsp;<code>fn+delete</code> </td>
-</tr>
-<tr>
-<td align="left"><code>Ins</code>                      </td>
-<td align="left"> &nbsp;<code>fn+return</code></td>
-</tr>
-<tr>
-<td align="left"><code>Home</code>                     </td>
-<td align="left"> &nbsp;<code>fn+left</code></td>
-</tr>
-<tr>
-<td align="left"><code>End</code>                      </td>
-<td align="left"> &nbsp;<code>fn+right</code></td>
-</tr>
-<tr>
-<td align="left"><code>PgUp</code>                     </td>
-<td align="left"> &nbsp;<code>fn+up</code></td>
-</tr>
-<tr>
-<td align="left"><code>PgDn</code>                     </td>
-<td align="left"> &nbsp;<code>fn+down</code></td>
-</tr>
-<tr>
-<td align="left"><code>Ctrl+Home</code>                </td>
-<td align="left"> &nbsp;<code>fn+control+left</code></td>
-</tr>
-<tr>
-<td align="left"><code>Ctrl+End</code>                 </td>
-<td align="left"> &nbsp;<code>fn+control+right</code></td>
-</tr>
-</tbody>
-</table>
-
-
-<p>There are some keys which you will still not find, for instance, <code>NumLock</code>, <code>PrtScn</code>, <code>Break</code>.</p>
-
-<p>If I need these, I use the On-Screen keyboard (type &#8216;osk&#8217; into the search bar). If you cannot see the <code>NumLock</code>, the options allow you to show the numeric keypad. Alternatively, you could always plug in a USB keyboard.</p>
-
-<p>The trackpad works great including the two-finger click for right-click and two-finger swipe for scroll.</p>
 </div>
   
   

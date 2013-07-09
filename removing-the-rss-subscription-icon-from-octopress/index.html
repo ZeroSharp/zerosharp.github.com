@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: mac - ZeroSharp</title>
+  <title>Removing the RSS subscription icon from Octopress - ZeroSharp</title>
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Category: mac">
+  <meta name="description" content="A fellow Octopress blogger recently asked how I removed the RSS subscription icon from the Octopress navigation bar. First, create a new site &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ZeroSharp.github.comblog/categories/mac/">
+  <link rel="canonical" href="http://ZeroSharp.github.com/removing-the-rss-subscription-icon-from-octopress/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -112,36 +112,157 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Mac</h1>
+    
+      <h1 class="entry-title">Removing the RSS Subscription Icon From Octopress</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-09T09:13:00+01:00" pubdate data-updated="true">Jul 9<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>A <a href="https://twitter.com/tlaynes">fellow Octopress blogger</a> recently asked how I removed the RSS subscription icon from the Octopress navigation bar.</p>
 
-  
-  <h2>2013</h2>
+<p>First, create a new site variable <code>show_feeds</code> by adding a line to the <em>_config.yml</em> file which is in the root folder of the Octopress source.</p>
 
-<article>
-  
-<h1><a href="/installing-ruby-with-homebrew-and-rbenv-on-mac-os-x-mountain-lion/">Installing Ruby with Homebrew and rbenv on Mac OS X Mountain Lion</a></h1>
-<time datetime="2013-01-31T17:38:00+00:00" pubdate><span class='month'>Jan</span> <span class='day'>31</span> <span class='year'>2013</span></time>
+<figure class='code'><figcaption><span>_config.yml  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>  # RSS / Email (optional) subscription links (change if using something like Feedburner)
+</span><span class='line'><span class="gi">+ show_feeds: false</span>
+</span><span class='line'>  subscribe_rss: http://feeds.feedburner.com/zerosharp
+</span><span class='line'>  subscribe_email:
+</span><span class='line'>  # RSS feeds can list your email address if you like
+</span><span class='line'>  email:
+</span></code></pre></td></tr></table></div></figure>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/homebrew/'>homebrew</a>, <a class='category' href='/blog/categories/mac/'>mac</a>, <a class='category' href='/blog/categories/octopress/'>octopress</a>, <a class='category' href='/blog/categories/rbenv/'>rbenv</a>, <a class='category' href='/blog/categories/ruby/'>ruby</a></span>
-</footer>
+
+<p>Then modify the <em>source/_includes/navigation.html</em> as follows</p>
+
+<figure class='code'><figcaption><span>navigation.html  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'><span class="gi">+ {% if site.show_feeds %}</span>
+</span><span class='line'>  &lt;ul class=&quot;subscription&quot; data-subscription=&quot;rss&quot;&gt;
+</span><span class='line'>    &lt;li&gt;&lt;a href=&quot;http://feeds.feedburner.com/zerosharp&quot; rel=&quot;subscribe-rss&quot; title=&quot;subscribe via RSS&quot;&gt;RSS&lt;/a&gt;&lt;/li&gt;
+</span><span class='line'>    {% if site.subscribe_email %}
+</span><span class='line'>      &lt;li&gt;&lt;a href=&quot;&quot; rel=&quot;subscribe-email&quot; title=&quot;subscribe via email&quot;&gt;Email&lt;/a&gt;&lt;/li&gt;
+</span><span class='line'>    {% endif %}
+</span><span class='line'>  &lt;/ul&gt;
+</span><span class='line'><span class="gi">+ {% endif %}</span>
+</span><span class='line'>  {% if site.simple_search %}
+</span><span class='line'>  &lt;form action=&quot;http://google.com/search&quot; method=&quot;get&quot;&gt;
+</span><span class='line'>    &lt;fieldset role=&quot;search&quot;&gt;
+</span><span class='line'>      &lt;input type=&quot;hidden&quot; name=&quot;q&quot; value=&quot;site:ZeroSharp.github.com&quot; /&gt;
+</span><span class='line'>      &lt;input class=&quot;search&quot; type=&quot;text&quot; name=&quot;q&quot; results=&quot;0&quot; placeholder=&quot;Search&quot;/&gt;
+</span><span class='line'>    &lt;/fieldset&gt;
+</span><span class='line'>  &lt;/form&gt;
+</span><span class='line'>  {% endif %}
+</span><span class='line'>  {% include custom/navigation.html %}
+</span></code></pre></td></tr></table></div></figure>
 
 
-</article>
-
+<p>Then you can toggle the visibility of the feed icon by changing the <code>show_feeds</code> setting in the <code>_config.yml</code> file.</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-09T09:13:00+01:00" pubdate data-updated="true">Jul 9<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/octopress/'>octopress</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/removing-the-rss-subscription-icon-from-octopress/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/removing-the-rss-subscription-icon-from-octopress/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/making-xaf-reports-even-better-part-2/" title="Previous Post: Making XAF reports even better - Part 2">&laquo; Making XAF reports even better - Part 2</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -166,7 +287,10 @@
       var disqus_shortname = 'zerosharp';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/removing-the-rss-subscription-icon-from-octopress/';
+        var disqus_url = 'http://ZeroSharp.github.com/removing-the-rss-subscription-icon-from-octopress/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
