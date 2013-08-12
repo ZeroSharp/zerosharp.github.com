@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xpo | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xpo/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-07-09T09:35:28+01:00</updated>
+  <updated>2013-08-12T18:33:24+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,81 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Fluent queries with DevExpress XPO - Intro]]></title>
+    <link href="http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-intro/"/>
+    <updated>2013-08-12T17:54:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-intro</id>
+    <content type="html"><![CDATA[<p>There are <a href="http://documentation.devexpress.com/#xaf/CustomDocument3052">many ways to perform queries with XPO</a>.</p>
+
+<p>You can do this:
+```c#</p>
+
+<pre><code>Session.FindObject&lt;Contact&gt;(new BinaryOperator("Name", "Elvis"));
+</code></pre>
+
+<p><code>
+or this
+</code>c#</p>
+
+<pre><code>Session.FindObject&lt;Contact&gt;(CriteriaOperator.Parse("Name = 'Elvis'"));
+</code></pre>
+
+<p><code>
+Another way to use the [simplified criteria syntax](http://documentation.devexpress.com/#XPO/CustomDocument2537), and with the [Xpo_EasyFields CodeRush plugin](https://code.google.com/p/dxcorecommunityplugins/wiki/XPO_EasyFields). Then you can do:
+</code>c#
+Session.FindObject<Contact>(Customer.Fields.Name == "Elvis");
+<code>``
+For each of the above, you can optionally query within the transaction by passing in the</code>PersistentCriteriaEvaluationBehavior.InTransaction` parameter.</p>
+
+<p>Or we can use LINQ via <code>XPQuery&lt;T&gt;.TransformExpression()</code>.
+```
+Session.FindObject<Contact>(</p>
+
+<pre><code>XPQuery&lt;Contact&gt;.TransformExpression(Session, c =&gt; c.Name == "Elvis")
+);
+</code></pre>
+
+<p>```
+All of these methods are powerful, but the power comes at a cost. The syntax is neither elegant nor particularly clear and as a result it is not very practical to maintain or test.</p>
+
+<h2>A Fluent Interface for XPO</h2>
+
+<p>How about if we could do the following?</p>
+
+<p>```c#
+var customer = Session</p>
+
+<pre><code>            .Query()
+              .Contacts
+                .ByName("Elvis");
+</code></pre>
+
+<p>```
+Or, for a more elaborate example:</p>
+
+<p>```c#
+var customer = Session</p>
+
+<pre><code>             .Query()
+             .InTransaction
+                .Contacts
+                  .ByPosition("Developer")
+                    .ThatHave
+                      .NoPhoto()
+                    .And
+                      .TasksInProgress()
+                    .And
+                      .TasksWith(Priority.High)            
+             .FirstOrDefault();
+</code></pre>
+
+<p>```</p>
+
+<p>In the next post I'll show how to put the fluent interface code together.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[XpoBatch source code available]]></title>

@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Over the next few posts, I will demonstrate how to load test XAF web applications. History Performance testing has traditionally been difficult and &hellip;">
+  <meta name="description" content="This is the first part of a tutorial about load testing XAF applications. See the overview for a bit of background. In this post we set up the target &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,72 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/load-testing-xaf-part-1-deploying/">Load Testing XAF: Part 1 - Deploying</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-22T11:21:00+00:00" pubdate data-updated="true">Mar 22<span>nd</span>, 2013</time>
+        
+         | <a href="/load-testing-xaf-part-1-deploying/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This is the first part of a tutorial about load testing XAF applications. See the <a href="/load-testing-xaf-overview/">overview</a> for a bit of background. In this post we set up the target webserver.</p>
+
+<p>You can target any machine which has a publicly available web address, but for this tutorial, I&#8217;m&#8217; deploying the MainDemo to the Amazon cloud, by following the instructions in <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1</a> and <a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2</a> of my previous series about Amazon Web Services.</p>
+
+<p>I am using version 12.2.7 of the DevExpress XAF MainDemo. There are a couple of extra changes to make to the web.config.</p>
+
+<ul>
+<li>Set debug to false <code>&lt;compilation targetFramework="4.0" debug="false"&gt;</code> in the <code>&lt;compilation&gt;</code> section of <code>&lt;system.web&gt;</code></li>
+<li>Switch to <em>Release</em> mode before deploying.</li>
+</ul>
+
+
+<p>There are a couple of differences compared to the tutorial:</p>
+
+<ul>
+<li>I chose a <em>Medium</em> instance instead of a <em>Micro</em> instance for EC2 (the web server) and deployed it against IIS 8.</li>
+<li>For RDS (the database), I stuck with a <em>Micro</em> instance.</li>
+</ul>
+
+
+<p><img src="/images/blog/load-testing/load-testing-001.png"></p>
+
+<p>For the load test, it is also important to disable the automatic health checks performed by the load balancer.</p>
+
+<p><img src="/images/blog/load-testing/load-testing-002.png"></p>
+
+<p>The reason for this is that we are trying to determine the breaking point of our application. If the elastic load balancer detects that a system is struggling, it might automatically flag it as unhealthy and replace it with a newly launched instance. While this behaviour might be desirable for a production system, it doesn&#8217;t make sense for a load test.</p>
+
+<p>Make sure you can connect to your installation from a web browser before continuing. I chose to deploy to a Windows 2012 instance running IIS 8.0 (which was not available when I wrote my previous XAF AWS tutorial) and I had a little trouble with the URL. If I navigate to the application&#8217;s base URL (<em>http://zerosharp-maindemo.elasticbeanstalk.com/</em> in my case), then I get forwarding problems after logging in. Instead, I navigate to the full address <em>http://zerosharp-maindemo.elasticbeanstalk.com/MainDemo.Web_deploy/Default.aspx</em> and everything works. I&#8217;ll try to look into it later, but it&#8217;s not important for the load testing.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -859,235 +925,6 @@ ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-darwin12.2.1]
 <p>If you put <em>Photos of &lt;name&gt;</em> or <em>Photos by &lt;name&gt;</em> into the new Facebook graph search <strong>you can view all their photos regardless of their privacy settings</strong>. This works even for friends who have put you on a &#8216;limited&#8217; profile.</p>
 
 <p>Your boss/ex/grandma is probably checking out your private photos right now.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/image-captions-for-octopress/">Image Captions for Octopress</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-23T11:56:00+00:00" pubdate data-updated="true">Jan 23<span>rd</span>, 2013</time>
-        
-         | <a href="/image-captions-for-octopress/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I wanted to add captions to some of my images and came across <a href="https://github.com/imathis/octopress/issues/124">this forum thread</a>, from which I was able to piece together <a href="http://tedkulp.com/">Ted Kulp</a>&#8217;s slick solution.</p>
-
-<p>The following markdown</p>
-
-<pre><code> {% imgcap http://some.url.com/pic.jpg Leonhard Euler %} 
-</code></pre>
-
-<p>will render like this.</p>
-
-<p><span class='caption-wrapper'><img class='caption' src='http://upload.wikimedia.org/wikipedia/commons/d/d7/Leonhard_Euler.jpg' width='' height='' alt='Leonhard Euler' title='Leonhard Euler'><span class='caption-text'>Leonhard Euler</span></span></p>
-
-<p>It works with <code>left</code> and <code>right</code> too.</p>
-
-<h3>The changes</h3>
-
-<p>First, create the image_caption_tag plugin and put it in the plugins subfolder.</p>
-
-<figure class='code'><figcaption><span>plugins/image_caption_tag.rb  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="c1"># Title: Image tag with caption for Jekyll</span>
-</span><span class='line'><span class="c1"># Description: Easily output images with captions</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">module</span> <span class="nn">Jekyll</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">class</span> <span class="nc">CaptionImageTag</span> <span class="o">&lt;</span> <span class="no">Liquid</span><span class="o">::</span><span class="no">Tag</span>
-</span><span class='line'>    <span class="vi">@img</span> <span class="o">=</span> <span class="kp">nil</span>
-</span><span class='line'>    <span class="vi">@title</span> <span class="o">=</span> <span class="kp">nil</span>
-</span><span class='line'>    <span class="vi">@class</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-</span><span class='line'>    <span class="vi">@width</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-</span><span class='line'>    <span class="vi">@height</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">tag_name</span><span class="p">,</span> <span class="n">markup</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">if</span> <span class="n">markup</span> <span class="o">=~</span> <span class="sr">/(\S.*\s+)?(https?:\/\/|\/)(\S+)(\s+\d+\s+\d+)?(\s+.+)?/i</span>
-</span><span class='line'>        <span class="vi">@class</span> <span class="o">=</span> <span class="vg">$1</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span>
-</span><span class='line'>        <span class="vi">@img</span> <span class="o">=</span> <span class="vg">$2</span> <span class="o">+</span> <span class="vg">$3</span>
-</span><span class='line'>        <span class="k">if</span> <span class="vg">$5</span>
-</span><span class='line'>          <span class="vi">@title</span> <span class="o">=</span> <span class="vg">$5</span><span class="o">.</span><span class="n">strip</span>
-</span><span class='line'>        <span class="k">end</span>
-</span><span class='line'>        <span class="k">if</span> <span class="vg">$4</span> <span class="o">=~</span> <span class="sr">/\s*(\d+)\s+(\d+)/</span>
-</span><span class='line'>          <span class="vi">@width</span> <span class="o">=</span> <span class="vg">$1</span>
-</span><span class='line'>          <span class="vi">@height</span> <span class="o">=</span> <span class="vg">$2</span>
-</span><span class='line'>        <span class="k">end</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>      <span class="k">super</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-</span><span class='line'>      <span class="n">output</span> <span class="o">=</span> <span class="k">super</span>
-</span><span class='line'>      <span class="k">if</span> <span class="vi">@img</span>
-</span><span class='line'>        <span class="s2">&quot;&lt;span class=&#39;</span><span class="si">#{</span><span class="p">(</span><span class="s1">&#39;caption-wrapper &#39;</span> <span class="o">+</span> <span class="vi">@class</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="si">}</span><span class="s2">&#39;&gt;&quot;</span> <span class="o">+</span>
-</span><span class='line'>          <span class="s2">&quot;&lt;img class=&#39;caption&#39; src=&#39;</span><span class="si">#{</span><span class="vi">@img</span><span class="si">}</span><span class="s2">&#39; width=&#39;</span><span class="si">#{</span><span class="vi">@width</span><span class="si">}</span><span class="s2">&#39; height=&#39;</span><span class="si">#{</span><span class="vi">@height</span><span class="si">}</span><span class="s2">&#39; alt=&#39;</span><span class="si">#{</span><span class="vi">@title</span><span class="si">}</span><span class="s2">&#39; title=&#39;</span><span class="si">#{</span><span class="vi">@title</span><span class="si">}</span><span class="s2">&#39;&gt;&quot;</span> <span class="o">+</span>
-</span><span class='line'>          <span class="s2">&quot;&lt;span class=&#39;caption-text&#39;&gt;</span><span class="si">#{</span><span class="vi">@title</span><span class="si">}</span><span class="s2">&lt;/span&gt;&quot;</span> <span class="o">+</span>
-</span><span class='line'>        <span class="s2">&quot;&lt;/span&gt;&quot;</span>
-</span><span class='line'>      <span class="k">else</span>
-</span><span class='line'>        <span class="s2">&quot;Error processing input, expected syntax: {% img [class name(s)] /url/to/image [width height] [title text] %}&quot;</span>
-</span><span class='line'>      <span class="k">end</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="no">Liquid</span><span class="o">::</span><span class="no">Template</span><span class="o">.</span><span class="n">register_tag</span><span class="p">(</span><span class="s1">&#39;imgcap&#39;</span><span class="p">,</span> <span class="no">Jekyll</span><span class="o">::</span><span class="no">CaptionImageTag</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Next, modify the _utilities.scss file as follows.</p>
-
-<figure class='code'><figcaption><span>sass/base/_utilities.scss  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='diff'><span class='line'>   border: $border;
-</span><span class='line'> }
-</span><span class='line'>
-</span><span class='line'><span class="gi">+@mixin reset-shadow-box() {</span>
-</span><span class='line'><span class="gi">+  @include shadow-box(0px, 0px, 0px);</span>
-</span><span class='line'><span class="gi">+}</span>
-</span><span class='line'><span class="gi">+</span>
-</span><span class='line'> @mixin selection($bg, $color: inherit, $text-shadow: none){
-</span><span class='line'>   * {
-</span><span class='line'>     &amp;::-moz-selection { background: $bg; color: $color; text-shadow: $text-shadow; }
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Finally, apply the following changes to the _blog.scss file.</p>
-
-<figure class='code'><figcaption><span>sass/partials/_blog.scss  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class='diff'><span class='line'>   article {
-</span><span class='line'>     font-size: 2.0em; font-style: italic;
-</span><span class='line'>     line-height: 1.3em;
-</span><span class='line'>   }
-</span><span class='line'><span class="gd">-  img, video, .flash-video {</span>
-</span><span class='line'><span class="gi">+  img, video, .flash-video, .caption-wrapper {</span>
-</span><span class='line'>     @extend .flex-content;
-</span><span class='line'>     @extend .basic-alignment;
-</span><span class='line'>     @include shadow-box;
-</span><span class='line'><span class="gi">+    &amp;.caption {</span>
-</span><span class='line'><span class="gi">+      @include reset-shadow-box;</span>
-</span><span class='line'><span class="gi">+    }</span>
-</span><span class='line'><span class="gi">+  }</span>
-</span><span class='line'><span class="gi">+  .caption-wrapper {</span>
-</span><span class='line'><span class="gi">+    display: inline-block;</span>
-</span><span class='line'><span class="gi">+    margin-bottom: 10px;</span>
-</span><span class='line'><span class="gi">+    .caption-text {</span>
-</span><span class='line'><span class="gi">+      background: #fff;</span>
-</span><span class='line'><span class="gi">+      text-align: center;</span>
-</span><span class='line'><span class="gi">+      font-size: .8em;</span>
-</span><span class='line'><span class="gi">+      color: #666;</span>
-</span><span class='line'><span class="gi">+      display: block;</span>
-</span><span class='line'><span class="gi">+    }</span>
-</span><span class='line'>   }
-</span><span class='line'>   video, .flash-video { margin: 0 auto 1.5em; }
-</span><span class='line'>   video { display: block; width: 100%; }
-</span><span class='line'>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Regenerate your Octopress site and you can start using <code>imgcap</code> instead of <code>img</code>.</p>
 </div>
   
   

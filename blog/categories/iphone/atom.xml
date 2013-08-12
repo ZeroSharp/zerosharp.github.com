@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iphone | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/iphone/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-07-09T09:35:28+01:00</updated>
+  <updated>2013-08-12T18:33:24+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -192,7 +192,7 @@ $ git push -u origin --all
     <id>http://ZeroSharp.github.com/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend</id>
     <content type="html"><![CDATA[<p>Recently I took part in <a href="http://buenosaires.startupweekend.org/">Startup Weekend Buenos Aires</a>. It works just like most hackathons:</p>
 
-<p><a href="http://buenosaires.startupweekend.org/2012/11/12/ganadores-swba2012/"><span class='caption-wrapper right'><img class='caption' src='/images/blog/basw/BABingo-2puesto-SWBA2012.jpg' width='' height='' alt='New friends: Caro, Eze, Gus and me' title='New friends: Caro, Eze, Gus and me'><span class='caption-text'>New friends: Caro, Eze, Gus and me</span></span></a></p>
+<p><a href="http://buenosaires.startupweekend.org/2012/11/12/ganadores-swba2012/"><span class='caption-wrapper right'><img class='caption' src='/images/blog/basw/BABingo-2puesto-SWBA2012.jpg' width='' height='' title='New friends: Caro, Eze, Gus and me'><span class='caption-text'>New friends: Caro, Eze, Gus and me</span></span></a></p>
 
 <ul>
 <li>You give a one minute pitch on Friday evening.</li>

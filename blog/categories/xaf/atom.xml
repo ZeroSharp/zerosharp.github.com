@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-07-09T09:35:28+01:00</updated>
+  <updated>2013-08-12T18:33:24+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,81 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Fluent queries with DevExpress XPO - Intro]]></title>
+    <link href="http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-intro/"/>
+    <updated>2013-08-12T17:54:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-intro</id>
+    <content type="html"><![CDATA[<p>There are <a href="http://documentation.devexpress.com/#xaf/CustomDocument3052">many ways to perform queries with XPO</a>.</p>
+
+<p>You can do this:
+```c#</p>
+
+<pre><code>Session.FindObject&lt;Contact&gt;(new BinaryOperator("Name", "Elvis"));
+</code></pre>
+
+<p><code>
+or this
+</code>c#</p>
+
+<pre><code>Session.FindObject&lt;Contact&gt;(CriteriaOperator.Parse("Name = 'Elvis'"));
+</code></pre>
+
+<p><code>
+Another way to use the [simplified criteria syntax](http://documentation.devexpress.com/#XPO/CustomDocument2537), and with the [Xpo_EasyFields CodeRush plugin](https://code.google.com/p/dxcorecommunityplugins/wiki/XPO_EasyFields). Then you can do:
+</code>c#
+Session.FindObject<Contact>(Customer.Fields.Name == "Elvis");
+<code>``
+For each of the above, you can optionally query within the transaction by passing in the</code>PersistentCriteriaEvaluationBehavior.InTransaction` parameter.</p>
+
+<p>Or we can use LINQ via <code>XPQuery&lt;T&gt;.TransformExpression()</code>.
+```
+Session.FindObject<Contact>(</p>
+
+<pre><code>XPQuery&lt;Contact&gt;.TransformExpression(Session, c =&gt; c.Name == "Elvis")
+);
+</code></pre>
+
+<p>```
+All of these methods are powerful, but the power comes at a cost. The syntax is neither elegant nor particularly clear and as a result it is not very practical to maintain or test.</p>
+
+<h2>A Fluent Interface for XPO</h2>
+
+<p>How about if we could do the following?</p>
+
+<p>```c#
+var customer = Session</p>
+
+<pre><code>            .Query()
+              .Contacts
+                .ByName("Elvis");
+</code></pre>
+
+<p>```
+Or, for a more elaborate example:</p>
+
+<p>```c#
+var customer = Session</p>
+
+<pre><code>             .Query()
+             .InTransaction
+                .Contacts
+                  .ByPosition("Developer")
+                    .ThatHave
+                      .NoPhoto()
+                    .And
+                      .TasksInProgress()
+                    .And
+                      .TasksWith(Priority.High)            
+             .FirstOrDefault();
+</code></pre>
+
+<p>```</p>
+
+<p>In the next post I'll show how to put the fluent interface code together.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Making XAF reports even better - Part 2]]></title>
@@ -678,37 +753,6 @@ The ability to create reports using a report writer is a very powerful feature o
 <h2>Conclusion</h2>
 
 <p>This concludes my series on load testing. We've managed to get some very useful information with some very low-cost tools. The largest part of effort is the writing of the Selenium script which is certainly tricky. In the future I'd really like to harness the DevExpress EasyTests to replace the script but I haven't yet found a way of doing this. Feel free to use my Selenium script as a starting point for testing your own XAF applications, and let us know of any interesting results!</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Load Testing XAF: Part 4 - Launching the load test]]></title>
-    <link href="http://ZeroSharp.github.com/load-testing-xaf-part-4-launching-the-load-test/"/>
-    <updated>2013-04-08T11:19:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/load-testing-xaf-part-4-launching-the-load-test</id>
-    <content type="html"><![CDATA[<p>This is another post in a series about load testing XAF applications.  Previously in the series:</p>
-
-<ul>
-<li><a href="/load-testing-xaf-overview/">Load Testing XAF: Overview</a></li>
-<li><a href="/load-testing-xaf-part-1-deploying/">Part 1: Deploying the target webserver</a></li>
-<li><a href="/load-testing-xaf-part-2-selenium/">Part 2: Selenium</a></li>
-<li><a href="/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Part 3: Uploading and validating a script</a></li>
-</ul>
-
-
-<p>In this part, we will launch a 1 hour test with 25 virtual users using the <a href="http://home.wpm.neustar.biz/">NeuStar Web Performance Management</a> module.</p>
-
-<h2>Schedule and launch a test</h2>
-
-<p>From the script validation screen, click on <em>Schedule a load test with this script</em>. The defaults are good, but you can specify in detail how to run your load test. For instance, you can coordinate multiple Selenium scripts to simulate different types of activity on your site.</p>
-
-<p><img src="/images/blog/load-testing/load-testing-005.png"></p>
-
-<p>Notice that the load test cost for 25 users for an hour will be only $3.75.</p>
-
-<p>When you click <code>Launch</code>, Neustar takes 7 or 8 minutes to provision the Amazon machines and stage the test, after which you will get realtime detail information about response times, bandwidth and errors.</p>
-
-<p>In the next post we'll analyse the results of this test.</p>
 ]]></content>
   </entry>
   

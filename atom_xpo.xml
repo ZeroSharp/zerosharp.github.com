@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-07-09T09:35:28+01:00</updated>
+  <updated>2013-08-12T18:33:24+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,97 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Fluent queries with DevExpress XPO - Intro]]></title>
+    <link href="http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-intro/"/>
+    <updated>2013-08-12T17:54:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-intro</id>
+    <content type="html"><![CDATA[<p>There are <a href="http://documentation.devexpress.com/#xaf/CustomDocument3052">many ways to perform queries with XPO</a>.</p>
+
+<p>You can do this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Session</span><span class="p">.</span><span class="n">FindObject</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;(</span><span class="k">new</span> <span class="n">BinaryOperator</span><span class="p">(</span><span class="s">&quot;Name&quot;</span><span class="p">,</span> <span class="s">&quot;Elvis&quot;</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>or this</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Session</span><span class="p">.</span><span class="n">FindObject</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;(</span><span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;Name = &#39;Elvis&#39;&quot;</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Another way to use the <a href="http://documentation.devexpress.com/#XPO/CustomDocument2537">simplified criteria syntax</a>, and with the <a href="https://code.google.com/p/dxcorecommunityplugins/wiki/XPO_EasyFields">Xpo_EasyFields CodeRush plugin</a>. Then you can do:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Session</span><span class="p">.</span><span class="n">FindObject</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;(</span><span class="n">Customer</span><span class="p">.</span><span class="n">Fields</span><span class="p">.</span><span class="n">Name</span> <span class="p">==</span> <span class="s">&quot;Elvis&quot;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>For each of the above, you can optionally query within the transaction by passing in the <code>PersistentCriteriaEvaluationBehavior.InTransaction</code> parameter.</p>
+
+<p>Or we can use LINQ via <code>XPQuery&lt;T&gt;.TransformExpression()</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Session</span><span class="p">.</span><span class="n">FindObject</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;(</span>
+</span><span class='line'>    <span class="n">XPQuery</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;.</span><span class="n">TransformExpression</span><span class="p">(</span><span class="n">Session</span><span class="p">,</span> <span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">Name</span> <span class="p">==</span> <span class="s">&quot;Elvis&quot;</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>All of these methods are powerful, but the power comes at a cost. The syntax is neither elegant nor particularly clear and as a result it is not very practical to maintain or test.</p>
+
+<h2>A Fluent Interface for XPO</h2>
+
+<p>How about if we could do the following?</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">var</span> <span class="n">customer</span> <span class="p">=</span> <span class="n">Session</span>
+</span><span class='line'>                <span class="p">.</span><span class="n">Query</span><span class="p">()</span>
+</span><span class='line'>                  <span class="p">.</span><span class="n">Contacts</span>
+</span><span class='line'>                    <span class="p">.</span><span class="n">ByName</span><span class="p">(</span><span class="s">&quot;Elvis&quot;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Or, for a more elaborate example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">var</span> <span class="n">customer</span> <span class="p">=</span> <span class="n">Session</span>
+</span><span class='line'>                 <span class="p">.</span><span class="n">Query</span><span class="p">()</span>
+</span><span class='line'>                 <span class="p">.</span><span class="n">InTransaction</span>
+</span><span class='line'>                    <span class="p">.</span><span class="n">Contacts</span>
+</span><span class='line'>                      <span class="p">.</span><span class="n">ByPosition</span><span class="p">(</span><span class="s">&quot;Developer&quot;</span><span class="p">)</span>
+</span><span class='line'>                        <span class="p">.</span><span class="n">ThatHave</span>
+</span><span class='line'>                          <span class="p">.</span><span class="n">NoPhoto</span><span class="p">()</span>
+</span><span class='line'>                        <span class="p">.</span><span class="n">And</span>
+</span><span class='line'>                          <span class="p">.</span><span class="n">TasksInProgress</span><span class="p">()</span>
+</span><span class='line'>                        <span class="p">.</span><span class="n">And</span>
+</span><span class='line'>                          <span class="p">.</span><span class="n">TasksWith</span><span class="p">(</span><span class="n">Priority</span><span class="p">.</span><span class="n">High</span><span class="p">)</span>
+</span><span class='line'>                 <span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In the next post I&#8217;ll show how to put the fluent interface code together.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[XpoBatch source code available]]></title>
