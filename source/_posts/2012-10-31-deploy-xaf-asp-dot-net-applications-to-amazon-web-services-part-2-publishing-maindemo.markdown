@@ -68,7 +68,7 @@ The next few screens are self-explanatory.
 
 {% img /images/blog/aws/launch-aws-beanstalk-6.jpg 'figure 14' %}
 
-The following screen appears only if we have active RDS instances running (whcih you should if you followed [Part 1](/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/)). It allows us to add a permission for the application to access the database. This can also be done manually via the *Security Groups* section in the AWS Explorer.
+The following screen appears only if we have active RDS instances running (which you should if you followed [Part 1](/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/)). It allows us to add a permission for the application to access the database. This can also be done manually via the *Security Groups* section in the AWS Explorer.
 
 {% img /images/blog/aws/launch-aws-beanstalk-7.jpg 'figure 15' %}
 

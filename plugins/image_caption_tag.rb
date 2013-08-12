@@ -1,4 +1,4 @@
-# Title: Simple Image tag for Jekyll
+  # Title: Simple Image tag for Jekyll
 # Author: Brandon Mathis http://brandonmathis.com
 # Description: Easily output images with optional class names and title/alt attributes
 #
@@ -27,7 +27,7 @@ module Jekyll
         if $5
           @title = $5.strip
         end
-        if $4 =~ /\s*(\d+)\s+(\d+)/
+        if $4 =~ /\s*(\d+)\s+(\d+)/ 
           @width = $1
           @height = $2
         end
@@ -39,11 +39,11 @@ module Jekyll
       output = super
       if @img
         "<span class='#{('caption-wrapper ' + @class).rstrip}'>" +
-          "<img class='caption' src='#{@img}' width='#{@width}' height='#{@height}' alt='#{@title}' title='#{@title}'>" +
+          "<img class='caption' src='#{@img}' width='#{@width}' height='#{@height}' title='#{@title}'>" +
           "<span class='caption-text'>#{@title}</span>" +
         "</span>"
       else
-        "Error processing input, expected syntax: {% img [class name(s)] /url/to/image [width height] [title text] %}"
+        "Error processing input, expected syntax: {% img [class name(s)] /url/to/image [width height] [caption text] %}"
       end
     end
   end
