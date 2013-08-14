@@ -9,8 +9,19 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="There are many ways to perform queries with XPO. You can do this: 1
-Session.FindObject&lt;Contact&gt;(new BinaryOperator(&quot;Name&quot;, &quot; &hellip;">
+  <meta name="description" content="Continuing from my last post, I&#8217;ll demonstrate how to create a fluent interface so that you can do: 1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+var customer = &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -114,6 +125,332 @@ Session.FindObject&lt;Contact&gt;(new BinaryOperator(&quot;Name&quot;, &quot; &h
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/fluent-queries-with-devexpress-xpo-implementation/">Fluent Queries With DevExpress XPO - Implementation</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-14T11:03:00+01:00" pubdate data-updated="true">Aug 14<span>th</span>, 2013</time>
+        
+         | <a href="/fluent-queries-with-devexpress-xpo-implementation/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Continuing from my <a href="/fluent-queries-with-devexpress-xpo-intro">last post</a>, I&#8217;ll demonstrate how to create a fluent interface so that you can do:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">var</span> <span class="n">customer</span> <span class="p">=</span> <span class="n">Session</span>
+</span><span class='line'>                 <span class="p">.</span><span class="n">Query</span><span class="p">()</span>
+</span><span class='line'>                 <span class="p">.</span><span class="n">InTransaction</span>
+</span><span class='line'>                    <span class="p">.</span><span class="n">Contacts</span>
+</span><span class='line'>                      <span class="p">.</span><span class="n">ByPosition</span><span class="p">(</span><span class="s">&quot;Developer&quot;</span><span class="p">)</span>
+</span><span class='line'>                        <span class="p">.</span><span class="n">ThatHave</span>
+</span><span class='line'>                          <span class="p">.</span><span class="n">NoPhoto</span><span class="p">()</span>
+</span><span class='line'>                        <span class="p">.</span><span class="n">And</span>
+</span><span class='line'>                          <span class="p">.</span><span class="n">TasksInProgress</span><span class="p">()</span>
+</span><span class='line'>                        <span class="p">.</span><span class="n">And</span>
+</span><span class='line'>                          <span class="p">.</span><span class="n">TasksWith</span><span class="p">(</span><span class="n">Priority</span><span class="p">.</span><span class="n">High</span><span class="p">)</span>
+</span><span class='line'>                 <span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>First, let&#8217;s look at the &#8216;beginning&#8217; of the fluent interface: the <code>Query()</code> extension method.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">QueryExtensions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="n">IQueries</span> <span class="nf">Query</span><span class="p">(</span><span class="k">this</span> <span class="n">Session</span> <span class="n">session</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nf">Queries</span><span class="p">(</span><span class="n">session</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// If we&#39;re using XAF, do the same for ObjectSpace as well</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="n">IQueries</span> <span class="nf">Query</span><span class="p">(</span><span class="k">this</span> <span class="n">IObjectSpace</span> <span class="n">objectSpace</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="kt">var</span> <span class="n">xpObjectSpace</span> <span class="p">=</span> <span class="n">objectSpace</span> <span class="k">as</span> <span class="n">XPObjectSpace</span><span class="p">;</span>
+</span><span class='line'>        <span class="kt">var</span> <span class="n">session</span> <span class="p">=</span> <span class="n">xpObjectSpace</span><span class="p">.</span><span class="n">Session</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nf">Queries</span><span class="p">(</span><span class="n">session</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>What does the <code>Queries()</code> class look like?</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">interface</span> <span class="n">IQueries</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">IQueries</span> <span class="n">InTransaction</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>    <span class="n">IContactQueries</span> <span class="n">Contacts</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>    <span class="c1">// One for each queryable object type, e.g.,</span>
+</span><span class='line'>    <span class="c1">// IDepartmentQueries Departments { get; }       </span>
+</span><span class='line'>    <span class="c1">// ITaskQueries Tasks { get; }</span>
+</span><span class='line'>    <span class="c1">// etc.</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">Queries</span> <span class="p">:</span> <span class="n">IQueries</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">Queries</span><span class="p">(</span><span class="n">Session</span> <span class="n">session</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">_Session</span> <span class="p">=</span> <span class="n">session</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="k">readonly</span> <span class="n">Session</span> <span class="n">_Session</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">private</span> <span class="kt">bool</span> <span class="n">_InTransaction</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="n">IQueries</span> <span class="n">InTransaction</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">get</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">_InTransaction</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="n">IContactQueries</span> <span class="n">_Contacts</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">public</span> <span class="n">IContactQueries</span> <span class="n">Contacts</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">get</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">_Contacts</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>                <span class="n">_Contacts</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ContactQueries</span><span class="p">(</span><span class="n">_Session</span><span class="p">,</span> <span class="n">_InTransaction</span><span class="p">);</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">_Contacts</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If we ignore the <code>InTransaction</code> property, it is just a container for the <code>IContactQueries</code>. In your application, you would have a similar property for each queryable object type. A new <code>ContactQueries</code> instance is created on demand taking into account the whether the <code>InTransaction</code> property was visited earlier in the syntax.</p>
+
+<p>Now, let&#8217;s look at the base classes.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">interface</span> <span class="n">IQueries</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">:</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;,</span> <span class="n">IFluentInterface</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">Queries</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">:</span> <span class="n">IQueries</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">Queries</span><span class="p">(</span><span class="n">Session</span> <span class="n">session</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">inTransaction</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">_Session</span> <span class="p">=</span> <span class="n">session</span><span class="p">;</span>
+</span><span class='line'>        <span class="n">Query</span> <span class="p">=</span> <span class="k">new</span> <span class="n">XPQuery</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span><span class="n">session</span><span class="p">,</span> <span class="n">inTransaction</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="k">readonly</span> <span class="n">Session</span> <span class="n">_Session</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">protected</span> <span class="n">IQueryable</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="n">Query</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="n">IEnumerator</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="n">GetEnumerator</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">Query</span><span class="p">.</span><span class="n">GetEnumerator</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="n">IEnumerator</span> <span class="n">IEnumerable</span><span class="p">.</span><span class="n">GetEnumerator</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">Query</span><span class="p">.</span><span class="n">GetEnumerator</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So <code>Queries&lt;T&gt;</code> wraps an <code>XPQuery&lt;T&gt;</code>.</p>
+
+<p>Side note: the inclusion of <code>IFluentInterface</code> is a clever trick to improve Intellisense by hiding the <code>System.Object</code> members such as <code>ToString()</code>. See <a href="http://blogs.clariusconsulting.net/kzu/how-to-hide-system-object-members-from-your-interfaces/">Daniel Cazzulino&#8217;s blog post</a>.</p>
+
+<p>And now we can implement the <code>Contact</code> generic as follows:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">interface</span> <span class="n">IContactQueries</span> <span class="p">:</span> <span class="n">IQueries</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="n">IContactQueries</span> <span class="nf">ByDepartmentTitle</span><span class="p">(</span><span class="kt">string</span> <span class="n">departmentTitle</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">IContactQueries</span> <span class="nf">ByPosition</span><span class="p">(</span><span class="kt">string</span> <span class="n">position</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">Contact</span> <span class="nf">ByEmail</span><span class="p">(</span><span class="kt">string</span> <span class="n">email</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">ContactQueries</span> <span class="p">:</span> <span class="n">Queries</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;,</span> <span class="n">IContactQueries</span><span class="p">,</span> <span class="n">IContactThatHaveQueries</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">ContactQueries</span><span class="p">(</span><span class="n">Session</span> <span class="n">session</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">inTransaction</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">inTransaction</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="n">IContactQueries</span> <span class="nf">ByDepartmentTitle</span><span class="p">(</span><span class="kt">string</span> <span class="n">department</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">Query</span> <span class="p">=</span> <span class="n">Query</span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">p</span> <span class="p">=&gt;</span> <span class="n">p</span><span class="p">.</span><span class="n">Department</span><span class="p">.</span><span class="n">Title</span> <span class="p">==</span> <span class="n">department</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="n">IContactQueries</span> <span class="nf">ByPosition</span><span class="p">(</span><span class="kt">string</span> <span class="n">position</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">Query</span> <span class="p">=</span> <span class="n">Query</span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">p</span> <span class="p">=&gt;</span> <span class="n">p</span><span class="p">.</span><span class="n">Position</span><span class="p">.</span><span class="n">Title</span> <span class="p">==</span> <span class="n">position</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="n">Contact</span> <span class="nf">ByEmail</span><span class="p">(</span><span class="kt">string</span> <span class="n">email</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">Query</span><span class="p">.</span><span class="n">SingleOrDefault</span><span class="p">(</span><span class="n">p</span> <span class="p">=&gt;</span> <span class="n">p</span><span class="p">.</span><span class="n">Email</span> <span class="p">==</span> <span class="n">email</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>There we go. Now we can use our fluent interface:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">var</span> <span class="n">contacts</span> <span class="p">=</span> <span class="n">session</span><span class="p">.</span><span class="n">Query</span><span class="p">().</span><span class="n">Contacts</span><span class="p">.</span><span class="n">ByPosition</span><span class="p">(</span><span class="s">&quot;Manager&quot;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Much more readable. Also more maintainable because all queries are in one place and make use of good old LINQ. It&#8217;s also easier to test the queries because they are independent of the calling code.</p>
+
+<p>See <a href="https://github.com/ZeroSharp/Xaf_MainDemo_FluentQueries">a sample implementation</a> built against the DevExpress XAF MainDemo on GitHub.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1328,401 +1665,6 @@ The ability to create reports using a report writer is a very powerful feature o
 <p>If you get a green icon, you can proceed with setting up a load test, otherwise you can see what went wrong in a video of the user session.</p>
 
 <p>In the next post we will configure and launch the load test.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/load-testing-xaf-part-2-selenium/">Load Testing XAF: Part 2 - Selenium</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-28T16:56:00+00:00" pubdate data-updated="true">Mar 28<span>th</span>, 2013</time>
-        
-         | <a href="/load-testing-xaf-part-2-selenium/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h1>Writing a Selenium User Test against MainDemo</h1>
-
-<p>This is another post in a series about load testing XAF applications.  Previously in the series:</p>
-
-<ul>
-<li><a href="/load-testing-xaf-overview/">Load Testing XAF: Overview</a></li>
-<li><a href="/load-testing-xaf-part-1-deploying/">Part 1: Deploying the target webserver</a></li>
-</ul>
-
-
-<h2>Why not use DevExpress EasyTests?</h2>
-
-<p>The DevExpress recommended method of writing functional tests is to use the EasyTest functionality of the expressAppFramework. This has several advantages over other functional testing approaches.</p>
-
-<ul>
-<li>It uses a domain specific language tailored for XAF making it easy to test views and actions</li>
-<li>It makes it easy to interact with the DevExpress controls that are used within XAF</li>
-<li>A single EasyTest can be run against both the ASP.NET and WinForms applications</li>
-<li>EasyTests work against both the debug webserver and IIS</li>
-</ul>
-
-
-<p>However, one feature which is not (yet) available is the ability to use EasyTests for load testing.</p>
-
-<p><strong>UPDATE</strong>: See my <a href="/load-testing-xaf-bonus-simultaneous-easytests">more recent post</a> on how run multiple simultaneous EasyTests.</p>
-
-<h2>Modifications to the MainDemo</h2>
-
-<p>The sample script I have written assumes the MainDemo is running with <em>Horizontal Navigation</em> rather than vertical. You can modify the script to add support for vertical navigation or you can change Global.asax.cs Application_Start as follows:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='diff'><span class='line'>protected void Application_Start(object sender, EventArgs e)
-</span><span class='line'>{
-</span><span class='line'>    RenderHelper.RenderMode = DevExpress.Web.ASPxClasses.ControlRenderMode.Lightweight;
-</span><span class='line'>    ASPxWebControl.CallbackError += new EventHandler(Application_Error);
-</span><span class='line'>
-</span><span class='line'><span class="gi">+    // Add the following line to default to horizontal layout</span>
-</span><span class='line'><span class="gi">+    WebWindowTemplateHttpHandler.PreferredApplicationWindowTemplateType = DevExpress.ExpressApp.Web.Templates.TemplateType.Horizontal;</span>
-</span><span class='line'>}
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>The Selenium script</h2>
-
-<p>Selenium is a powerful tool for automating browsers. It supports all of the major browsers and a Selenium test can be written in many different programming languages (C#, Java, Javascript, HTML, <em>etc.</em>) The load testing tool (which we will come to in part 3 of this series) uses Selenium scripts written in Javascript.</p>
-
-<p>We will now create and verify a simple Selenium test. The test will open the browser, login to the MainDemo and cycle through all of the tabs before logging out. The script is extremely basic. For a more realistic load test, you want a combination of scripts running, some entering data, some triggering reports, etc.</p>
-
-<p>Create a \scripts subdirectory and populate it with the following code:</p>
-
-<figure class='code'><figcaption><span>MainDemo_CycleThroughTabs.js  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-<span class='line-number'>86</span>
-<span class='line-number'>87</span>
-<span class='line-number'>88</span>
-<span class='line-number'>89</span>
-<span class='line-number'>90</span>
-<span class='line-number'>91</span>
-<span class='line-number'>92</span>
-<span class='line-number'>93</span>
-<span class='line-number'>94</span>
-<span class='line-number'>95</span>
-<span class='line-number'>96</span>
-<span class='line-number'>97</span>
-<span class='line-number'>98</span>
-<span class='line-number'>99</span>
-<span class='line-number'>100</span>
-<span class='line-number'>101</span>
-<span class='line-number'>102</span>
-<span class='line-number'>103</span>
-<span class='line-number'>104</span>
-<span class='line-number'>105</span>
-<span class='line-number'>106</span>
-<span class='line-number'>107</span>
-<span class='line-number'>108</span>
-<span class='line-number'>109</span>
-<span class='line-number'>110</span>
-<span class='line-number'>111</span>
-<span class='line-number'>112</span>
-<span class='line-number'>113</span>
-<span class='line-number'>114</span>
-<span class='line-number'>115</span>
-<span class='line-number'>116</span>
-<span class='line-number'>117</span>
-<span class='line-number'>118</span>
-<span class='line-number'>119</span>
-<span class='line-number'>120</span>
-</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="cm">/* global test */</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// Settings for Neustar:</span>
-</span><span class='line'><span class="c1">// replace the following with the public address of the application server,</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">targetHost</span> <span class="o">=</span> <span class="s2">&quot;http://zerosharp-maindemo.elasticbeanstalk.com/&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">virtualShare</span> <span class="o">=</span> <span class="s2">&quot;MainDemo.Web_deploy&quot;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// Settings for debug webserver:</span>
-</span><span class='line'><span class="c1">// (local script validator doesn&#39;t always work against localhost,</span>
-</span><span class='line'><span class="c1">// so we use the excellent localtest.me instead.)</span>
-</span><span class='line'><span class="c1">//var targetHost = &quot;http://localtest.me:58404&quot;;</span>
-</span><span class='line'><span class="c1">//var virtualShare = &quot;&quot;;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// Settings for the build server or IIS:</span>
-</span><span class='line'><span class="c1">//var targetHost = &quot;http://localtest.me/&quot;;</span>
-</span><span class='line'><span class="c1">//var virtualShare = &quot;MainDemo.Web&quot;;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// Test parameters</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">thinkTimeInSeconds</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">timeout</span> <span class="o">=</span> <span class="mi">60000</span><span class="p">;</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">step</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// You an optionally set the simulated bandwidth for the script</span>
-</span><span class='line'><span class="c1">// (max of 100KB/sec). A value of -1 means do not limit.</span>
-</span><span class='line'><span class="c1">// E.g., </span>
-</span><span class='line'><span class="c1">// var bandwidthLimit = 50 * 1024 * 8; // 50KB/sec</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">bandwidthLimit</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">var</span> <span class="nx">driver</span> <span class="o">=</span> <span class="nx">test</span><span class="p">.</span><span class="nx">openBrowser</span><span class="p">();</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">selenium</span> <span class="o">=</span> <span class="nx">driver</span><span class="p">.</span><span class="nx">getSelenium</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// Support functions</span>
-</span><span class='line'><span class="kd">function</span> <span class="nx">think</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">thinkTimeInSeconds</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">test</span><span class="p">.</span><span class="nx">isValidation</span><span class="p">())</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nx">test</span><span class="p">.</span><span class="nx">pause</span><span class="p">(</span><span class="nx">thinkTimeInSeconds</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">);</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">function</span> <span class="nx">waitForCallbacks</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForCondition</span><span class="p">(</span><span class="s2">&quot;(typeof selenium.browserbot.getUserWindow().xafHasPendingCallbacks === &#39;function&#39;) &amp;&amp; (selenium.browserbot.getUserWindow().xafHasPendingCallbacks() === false);&quot;</span><span class="p">,</span> <span class="nx">timeout</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="kd">function</span> <span class="nx">stepLogin</span><span class="p">(</span><span class="nx">username</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">step</span> <span class="o">=</span> <span class="nx">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">test</span><span class="p">.</span><span class="nx">beginStep</span><span class="p">(</span><span class="s2">&quot;Step &quot;</span> <span class="o">+</span> <span class="nx">step</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; - Login&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="nx">targetHost</span> <span class="o">+</span> <span class="nx">virtualShare</span> <span class="o">+</span> <span class="s2">&quot;/Default.aspx&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">think</span><span class="p">();</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">type</span><span class="p">(</span><span class="s2">&quot;xpath=//input[contains(@id,&#39;_xaf_dviUserName_Edit_I&#39;)]&quot;</span><span class="p">,</span> <span class="nx">username</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">type</span><span class="p">(</span><span class="s2">&quot;xpath=//input[contains(@id,&#39;_xaf_dviPassword_Edit_I&#39;)]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">click</span><span class="p">(</span><span class="s2">&quot;Logon_PopupActions_Menu_DXI0_T&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForPageToLoad</span><span class="p">(</span><span class="nx">timeout</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">waitForCallbacks</span><span class="p">();</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">assertElementPresent</span><span class="p">(</span><span class="s2">&quot;Horizontal_VCC_VSL&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForText</span><span class="p">(</span><span class="s2">&quot;Horizontal_VCC_VSL&quot;</span><span class="p">,</span> <span class="s2">&quot;Contact&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">test</span><span class="p">.</span><span class="nx">endStep</span><span class="p">();</span>
-</span><span class='line'>    <span class="nx">think</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">function</span> <span class="nx">stepLogoff</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kd">var</span> <span class="nx">expectedSubstring</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">step</span> <span class="o">=</span> <span class="nx">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">test</span><span class="p">.</span><span class="nx">beginStep</span><span class="p">(</span><span class="s2">&quot;Step &quot;</span> <span class="o">+</span> <span class="nx">step</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; - Logoff&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">click</span><span class="p">(</span><span class="s2">&quot;//li[@class=&#39;dxm-item&#39;]/div[@class=&#39;dxm-content dxm-hasText&#39;]//a[@class=&#39;dx dxalink&#39; and text()=&#39;Log Off&#39;]/..&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForPageToLoad</span><span class="p">(</span><span class="nx">timeout</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">expectedSubstring</span> <span class="o">=</span> <span class="s2">&quot;Logout.html&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">test</span><span class="p">.</span><span class="nx">endStep</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">function</span> <span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="nx">maintabCaption</span><span class="p">,</span> <span class="nx">tabCaption</span><span class="p">,</span> <span class="nx">viewCaption</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">// viewCaption is optional</span>
-</span><span class='line'>    <span class="nx">viewCaption</span> <span class="o">=</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">viewCaption</span> <span class="o">===</span> <span class="s2">&quot;undefined&quot;</span><span class="p">)</span> <span class="o">?</span> <span class="nx">tabCaption</span> <span class="o">:</span> <span class="nx">viewCaption</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">step</span> <span class="o">=</span> <span class="nx">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>    <span class="nx">test</span><span class="p">.</span><span class="nx">beginStep</span><span class="p">(</span><span class="s2">&quot;Step &quot;</span> <span class="o">+</span> <span class="nx">step</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; - &quot;</span> <span class="o">+</span> <span class="nx">tabCaption</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForElementPresent</span><span class="p">(</span><span class="s2">&quot;//td[@class=&#39;dxtc&#39; and text()=&#39;&quot;</span> <span class="o">+</span> <span class="nx">maintabCaption</span> <span class="o">+</span> <span class="s2">&quot;&#39;]&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">selenium</span><span class="p">.</span><span class="nx">isVisible</span><span class="p">(</span><span class="s2">&quot;//td[@class=&#39;dxtc&#39; and text()=&#39;&quot;</span> <span class="o">+</span> <span class="nx">maintabCaption</span> <span class="o">+</span> <span class="s2">&quot;&#39;]&quot;</span><span class="p">))</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">selenium</span><span class="p">.</span><span class="nx">click</span><span class="p">(</span><span class="s2">&quot;//td[@class=&#39;dxtc&#39; and text()=&#39;&quot;</span> <span class="o">+</span> <span class="nx">maintabCaption</span> <span class="o">+</span> <span class="s2">&quot;&#39;]&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForElementPresent</span><span class="p">(</span><span class="s2">&quot;//div[@class=&#39;dxm-content dxm-hasText&#39; and starts-with(@id, &#39;Horizontal_NTAC_PC_M&#39;)]//a[@class=&#39;dx dxalink&#39; and contains(text(), &#39;&quot;</span> <span class="o">+</span> <span class="nx">tabCaption</span> <span class="o">+</span> <span class="s2">&quot;&#39;)]/..&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">click</span><span class="p">(</span><span class="s2">&quot;//div[@class=&#39;dxm-content dxm-hasText&#39; and starts-with(@id, &#39;Horizontal_NTAC_PC_M&#39;)]//a[@class=&#39;dx dxalink&#39; and contains(text(), &#39;&quot;</span> <span class="o">+</span> <span class="nx">tabCaption</span> <span class="o">+</span> <span class="s2">&quot;&#39;)]/..&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">waitForCallbacks</span><span class="p">();</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">assertElementPresent</span><span class="p">(</span><span class="s2">&quot;Horizontal_VCC_VSL&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">assertText</span><span class="p">(</span><span class="s2">&quot;Horizontal_VCC_VSL&quot;</span><span class="p">,</span> <span class="nx">viewCaption</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">test</span><span class="p">.</span><span class="nx">endStep</span><span class="p">();</span>
-</span><span class='line'>    <span class="nx">think</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kd">function</span> <span class="nx">initializetest</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">setTimeout</span><span class="p">(</span><span class="nx">timeout</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="nx">bandwidthLimit</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nx">test</span><span class="p">.</span><span class="nx">setSimulatedBps</span><span class="p">(</span><span class="nx">bandwidthLimit</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">(</span><span class="kd">function</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">initializetest</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">test</span><span class="p">.</span><span class="nx">beginTransaction</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">stepLogin</span><span class="p">(</span><span class="s2">&quot;Sam&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="c1">//stepNavigateToTab(&quot;Default&quot;, &quot;Contact&quot;);</span>
-</span><span class='line'>    <span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;Task&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;Department&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;Scheduler Event&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;My Details&quot;</span><span class="p">,</span> <span class="s2">&quot;User - Sam&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;Note&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;Payment&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;Position&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;Resume&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;Role&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;User&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Reports&quot;</span><span class="p">,</span> <span class="s2">&quot;Analysis&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Reports&quot;</span><span class="p">,</span> <span class="s2">&quot;Reports&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="nx">stepLogoff</span><span class="p">();</span>
-</span><span class='line'>    <span class="nx">test</span><span class="p">.</span><span class="nx">closeBrowser</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nx">test</span><span class="p">.</span><span class="nx">endTransaction</span><span class="p">();</span>
-</span><span class='line'><span class="p">}());</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Neustar</h2>
-
-<p>In a future post we will create multiple test runners in the Amazon cloud using the <a href="https://home.wpm.neustar.biz/">Neustar web performance tool</a> (formerly BrowserMob). Neustar will gather statistics about each scripts reponse times and provide a load test report including details of any test failures.</p>
-
-<p>For now we will verify locally that the Selenium script above works as expected.</p>
-
-<h3>Installing the Neustar local script validator</h3>
-
-<p>In order to verify that our script is supported by the Neustar framework, we need to install their <a href="http://static.wpm.neustar.biz/tools/local-validator.tar.gz">local script validator</a>. Download it and unzip it to a subdirectory of the MainDemo.</p>
-
-<p>There are <a href="http://community.webmetrics.com/community/wpm/blog/2012/10/02/neustar-script-local-validator-user-guide-for-windows">instructions for setting up local script validation here</a>.</p>
-
-<p>To run the script locally call the following:</p>
-
-<pre><code>&gt; script-validator-4.8.81\bin\validator.bat CycleThroughTabs.js -keepbrowseronerror
-</code></pre>
-
-<p>I had some problems getting the NeuStar script validator to work in 64-bit Windows 8. The script validator instructions recommend FireFox 12 but I am using version 19. For the record I am using:</p>
-
-<ul>
-<li>DevExpress MainDemo 12.2.7</li>
-<li>NeuStar localscriptvalidator 4.8.81</li>
-<li>Mozilla FireFox 19</li>
-<li>Java 7.0.90</li>
-</ul>
-
-
-<p>You need to modify your <code>C:\Users\&lt;Username&gt;\.wpm\config.properties</code> file as follows:</p>
-
-<figure class='code'><figcaption><span>config.properties </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='properties'><span class='line'><span class="na">FF</span><span class="o">=</span><span class="s">C:\\Program Files (x86)\\Mozilla Firefox\\firefox.exe</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Also, for some reason, I could not get the local script validator to run against localhost. I kept getting the error:</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>WARN 03/28 12:38:28 b.n.w.a.s.JavaScrip~ - Got script exception
-</span><span class='line'>org.mozilla.javascript.WrappedException: Wrapped biz.neustar.webmetrics.agent.ap
-</span><span class='line'>i.HttpErrorException: No valid HTTP Response received while navigating to URL 'h
-</span><span class='line'>ttp://localhost:58404/Default.aspx' (CycleThroughTabs.js#50)</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The easiest solution was to change the localhost address in the javascript file to the excellent localhost alternative <a href="http://readme.localtest.me/">localtest.me</a>.</p>
-
-<p>Now when I run the script using the local validator with</p>
-
-<pre><code>&gt; validator cyclethroughtabs.js
-</code></pre>
-
-<p>I see Firefox startup after a few seconds and the script correctly cycles through all of the tabs and then exits.</p>
-
-<p>We will use this scenario as the basis of a load test in the next post.</p>
 </div>
   
   

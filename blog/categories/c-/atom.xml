@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c# | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/c-/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-08-12T18:33:24+01:00</updated>
+  <updated>2013-08-14T12:01:09+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,195 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Fluent queries with DevExpress XPO - Implementation]]></title>
+    <link href="http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-implementation/"/>
+    <updated>2013-08-14T11:03:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-implementation</id>
+    <content type="html"><![CDATA[<p>Continuing from my <a href="/fluent-queries-with-devexpress-xpo-intro">last post</a>, I'll demonstrate how to create a fluent interface so that you can do:</p>
+
+<p>```c#
+var customer = Session</p>
+
+<pre><code>             .Query()
+             .InTransaction
+                .Contacts
+                  .ByPosition("Developer")
+                    .ThatHave
+                      .NoPhoto()
+                    .And
+                      .TasksInProgress()
+                    .And
+                      .TasksWith(Priority.High)            
+             .FirstOrDefault();
+</code></pre>
+
+<p>```</p>
+
+<p>First, let's look at the 'beginning' of the fluent interface: the <code>Query()</code> extension method.</p>
+
+<p>```c#
+public static class QueryExtensions
+{</p>
+
+<pre><code>public static IQueries Query(this Session session)
+{
+    return new Queries(session);
+}
+
+// If we're using XAF, do the same for ObjectSpace as well
+public static IQueries Query(this IObjectSpace objectSpace)
+{
+    var xpObjectSpace = objectSpace as XPObjectSpace;
+    var session = xpObjectSpace.Session;
+    return new Queries(session);
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>What does the <code>Queries()</code> class look like?</p>
+
+<p>```c#</p>
+
+<pre><code>public interface IQueries
+{
+    IQueries InTransaction { get; }
+    IContactQueries Contacts { get; }
+    // One for each queryable object type, e.g.,
+    // IDepartmentQueries Departments { get; }       
+    // ITaskQueries Tasks { get; }
+    // etc.
+}
+
+public class Queries : IQueries
+{       
+    public Queries(Session session)
+    {
+        _Session = session;
+    }
+
+    private readonly Session _Session;
+    private bool _InTransaction;
+
+    public IQueries InTransaction
+    {
+        get
+        {
+            _InTransaction = true;
+            return this;
+        }
+    }
+
+    private IContactQueries _Contacts;
+    public IContactQueries Contacts
+    {
+        get
+        {
+            if (_Contacts == null)
+                _Contacts = new ContactQueries(_Session, _InTransaction);
+            return _Contacts;
+        }
+    }
+}
+</code></pre>
+
+<p>```</p>
+
+<p>If we ignore the <code>InTransaction</code> property, it is just a container for the <code>IContactQueries</code>. In your application, you would have a similar property for each queryable object type. A new <code>ContactQueries</code> instance is created on demand taking into account the whether the <code>InTransaction</code> property was visited earlier in the syntax.</p>
+
+<p>Now, let's look at the base classes.</p>
+
+<p>```c#
+public interface IQueries<T> : IEnumerable<T>, IFluentInterface
+{
+}</p>
+
+<p>public class Queries<T> : IQueries<T>
+{</p>
+
+<pre><code>public Queries(Session session, bool inTransaction)
+{
+    _Session = session;
+    Query = new XPQuery&lt;T&gt;(session, inTransaction);
+}
+
+private readonly Session _Session;
+protected IQueryable&lt;T&gt; Query { get; set; }
+
+public IEnumerator&lt;T&gt; GetEnumerator()
+{
+    return Query.GetEnumerator();
+}
+
+IEnumerator IEnumerable.GetEnumerator()
+{
+    return Query.GetEnumerator();
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>So <code>Queries&lt;T&gt;</code> wraps an <code>XPQuery&lt;T&gt;</code>.</p>
+
+<p>Side note: the inclusion of <code>IFluentInterface</code> is a clever trick to improve Intellisense by hiding the <code>System.Object</code> members such as <code>ToString()</code>. See <a href="http://blogs.clariusconsulting.net/kzu/how-to-hide-system-object-members-from-your-interfaces/">Daniel Cazzulino's blog post</a>.</p>
+
+<p>And now we can implement the <code>Contact</code> generic as follows:</p>
+
+<p>```c#
+public interface IContactQueries : IQueries<Contact>
+{</p>
+
+<pre><code>IContactQueries ByDepartmentTitle(string departmentTitle);
+IContactQueries ByPosition(string position);
+Contact ByEmail(string email);
+</code></pre>
+
+<p>}</p>
+
+<p>public class ContactQueries : Queries<Contact>, IContactQueries, IContactThatHaveQueries
+{</p>
+
+<pre><code>public ContactQueries(Session session, bool inTransaction)
+    : base(session, inTransaction)
+{
+}
+
+public IContactQueries ByDepartmentTitle(string department)
+{
+    Query = Query.Where(p =&gt; p.Department.Title == department);
+    return this;
+}
+
+public IContactQueries ByPosition(string position)
+{
+    Query = Query.Where(p =&gt; p.Position.Title == position);
+    return this;
+}
+
+public Contact ByEmail(string email)
+{
+    return Query.SingleOrDefault(p =&gt; p.Email == email);
+}
+</code></pre>
+
+<p>}  <br/>
+```</p>
+
+<p>There we go. Now we can use our fluent interface:</p>
+
+<p><code>c#
+var contacts = session.Query().Contacts.ByPosition("Manager");
+</code></p>
+
+<p>Much more readable. Also more maintainable because all queries are in one place and make use of good old LINQ. It's also easier to test the queries because they are independent of the calling code.</p>
+
+<p>See <a href="https://github.com/ZeroSharp/Xaf_MainDemo_FluentQueries">a sample implementation</a> built against the DevExpress XAF MainDemo on GitHub.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Fluent queries with DevExpress XPO - Intro]]></title>
@@ -488,275 +677,6 @@ The ability to create reports using a report writer is a very powerful feature o
 </span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>And bingo! The application now runs without error.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Load Testing XAF: Bonus - Simultaneous EasyTests]]></title>
-    <link href="http://ZeroSharp.github.com/load-testing-xaf-bonus-simultaneous-easytests/"/>
-    <updated>2013-04-22T16:31:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/load-testing-xaf-bonus-simultaneous-easytests</id>
-    <content type="html"><![CDATA[<p>In <a href="/load-testing-xaf-overview">my recent series on load testing XAF</a>, I used a Selenium javascript test to run the client browser instances. This is a good and cheap method of validating the performance of XAF applications under production load.</p>
-
-<p>However, if the load tests fail because of a concurrency bug or a performance bottleneck, it can still be difficult to analyse and solve. For this, we need to be able to simulate load locally against the development environment.</p>
-
-<p>In this post I will demonstrate how to run multiple simultaneous XAF EasyTests against a local server. As a load test, it is not very scientific, but it can be extremely useful as a debugging tool.</p>
-
-<h2>The EasyTest script</h2>
-
-<p>First, we will create a new EasyTest which will cycle through the existing navigation tabs. Open the XAF MainDemo and create a new EasyTest as follows.</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>MainDemo_CycleThroughTabs.ets  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='text'><span class='line'>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h1&gt;Application MainDemoWeb&lt;/h1&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;&lt;em&gt;FillForm
-</span><span class='line'> User Name = Sam
-</span><span class='line'> Password =
-</span><span class='line'>&lt;/em&gt;Action Log On&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;&lt;em&gt;Action Navigation(Contact)
-</span><span class='line'>&lt;/em&gt;Action Navigation(Task)
-</span><span class='line'>&lt;em&gt;Action Navigation(Department)
-</span><span class='line'>&lt;/em&gt;Action Navigation(Scheduler Event)
-</span><span class='line'>&lt;em&gt;Action Navigation(My Details)
-</span><span class='line'>&lt;/em&gt;Action Navigation(Note)
-</span><span class='line'>&lt;em&gt;Action Navigation(Payment)
-</span><span class='line'>&lt;/em&gt;Action Navigation(Position)
-</span><span class='line'>&lt;em&gt;Action Navigation(Resume)
-</span><span class='line'>&lt;/em&gt;Action Navigation(Role)
-</span><span class='line'>&lt;em&gt;Action Navigation(User)
-</span><span class='line'>&lt;/em&gt;Action Navigation(Reports.Analysis)
-</span><span class='line'>&lt;em&gt;Action Navigation(Reports.Reports)
-</span><span class='line'>&lt;/em&gt;Action Log Off
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>(This test replicates the Selenium test we created in <a href="/load-testing-xaf-part-2-selenium/">Part 2</a> of my previous series on load testing with NeuStar and Amazon.) It is important to note that we are only testing the web application and that we do not include a <code>#DropDB</code> directive.</p>
-
-<p>First, ensure that you can run this test with the default settings.</p>
-
-<h2>The config file</h2>
-
-<p>Now modify the config.xml file as follows:</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>Config.xml  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="ni">&amp;lt;</span>?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
-</span><span class='line'><span class="nt">&lt;Options</span> <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="na">TestRunTimeLimit=</span><span class="s">&quot;5&quot;</span> <span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;Applications&gt;&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;pre&gt;&lt;code&gt;</span><span class="ni">&amp;lt;</span>!-- Web --<span class="ni">&amp;gt;</span>
-</span><span class='line'><span class="ni">&amp;lt;</span>Application
-</span><span class='line'>  Name=&quot;MainDemoWeb&quot;
-</span><span class='line'>  Url=&quot;http://localhost:4030&quot;
-</span><span class='line'>  SingleWebDev=&quot;True&quot;
-</span><span class='line'>  WebBrowserType=&quot;Standalone&quot;
-</span><span class='line'>  PhysicalPath=&quot;[ConfigPath]\..\MainDemo.Web&quot;
-</span><span class='line'>  AdapterAssemblyName=&quot;DevExpress.ExpressApp.EasyTest.WebAdapter.v12.2, Version=12.2.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;/<span class="ni">&amp;gt;</span>
-</span><span class='line'><span class="ni">&amp;lt;</span>!-- For IIS --<span class="ni">&amp;gt;</span>
-</span><span class='line'><span class="ni">&amp;lt;</span>!--<span class="ni">&amp;lt;</span>Application
-</span><span class='line'>  Name=&quot;MainDemoWeb&quot;
-</span><span class='line'>  Url=&quot;http://localhost/MainDemo.Web/Default.aspx&quot;
-</span><span class='line'>  PhysicalPath=&quot;&quot;
-</span><span class='line'>  DontRestartIIS=&quot;True&quot;
-</span><span class='line'>  DontRunWebDev=&quot;True&quot;
-</span><span class='line'>  WebBrowserType=&quot;Standalone&quot;
-</span><span class='line'>  AdapterAssemblyName=&quot;DevExpress.ExpressApp.EasyTest.WebAdapter.v12.2, Version=12.2.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;/--<span class="ni">&amp;gt;</span>
-</span><span class='line'><span class="nt">&lt;/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;/Applications&gt;</span>
-</span><span class='line'><span class="nt">&lt;/Options&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>There are a few important things to note.</p>
-
-<p>I have not shown the <em>Win</em> section here since we are not using it. Also, I am using XAF 12.2.8. You may need to change the version number in the <code>AdapterAssemblyName</code> attribute. I have increased the <code>TestRunTimeLimit</code> attribute from 3 to 5. Everything goes a little slower when there are multiple browsers and we need to make sure the test does not time out.</p>
-
-<p>With the above config, the EasyTest will no longer run from within Visual Studio.</p>
-
-<p>You can choose to run the simultaneous tests against the debug web server or IIS. Uncomment the relevant section. The interesting settings are:</p>
-
-<ul>
-<li><code>SingleWebDev="True"</code> which instructs the EasyTest runner to run all tests against the same instance of the development webserver. Without this, the webserver would be stopped and started for each test.</li>
-<li><code>WebBrowserType="Standalone"</code> which causes each launched browser to be launched with its own session. (There are a few mentions of this setting in the support center, but it is not very well documented).</li>
-<li><code>DontRestartIIS</code> and <code>DontRunWebDev</code> which are self-explanatory</li>
-</ul>
-
-
-<h2>The launch command</h2>
-
-<p>Next, create the following batch file in the MainDemo.EasyTests subdirectory. ##</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>Launch.bat  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-</pre></td><td class='code'><pre><code class='bat'><span class='line'><span class="c">:: Requires the Debug webserver to be running on port 49660</span>
-</span><span class='line'><span class="c">:: Requires EasyTests to be enabled</span>
-</span><span class='line'><span class="c">:: Requires NetDA to be running</span>
-</span><span class='line'><span class="c">:: Requires admin rights</span>
-</span><span class='line'><span class="c">:: Must be run from a command prompt</span>
-</span><span class='line'><span class="c">::</span>
-</span><span class='line'><span class="c">:: Usage: &gt; launch &lt;numberOfBrowsers&gt;</span>
-</span><span class='line'><span class="c">:: e.g. : &gt; launch 21</span>
-</span><span class='line'><span class="c">:: will launch 21 simultaneous browsers at 3 second intervals&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;@<span class="k">echo</span> <span class="k">off</span>&lt;<span class="n">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:DELETE_OUTPUT</span>
-</span><span class='line'><span class="k">if</span> <span class="k">exist</span> <span class="p">&lt;</span><span class="n">em</span>&gt;.jpeg <span class="k">del</span> &lt;<span class="n">/em&gt;.jpeg</span>
-</span><span class='line'><span class="k">if</span> <span class="k">exist</span> <span class="p">&lt;</span><span class="n">em</span>&gt;.html <span class="k">del</span> &lt;<span class="n">/em&gt;.html</span>
-</span><span class='line'><span class="k">if</span> <span class="k">exist</span> TestsLog.xml <span class="k">del</span> TestsLog.xml&lt;<span class="n">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:CHECK_ADMIN</span>
-</span><span class='line'>net session <span class="p">&gt;</span><span class="n">nul</span> <span class="m">2</span>&gt;&amp;amp;<span class="m">1</span>
-</span><span class='line'><span class="k">if</span> <span class="nv">%ERRORLEVEL%</span> <span class="o">equ</span> <span class="m">0</span> <span class="k">goto</span> <span class="nl">CHECK_CONSOLE</span>
-</span><span class='line'><span class="k">echo</span> Must be run from an administrative command window
-</span><span class='line'><span class="k">goto</span> <span class="nl">ERROR</span>&lt;<span class="n">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:CHECK_CONSOLE</span>
-</span><span class='line'><span class="k">echo</span> <span class="nv">%CMDCMDLINE%</span> <span class="p">|</span> <span class="n">find</span> <span class="n">/i</span> <span class="s2">&quot;/c&quot;</span> <span class="p">&gt;</span><span class="n">nul</span>
-</span><span class='line'><span class="k">if</span> <span class="k">ERRORLEVEL</span> <span class="m">1</span> <span class="k">goto</span> <span class="nl">CHECK_PARAMS</span>
-</span><span class='line'><span class="k">echo</span> Must be run from an administrative console (not Windows Explorer)
-</span><span class='line'><span class="k">goto</span> <span class="nl">ERROR</span>&lt;<span class="n">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:CHECK_PARAMS</span>
-</span><span class='line'><span class="k">IF</span> [<span class="nv">%1</span>]<span class="o">==</span>[] <span class="k">GOTO</span> <span class="nl">USAGE</span>&lt;<span class="n">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:LAUNCH</span>
-</span><span class='line'><span class="k">set</span> <span class="n">/a</span> i<span class="o">=</span><span class="m">0</span>&lt;<span class="n">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:LOOP</span>
-</span><span class='line'><span class="k">if</span> <span class="nv">%i%</span><span class="o">==</span><span class="nv">%1</span> <span class="k">goto</span> <span class="nl">OK</span>
-</span><span class='line'><span class="k">set</span> <span class="n">/a</span> i<span class="o">=</span><span class="nv">%i%</span>+<span class="m">1</span>
-</span><span class='line'>start <span class="s2">&quot;x&quot;</span> <span class="s2">&quot;C:\Program Files (x86)\DevExpress\DXperience 12.2\Tools\eXpressAppFramework\EasyTest\TestExecutor.v12.2.exe&quot;</span> MainDemo_CycleThroughTabs.ets
-</span><span class='line'><span class="c">:: Wait 3 seconds</span>
-</span><span class='line'>ping <span class="m">1</span>.<span class="m">1</span>.<span class="m">1</span>.<span class="m">1</span> -n <span class="m">1</span> -w <span class="m">3000</span> <span class="p">&gt;</span><span class="n">nul</span>
-</span><span class='line'><span class="k">goto</span> <span class="nl">LOOP</span>&lt;<span class="n">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:USAGE</span>
-</span><span class='line'><span class="k">echo</span> Usage: <span class="nv">%0</span> numberOfBrowsers
-</span><span class='line'><span class="k">echo</span> numberOfBrowsers must be an integer
-</span><span class='line'><span class="k">goto</span> <span class="nl">OK</span>&lt;<span class="n">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:ERROR</span>&lt;<span class="n">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:OK</span>
-</span><span class='line'><span class="k">pause</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>If you want to run your tests against the development webserver, you will need to make sure it is running before launching the batch file. The easiest way to do this is to run the application from within Visual Studio and then close the browser. You should still see the development webserver running in the task bar notification area. Against IIS, it is enough to ensure it is started.</p>
-
-<p>Now, open an administrative command prompt. Note that you must run from an administrative console: it is not sufficient to 'run as administrator' from Windows Explorer. Navigate to the EasyTest subdirectory where the Launch.bat file is located and launch a single test with the following command:</p>
-
-<pre><code>launch.bat 1
-</code></pre>
-
-<p>You should see the test run without error. If this works, you can then launch 20 simultaneous test runs with 3 second intervals by running:</p>
-
-<pre><code>launch.bat 20
-</code></pre>
-
-<h2>Conclusion</h2>
-
-<p>As a load test, you do not get much useful information. Even if we managed to extract accurate data for client response times and throughput, the overhead of running the multiple browsers would skew the results too much. However, this approach is extremely useful for isolating concurrency and performance problems.</p>
 ]]></content>
   </entry>
   

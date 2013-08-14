@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-08-12T18:33:24+01:00</updated>
+  <updated>2013-08-14T12:01:09+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,195 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Fluent queries with DevExpress XPO - Implementation]]></title>
+    <link href="http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-implementation/"/>
+    <updated>2013-08-14T11:03:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-implementation</id>
+    <content type="html"><![CDATA[<p>Continuing from my <a href="/fluent-queries-with-devexpress-xpo-intro">last post</a>, I'll demonstrate how to create a fluent interface so that you can do:</p>
+
+<p>```c#
+var customer = Session</p>
+
+<pre><code>             .Query()
+             .InTransaction
+                .Contacts
+                  .ByPosition("Developer")
+                    .ThatHave
+                      .NoPhoto()
+                    .And
+                      .TasksInProgress()
+                    .And
+                      .TasksWith(Priority.High)            
+             .FirstOrDefault();
+</code></pre>
+
+<p>```</p>
+
+<p>First, let's look at the 'beginning' of the fluent interface: the <code>Query()</code> extension method.</p>
+
+<p>```c#
+public static class QueryExtensions
+{</p>
+
+<pre><code>public static IQueries Query(this Session session)
+{
+    return new Queries(session);
+}
+
+// If we're using XAF, do the same for ObjectSpace as well
+public static IQueries Query(this IObjectSpace objectSpace)
+{
+    var xpObjectSpace = objectSpace as XPObjectSpace;
+    var session = xpObjectSpace.Session;
+    return new Queries(session);
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>What does the <code>Queries()</code> class look like?</p>
+
+<p>```c#</p>
+
+<pre><code>public interface IQueries
+{
+    IQueries InTransaction { get; }
+    IContactQueries Contacts { get; }
+    // One for each queryable object type, e.g.,
+    // IDepartmentQueries Departments { get; }       
+    // ITaskQueries Tasks { get; }
+    // etc.
+}
+
+public class Queries : IQueries
+{       
+    public Queries(Session session)
+    {
+        _Session = session;
+    }
+
+    private readonly Session _Session;
+    private bool _InTransaction;
+
+    public IQueries InTransaction
+    {
+        get
+        {
+            _InTransaction = true;
+            return this;
+        }
+    }
+
+    private IContactQueries _Contacts;
+    public IContactQueries Contacts
+    {
+        get
+        {
+            if (_Contacts == null)
+                _Contacts = new ContactQueries(_Session, _InTransaction);
+            return _Contacts;
+        }
+    }
+}
+</code></pre>
+
+<p>```</p>
+
+<p>If we ignore the <code>InTransaction</code> property, it is just a container for the <code>IContactQueries</code>. In your application, you would have a similar property for each queryable object type. A new <code>ContactQueries</code> instance is created on demand taking into account the whether the <code>InTransaction</code> property was visited earlier in the syntax.</p>
+
+<p>Now, let's look at the base classes.</p>
+
+<p>```c#
+public interface IQueries<T> : IEnumerable<T>, IFluentInterface
+{
+}</p>
+
+<p>public class Queries<T> : IQueries<T>
+{</p>
+
+<pre><code>public Queries(Session session, bool inTransaction)
+{
+    _Session = session;
+    Query = new XPQuery&lt;T&gt;(session, inTransaction);
+}
+
+private readonly Session _Session;
+protected IQueryable&lt;T&gt; Query { get; set; }
+
+public IEnumerator&lt;T&gt; GetEnumerator()
+{
+    return Query.GetEnumerator();
+}
+
+IEnumerator IEnumerable.GetEnumerator()
+{
+    return Query.GetEnumerator();
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>So <code>Queries&lt;T&gt;</code> wraps an <code>XPQuery&lt;T&gt;</code>.</p>
+
+<p>Side note: the inclusion of <code>IFluentInterface</code> is a clever trick to improve Intellisense by hiding the <code>System.Object</code> members such as <code>ToString()</code>. See <a href="http://blogs.clariusconsulting.net/kzu/how-to-hide-system-object-members-from-your-interfaces/">Daniel Cazzulino's blog post</a>.</p>
+
+<p>And now we can implement the <code>Contact</code> generic as follows:</p>
+
+<p>```c#
+public interface IContactQueries : IQueries<Contact>
+{</p>
+
+<pre><code>IContactQueries ByDepartmentTitle(string departmentTitle);
+IContactQueries ByPosition(string position);
+Contact ByEmail(string email);
+</code></pre>
+
+<p>}</p>
+
+<p>public class ContactQueries : Queries<Contact>, IContactQueries, IContactThatHaveQueries
+{</p>
+
+<pre><code>public ContactQueries(Session session, bool inTransaction)
+    : base(session, inTransaction)
+{
+}
+
+public IContactQueries ByDepartmentTitle(string department)
+{
+    Query = Query.Where(p =&gt; p.Department.Title == department);
+    return this;
+}
+
+public IContactQueries ByPosition(string position)
+{
+    Query = Query.Where(p =&gt; p.Position.Title == position);
+    return this;
+}
+
+public Contact ByEmail(string email)
+{
+    return Query.SingleOrDefault(p =&gt; p.Email == email);
+}
+</code></pre>
+
+<p>}  <br/>
+```</p>
+
+<p>There we go. Now we can use our fluent interface:</p>
+
+<p><code>c#
+var contacts = session.Query().Contacts.ByPosition("Manager");
+</code></p>
+
+<p>Much more readable. Also more maintainable because all queries are in one place and make use of good old LINQ. It's also easier to test the queries because they are independent of the calling code.</p>
+
+<p>See <a href="https://github.com/ZeroSharp/Xaf_MainDemo_FluentQueries">a sample implementation</a> built against the DevExpress XAF MainDemo on GitHub.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Fluent queries with DevExpress XPO - Intro]]></title>
@@ -652,107 +841,6 @@ The ability to create reports using a report writer is a very powerful feature o
 <h2>Conclusion</h2>
 
 <p>As a load test, you do not get much useful information. Even if we managed to extract accurate data for client response times and throughput, the overhead of running the multiple browsers would skew the results too much. However, this approach is extremely useful for isolating concurrency and performance problems.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Load Testing XAF: Part 5 - Analysis]]></title>
-    <link href="http://ZeroSharp.github.com/load-testing-xaf-part-5-analysis/"/>
-    <updated>2013-04-14T07:37:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/load-testing-xaf-part-5-analysis</id>
-    <content type="html"><![CDATA[<p>This is the final post in a series about load testing XAF applications.  Previously in the series:</p>
-
-<ul>
-<li><a href="/load-testing-xaf-overview/">Load Testing XAF: Overview</a></li>
-<li><a href="/load-testing-xaf-part-1-deploying/">Part 1: Deploying the target webserver</a></li>
-<li><a href="/load-testing-xaf-part-2-selenium/">Part 2: Selenium</a></li>
-<li><a href="/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Part 3: Uploading and validating a script</a></li>
-<li><a href="/load-testing-xaf-part-4-launching-the-load-test/">Part 4: Launching the load test</a></li>
-</ul>
-
-
-<p>In this part, we analyse the results of the load test we ran in <a href="/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Part 4</a>.</p>
-
-<h2>Results</h2>
-
-<p>The results of the test we ran are <a href="https://load.wpm.neustar.biz/load/test/share/e0f547d711624168bc7fa0a69ddd8283">here</a>. The graphs are interactive and give quite interesting data about the load tests. Feel free to have a look and play around with the results.</p>
-
-<h2>The Performance Graphs</h2>
-
-<p><img src="/images/blog/load-testing/load-testing-006.png"></p>
-
-<p>The above graph shows the basic information about the test. We can see there were 649 transactions (the Selenium script was run 649 times) and there were 17 errors.</p>
-
-<p>You can see that the test managed to follow the planned scenario (the actual number of users follows the yellow line). You can also see information about the throughput in bytes during the test.</p>
-
-<h2>The Script Performance Graphs</h2>
-
-<p>Here we see information pertaining to the script we chose to run. Had we run multiple different scripts, we would be able to isolate each one.</p>
-
-<p><img src="/images/blog/load-testing/load-testing-009.png"></p>
-
-<p>It is clear that the transaction time rises quite slowly with the load until about 12:17 when there is a jump. More on that later.</p>
-
-<p>First, I have removed the plot of the total transaction time, so that we can see more detail from the remaining steps. Two things seem to be clear: the response time for each individual step does not seem to be much affected by the load, but the login step rises gradually.</p>
-
-<p><img src="/images/blog/load-testing/load-testing-010.png"></p>
-
-<p>Now back to the spike at 12:17, if you look at the transaction data more closely (not shown here but available on the <a href="https://load.wpm.neustar.biz/load/test/share/e0f547d711624168bc7fa0a69ddd8283">NeuStar results page</a>, it looks like several transactions finished at the same time and that the jump coincides with several simultaneous logins.</p>
-
-<p>So again, it seems that login is the 'weakest link', i.e., the most resource intensive step and the one that suffers the most under load.</p>
-
-<h2>The Errors</h2>
-
-<p>Lets look more closely at the errors.</p>
-
-<p><img src="/images/blog/load-testing/load-testing-007.png"></p>
-
-<p>The first type of error we can see from the screen-shot occurred at the login page. This error happened 6 times and was very similar to another error which occurred once. In fact, all 6 of these errors happened at the very end of the test. As such, they can be ignored, because it is likely that the load test was scaling down and interrupting sessions at this point.</p>
-
-<p><img src="/images/blog/load-testing/load-testing-008.png"></p>
-
-<p>One of the very nice features of NeuStar's load testing solution is that you not only get a screenshot, but also a video which shows you exactly what the user experienced when an error occurs. By clicking on the second error, it looks like there may be a problem  when the system is under load. There were 6 errors and it is clear in the video that the errors occur when attempting to navigate away from the <em>Scheduler Event</em> view to the <em>My Details</em> view. The screen-shot gives us some useful information. DevExpress? Any ideas?</p>
-
-<p><img src="/images/blog/load-testing/load-testing-011.jpg"></p>
-
-<p>There are a couple of other errors, but I think these are most likely a result of problems with the Selenium script rather than XAF. The AJAX update panels make it quite hard to detect when the page is fully ready and although we try to accommodate this with <code>selenium.waitForCondition()</code> my feeling is that the <code>click()</code> occurred before everything was properly wired up.</p>
-
-<h2>Further tests</h2>
-
-<p>This series has covered the process of load testing XAF applications in its entirety, but in some ways, it feels like only the beginning. There are many other configurations and tests which would be interesting.</p>
-
-<p>For instance</p>
-
-<ul>
-<li>Reduce think time which is currently set to 3 seconds per step</li>
-<li>Use a smaller/larger EC2 instance</li>
-<li>Increase the number of virtual users</li>
-<li>Try load balancing with sticky sessions</li>
-<li>Experiment with/without compression (IIS or via the <code>web.config</code>)</li>
-<li>Experiment with/without caching (both at the http level, and via the <a href="http://documentation.devexpress.com/#XPO/CustomDocument9892">cached data store</a></li>
-</ul>
-
-
-<p>There are also many ways of improving XAF performance that are not in the MainDemo. These include:</p>
-
-<ul>
-<li><a href="http://documentation.devexpress.com/#wpf/CustomDocument6279">Server mode</a> in all grids</li>
-<li><a href="http://community.devexpress.com/blogs/xpo/archive/2006/03/27/session-management-and-caching.aspx">XPO Caching</a></li>
-<li>Where possible, move any heavy operations to a separate asynchronous web service call</li>
-</ul>
-
-
-<p>We have implemented all of these in our production application.</p>
-
-<h2>A note about concurrency</h2>
-
-<p>In our experience, people tend to over estimate the number of concurrent users for their application. Our application has probably upwards of 5000 users defined, but we know from our logs that there have never been more than 80 simultaneously logged in. Also, even with 80 concurrent users, they have a much longer 'think time' than 3 seconds on average.</p>
-
-<p>For the production environment, we run at least one 25 user test for every major release and ensure the performance is at least as good as the previous release. We have occasionally run tests with up to 200 simultaneous users. The response time goes down to unacceptable levels (~30 seconds), but the application behaves. In production, the system is load balanced (with sticky sessions) and we know from previous experience that this is sufficient for our application.</p>
-
-<h2>Conclusion</h2>
-
-<p>This concludes my series on load testing. We've managed to get some very useful information with some very low-cost tools. The largest part of effort is the writing of the Selenium script which is certainly tricky. In the future I'd really like to harness the DevExpress EasyTests to replace the script but I haven't yet found a way of doing this. Feel free to use my Selenium script as a starting point for testing your own XAF applications, and let us know of any interesting results!</p>
 ]]></content>
   </entry>
   
