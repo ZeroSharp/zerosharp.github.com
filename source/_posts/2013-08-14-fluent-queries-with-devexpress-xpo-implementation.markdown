@@ -143,19 +143,19 @@ public class ContactQueries : Queries<Contact>, IContactQueries, IContactThatHav
 
     public IContactQueries ByDepartmentTitle(string department)
     {
-        Query = Query.Where(p => p.Department.Title == department);
+        Query = Query.Where(c => c.Department.Title == department);
         return this;
     }
 
     public IContactQueries ByPosition(string position)
     {
-        Query = Query.Where(p => p.Position.Title == position);
+        Query = Query.Where(c => c.Position.Title == position);
         return this;
     }
 
     public Contact ByEmail(string email)
     {
-        return Query.SingleOrDefault(p => p.Email == email);
+        return Query.SingleOrDefault(c => c.Email == email);
     }
 }    
 ```    	
