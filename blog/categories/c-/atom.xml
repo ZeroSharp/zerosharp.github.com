@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c# | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/c-/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-08-14T12:01:09+01:00</updated>
+  <updated>2013-08-27T10:12:17+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,181 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[MiniProfiler with DevExpress XAF]]></title>
+    <link href="http://ZeroSharp.github.com/miniprofiler-with-devexpress-xaf/"/>
+    <updated>2013-08-27T09:14:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/miniprofiler-with-devexpress-xaf</id>
+    <content type="html"><![CDATA[<p>In this post I will demonstrate how to add <a href="http://miniprofiler.com/">MiniProfiler</a> to the XAF MainDemo web application.</p>
+
+<p>MiniProfiler is a simple fast profiler with a pretty user interface. It is fast because it only profiles code that you have explicitly decorated with the <code>MiniProfiler.Step()</code> method. It was designed by the team at <a href="http://stackoverflow.com/">StackOverflow</a>.</p>
+
+<p>First, add the MiniProfiler NuGet package to the MainDemo.Web project. Then add a placeholder to <em>default.aspx</em> just before the last <code>&lt;body&gt;</code> tag.</p>
+
+<p>```html</p>
+
+<pre><code>&lt;!-- MiniProfiler --&gt;
+&lt;!-- Include jquery here to avoid a bug in MiniProfiler. --&gt;
+&lt;script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"&gt;&lt;/script&gt;
+&lt;asp:PlaceHolder ID="mp" runat="server"&gt;
+  &lt;%= StackExchange.Profiling.MiniProfiler.RenderIncludes() %&gt;
+&lt;/asp:PlaceHolder&gt;
+</code></pre>
+
+<p></body>
+</html>
+```</p>
+
+<p>(MiniProfiler uses jQuery, but it does not usually require XAF to include it since it will automatically retrieve it if missing. Unfortunately there is currently <a href="http://community.miniprofiler.com/permalinks/149/jquery-is-undefined">a bug</a> which causes a '<em>jQuery is undefined</em>' javascript error when initially launching the application. The easiest workaround I found is to explicitly include jQuery before calling <code>RenderIncludes()</code>. Hopefully this will be fixed in a future version of MiniProfiler.)</p>
+
+<p>In <em>global.asax.cs</em> add the following to the <code>Application_Start</code> method.</p>
+
+<p>```diff
+protected void Application_Start(object sender, EventArgs e) {</p>
+
+<pre><code>RenderHelper.RenderMode = DevExpress.Web.ASPxClasses.ControlRenderMode.Lightweight;
+</code></pre>
+
+<ul>
+<li>MiniProfilerHelper.RegisterPathsToIgnore();
+ASPxWebControl.CallbackError += new EventHandler(Application_Error);
+// etc...
+<code>
+and modify `BeginRequest` and `EndRequest` as follows:
+</code>diff
+protected void Application_BeginRequest(object sender, EventArgs e) {</li>
+<li>if (MiniProfilerHelper.IsEnabled())</li>
+<li>{</li>
+<li><pre><code>MiniProfiler.Start();
+</code></pre></li>
+<li>}
+string filePath = HttpContext.Current.Request.PhysicalPath;
+if(!string.IsNullOrEmpty(filePath)
+
+<pre><code>&amp;&amp; (filePath.IndexOf("Images") &gt;= 0) &amp;&amp; !System.IO.File.Exists(filePath)) {
+HttpContext.Current.Response.End();
+</code></pre>
+
+<p>}
+}</p></li>
+</ul>
+
+
+<p>protected void Application_EndRequest(Object sender, EventArgs e)
+{
++   if (MiniProfilerHelper.IsEnabled())
++       MiniProfiler.Stop();
+}      <br/>
+<code>
+Now we implement a helper class which determines whether profiling is enabled and which URLs to profile. We can use a variety of methods, the cookie probably being the most versatile one, but for the moment, the `IsEnabled()` function always returns true.
+</code>c#  <br/>
+public static class MiniProfilerHelper
+{</p>
+
+<pre><code>public static bool IsEnabled()
+{
+    // While we are testing let's always return true
+    return true;
+
+    // We should not profile if we are EasyTesting
+    if (TestScriptsManager.EasyTestEnabled == true)
+        return false;
+
+    // We could choose to profile only local requests
+    if (HttpContext.Current.Request.IsLocal)
+        return true;
+
+    // Or based on a cookie
+    HttpCookie miniProfileCookie = HttpContext.Current.Request.Cookies["MainDemoMiniProfiler"];
+    return miniProfileCookie != null &amp;&amp; miniProfileCookie.Value != "0";
+}
+
+// Optionally ignore some paths to prevent the output being too busy.
+public static void RegisterPathsToIgnore()
+{
+    if (!NetSecuritySettings.IsProfilingAllowed())
+        return;
+
+    List&lt;String&gt; ignoredByMiniProfiler = new List&lt;String&gt;(MiniProfiler.Settings.IgnoredPaths);
+    // these are a substring search so wildcards are not supported
+    ignoredByMiniProfiler.Add("SessionKeepAliveReconnect.aspx");
+    ignoredByMiniProfiler.Add("TemplateScripts.js");
+    ignoredByMiniProfiler.Add("EasyTestJavaScripts.js");
+    ignoredByMiniProfiler.Add("MoveFooter.js");
+    ignoredByMiniProfiler.Add("ImageResource.axd");
+    MiniProfiler.Settings.IgnoredPaths = ignoredByMiniProfiler.ToArray(); 
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Done. Now whenever you run the web application, you get timing statistics for the loading of the assets. They appear as little clickable 'chiclets' in the top left of the browser page.</p>
+
+<p><img src="/images/blog/xaf-miniprofiler-1.png"></p>
+
+<p>However, the real strength of MiniProfiler comes with the ability to add your own profiling steps. Let's say we want to know exactly what percentage of the load takes place in the <code>OnLoad</code> event. Then we add the following to <em>default.aspx.cs</em> in order to add a 'step' to the MiniProfiler breakdown.</p>
+
+<p>```c#
+protected override void OnLoad(EventArgs e)
+{</p>
+
+<pre><code>var profiler = MiniProfiler.Current; // it's ok for this to be null
+using (profiler.Step("ASP.NET: Page_Load(Default)"))
+{
+     base.OnLoad(e);
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Now, the output is a good deal richer. Also, note that if the MiniProfiler assembly is missing from the web application's <em>bin</em> directory, the profiling is ignored completely without error.</p>
+
+<p><img src="/images/blog/xaf-miniprofiler-2.png"></p>
+
+<p>As another example, let's profile the <em>FindBySubject</em> controller action.</p>
+
+<p>Add the MiniProfiler NuGet package to the MainDemo.Module project. Then modify the FindBySubjectController.cs as follows</p>
+
+<p>```diff
+private void FindBySubjectAction_Execute(object sender, ParametrizedActionExecuteEventArgs e)
+{
++   var profiler = MiniProfiler.Current;
++   using (profiler.Step("FindBySubject")) // doesn't matter if profiler is null
++   {</p>
+
+<pre><code>    IObjectSpace objectSpace = Application.CreateObjectSpace();
+    string paramValue = e.ParameterCurrentValue as string;
+    if (!string.IsNullOrEmpty(paramValue))
+    {
+        paramValue = "%" + paramValue + "%";
+    }
+    object obj = objectSpace.FindObject(((ListView)View).ObjectTypeInfo.Type,
+        new BinaryOperator("Subject", paramValue, BinaryOperatorType.Like));
+    if (obj != null)
+    {
+        e.ShowViewParameters.CreatedView = Application.CreateDetailView(objectSpace, obj);
+    }
+</code></pre>
+
+<ul>
+<li>}
+}     <br/>
+```</li>
+</ul>
+
+
+<p><img class="right" src="/images/blog/xaf-miniprofiler-3.png"></p>
+
+<p>Now navigate to the <em>Tasks</em> list view and enter some text where it says 'Type Subject...'. You should see a new chiclet appear which contains the timing details as shown here.</p>
+
+<p>MiniProfiler is a great tool for providing helpful profiling benchmarks, even in production. It's often difficult to measure when a remote user complains to support that the site seems slow. How slow is slow? In a production environment, you can turn on MiniProfiler for the user (by setting a cookie for instance) and then ask them to share their profiling information for some basic operations. This information can be invaluable in determining where the fault lies.</p>
+
+<p>You can play around with <a href="https://github.com/ZeroSharp/Xaf_MainDemo_MiniProfiler">the sample solution</a> up on GitHub.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Fluent queries with DevExpress XPO - Implementation]]></title>
@@ -171,19 +346,19 @@ Contact ByEmail(string email);
 
 public IContactQueries ByDepartmentTitle(string department)
 {
-    Query = Query.Where(p =&gt; p.Department.Title == department);
+    Query = Query.Where(c =&gt; c.Department.Title == department);
     return this;
 }
 
 public IContactQueries ByPosition(string position)
 {
-    Query = Query.Where(p =&gt; p.Position.Title == position);
+    Query = Query.Where(c =&gt; c.Position.Title == position);
     return this;
 }
 
 public Contact ByEmail(string email)
 {
-    return Query.SingleOrDefault(p =&gt; p.Email == email);
+    return Query.SingleOrDefault(c =&gt; c.Email == email);
 }
 </code></pre>
 
@@ -572,111 +747,6 @@ The ability to create reports using a report writer is a very powerful feature o
 <p>Now we have much more useful source files. Versions can be compared easily. The compiler will immediately inform us of any problems with the scripts within our reports.</p>
 
 <p>This is work in progress. Next up, I will be adding the 'reverse'. That is, a new transformation template which looks for scripts which have changed and 'injects' them back into the original <em>repx</em> file.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Fixing an unmanaged code AppCrash]]></title>
-    <link href="http://ZeroSharp.github.com/fixing-an-unmanaged-code-appcrash/"/>
-    <updated>2013-04-29T16:21:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/fixing-an-unmanaged-code-appcrash</id>
-    <content type="html"><![CDATA[<p>This post is the result of a recent bug hunt in which I came across a tricky bug, found a debugging switch I'd completely forgotten existed and learned a little about calling <code>extern</code> string functions from C#.</p>
-
-<p>I love bug hunting. It's like a murder mystery: you've got your suspects and you try to eliminate them one at a time until, as a famous bug hunter said:</p>
-
-<p><blockquote><p>... when you have eliminated the impossible, whatever remains, however improbable, must be the truth.</p><footer><strong>Sherlock Holmes</strong> <cite>The Sign of Four</cite></footer></blockquote></p>
-
-<p>Between about 1995 and 2006, I used a data library called Apollo almost every day. It was a bunch of C++ drivers for dBase files with some more advanced options for encryption and indexing and was a popular option for <a href="http://en.wikipedia.org/wiki/Clipper_(programming_language">Clipper</a>) programmers. I joined a software project which was based on Clipper and Apollo in 1995. Apollo went through many different incarnations SuccessWare, Luxent, Vista, ApolloDB. All of these companies were essentially providing wrappers for different languages (Delphi, .NET) but the core C++ drivers always remained more or less the same <a href="http://www.apollodb.com/products.asp">and it's still going</a>.</p>
-
-<p>Fast forward to 2013 and we have a legacy console utility for migrating data from the old format, which traverses the Apollo tables and converts the data to our model (DevExpress XPO objects). This code hardly ever changes, but when I converted all our core libraries to .NET 4.5., I found I had to jump in and fix it one last time.</p>
-
-<p>When I tried to run the upgraded .NET 4.5 library I got a mysterious app crash.</p>
-
-<p><img src="/images/blog/appcrash/app-crash-001.png"></p>
-
-<p>The application would then close without any error message or stack trace. Nothing I did was allowing me catch any exception. None of the signatures, e.g., the <code>c0000374</code> exception code show up on Google. It shows up in the Windows event log, but apparently EventID 1000 is a very generic error message.</p>
-
-<p><img src="/images/blog/appcrash/app-crash-002.png"></p>
-
-<p>I had a suspicion the problem was something to do with the Apollo assembly and I also knew that Apollo was not all managed code. I stumbled over the <em>Enable native code debugging</em> in the project settings. I've never used this setting. (My next approach would have been to use tracing to try to pinpoint the location of the crash.)</p>
-
-<p><img src="/images/blog/appcrash/app-crash-003.png"></p>
-
-<p>Visual Studio really impresses with its debugging capabilities. When we run again, we get a stack trace and an error message.</p>
-
-<p><img src="/images/blog/appcrash/app-crash-004.png"></p>
-
-<p>Well Google didn't seem to have much to say about <em>'This may be due to a corruption of the heap'</em>. But the problem seems to do with <code>apolloTable.FieldName(i)</code>. With a decompiler I had a look at its definition.</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="kt">string</span> <span class="nf">FieldName</span><span class="p">(</span><span class="kt">short</span> <span class="n">fieldNum</span><span class="p">)</span>
-</span><span class='line'><span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="c1">//...</span>
-</span><span class='line'><span class="k">return</span> <span class="n">ApolloAPI</span><span class="p">.</span><span class="n">sx_FieldName</span><span class="p">(</span><span class="n">fieldNum</span><span class="p">);</span>
-</span><span class='line'><span class="c1">//...</span>
-</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>Let's find <code>ApolloAPI.sx_FieldName(fieldNum);</code></p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="na">[DllImport(&quot;SDE7.dll&quot;, CharSet=CharSet.Ansi, ExactSpelling=true)]</span>
-</span><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">extern</span> <span class="kt">string</span> <span class="nf">sx_FieldName</span><span class="p">(</span><span class="kt">short</span> <span class="n">uiFieldNum</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>Now, knowing that SDE7.dll is written in C++, I guessed it might be having trouble with the return value being a <code>string</code>. The C++ memory management of the returned string might be getting in the way. <a href="http://stackoverflow.com/a/8242828/1077279">A bit of StackOverflow</a> gave me this trick: declare the return type as <code>IntPtr</code> and use <code>Marshal.PtrToStringAnsi()</code> to get a C# <code>string</code> from the pointer. (It seems that .NET 4.5 is stricter about marshalling than earlier frameworks. Perhaps someone can enlighten me why the error did not occur with .NET 4.0?) I wrote a new extension method for <code>ApolloTable</code> and changed the code to use <code>apolloTable.SafeFieldName(i)</code> instead.</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="p">&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">TApolloTableExtensions</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'><span class="na">    [DllImport(&quot;SDE7.dll&quot;, CharSet = CharSet.Ansi, ExactSpelling = true)]</span>
-</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="k">extern</span> <span class="n">IntPtr</span> <span class="nf">sx_FieldName</span><span class="p">(</span><span class="kt">short</span> <span class="n">uiFieldNum</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="kt">string</span> <span class="nf">SafeFieldName</span><span class="p">(</span><span class="k">this</span> <span class="n">ApolloTable</span> <span class="n">apolloTable</span><span class="p">,</span> <span class="kt">short</span> <span class="n">fieldNum</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="c1">//...</span>
-</span><span class='line'>        <span class="n">IntPtr</span> <span class="n">strPtr</span> <span class="p">=</span> <span class="n">sx_FieldName</span><span class="p">(</span><span class="n">fieldNum</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">Marshal</span><span class="p">.</span><span class="n">PtrToStringAnsi</span><span class="p">(</span><span class="n">strPtr</span><span class="p">);</span>
-</span><span class='line'>        <span class="c1">//...</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>And bingo! The application now runs without error.</p>
 ]]></content>
   </entry>
   

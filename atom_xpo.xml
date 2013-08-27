@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-08-14T12:01:09+01:00</updated>
+  <updated>2013-08-27T10:12:17+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -277,19 +277,19 @@
 </span><span class='line'>
 </span><span class='line'>    <span class="k">public</span> <span class="n">IContactQueries</span> <span class="nf">ByDepartmentTitle</span><span class="p">(</span><span class="kt">string</span> <span class="n">department</span><span class="p">)</span>
 </span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">Query</span> <span class="p">=</span> <span class="n">Query</span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">p</span> <span class="p">=&gt;</span> <span class="n">p</span><span class="p">.</span><span class="n">Department</span><span class="p">.</span><span class="n">Title</span> <span class="p">==</span> <span class="n">department</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">Query</span> <span class="p">=</span> <span class="n">Query</span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">Department</span><span class="p">.</span><span class="n">Title</span> <span class="p">==</span> <span class="n">department</span><span class="p">);</span>
 </span><span class='line'>        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="k">public</span> <span class="n">IContactQueries</span> <span class="nf">ByPosition</span><span class="p">(</span><span class="kt">string</span> <span class="n">position</span><span class="p">)</span>
 </span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">Query</span> <span class="p">=</span> <span class="n">Query</span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">p</span> <span class="p">=&gt;</span> <span class="n">p</span><span class="p">.</span><span class="n">Position</span><span class="p">.</span><span class="n">Title</span> <span class="p">==</span> <span class="n">position</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">Query</span> <span class="p">=</span> <span class="n">Query</span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">Position</span><span class="p">.</span><span class="n">Title</span> <span class="p">==</span> <span class="n">position</span><span class="p">);</span>
 </span><span class='line'>        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="k">public</span> <span class="n">Contact</span> <span class="nf">ByEmail</span><span class="p">(</span><span class="kt">string</span> <span class="n">email</span><span class="p">)</span>
 </span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">Query</span><span class="p">.</span><span class="n">SingleOrDefault</span><span class="p">(</span><span class="n">p</span> <span class="p">=&gt;</span> <span class="n">p</span><span class="p">.</span><span class="n">Email</span> <span class="p">==</span> <span class="n">email</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">Query</span><span class="p">.</span><span class="n">SingleOrDefault</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">Email</span> <span class="p">==</span> <span class="n">email</span><span class="p">);</span>
 </span><span class='line'>    <span class="p">}</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: performance | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/performance/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-08-14T12:01:09+01:00</updated>
+  <updated>2013-08-27T10:12:17+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,181 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[MiniProfiler with DevExpress XAF]]></title>
+    <link href="http://ZeroSharp.github.com/miniprofiler-with-devexpress-xaf/"/>
+    <updated>2013-08-27T09:14:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/miniprofiler-with-devexpress-xaf</id>
+    <content type="html"><![CDATA[<p>In this post I will demonstrate how to add <a href="http://miniprofiler.com/">MiniProfiler</a> to the XAF MainDemo web application.</p>
+
+<p>MiniProfiler is a simple fast profiler with a pretty user interface. It is fast because it only profiles code that you have explicitly decorated with the <code>MiniProfiler.Step()</code> method. It was designed by the team at <a href="http://stackoverflow.com/">StackOverflow</a>.</p>
+
+<p>First, add the MiniProfiler NuGet package to the MainDemo.Web project. Then add a placeholder to <em>default.aspx</em> just before the last <code>&lt;body&gt;</code> tag.</p>
+
+<p>```html</p>
+
+<pre><code>&lt;!-- MiniProfiler --&gt;
+&lt;!-- Include jquery here to avoid a bug in MiniProfiler. --&gt;
+&lt;script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"&gt;&lt;/script&gt;
+&lt;asp:PlaceHolder ID="mp" runat="server"&gt;
+  &lt;%= StackExchange.Profiling.MiniProfiler.RenderIncludes() %&gt;
+&lt;/asp:PlaceHolder&gt;
+</code></pre>
+
+<p></body>
+</html>
+```</p>
+
+<p>(MiniProfiler uses jQuery, but it does not usually require XAF to include it since it will automatically retrieve it if missing. Unfortunately there is currently <a href="http://community.miniprofiler.com/permalinks/149/jquery-is-undefined">a bug</a> which causes a '<em>jQuery is undefined</em>' javascript error when initially launching the application. The easiest workaround I found is to explicitly include jQuery before calling <code>RenderIncludes()</code>. Hopefully this will be fixed in a future version of MiniProfiler.)</p>
+
+<p>In <em>global.asax.cs</em> add the following to the <code>Application_Start</code> method.</p>
+
+<p>```diff
+protected void Application_Start(object sender, EventArgs e) {</p>
+
+<pre><code>RenderHelper.RenderMode = DevExpress.Web.ASPxClasses.ControlRenderMode.Lightweight;
+</code></pre>
+
+<ul>
+<li>MiniProfilerHelper.RegisterPathsToIgnore();
+ASPxWebControl.CallbackError += new EventHandler(Application_Error);
+// etc...
+<code>
+and modify `BeginRequest` and `EndRequest` as follows:
+</code>diff
+protected void Application_BeginRequest(object sender, EventArgs e) {</li>
+<li>if (MiniProfilerHelper.IsEnabled())</li>
+<li>{</li>
+<li><pre><code>MiniProfiler.Start();
+</code></pre></li>
+<li>}
+string filePath = HttpContext.Current.Request.PhysicalPath;
+if(!string.IsNullOrEmpty(filePath)
+
+<pre><code>&amp;&amp; (filePath.IndexOf("Images") &gt;= 0) &amp;&amp; !System.IO.File.Exists(filePath)) {
+HttpContext.Current.Response.End();
+</code></pre>
+
+<p>}
+}</p></li>
+</ul>
+
+
+<p>protected void Application_EndRequest(Object sender, EventArgs e)
+{
++   if (MiniProfilerHelper.IsEnabled())
++       MiniProfiler.Stop();
+}      <br/>
+<code>
+Now we implement a helper class which determines whether profiling is enabled and which URLs to profile. We can use a variety of methods, the cookie probably being the most versatile one, but for the moment, the `IsEnabled()` function always returns true.
+</code>c#  <br/>
+public static class MiniProfilerHelper
+{</p>
+
+<pre><code>public static bool IsEnabled()
+{
+    // While we are testing let's always return true
+    return true;
+
+    // We should not profile if we are EasyTesting
+    if (TestScriptsManager.EasyTestEnabled == true)
+        return false;
+
+    // We could choose to profile only local requests
+    if (HttpContext.Current.Request.IsLocal)
+        return true;
+
+    // Or based on a cookie
+    HttpCookie miniProfileCookie = HttpContext.Current.Request.Cookies["MainDemoMiniProfiler"];
+    return miniProfileCookie != null &amp;&amp; miniProfileCookie.Value != "0";
+}
+
+// Optionally ignore some paths to prevent the output being too busy.
+public static void RegisterPathsToIgnore()
+{
+    if (!NetSecuritySettings.IsProfilingAllowed())
+        return;
+
+    List&lt;String&gt; ignoredByMiniProfiler = new List&lt;String&gt;(MiniProfiler.Settings.IgnoredPaths);
+    // these are a substring search so wildcards are not supported
+    ignoredByMiniProfiler.Add("SessionKeepAliveReconnect.aspx");
+    ignoredByMiniProfiler.Add("TemplateScripts.js");
+    ignoredByMiniProfiler.Add("EasyTestJavaScripts.js");
+    ignoredByMiniProfiler.Add("MoveFooter.js");
+    ignoredByMiniProfiler.Add("ImageResource.axd");
+    MiniProfiler.Settings.IgnoredPaths = ignoredByMiniProfiler.ToArray(); 
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Done. Now whenever you run the web application, you get timing statistics for the loading of the assets. They appear as little clickable 'chiclets' in the top left of the browser page.</p>
+
+<p><img src="/images/blog/xaf-miniprofiler-1.png"></p>
+
+<p>However, the real strength of MiniProfiler comes with the ability to add your own profiling steps. Let's say we want to know exactly what percentage of the load takes place in the <code>OnLoad</code> event. Then we add the following to <em>default.aspx.cs</em> in order to add a 'step' to the MiniProfiler breakdown.</p>
+
+<p>```c#
+protected override void OnLoad(EventArgs e)
+{</p>
+
+<pre><code>var profiler = MiniProfiler.Current; // it's ok for this to be null
+using (profiler.Step("ASP.NET: Page_Load(Default)"))
+{
+     base.OnLoad(e);
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Now, the output is a good deal richer. Also, note that if the MiniProfiler assembly is missing from the web application's <em>bin</em> directory, the profiling is ignored completely without error.</p>
+
+<p><img src="/images/blog/xaf-miniprofiler-2.png"></p>
+
+<p>As another example, let's profile the <em>FindBySubject</em> controller action.</p>
+
+<p>Add the MiniProfiler NuGet package to the MainDemo.Module project. Then modify the FindBySubjectController.cs as follows</p>
+
+<p>```diff
+private void FindBySubjectAction_Execute(object sender, ParametrizedActionExecuteEventArgs e)
+{
++   var profiler = MiniProfiler.Current;
++   using (profiler.Step("FindBySubject")) // doesn't matter if profiler is null
++   {</p>
+
+<pre><code>    IObjectSpace objectSpace = Application.CreateObjectSpace();
+    string paramValue = e.ParameterCurrentValue as string;
+    if (!string.IsNullOrEmpty(paramValue))
+    {
+        paramValue = "%" + paramValue + "%";
+    }
+    object obj = objectSpace.FindObject(((ListView)View).ObjectTypeInfo.Type,
+        new BinaryOperator("Subject", paramValue, BinaryOperatorType.Like));
+    if (obj != null)
+    {
+        e.ShowViewParameters.CreatedView = Application.CreateDetailView(objectSpace, obj);
+    }
+</code></pre>
+
+<ul>
+<li>}
+}     <br/>
+```</li>
+</ul>
+
+
+<p><img class="right" src="/images/blog/xaf-miniprofiler-3.png"></p>
+
+<p>Now navigate to the <em>Tasks</em> list view and enter some text where it says 'Type Subject...'. You should see a new chiclet appear which contains the timing details as shown here.</p>
+
+<p>MiniProfiler is a great tool for providing helpful profiling benchmarks, even in production. It's often difficult to measure when a remote user complains to support that the site seems slow. How slow is slow? In a production environment, you can turn on MiniProfiler for the user (by setting a cookie for instance) and then ask them to share their profiling information for some basic operations. This information can be invaluable in determining where the fault lies.</p>
+
+<p>You can play around with <a href="https://github.com/ZeroSharp/Xaf_MainDemo_MiniProfiler">the sample solution</a> up on GitHub.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[A look at the DevExpress MainDemo with Google Page Speed]]></title>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: devexpress | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/devexpress/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-08-14T12:01:09+01:00</updated>
+  <updated>2013-08-27T10:12:17+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,181 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[MiniProfiler with DevExpress XAF]]></title>
+    <link href="http://ZeroSharp.github.com/miniprofiler-with-devexpress-xaf/"/>
+    <updated>2013-08-27T09:14:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/miniprofiler-with-devexpress-xaf</id>
+    <content type="html"><![CDATA[<p>In this post I will demonstrate how to add <a href="http://miniprofiler.com/">MiniProfiler</a> to the XAF MainDemo web application.</p>
+
+<p>MiniProfiler is a simple fast profiler with a pretty user interface. It is fast because it only profiles code that you have explicitly decorated with the <code>MiniProfiler.Step()</code> method. It was designed by the team at <a href="http://stackoverflow.com/">StackOverflow</a>.</p>
+
+<p>First, add the MiniProfiler NuGet package to the MainDemo.Web project. Then add a placeholder to <em>default.aspx</em> just before the last <code>&lt;body&gt;</code> tag.</p>
+
+<p>```html</p>
+
+<pre><code>&lt;!-- MiniProfiler --&gt;
+&lt;!-- Include jquery here to avoid a bug in MiniProfiler. --&gt;
+&lt;script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"&gt;&lt;/script&gt;
+&lt;asp:PlaceHolder ID="mp" runat="server"&gt;
+  &lt;%= StackExchange.Profiling.MiniProfiler.RenderIncludes() %&gt;
+&lt;/asp:PlaceHolder&gt;
+</code></pre>
+
+<p></body>
+</html>
+```</p>
+
+<p>(MiniProfiler uses jQuery, but it does not usually require XAF to include it since it will automatically retrieve it if missing. Unfortunately there is currently <a href="http://community.miniprofiler.com/permalinks/149/jquery-is-undefined">a bug</a> which causes a '<em>jQuery is undefined</em>' javascript error when initially launching the application. The easiest workaround I found is to explicitly include jQuery before calling <code>RenderIncludes()</code>. Hopefully this will be fixed in a future version of MiniProfiler.)</p>
+
+<p>In <em>global.asax.cs</em> add the following to the <code>Application_Start</code> method.</p>
+
+<p>```diff
+protected void Application_Start(object sender, EventArgs e) {</p>
+
+<pre><code>RenderHelper.RenderMode = DevExpress.Web.ASPxClasses.ControlRenderMode.Lightweight;
+</code></pre>
+
+<ul>
+<li>MiniProfilerHelper.RegisterPathsToIgnore();
+ASPxWebControl.CallbackError += new EventHandler(Application_Error);
+// etc...
+<code>
+and modify `BeginRequest` and `EndRequest` as follows:
+</code>diff
+protected void Application_BeginRequest(object sender, EventArgs e) {</li>
+<li>if (MiniProfilerHelper.IsEnabled())</li>
+<li>{</li>
+<li><pre><code>MiniProfiler.Start();
+</code></pre></li>
+<li>}
+string filePath = HttpContext.Current.Request.PhysicalPath;
+if(!string.IsNullOrEmpty(filePath)
+
+<pre><code>&amp;&amp; (filePath.IndexOf("Images") &gt;= 0) &amp;&amp; !System.IO.File.Exists(filePath)) {
+HttpContext.Current.Response.End();
+</code></pre>
+
+<p>}
+}</p></li>
+</ul>
+
+
+<p>protected void Application_EndRequest(Object sender, EventArgs e)
+{
++   if (MiniProfilerHelper.IsEnabled())
++       MiniProfiler.Stop();
+}      <br/>
+<code>
+Now we implement a helper class which determines whether profiling is enabled and which URLs to profile. We can use a variety of methods, the cookie probably being the most versatile one, but for the moment, the `IsEnabled()` function always returns true.
+</code>c#  <br/>
+public static class MiniProfilerHelper
+{</p>
+
+<pre><code>public static bool IsEnabled()
+{
+    // While we are testing let's always return true
+    return true;
+
+    // We should not profile if we are EasyTesting
+    if (TestScriptsManager.EasyTestEnabled == true)
+        return false;
+
+    // We could choose to profile only local requests
+    if (HttpContext.Current.Request.IsLocal)
+        return true;
+
+    // Or based on a cookie
+    HttpCookie miniProfileCookie = HttpContext.Current.Request.Cookies["MainDemoMiniProfiler"];
+    return miniProfileCookie != null &amp;&amp; miniProfileCookie.Value != "0";
+}
+
+// Optionally ignore some paths to prevent the output being too busy.
+public static void RegisterPathsToIgnore()
+{
+    if (!NetSecuritySettings.IsProfilingAllowed())
+        return;
+
+    List&lt;String&gt; ignoredByMiniProfiler = new List&lt;String&gt;(MiniProfiler.Settings.IgnoredPaths);
+    // these are a substring search so wildcards are not supported
+    ignoredByMiniProfiler.Add("SessionKeepAliveReconnect.aspx");
+    ignoredByMiniProfiler.Add("TemplateScripts.js");
+    ignoredByMiniProfiler.Add("EasyTestJavaScripts.js");
+    ignoredByMiniProfiler.Add("MoveFooter.js");
+    ignoredByMiniProfiler.Add("ImageResource.axd");
+    MiniProfiler.Settings.IgnoredPaths = ignoredByMiniProfiler.ToArray(); 
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Done. Now whenever you run the web application, you get timing statistics for the loading of the assets. They appear as little clickable 'chiclets' in the top left of the browser page.</p>
+
+<p><img src="/images/blog/xaf-miniprofiler-1.png"></p>
+
+<p>However, the real strength of MiniProfiler comes with the ability to add your own profiling steps. Let's say we want to know exactly what percentage of the load takes place in the <code>OnLoad</code> event. Then we add the following to <em>default.aspx.cs</em> in order to add a 'step' to the MiniProfiler breakdown.</p>
+
+<p>```c#
+protected override void OnLoad(EventArgs e)
+{</p>
+
+<pre><code>var profiler = MiniProfiler.Current; // it's ok for this to be null
+using (profiler.Step("ASP.NET: Page_Load(Default)"))
+{
+     base.OnLoad(e);
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Now, the output is a good deal richer. Also, note that if the MiniProfiler assembly is missing from the web application's <em>bin</em> directory, the profiling is ignored completely without error.</p>
+
+<p><img src="/images/blog/xaf-miniprofiler-2.png"></p>
+
+<p>As another example, let's profile the <em>FindBySubject</em> controller action.</p>
+
+<p>Add the MiniProfiler NuGet package to the MainDemo.Module project. Then modify the FindBySubjectController.cs as follows</p>
+
+<p>```diff
+private void FindBySubjectAction_Execute(object sender, ParametrizedActionExecuteEventArgs e)
+{
++   var profiler = MiniProfiler.Current;
++   using (profiler.Step("FindBySubject")) // doesn't matter if profiler is null
++   {</p>
+
+<pre><code>    IObjectSpace objectSpace = Application.CreateObjectSpace();
+    string paramValue = e.ParameterCurrentValue as string;
+    if (!string.IsNullOrEmpty(paramValue))
+    {
+        paramValue = "%" + paramValue + "%";
+    }
+    object obj = objectSpace.FindObject(((ListView)View).ObjectTypeInfo.Type,
+        new BinaryOperator("Subject", paramValue, BinaryOperatorType.Like));
+    if (obj != null)
+    {
+        e.ShowViewParameters.CreatedView = Application.CreateDetailView(objectSpace, obj);
+    }
+</code></pre>
+
+<ul>
+<li>}
+}     <br/>
+```</li>
+</ul>
+
+
+<p><img class="right" src="/images/blog/xaf-miniprofiler-3.png"></p>
+
+<p>Now navigate to the <em>Tasks</em> list view and enter some text where it says 'Type Subject...'. You should see a new chiclet appear which contains the timing details as shown here.</p>
+
+<p>MiniProfiler is a great tool for providing helpful profiling benchmarks, even in production. It's often difficult to measure when a remote user complains to support that the site seems slow. How slow is slow? In a production environment, you can turn on MiniProfiler for the user (by setting a cookie for instance) and then ask them to share their profiling information for some basic operations. This information can be invaluable in determining where the fault lies.</p>
+
+<p>You can play around with <a href="https://github.com/ZeroSharp/Xaf_MainDemo_MiniProfiler">the sample solution</a> up on GitHub.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Fluent queries with DevExpress XPO - Implementation]]></title>
@@ -171,19 +346,19 @@ Contact ByEmail(string email);
 
 public IContactQueries ByDepartmentTitle(string department)
 {
-    Query = Query.Where(p =&gt; p.Department.Title == department);
+    Query = Query.Where(c =&gt; c.Department.Title == department);
     return this;
 }
 
 public IContactQueries ByPosition(string position)
 {
-    Query = Query.Where(p =&gt; p.Position.Title == position);
+    Query = Query.Where(c =&gt; c.Position.Title == position);
     return this;
 }
 
 public Contact ByEmail(string email)
 {
-    return Query.SingleOrDefault(p =&gt; p.Email == email);
+    return Query.SingleOrDefault(c =&gt; c.Email == email);
 }
 </code></pre>
 
@@ -572,275 +747,6 @@ The ability to create reports using a report writer is a very powerful feature o
 <p>Now we have much more useful source files. Versions can be compared easily. The compiler will immediately inform us of any problems with the scripts within our reports.</p>
 
 <p>This is work in progress. Next up, I will be adding the 'reverse'. That is, a new transformation template which looks for scripts which have changed and 'injects' them back into the original <em>repx</em> file.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Load Testing XAF: Bonus - Simultaneous EasyTests]]></title>
-    <link href="http://ZeroSharp.github.com/load-testing-xaf-bonus-simultaneous-easytests/"/>
-    <updated>2013-04-22T16:31:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/load-testing-xaf-bonus-simultaneous-easytests</id>
-    <content type="html"><![CDATA[<p>In <a href="/load-testing-xaf-overview">my recent series on load testing XAF</a>, I used a Selenium javascript test to run the client browser instances. This is a good and cheap method of validating the performance of XAF applications under production load.</p>
-
-<p>However, if the load tests fail because of a concurrency bug or a performance bottleneck, it can still be difficult to analyse and solve. For this, we need to be able to simulate load locally against the development environment.</p>
-
-<p>In this post I will demonstrate how to run multiple simultaneous XAF EasyTests against a local server. As a load test, it is not very scientific, but it can be extremely useful as a debugging tool.</p>
-
-<h2>The EasyTest script</h2>
-
-<p>First, we will create a new EasyTest which will cycle through the existing navigation tabs. Open the XAF MainDemo and create a new EasyTest as follows.</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>MainDemo_CycleThroughTabs.ets  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='text'><span class='line'>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h1&gt;Application MainDemoWeb&lt;/h1&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;&lt;em&gt;FillForm
-</span><span class='line'> User Name = Sam
-</span><span class='line'> Password =
-</span><span class='line'>&lt;/em&gt;Action Log On&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;&lt;em&gt;Action Navigation(Contact)
-</span><span class='line'>&lt;/em&gt;Action Navigation(Task)
-</span><span class='line'>&lt;em&gt;Action Navigation(Department)
-</span><span class='line'>&lt;/em&gt;Action Navigation(Scheduler Event)
-</span><span class='line'>&lt;em&gt;Action Navigation(My Details)
-</span><span class='line'>&lt;/em&gt;Action Navigation(Note)
-</span><span class='line'>&lt;em&gt;Action Navigation(Payment)
-</span><span class='line'>&lt;/em&gt;Action Navigation(Position)
-</span><span class='line'>&lt;em&gt;Action Navigation(Resume)
-</span><span class='line'>&lt;/em&gt;Action Navigation(Role)
-</span><span class='line'>&lt;em&gt;Action Navigation(User)
-</span><span class='line'>&lt;/em&gt;Action Navigation(Reports.Analysis)
-</span><span class='line'>&lt;em&gt;Action Navigation(Reports.Reports)
-</span><span class='line'>&lt;/em&gt;Action Log Off
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>(This test replicates the Selenium test we created in <a href="/load-testing-xaf-part-2-selenium/">Part 2</a> of my previous series on load testing with NeuStar and Amazon.) It is important to note that we are only testing the web application and that we do not include a <code>#DropDB</code> directive.</p>
-
-<p>First, ensure that you can run this test with the default settings.</p>
-
-<h2>The config file</h2>
-
-<p>Now modify the config.xml file as follows:</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>Config.xml  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="ni">&amp;lt;</span>?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
-</span><span class='line'><span class="nt">&lt;Options</span> <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="na">TestRunTimeLimit=</span><span class="s">&quot;5&quot;</span> <span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;Applications&gt;&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;pre&gt;&lt;code&gt;</span><span class="ni">&amp;lt;</span>!-- Web --<span class="ni">&amp;gt;</span>
-</span><span class='line'><span class="ni">&amp;lt;</span>Application
-</span><span class='line'>  Name=&quot;MainDemoWeb&quot;
-</span><span class='line'>  Url=&quot;http://localhost:4030&quot;
-</span><span class='line'>  SingleWebDev=&quot;True&quot;
-</span><span class='line'>  WebBrowserType=&quot;Standalone&quot;
-</span><span class='line'>  PhysicalPath=&quot;[ConfigPath]\..\MainDemo.Web&quot;
-</span><span class='line'>  AdapterAssemblyName=&quot;DevExpress.ExpressApp.EasyTest.WebAdapter.v12.2, Version=12.2.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;/<span class="ni">&amp;gt;</span>
-</span><span class='line'><span class="ni">&amp;lt;</span>!-- For IIS --<span class="ni">&amp;gt;</span>
-</span><span class='line'><span class="ni">&amp;lt;</span>!--<span class="ni">&amp;lt;</span>Application
-</span><span class='line'>  Name=&quot;MainDemoWeb&quot;
-</span><span class='line'>  Url=&quot;http://localhost/MainDemo.Web/Default.aspx&quot;
-</span><span class='line'>  PhysicalPath=&quot;&quot;
-</span><span class='line'>  DontRestartIIS=&quot;True&quot;
-</span><span class='line'>  DontRunWebDev=&quot;True&quot;
-</span><span class='line'>  WebBrowserType=&quot;Standalone&quot;
-</span><span class='line'>  AdapterAssemblyName=&quot;DevExpress.ExpressApp.EasyTest.WebAdapter.v12.2, Version=12.2.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;/--<span class="ni">&amp;gt;</span>
-</span><span class='line'><span class="nt">&lt;/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;/Applications&gt;</span>
-</span><span class='line'><span class="nt">&lt;/Options&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>There are a few important things to note.</p>
-
-<p>I have not shown the <em>Win</em> section here since we are not using it. Also, I am using XAF 12.2.8. You may need to change the version number in the <code>AdapterAssemblyName</code> attribute. I have increased the <code>TestRunTimeLimit</code> attribute from 3 to 5. Everything goes a little slower when there are multiple browsers and we need to make sure the test does not time out.</p>
-
-<p>With the above config, the EasyTest will no longer run from within Visual Studio.</p>
-
-<p>You can choose to run the simultaneous tests against the debug web server or IIS. Uncomment the relevant section. The interesting settings are:</p>
-
-<ul>
-<li><code>SingleWebDev="True"</code> which instructs the EasyTest runner to run all tests against the same instance of the development webserver. Without this, the webserver would be stopped and started for each test.</li>
-<li><code>WebBrowserType="Standalone"</code> which causes each launched browser to be launched with its own session. (There are a few mentions of this setting in the support center, but it is not very well documented).</li>
-<li><code>DontRestartIIS</code> and <code>DontRunWebDev</code> which are self-explanatory</li>
-</ul>
-
-
-<h2>The launch command</h2>
-
-<p>Next, create the following batch file in the MainDemo.EasyTests subdirectory. ##</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>Launch.bat  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-</pre></td><td class='code'><pre><code class='bat'><span class='line'><span class="c">:: Requires the Debug webserver to be running on port 49660</span>
-</span><span class='line'><span class="c">:: Requires EasyTests to be enabled</span>
-</span><span class='line'><span class="c">:: Requires NetDA to be running</span>
-</span><span class='line'><span class="c">:: Requires admin rights</span>
-</span><span class='line'><span class="c">:: Must be run from a command prompt</span>
-</span><span class='line'><span class="c">::</span>
-</span><span class='line'><span class="c">:: Usage: &gt; launch &lt;numberOfBrowsers&gt;</span>
-</span><span class='line'><span class="c">:: e.g. : &gt; launch 21</span>
-</span><span class='line'><span class="c">:: will launch 21 simultaneous browsers at 3 second intervals&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;@<span class="k">echo</span> <span class="k">off</span>&lt;<span class="n">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:DELETE_OUTPUT</span>
-</span><span class='line'><span class="k">if</span> <span class="k">exist</span> <span class="p">&lt;</span><span class="n">em</span>&gt;.jpeg <span class="k">del</span> &lt;<span class="n">/em&gt;.jpeg</span>
-</span><span class='line'><span class="k">if</span> <span class="k">exist</span> <span class="p">&lt;</span><span class="n">em</span>&gt;.html <span class="k">del</span> &lt;<span class="n">/em&gt;.html</span>
-</span><span class='line'><span class="k">if</span> <span class="k">exist</span> TestsLog.xml <span class="k">del</span> TestsLog.xml&lt;<span class="n">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:CHECK_ADMIN</span>
-</span><span class='line'>net session <span class="p">&gt;</span><span class="n">nul</span> <span class="m">2</span>&gt;&amp;amp;<span class="m">1</span>
-</span><span class='line'><span class="k">if</span> <span class="nv">%ERRORLEVEL%</span> <span class="o">equ</span> <span class="m">0</span> <span class="k">goto</span> <span class="nl">CHECK_CONSOLE</span>
-</span><span class='line'><span class="k">echo</span> Must be run from an administrative command window
-</span><span class='line'><span class="k">goto</span> <span class="nl">ERROR</span>&lt;<span class="n">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:CHECK_CONSOLE</span>
-</span><span class='line'><span class="k">echo</span> <span class="nv">%CMDCMDLINE%</span> <span class="p">|</span> <span class="n">find</span> <span class="n">/i</span> <span class="s2">&quot;/c&quot;</span> <span class="p">&gt;</span><span class="n">nul</span>
-</span><span class='line'><span class="k">if</span> <span class="k">ERRORLEVEL</span> <span class="m">1</span> <span class="k">goto</span> <span class="nl">CHECK_PARAMS</span>
-</span><span class='line'><span class="k">echo</span> Must be run from an administrative console (not Windows Explorer)
-</span><span class='line'><span class="k">goto</span> <span class="nl">ERROR</span>&lt;<span class="n">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:CHECK_PARAMS</span>
-</span><span class='line'><span class="k">IF</span> [<span class="nv">%1</span>]<span class="o">==</span>[] <span class="k">GOTO</span> <span class="nl">USAGE</span>&lt;<span class="n">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:LAUNCH</span>
-</span><span class='line'><span class="k">set</span> <span class="n">/a</span> i<span class="o">=</span><span class="m">0</span>&lt;<span class="n">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:LOOP</span>
-</span><span class='line'><span class="k">if</span> <span class="nv">%i%</span><span class="o">==</span><span class="nv">%1</span> <span class="k">goto</span> <span class="nl">OK</span>
-</span><span class='line'><span class="k">set</span> <span class="n">/a</span> i<span class="o">=</span><span class="nv">%i%</span>+<span class="m">1</span>
-</span><span class='line'>start <span class="s2">&quot;x&quot;</span> <span class="s2">&quot;C:\Program Files (x86)\DevExpress\DXperience 12.2\Tools\eXpressAppFramework\EasyTest\TestExecutor.v12.2.exe&quot;</span> MainDemo_CycleThroughTabs.ets
-</span><span class='line'><span class="c">:: Wait 3 seconds</span>
-</span><span class='line'>ping <span class="m">1</span>.<span class="m">1</span>.<span class="m">1</span>.<span class="m">1</span> -n <span class="m">1</span> -w <span class="m">3000</span> <span class="p">&gt;</span><span class="n">nul</span>
-</span><span class='line'><span class="k">goto</span> <span class="nl">LOOP</span>&lt;<span class="n">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:USAGE</span>
-</span><span class='line'><span class="k">echo</span> Usage: <span class="nv">%0</span> numberOfBrowsers
-</span><span class='line'><span class="k">echo</span> numberOfBrowsers must be an integer
-</span><span class='line'><span class="k">goto</span> <span class="nl">OK</span>&lt;<span class="n">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:ERROR</span>&lt;<span class="n">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:OK</span>
-</span><span class='line'><span class="k">pause</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>If you want to run your tests against the development webserver, you will need to make sure it is running before launching the batch file. The easiest way to do this is to run the application from within Visual Studio and then close the browser. You should still see the development webserver running in the task bar notification area. Against IIS, it is enough to ensure it is started.</p>
-
-<p>Now, open an administrative command prompt. Note that you must run from an administrative console: it is not sufficient to 'run as administrator' from Windows Explorer. Navigate to the EasyTest subdirectory where the Launch.bat file is located and launch a single test with the following command:</p>
-
-<pre><code>launch.bat 1
-</code></pre>
-
-<p>You should see the test run without error. If this works, you can then launch 20 simultaneous test runs with 3 second intervals by running:</p>
-
-<pre><code>launch.bat 20
-</code></pre>
-
-<h2>Conclusion</h2>
-
-<p>As a load test, you do not get much useful information. Even if we managed to extract accurate data for client response times and throughput, the overhead of running the multiple browsers would skew the results too much. However, this approach is extremely useful for isolating concurrency and performance problems.</p>
 ]]></content>
   </entry>
   
