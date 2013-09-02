@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Install Ruby with rbenv I decided to setup Octopress on my Mac so that I can publish blog posts from either Windows or MacOS. I&#8217;m on OS X 10.8. &hellip;">
+  <meta name="description" content="First steps in iPhone development This is the first in a series of posts about developing an iOS application from the perspective of a Windows C# &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,175 +113,6 @@
     <div id="content">
       <div class="blog-index">
   
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/installing-ruby-with-homebrew-and-rbenv-on-mac-os-x-mountain-lion/">Installing Ruby With Homebrew and Rbenv on Mac OS X Mountain Lion</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-31T17:38:00+00:00" pubdate data-updated="true">Jan 31<span>st</span>, 2013</time>
-        
-         | <a href="/installing-ruby-with-homebrew-and-rbenv-on-mac-os-x-mountain-lion/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>Install Ruby with rbenv</h2>
-
-<p>I decided to setup Octopress on my Mac so that I can publish blog posts from either Windows or MacOS. I&#8217;m on OS X 10.8.2.</p>
-
-<p>I tried to follow the <a href="http://octopress.org/docs/setup/rbenv/">Octopress instructions</a> for installing Ruby but ran into a few problems.</p>
-
-<h3>Install Homebrew</h3>
-
-<p><a href="http://mxcl.github.com/homebrew/">Homebrew</a> is a package manager for OS X. Open Terminal and install Homebrew with:</p>
-
-<pre><code>$ ruby -e "$(curl -fsSkL raw.github.com/mxcl/homebrew/go)"
-</code></pre>
-
-<p>Once the installation is successful, you can run the following command to check your environment.</p>
-
-<pre><code>$ brew doctor
-</code></pre>
-
-<p>Apparently, you should see:</p>
-
-<pre><code>Your system is raring to brew
-</code></pre>
-
-<p>But instead I had 3 warnings.</p>
-
-<pre>
-<span STYLE="color:red">Warning:</span> /usr/bin occurs before /usr/local/bin
-This means that system-provided programs will be used instead of those
-provided by Homebrew. The following tools exist at both paths:
-
-    gcov-4.2
-
-Consider amending your PATH so that /usr/local/bin
-occurs before /usr/bin in your PATH.
-</pre>
-
-
-<p>This one can be fixed by modifying your <code>.profile</code> file. Create it if it doesn&#8217;t already exist. Use <code>nano ~/.profile</code> if you don&#8217;t have a preferred editor.</p>
-
-<figure class='code'><figcaption><span>.profile </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Fix $PATH for homebrew</span>
-</span><span class='line'><span class="nv">homebrew</span><span class="o">=</span>/usr/local/bin:/usr/local/sbin
-</span><span class='line'><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$homebrew</span>:<span class="nv">$PATH</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Google tells me the other two warnings are related to Mono being installed and can be ignored.</p>
-
-<pre>
-<span STYLE="color:red">Warning:</span> /Library/Frameworks/Mono.framework detected
-This can be picked up by CMake's build system and likely cause the build to
-fail. You may need to move this file out of the way to compile CMake.
-
-<span STYLE="color:red">Warning:</span> You have a non-Homebrew 'pkg-config' in your PATH:
-  /usr/bin/pkg-config => /Library/Frameworks/Mono.framework/Versions/2.10.9/bin/pkg-config
-
-This was most likely created by the Mono installer. `./configure` may
-have problems finding brew-installed packages using this other pkg-config.
-</pre>
-
-
-<p>Ploughing on&#8230;</p>
-
-<h2>Install rbenv</h2>
-
-<p>Rbenv handles the installation of multiple Ruby environments.</p>
-
-<pre><code>$ brew update
-$ brew install rbenv
-$ brew install ruby-build
-</code></pre>
-
-<h2>Install gcc</h2>
-
-<p>If I try to install Ruby immediately, I get</p>
-
-<pre>
-<span STYLE="color:red">ERROR:</span> This package must be compiled with GCC, but ruby-build
-couldn't find a suitable `gcc` executable on your system.
-Please install GCC and try again.
-...
-</pre>
-
-
-<p>XCode used to ship with a compatible gcc, but no longer does. We can install it with Homebrew.</p>
-
-<pre><code>$ brew update
-$ brew tap homebrew/dupes
-$ brew install autoconf automake apple-gcc42
-</code></pre>
-
-<p>The new gcc will coexist happily alongside the default one.</p>
-
-<h2>Install Ruby 1.9.3</h2>
-
-<p>Now we can install Ruby.</p>
-
-<pre><code>$ rbenv install 1.9.3-p194
-$ rbenv rehash
-</code></pre>
-
-<p>Next run</p>
-
-<pre><code>$ ruby --version
-</code></pre>
-
-<p>Hmm&#8230; I get</p>
-
-<pre><code>ruby 1.8.7 (2012-02-08 patchlevel 358) [universal-darwin12.0]
-</code></pre>
-
-<p>Shouldn&#8217;t it say ruby 1.9.3? It turns out you need to add the following to the end of your <code>.profile</code>.</p>
-
-<figure class='code'><figcaption><span>.profile </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Initialize rbenv</span>
-</span><span class='line'><span class="k">if </span>which rbenv &gt; /dev/null; <span class="k">then </span><span class="nb">eval</span> <span class="s2">&quot;$(rbenv init -)&quot;</span>; <span class="k">fi</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now quit and restart Terminal.</p>
-
-<pre><code>$ rbenv global 1.9.3-p194
-$ ruby --version
-ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-darwin12.2.1]
-</code></pre>
-
-<p>Ruby 1.9.3 is installed correctly. If I quit and restart Terminal, <code>ruby --version</code> is still 1.9.3.</p>
-</div>
-  
-  
-
-
-    </article>
   
   
     <article>
@@ -1269,6 +1100,78 @@ I downloaded <a href="http://xamarin.com/monotouch">Xamarin MonoTouch</a> onto m
 <h2>What next</h2>
 
 <p>In a future series, I will demonstrate how to load test XAF applications cheaply and effectively by making use of Amazon Web Services. Stay tuned.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 4</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2012-11-05T14:16:00+00:00" pubdate data-updated="true">Nov 5<span>th</span>, 2012</time>
+        
+         | <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>Part 4: Incremental Deployment</h2>
+
+<p>This is the fourth post in a series about deploying ASP.NET applications to the Amazon cloud. In the first three posts covered deploying the XAF ASP.NET MainDemo to the Amazon cloud (<a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1</a>, <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2</a>, <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3</a>).</p>
+
+<p>When we deployed to the Elastic Beanstalk in <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2</a>, we chose <em>not</em> to enable incremental deployment.</p>
+
+<p><img src="/images/blog/aws/launch-aws-beanstalk-2.jpg" title="'figure 11'" ></p>
+
+<p>I want to explain this decision further.</p>
+
+<p>If you choose not to deploy incrementally your deployment will take longer because the entire web deployment package needs to be uploaded every time you re-publish which takes about 4-5 minutes on my connection. The incremental deployment option creates a git repository in the target environment so that only the modified files are re-deployed. If you are frequently making changes and redploying, you can save considerable time. A re-deployment takes only a few seconds.</p>
+
+<p>However, if you try to deploy from the default MainDemo location with incremental deployment enabled, you will probably get the following error</p>
+
+<pre><code>Commencing deployment for project MainDemo.Web
+...building deployment package obj\Release\Package\Archive...
+...deployment package created at C:\Users\Public\Documents\DXperience 12.1 Demos\eXpressApp Framework\MainDemo\CS\MainDemo.Web\obj\Release\Package\Archive
+...build of project archive completed succesfully
+...starting deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo'
+...starting incremental deployment to environment 'zerosharp-maindemo'
+Deployment to AWS Elastic Beanstalk failed with exception: Exception caught during execution of add command,
+Inner Exception Message: The specified path, file name, or both are too long. The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters.
+...
+Deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo' did not complete successfully
+</code></pre>
+
+<p>The problem is with the NGit libraries that the AWS Toolkit uses. Presumably a fix will emerge, but the simplest workaround is to move the application to a shorter path. Then you can enable incremental deployment when you publish:</p>
+
+<p><img src="/images/blog/aws/launch-aws-beanstalk-incremental-2.jpg" title="'figure 21'" ></p>
+
+<p>Note that you can toggle incremental deployment whenever you publish, so you&#8217;re not locked in either way.</p>
+
+<h2>Next up</h2>
+
+<p>In the <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">next post</a> we will enable load balancing (which is easy) and discuss the problems with autoscaling XAF applications (which is not).</p>
 </div>
   
   
