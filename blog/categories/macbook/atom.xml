@@ -4,7 +4,7 @@
   <title><![CDATA[Category: macbook | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/macbook/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-08-27T10:12:17+01:00</updated>
+  <updated>2013-09-02T08:40:05+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -47,57 +47,58 @@ I can't even find the on/off switch.</p>
 
 <p>I'm very picky about keyboards and I need to be able to find all my Visual Studio shortcuts in the same places. All in all I find the keyboard fine to work with.</p>
 
-<p>The <code>delete</code> key works like a PC <code>backspace</code> so you have to do <code>fn+delete</code> to delete forwards. Here's a list of other shortcuts:</p>
+<p>The <code>delete</code> key works like a PC <code>backspace</code> so you have to do <code>fn+delete</code> to delete forwards. Here's a list of other shortcuts.</p>
 
 <table>
 <thead>
 <tr>
-<th align="left">PC (running Windows)       </th>
-<th align="left"> &nbsp;Macbook (running Windows)</th>
+<th>PC (running Windows) </th>
+<th> &nbsp;Macbook (running Windows) </th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td align="left"><code>Windows</code> key              </td>
-<td align="left"> &nbsp;<code>command</code></td>
+<td><em>Windows</em> key             </td>
+<td> &nbsp;<em>command</em> </td>
 </tr>
 <tr>
-<td align="left"><code>Del</code>                      </td>
-<td align="left"> &nbsp;<code>fn+delete</code> </td>
+<td><em>Del</em>                     </td>
+<td> &nbsp;<em>fn+delete</em>  </td>
 </tr>
 <tr>
-<td align="left"><code>Ins</code>                      </td>
-<td align="left"> &nbsp;<code>fn+return</code></td>
+<td><em>Ins</em>                     </td>
+<td> &nbsp;<em>fn+return</em> </td>
 </tr>
 <tr>
-<td align="left"><code>Home</code>                     </td>
-<td align="left"> &nbsp;<code>fn+left</code></td>
+<td><em>Home</em>                    </td>
+<td> &nbsp;<em>fn+left</em> </td>
 </tr>
 <tr>
-<td align="left"><code>End</code>                      </td>
-<td align="left"> &nbsp;<code>fn+right</code></td>
+<td><em>End</em>                     </td>
+<td> &nbsp;<em>fn+right</em> </td>
 </tr>
 <tr>
-<td align="left"><code>PgUp</code>                     </td>
-<td align="left"> &nbsp;<code>fn+up</code></td>
+<td><em>PgUp</em>                    </td>
+<td> &nbsp;<em>fn+up</em> </td>
 </tr>
 <tr>
-<td align="left"><code>PgDn</code>                     </td>
-<td align="left"> &nbsp;<code>fn+down</code></td>
+<td><em>PgDn</em>                    </td>
+<td> &nbsp;<em>fn+down</em> </td>
 </tr>
 <tr>
-<td align="left"><code>Ctrl+Home</code>                </td>
-<td align="left"> &nbsp;<code>fn+control+left</code></td>
+<td><em>Ctrl+Home</em>               </td>
+<td> &nbsp;<em>fn+control+left</em> </td>
 </tr>
 <tr>
-<td align="left"><code>Ctrl+End</code>                 </td>
-<td align="left"> &nbsp;<code>fn+control+right</code></td>
+<td><em>Ctrl+End</em>                </td>
+<td> &nbsp;<em>fn+control+right</em> </td>
 </tr>
 </tbody>
 </table>
 
 
-<p>There are some keys which you will still not find, for instance, <code>NumLock</code>, <code>PrtScn</code>, <code>Break</code>.</p>
+<p>&nbsp;
+There are some keys which you will still not find, for instance, <code>NumLock</code>, <code>PrtScn</code>, <code>Break</code>.</p>
 
 <p>If I need these, I use the On-Screen keyboard (type 'osk' into the search bar). If you cannot see the <code>NumLock</code>, the options allow you to show the numeric keypad. Alternatively, you could always plug in a USB keyboard.</p>
 

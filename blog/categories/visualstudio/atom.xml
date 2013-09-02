@@ -4,7 +4,7 @@
   <title><![CDATA[Category: visualstudio | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/visualstudio/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-08-27T10:12:17+01:00</updated>
+  <updated>2013-09-02T08:40:05+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,110 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Always run Visual Studio as an Administrator]]></title>
+    <link href="http://ZeroSharp.github.com/always-run-visual-studio-as-an-administrator/"/>
+    <updated>2013-09-09T10:49:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/always-run-visual-studio-as-an-administrator</id>
+    <content type="html"><![CDATA[<p>I always run Visual Studio as an administrator. There are various reasons why this is necessary including:</p>
+
+<ul>
+<li>using IIS with a web application</li>
+<li>running web UI tests</li>
+<li>profiling</li>
+</ul>
+
+
+<p>In fact there's a great list <a href="http://msdn.microsoft.com/en-us/library/vstudio/jj662724.aspx">on MSDN</a> of all the actions you require administrator permissions.</p>
+
+<p>There is a way to make sure Visual Studio always opens with elevated privileges, even if you double click on a <em>.sln</em> file. (I'm running Windows 8 - not sure if it works with other versions of Windows.)</p>
+
+<ul>
+<li>Right-click <em>devenv.exe</em></li>
+<li>Select <em>Troubleshoot program</em></li>
+<li>Check <em>The program requires additional permissions</em></li>
+<li>Click <em>Next</em></li>
+<li>Click <em>Test the program...</em></li>
+<li>Wait for the program to launch</li>
+<li>Click <em>Next</em></li>
+<li>Select <em>Yes, save these settings for this program</em></li>
+<li>Click <em>Close</em></li>
+</ul>
+
+
+<p>If you have multiple versions of Visual Studio installed, you should repeat the operation for all of the following.</p>
+
+<table>
+<thead>
+<tr>
+<th>Program </th>
+<th> &nbsp;Default location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&nbsp;Visual Studio 2008&nbsp; </td>
+<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE\devenv.exe</em> &nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;Visual Studio 2010&nbsp; </td>
+<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe</em> &nbsp; </td>
+</tr>
+<tr>
+<td>&nbsp;Visual Studio 2012&nbsp; </td>
+<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\devenv.exe</em> &nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;VSLauncher.exe&nbsp; </td>
+<td> &nbsp;<em>C:\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\VSLauncher.exe</em> &nbsp;</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>&nbsp;</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Fix Visual Studio update links when running as Administrator]]></title>
+    <link href="http://ZeroSharp.github.com/fix-visual-studio-update-links-when-running-as-administrator/"/>
+    <updated>2013-09-02T09:58:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/fix-visual-studio-update-links-when-running-as-administrator</id>
+    <content type="html"><![CDATA[<p>This post is about fixing an annoyance whereby Visual Studio refuses to update extensions when running as an administrator.</p>
+
+<p>I always had a problem when an update to an extension or tool tried to open the browser. For instance, I would see this notification in the system tray.</p>
+
+<p><img src="/images/blog/visual-studio-updates-001.png"></p>
+
+<p>And then when I went to <em>Tools/Extensions and Updates...</em> in Visual Studio, I'd get to something like this:</p>
+
+<p><img src="/images/blog/visual-studio-updates-002.png"></p>
+
+<p>But the <em>Update</em> button was not responding to any clicks. The only workaround I found was to restart Visual Studio under my normal user account and then the button would work.</p>
+
+<h2>The fix at last</h2>
+
+<p>It turns out the problem rather specific. It only occurs when you run VS2012 as an administrator and you have Google Chrome set as your default browser. The problem is that older versions of Google Chrome failed to register themselves as the default browser for administrator users. You can confirm this by doing the following from an admin command prompt:</p>
+
+<pre><code>start http://blog.zerosharp.com
+</code></pre>
+
+<p>You'll get a message saying <em>Class not registered</em>.</p>
+
+<p>Unfortunately, updating to newer installations of Chrome does not fix the problem. You need to uninstall and reinstall. (This sounds like a lot of hassle, but if you are using Chrome sync it is very easy and only takes about a minute).</p>
+
+<ul>
+<li>Uninstall Chrome by going to <em>Control Panel/Uninstall a program</em>. * Open IE and download Chrome.</li>
+<li>During the installation process it will ask you to enable sync.</li>
+<li>A few seconds later everything should be back as at it was.</li>
+</ul>
+
+
+<p>But better, because the <em>Update</em> button in Visual Studio now works.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[NuGet 1.8 Installation Problem]]></title>

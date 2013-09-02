@@ -9,7 +9,8 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="In this post I will demonstrate how to add MiniProfiler to the XAF MainDemo web application. MiniProfiler is a simple fast profiler with a pretty &hellip;">
+  <meta name="description" content="I always run Visual Studio as an administrator. There are various reasons why this is necessary including: using IIS with a web application
+running &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -80,7 +81,7 @@
   <li><a href="/license/">License</a></li>  
 </ul>
 <ul class="subscription">
-    <li><a href="https://plus.google.com/112685056596124127572?rel=author">
+    <li><a rel="me" href="https://plus.google.com/112685056596124127572?rel=author">
       <img src="/images/asides/googleplus.png" width="24" height="24" alt="Rob on Google+">
     </a></li>    
     <li><a rel="me" href="http://twitter.com/8ctopus">
@@ -113,6 +114,168 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/always-run-visual-studio-as-an-administrator/">Always Run Visual Studio as an Administrator</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-09T10:49:00+01:00" pubdate data-updated="true">Sep 9<span>th</span>, 2013</time>
+        
+         | <a href="/always-run-visual-studio-as-an-administrator/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I always run Visual Studio as an administrator. There are various reasons why this is necessary including:</p>
+
+<ul>
+<li>using IIS with a web application</li>
+<li>running web UI tests</li>
+<li>profiling</li>
+</ul>
+
+
+<p>In fact there&#8217;s a great list <a href="http://msdn.microsoft.com/en-us/library/vstudio/jj662724.aspx">on MSDN</a> of all the actions you require administrator permissions.</p>
+
+<p>There is a way to make sure Visual Studio always opens with elevated privileges, even if you double click on a <em>.sln</em> file. (I&#8217;m running Windows 8 - not sure if it works with other versions of Windows.)</p>
+
+<ul>
+<li>Right-click <em>devenv.exe</em></li>
+<li>Select <em>Troubleshoot program</em></li>
+<li>Check <em>The program requires additional permissions</em></li>
+<li>Click <em>Next</em></li>
+<li>Click <em>Test the program&#8230;</em></li>
+<li>Wait for the program to launch</li>
+<li>Click <em>Next</em></li>
+<li>Select <em>Yes, save these settings for this program</em></li>
+<li>Click <em>Close</em></li>
+</ul>
+
+
+<p>If you have multiple versions of Visual Studio installed, you should repeat the operation for all of the following.</p>
+
+<table>
+<thead>
+<tr>
+<th>Program </th>
+<th> &nbsp;Default location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&nbsp;Visual Studio 2008&nbsp; </td>
+<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE\devenv.exe</em> &nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;Visual Studio 2010&nbsp; </td>
+<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe</em> &nbsp; </td>
+</tr>
+<tr>
+<td>&nbsp;Visual Studio 2012&nbsp; </td>
+<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\devenv.exe</em> &nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;VSLauncher.exe&nbsp; </td>
+<td> &nbsp;<em>C:\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\VSLauncher.exe</em> &nbsp;</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>&nbsp;</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/fix-visual-studio-update-links-when-running-as-administrator/">Fix Visual Studio Update Links When Running as Administrator</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-02T09:58:00+01:00" pubdate data-updated="true">Sep 2<span>nd</span>, 2013</time>
+        
+         | <a href="/fix-visual-studio-update-links-when-running-as-administrator/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This post is about fixing an annoyance whereby Visual Studio refuses to update extensions when running as an administrator.</p>
+
+<p>I always had a problem when an update to an extension or tool tried to open the browser. For instance, I would see this notification in the system tray.</p>
+
+<p><img src="/images/blog/visual-studio-updates-001.png"></p>
+
+<p>And then when I went to <em>Tools/Extensions and Updates&#8230;</em> in Visual Studio, I&#8217;d get to something like this:</p>
+
+<p><img src="/images/blog/visual-studio-updates-002.png"></p>
+
+<p>But the <em>Update</em> button was not responding to any clicks. The only workaround I found was to restart Visual Studio under my normal user account and then the button would work.</p>
+
+<h2>The fix at last</h2>
+
+<p>It turns out the problem rather specific. It only occurs when you run VS2012 as an administrator and you have Google Chrome set as your default browser. The problem is that older versions of Google Chrome failed to register themselves as the default browser for administrator users. You can confirm this by doing the following from an admin command prompt:</p>
+
+<pre><code>start http://blog.zerosharp.com
+</code></pre>
+
+<p>You&#8217;ll get a message saying <em>Class not registered</em>.</p>
+
+<p>Unfortunately, updating to newer installations of Chrome does not fix the problem. You need to uninstall and reinstall. (This sounds like a lot of hassle, but if you are using Chrome sync it is very easy and only takes about a minute).</p>
+
+<ul>
+<li>Uninstall Chrome by going to <em>Control Panel/Uninstall a program</em>. * Open IE and download Chrome.</li>
+<li>During the installation process it will ask you to enable sync.</li>
+<li>A few seconds later everything should be back as at it was.</li>
+</ul>
+
+
+<p>But better, because the <em>Update</em> button in Visual Studio now works.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1678,196 +1841,6 @@ The ability to create reports using a report writer is a very powerful feature o
 <h2>Conclusion</h2>
 
 <p>As a load test, you do not get much useful information. Even if we managed to extract accurate data for client response times and throughput, the overhead of running the multiple browsers would skew the results too much. However, this approach is extremely useful for isolating concurrency and performance problems.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/load-testing-xaf-part-5-analysis/">Load Testing XAF: Part 5 - Analysis</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-14T07:37:00+01:00" pubdate data-updated="true">Apr 14<span>th</span>, 2013</time>
-        
-         | <a href="/load-testing-xaf-part-5-analysis/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>This is the final post in a series about load testing XAF applications.  Previously in the series:</p>
-
-<ul>
-<li><a href="/load-testing-xaf-overview/">Load Testing XAF: Overview</a></li>
-<li><a href="/load-testing-xaf-part-1-deploying/">Part 1: Deploying the target webserver</a></li>
-<li><a href="/load-testing-xaf-part-2-selenium/">Part 2: Selenium</a></li>
-<li><a href="/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Part 3: Uploading and validating a script</a></li>
-<li><a href="/load-testing-xaf-part-4-launching-the-load-test/">Part 4: Launching the load test</a></li>
-</ul>
-
-
-<p>In this part, we analyse the results of the load test we ran in <a href="/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Part 4</a>.</p>
-
-<h2>Results</h2>
-
-<p>The results of the test we ran are <a href="https://load.wpm.neustar.biz/load/test/share/e0f547d711624168bc7fa0a69ddd8283">here</a>. The graphs are interactive and give quite interesting data about the load tests. Feel free to have a look and play around with the results.</p>
-
-<h2>The Performance Graphs</h2>
-
-<p><img src="/images/blog/load-testing/load-testing-006.png"></p>
-
-<p>The above graph shows the basic information about the test. We can see there were 649 transactions (the Selenium script was run 649 times) and there were 17 errors.</p>
-
-<p>You can see that the test managed to follow the planned scenario (the actual number of users follows the yellow line). You can also see information about the throughput in bytes during the test.</p>
-
-<h2>The Script Performance Graphs</h2>
-
-<p>Here we see information pertaining to the script we chose to run. Had we run multiple different scripts, we would be able to isolate each one.</p>
-
-<p><img src="/images/blog/load-testing/load-testing-009.png"></p>
-
-<p>It is clear that the transaction time rises quite slowly with the load until about 12:17 when there is a jump. More on that later.</p>
-
-<p>First, I have removed the plot of the total transaction time, so that we can see more detail from the remaining steps. Two things seem to be clear: the response time for each individual step does not seem to be much affected by the load, but the login step rises gradually.</p>
-
-<p><img src="/images/blog/load-testing/load-testing-010.png"></p>
-
-<p>Now back to the spike at 12:17, if you look at the transaction data more closely (not shown here but available on the <a href="https://load.wpm.neustar.biz/load/test/share/e0f547d711624168bc7fa0a69ddd8283">NeuStar results page</a>, it looks like several transactions finished at the same time and that the jump coincides with several simultaneous logins.</p>
-
-<p>So again, it seems that login is the &#8216;weakest link&#8217;, i.e., the most resource intensive step and the one that suffers the most under load.</p>
-
-<h2>The Errors</h2>
-
-<p>Lets look more closely at the errors.</p>
-
-<p><img src="/images/blog/load-testing/load-testing-007.png"></p>
-
-<p>The first type of error we can see from the screen-shot occurred at the login page. This error happened 6 times and was very similar to another error which occurred once. In fact, all 6 of these errors happened at the very end of the test. As such, they can be ignored, because it is likely that the load test was scaling down and interrupting sessions at this point.</p>
-
-<p><img src="/images/blog/load-testing/load-testing-008.png"></p>
-
-<p>One of the very nice features of NeuStar&#8217;s load testing solution is that you not only get a screenshot, but also a video which shows you exactly what the user experienced when an error occurs. By clicking on the second error, it looks like there may be a problem  when the system is under load. There were 6 errors and it is clear in the video that the errors occur when attempting to navigate away from the <em>Scheduler Event</em> view to the <em>My Details</em> view. The screen-shot gives us some useful information. DevExpress? Any ideas?</p>
-
-<p><img src="/images/blog/load-testing/load-testing-011.jpg"></p>
-
-<p>There are a couple of other errors, but I think these are most likely a result of problems with the Selenium script rather than XAF. The AJAX update panels make it quite hard to detect when the page is fully ready and although we try to accommodate this with <code>selenium.waitForCondition()</code> my feeling is that the <code>click()</code> occurred before everything was properly wired up.</p>
-
-<h2>Further tests</h2>
-
-<p>This series has covered the process of load testing XAF applications in its entirety, but in some ways, it feels like only the beginning. There are many other configurations and tests which would be interesting.</p>
-
-<p>For instance</p>
-
-<ul>
-<li>Reduce think time which is currently set to 3 seconds per step</li>
-<li>Use a smaller/larger EC2 instance</li>
-<li>Increase the number of virtual users</li>
-<li>Try load balancing with sticky sessions</li>
-<li>Experiment with/without compression (IIS or via the <code>web.config</code>)</li>
-<li>Experiment with/without caching (both at the http level, and via the <a href="http://documentation.devexpress.com/#XPO/CustomDocument9892">cached data store</a></li>
-</ul>
-
-
-<p>There are also many ways of improving XAF performance that are not in the MainDemo. These include:</p>
-
-<ul>
-<li><a href="http://documentation.devexpress.com/#wpf/CustomDocument6279">Server mode</a> in all grids</li>
-<li><a href="http://community.devexpress.com/blogs/xpo/archive/2006/03/27/session-management-and-caching.aspx">XPO Caching</a></li>
-<li>Where possible, move any heavy operations to a separate asynchronous web service call</li>
-</ul>
-
-
-<p>We have implemented all of these in our production application.</p>
-
-<h2>A note about concurrency</h2>
-
-<p>In our experience, people tend to over estimate the number of concurrent users for their application. Our application has probably upwards of 5000 users defined, but we know from our logs that there have never been more than 80 simultaneously logged in. Also, even with 80 concurrent users, they have a much longer &#8216;think time&#8217; than 3 seconds on average.</p>
-
-<p>For the production environment, we run at least one 25 user test for every major release and ensure the performance is at least as good as the previous release. We have occasionally run tests with up to 200 simultaneous users. The response time goes down to unacceptable levels (~30 seconds), but the application behaves. In production, the system is load balanced (with sticky sessions) and we know from previous experience that this is sufficient for our application.</p>
-
-<h2>Conclusion</h2>
-
-<p>This concludes my series on load testing. We&#8217;ve managed to get some very useful information with some very low-cost tools. The largest part of effort is the writing of the Selenium script which is certainly tricky. In the future I&#8217;d really like to harness the DevExpress EasyTests to replace the script but I haven&#8217;t yet found a way of doing this. Feel free to use my Selenium script as a starting point for testing your own XAF applications, and let us know of any interesting results!</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/load-testing-xaf-part-4-launching-the-load-test/">Load Testing XAF: Part 4 - Launching the Load Test</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-08T11:19:00+01:00" pubdate data-updated="true">Apr 8<span>th</span>, 2013</time>
-        
-         | <a href="/load-testing-xaf-part-4-launching-the-load-test/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>This is another post in a series about load testing XAF applications.  Previously in the series:</p>
-
-<ul>
-<li><a href="/load-testing-xaf-overview/">Load Testing XAF: Overview</a></li>
-<li><a href="/load-testing-xaf-part-1-deploying/">Part 1: Deploying the target webserver</a></li>
-<li><a href="/load-testing-xaf-part-2-selenium/">Part 2: Selenium</a></li>
-<li><a href="/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Part 3: Uploading and validating a script</a></li>
-</ul>
-
-
-<p>In this part, we will launch a 1 hour test with 25 virtual users using the <a href="http://home.wpm.neustar.biz/">NeuStar Web Performance Management</a> module.</p>
-
-<h2>Schedule and launch a test</h2>
-
-<p>From the script validation screen, click on <em>Schedule a load test with this script</em>. The defaults are good, but you can specify in detail how to run your load test. For instance, you can coordinate multiple Selenium scripts to simulate different types of activity on your site.</p>
-
-<p><img src="/images/blog/load-testing/load-testing-005.png"></p>
-
-<p>Notice that the load test cost for 25 users for an hour will be only $3.75.</p>
-
-<p>When you click <code>Launch</code>, Neustar takes 7 or 8 minutes to provision the Amazon machines and stage the test, after which you will get realtime detail information about response times, bandwidth and errors.</p>
-
-<p>In the next post we&#8217;ll analyse the results of this test.</p>
 </div>
   
   

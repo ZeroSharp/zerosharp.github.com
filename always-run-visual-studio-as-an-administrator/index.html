@@ -5,11 +5,12 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>A look at the DevExpress MainDemo with Google Page Speed - ZeroSharp</title>
+  <title>Always run Visual Studio as an Administrator - ZeroSharp</title>
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="An analysis of the page speed of the DevExpress MainDemo.">
+  <meta name="description" content="I always run Visual Studio as an administrator. There are various reasons why this is necessary including: using IIS with a web application
+running &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +19,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ZeroSharp.github.com/a-look-at-the-devexpress-maindemo-with-google-page-speed/">
+  <link rel="canonical" href="http://ZeroSharp.github.com/always-run-visual-studio-as-an-administrator/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -116,7 +117,7 @@
   
   <header>
     
-      <h1 class="entry-title">A Look at the DevExpress MainDemo With Google Page Speed</h1>
+      <h1 class="entry-title">Always Run Visual Studio as an Administrator</h1>
     
     
       <p class="meta">
@@ -132,7 +133,7 @@
   
 
 
-<time datetime="2012-09-12T17:22:00+01:00" pubdate data-updated="true">Sep 12<span>th</span>, 2012</time>
+<time datetime="2013-09-09T10:49:00+01:00" pubdate data-updated="true">Sep 9<span>th</span>, 2013</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -141,82 +142,63 @@
   </header>
 
 
-<div class="entry-content"><p>In this post I&#8217;ll demonstrate how to use the <a href="https://developers.google.com/speed/pagespeed/">Google Page Speed</a> tools to analyse the performance of the DevExpress XAF MainDemo.</p>
-
-<p>The easiest way to run Google Page Speed is as a Chrome or Firefox plugin. Both are available <a href="https://developers.google.com/speed/pagespeed/insights_extensions">here</a>. I use Chrome.</p>
-
-<p>Now open the DevExpress MainDemo from Visual Studio. By default it is installed to:</p>
-
-<pre><code>C:\Users\Public\Documents\DXperience 12.1 Demos\eXpressApp Framework\MainDemo\CS\MainDemo.sln
-</code></pre>
-
-<p>Set the MainDemo.Web as the startup project and change the connection string in web.config if necessary. Launch the application with Chrome and login as &#8216;Sam&#8217; (password is blank). Then press <code>F12</code> to bring up the developer tools. The last tab is the Page Speed Analysis and your browser should look like this:</p>
-
-<p><img src="/images/blog/google-page-speed-001.png"></p>
-
-<p>Now click <code>Start Analysis</code> button. After a few seconds you should get something like the following results.</p>
-
-<h4>Results against the debug webserver</h4>
-
-<p><img src="/images/blog/google-page-speed-002.png"></p>
-
-<p>It&#8217;s as easy as that. We now have a list of suggested improvements. The same report can be generated for any page you visit with your browser.</p>
-
-<p>I get an overall score of 72 out of 100. First thing to note is that the only &#8216;high priority&#8217; recommendation is to &#8216;enable keep-alive&#8217; which I suspect will not be necessary when running in IIS instead of the debug webserver.</p>
-
-<h4>Switch to use IIS</h4>
-
-<p>Actually to get the main demo to run in IIS is not altogether simple because of the security permissions required for logging in and creating or updating the schema. If you get an error message after login:</p>
-
-<pre><code>Login failed for user 'IIS APPPOOL\DefaultAppPool
-</code></pre>
-
-<p>you will need to add the IIS application pool identity to the SQL Server security.</p>
+<div class="entry-content"><p>I always run Visual Studio as an administrator. There are various reasons why this is necessary including:</p>
 
 <ul>
-<li>Launch SQL Server management studio and connect to the database.</li>
-<li>In the <code>Security\Logins</code> right click and select <code>New Login...</code>.</li>
-<li>Type in <code>IIS APPPOOL\DefaultAppPool</code> (you won&#8217;t find it by searching) or <code>IIS APPPOOL\ASP.NET v4.0</code> depending on the security context of the application pool you are using.</li>
-<li>Select <code>Server Roles</code> and check <code>public</code> and <code>sysadmin</code> to allow the MainDemo to create the database.</li>
+<li>using IIS with a web application</li>
+<li>running web UI tests</li>
+<li>profiling</li>
 </ul>
 
 
-<p>(All of this is assuming you are using a non-public instance of SQL Server for development.)</p>
+<p>In fact there&#8217;s a great list <a href="http://msdn.microsoft.com/en-us/library/vstudio/jj662724.aspx">on MSDN</a> of all the actions you require administrator permissions.</p>
 
-<h4>Results against IIS</h4>
+<p>There is a way to make sure Visual Studio always opens with elevated privileges, even if you double click on a <em>.sln</em> file. (I&#8217;m running Windows 8 - not sure if it works with other versions of Windows.)</p>
 
-<p>The results are much better: an overall score of 93.</p>
+<ul>
+<li>Right-click <em>devenv.exe</em></li>
+<li>Select <em>Troubleshoot program</em></li>
+<li>Check <em>The program requires additional permissions</em></li>
+<li>Click <em>Next</em></li>
+<li>Click <em>Test the program&#8230;</em></li>
+<li>Wait for the program to launch</li>
+<li>Click <em>Next</em></li>
+<li>Select <em>Yes, save these settings for this program</em></li>
+<li>Click <em>Close</em></li>
+</ul>
 
-<p><img src="/images/blog/google-page-speed-003.png"></p>
 
-<h4>Other points of interest</h4>
+<p>If you have multiple versions of Visual Studio installed, you should repeat the operation for all of the following.</p>
 
-<p>Let&#8217;s experiment by turning off compression in the webconfig.</p>
+<table>
+<thead>
+<tr>
+<th>Program </th>
+<th> &nbsp;Default location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&nbsp;Visual Studio 2008&nbsp; </td>
+<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE\devenv.exe</em> &nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;Visual Studio 2010&nbsp; </td>
+<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe</em> &nbsp; </td>
+</tr>
+<tr>
+<td>&nbsp;Visual Studio 2012&nbsp; </td>
+<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\devenv.exe</em> &nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;VSLauncher.exe&nbsp; </td>
+<td> &nbsp;<em>C:\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\VSLauncher.exe</em> &nbsp;</td>
+</tr>
+</tbody>
+</table>
 
-<pre><code>&lt;compression 
-  enableHtmlCompression="false" 
-  enableCallbackCompression="false" 
-  enableResourceCompression="false" 
-  enableResourceMerging="false" /&gt;
-</code></pre>
 
-<p>The overall score drops to 62.</p>
-
-<p><img class="right" src="/images/blog/google-page-speed-004.png"></p>
-
-<p>You can alternatively use IIS&#8217;s dynamic compression by setting <code>enableResourceMerging="true"</code> and the others false and adding a <code>urlCompression</code> setting as follows.</p>
-
-<pre><code>&lt;system.webServer&gt;
-  &lt;urlCompression doDynamicCompression="true" /&gt;
-  ...
-&lt;/system.webServer&gt; 
-</code></pre>
-
-<p>(Note that you may need to install the dynamic compression module via <strong>Control Panel/Programs/Turn Windows Features On or Off</strong>.)</p>
-
-<p>Then the analysis is back up to 93. The advantage of IIS dynamic compression in IIS 7 is that it turns itself off automatically when the CPU load is high. See <a href="http://www.codeproject.com/Articles/242133/Making-the-most-out-of-IIS-compression-Part-1-conf">Matt Perdeck&#8217;s series of articles about IIS Compression</a> for more information.</p>
-
-<p>One mysterious point: if you navigate to the <a href="http://demos.devexpress.com/XAF/MainDemo/default.aspx">online version of the MainDemo</a> and run the analysis there you will notice that compression resource merging must be turned off for some reason and the overall score is only 75. Perhaps someone from DevExpress can explain&#8230;</p>
+<p>&nbsp;</p>
 </div>
 
 
@@ -239,12 +221,12 @@
   
 
 
-<time datetime="2012-09-12T17:22:00+01:00" pubdate data-updated="true">Sep 12<span>th</span>, 2012</time>
+<time datetime="2013-09-09T10:49:00+01:00" pubdate data-updated="true">Sep 9<span>th</span>, 2013</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/performance/'>performance</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a>
+    <a class='category' href='/blog/categories/visualstudio/'>visualstudio</a>
   
 </span>
 
@@ -253,7 +235,7 @@
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/a-look-at-the-devexpress-maindemo-with-google-page-speed/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/a-look-at-the-devexpress-maindemo-with-google-page-speed/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/always-run-visual-studio-as-an-administrator/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/always-run-visual-studio-as-an-administrator/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -266,10 +248,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/xpobatch-source-code-available/" title="Previous Post: XpoBatch source code available">&laquo; XpoBatch source code available</a>
+        <a class="basic-alignment left" href="/fix-visual-studio-update-links-when-running-as-administrator/" title="Previous Post: Fix Visual Studio update links when running as Administrator">&laquo; Fix Visual Studio update links when running as Administrator</a>
       
-      
-        <a class="basic-alignment right" href="/the-best-pc-laptop-is-a-mac/" title="Next Post: The best PC laptop is a Mac">The best PC laptop is a Mac &raquo;</a>
       
     </p>
   </footer>
@@ -305,8 +285,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://ZeroSharp.github.com/a-look-at-the-devexpress-maindemo-with-google-page-speed/';
-        var disqus_url = 'http://ZeroSharp.github.com/a-look-at-the-devexpress-maindemo-with-google-page-speed/';
+        var disqus_identifier = 'http://ZeroSharp.github.com/always-run-visual-studio-as-an-administrator/';
+        var disqus_url = 'http://ZeroSharp.github.com/always-run-visual-studio-as-an-administrator/';
         var disqus_script = 'embed.js';
       
     (function () {
