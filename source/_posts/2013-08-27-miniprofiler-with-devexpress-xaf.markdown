@@ -4,6 +4,7 @@ title: "MiniProfiler with DevExpress XAF"
 date: 2013-08-27 09:14
 comments: true
 categories: [c#, devexpress, xaf, performance]
+description: How to add MiniProfiler to the XAF MainDemo web application.
 ---
 In this post I will demonstrate how to add [MiniProfiler](http://miniprofiler.com/) to the XAF MainDemo web application.
 

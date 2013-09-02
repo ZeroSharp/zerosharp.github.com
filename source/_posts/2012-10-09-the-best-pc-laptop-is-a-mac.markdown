@@ -5,7 +5,6 @@ date: 2012-10-09 17:09
 comments: true
 categories: [macbook, hardware, c#]
 description: My first impressions of using a Macbook Pro with retina screen for Windows development.
-styles: [data-table]
 ---
 ### A month ago ###
 
@@ -40,20 +39,21 @@ There is a little annoyance with the Bootcamp Control Panel which won't start pr
 
 I'm very picky about keyboards and I need to be able to find all my Visual Studio shortcuts in the same places. All in all I find the keyboard fine to work with.
 
-The `delete` key works like a PC `backspace` so you have to do `fn+delete` to delete forwards. Here's a list of other shortcuts:
+The `delete` key works like a PC `backspace` so you have to do `fn+delete` to delete forwards. Here's a list of other shortcuts.
 
-PC (running Windows)       | &nbsp;Macbook (running Windows)
-:------------------------  | :----------------------- 
-`Windows` key              | &nbsp;`command`
-`Del`                      | &nbsp;`fn+delete` 
-`Ins`                      | &nbsp;`fn+return`
-`Home`                     | &nbsp;`fn+left`
-`End`                      | &nbsp;`fn+right`
-`PgUp`                     | &nbsp;`fn+up`
-`PgDn`                     | &nbsp;`fn+down`
-`Ctrl+Home`                | &nbsp;`fn+control+left`
-`Ctrl+End`                 | &nbsp;`fn+control+right`
+PC (running Windows) | &nbsp;Macbook (running Windows) 
+--- | --- 
+_Windows_ key             | &nbsp;_command_ 
+_Del_                     | &nbsp;_fn+delete_  
+_Ins_                     | &nbsp;_fn+return_ 
+_Home_                    | &nbsp;_fn+left_ 
+_End_                     | &nbsp;_fn+right_ 
+_PgUp_                    | &nbsp;_fn+up_ 
+_PgDn_                    | &nbsp;_fn+down_ 
+_Ctrl+Home_               | &nbsp;_fn+control+left_ 
+_Ctrl+End_                | &nbsp;_fn+control+right_ 
 
+&nbsp;
 There are some keys which you will still not find, for instance, `NumLock`, `PrtScn`, `Break`.
 
 If I need these, I use the On-Screen keyboard (type 'osk' into the search bar). If you cannot see the `NumLock`, the options allow you to show the numeric keypad. Alternatively, you could always plug in a USB keyboard.
