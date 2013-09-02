@@ -4,6 +4,7 @@ title: "Always run Visual Studio as an Administrator"
 date: 2013-09-09 10:49
 comments: true
 categories: [visualstudio]
+published: false
 ---
 I always run Visual Studio as an administrator. There are various reasons why this is necessary including:
 
