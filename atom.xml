@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-09-02T08:50:52+01:00</updated>
+  <updated>2013-09-09T08:01:39+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,73 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Always run Visual Studio as an Administrator]]></title>
+    <link href="http://ZeroSharp.github.com/always-run-visual-studio-as-an-administrator/"/>
+    <updated>2013-09-09T07:49:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/always-run-visual-studio-as-an-administrator</id>
+    <content type="html"><![CDATA[<p>I always run Visual Studio as an administrator. There are various reasons why this is necessary including:</p>
+
+<ul>
+<li>using IIS with a web application</li>
+<li>running web UI tests</li>
+<li>profiling</li>
+</ul>
+
+
+<p>In fact there&#8217;s a list <a href="http://msdn.microsoft.com/en-us/library/vstudio/jj662724.aspx">on MSDN</a> of all the actions you require administrator permissions.</p>
+
+<p>Here is a way to make sure Visual Studio always opens with elevated privileges, even if you double click on a <em>.sln</em> file. (I&#8217;m running Windows 8.)</p>
+
+<ul>
+<li>Right-click <em>devenv.exe</em></li>
+<li>Select <em>Troubleshoot program</em></li>
+<li>Check <em>The program requires additional permissions</em></li>
+<li>Click <em>Next</em></li>
+<li>Click <em>Test the program&#8230;</em></li>
+<li>Wait for the program to launch</li>
+<li>Click <em>Next</em></li>
+<li>Select <em>Yes, save these settings for this program</em></li>
+<li>Click <em>Close</em></li>
+</ul>
+
+
+<p>If you have multiple versions of Visual Studio installed, you should repeat the operation for all of the following.</p>
+
+<table>
+<thead>
+<tr>
+<th>Program </th>
+<th> &nbsp;Default location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&nbsp;Visual Studio 2008&nbsp; </td>
+<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE\devenv.exe</em> &nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;Visual Studio 2010&nbsp; </td>
+<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe</em> &nbsp; </td>
+</tr>
+<tr>
+<td>&nbsp;Visual Studio 2012&nbsp; </td>
+<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\devenv.exe</em> &nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;VSLauncher.exe&nbsp; </td>
+<td> &nbsp;<em>C:\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\VSLauncher.exe</em> &nbsp;</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>&nbsp;</p>
+
+<p>That&#8217;s it. Now Visual Studio always opens with administrator privileges.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Fix Visual Studio update links when running as Administrator]]></title>
@@ -2229,146 +2296,6 @@ $ git pull origin master  # update the local master branch
 </code></pre>
 
 <p>Of course, it might be easier to deploy everything from a thumb drive instead&#8230;</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Installing Ruby with Homebrew and rbenv on Mac OS X Mountain Lion]]></title>
-    <link href="http://ZeroSharp.github.com/installing-ruby-with-homebrew-and-rbenv-on-mac-os-x-mountain-lion/"/>
-    <updated>2013-01-31T17:38:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/installing-ruby-with-homebrew-and-rbenv-on-mac-os-x-mountain-lion</id>
-    <content type="html"><![CDATA[<h2>Install Ruby with rbenv</h2>
-
-<p>I decided to setup Octopress on my Mac so that I can publish blog posts from either Windows or MacOS. I&#8217;m on OS X 10.8.2.</p>
-
-<p>I tried to follow the <a href="http://octopress.org/docs/setup/rbenv/">Octopress instructions</a> for installing Ruby but ran into a few problems.</p>
-
-<h3>Install Homebrew</h3>
-
-<p><a href="http://mxcl.github.com/homebrew/">Homebrew</a> is a package manager for OS X. Open Terminal and install Homebrew with:</p>
-
-<pre><code>$ ruby -e "$(curl -fsSkL raw.github.com/mxcl/homebrew/go)"
-</code></pre>
-
-<p>Once the installation is successful, you can run the following command to check your environment.</p>
-
-<pre><code>$ brew doctor
-</code></pre>
-
-<p>Apparently, you should see:</p>
-
-<pre><code>Your system is raring to brew
-</code></pre>
-
-<p>But instead I had 3 warnings.</p>
-
-<pre>
-<span STYLE="color:red">Warning:</span> /usr/bin occurs before /usr/local/bin
-This means that system-provided programs will be used instead of those
-provided by Homebrew. The following tools exist at both paths:
-
-    gcov-4.2
-
-Consider amending your PATH so that /usr/local/bin
-occurs before /usr/bin in your PATH.
-</pre>
-
-
-<p>This one can be fixed by modifying your <code>.profile</code> file. Create it if it doesn&#8217;t already exist. Use <code>nano ~/.profile</code> if you don&#8217;t have a preferred editor.</p>
-
-<figure class='code'><figcaption><span>.profile </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Fix $PATH for homebrew</span>
-</span><span class='line'><span class="nv">homebrew</span><span class="o">=</span>/usr/local/bin:/usr/local/sbin
-</span><span class='line'><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$homebrew</span>:<span class="nv">$PATH</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Google tells me the other two warnings are related to Mono being installed and can be ignored.</p>
-
-<pre>
-<span STYLE="color:red">Warning:</span> /Library/Frameworks/Mono.framework detected
-This can be picked up by CMake's build system and likely cause the build to
-fail. You may need to move this file out of the way to compile CMake.
-
-<span STYLE="color:red">Warning:</span> You have a non-Homebrew 'pkg-config' in your PATH:
-  /usr/bin/pkg-config => /Library/Frameworks/Mono.framework/Versions/2.10.9/bin/pkg-config
-
-This was most likely created by the Mono installer. `./configure` may
-have problems finding brew-installed packages using this other pkg-config.
-</pre>
-
-
-<p>Ploughing on&#8230;</p>
-
-<h2>Install rbenv</h2>
-
-<p>Rbenv handles the installation of multiple Ruby environments.</p>
-
-<pre><code>$ brew update
-$ brew install rbenv
-$ brew install ruby-build
-</code></pre>
-
-<h2>Install gcc</h2>
-
-<p>If I try to install Ruby immediately, I get</p>
-
-<pre>
-<span STYLE="color:red">ERROR:</span> This package must be compiled with GCC, but ruby-build
-couldn't find a suitable `gcc` executable on your system.
-Please install GCC and try again.
-...
-</pre>
-
-
-<p>XCode used to ship with a compatible gcc, but no longer does. We can install it with Homebrew.</p>
-
-<pre><code>$ brew update
-$ brew tap homebrew/dupes
-$ brew install autoconf automake apple-gcc42
-</code></pre>
-
-<p>The new gcc will coexist happily alongside the default one.</p>
-
-<h2>Install Ruby 1.9.3</h2>
-
-<p>Now we can install Ruby.</p>
-
-<pre><code>$ rbenv install 1.9.3-p194
-$ rbenv rehash
-</code></pre>
-
-<p>Next run</p>
-
-<pre><code>$ ruby --version
-</code></pre>
-
-<p>Hmm&#8230; I get</p>
-
-<pre><code>ruby 1.8.7 (2012-02-08 patchlevel 358) [universal-darwin12.0]
-</code></pre>
-
-<p>Shouldn&#8217;t it say ruby 1.9.3? It turns out you need to add the following to the end of your <code>.profile</code>.</p>
-
-<figure class='code'><figcaption><span>.profile </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Initialize rbenv</span>
-</span><span class='line'><span class="k">if </span>which rbenv &gt; /dev/null; <span class="k">then </span><span class="nb">eval</span> <span class="s2">&quot;$(rbenv init -)&quot;</span>; <span class="k">fi</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now quit and restart Terminal.</p>
-
-<pre><code>$ rbenv global 1.9.3-p194
-$ ruby --version
-ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-darwin12.2.1]
-</code></pre>
-
-<p>Ruby 1.9.3 is installed correctly. If I quit and restart Terminal, <code>ruby --version</code> is still 1.9.3.</p>
 ]]></content>
   </entry>
   

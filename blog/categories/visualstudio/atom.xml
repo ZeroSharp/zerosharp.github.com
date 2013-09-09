@@ -4,7 +4,7 @@
   <title><![CDATA[Category: visualstudio | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/visualstudio/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-09-02T08:50:52+01:00</updated>
+  <updated>2013-09-09T08:01:39+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,73 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Always run Visual Studio as an Administrator]]></title>
+    <link href="http://ZeroSharp.github.com/always-run-visual-studio-as-an-administrator/"/>
+    <updated>2013-09-09T07:49:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/always-run-visual-studio-as-an-administrator</id>
+    <content type="html"><![CDATA[<p>I always run Visual Studio as an administrator. There are various reasons why this is necessary including:</p>
+
+<ul>
+<li>using IIS with a web application</li>
+<li>running web UI tests</li>
+<li>profiling</li>
+</ul>
+
+
+<p>In fact there's a list <a href="http://msdn.microsoft.com/en-us/library/vstudio/jj662724.aspx">on MSDN</a> of all the actions you require administrator permissions.</p>
+
+<p>Here is a way to make sure Visual Studio always opens with elevated privileges, even if you double click on a <em>.sln</em> file. (I'm running Windows 8.)</p>
+
+<ul>
+<li>Right-click <em>devenv.exe</em></li>
+<li>Select <em>Troubleshoot program</em></li>
+<li>Check <em>The program requires additional permissions</em></li>
+<li>Click <em>Next</em></li>
+<li>Click <em>Test the program...</em></li>
+<li>Wait for the program to launch</li>
+<li>Click <em>Next</em></li>
+<li>Select <em>Yes, save these settings for this program</em></li>
+<li>Click <em>Close</em></li>
+</ul>
+
+
+<p>If you have multiple versions of Visual Studio installed, you should repeat the operation for all of the following.</p>
+
+<table>
+<thead>
+<tr>
+<th>Program </th>
+<th> &nbsp;Default location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&nbsp;Visual Studio 2008&nbsp; </td>
+<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE\devenv.exe</em> &nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;Visual Studio 2010&nbsp; </td>
+<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe</em> &nbsp; </td>
+</tr>
+<tr>
+<td>&nbsp;Visual Studio 2012&nbsp; </td>
+<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\devenv.exe</em> &nbsp;</td>
+</tr>
+<tr>
+<td>&nbsp;VSLauncher.exe&nbsp; </td>
+<td> &nbsp;<em>C:\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\VSLauncher.exe</em> &nbsp;</td>
+</tr>
+</tbody>
+</table>
+
+
+<p>&nbsp;</p>
+
+<p>That's it. Now Visual Studio always opens with administrator privileges.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Fix Visual Studio update links when running as Administrator]]></title>
