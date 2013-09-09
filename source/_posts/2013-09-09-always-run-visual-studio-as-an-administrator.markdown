@@ -1,10 +1,9 @@
 ---
 layout: post
 title: "Always run Visual Studio as an Administrator"
-date: 2013-09-09 10:49
+date: 2013-09-09 07:49
 comments: true
 categories: [visualstudio]
-published: false
 ---
 I always run Visual Studio as an administrator. There are various reasons why this is necessary including:
 
@@ -12,9 +11,9 @@ I always run Visual Studio as an administrator. There are various reasons why th
 * running web UI tests
 * profiling
 
-In fact there's a great list [on MSDN](http://msdn.microsoft.com/en-us/library/vstudio/jj662724.aspx) of all the actions you require administrator permissions.
+In fact there's a list [on MSDN](http://msdn.microsoft.com/en-us/library/vstudio/jj662724.aspx) of all the actions you require administrator permissions.
 
-There is a way to make sure Visual Studio always opens with elevated privileges, even if you double click on a _.sln_ file. (I'm running Windows 8 - not sure if it works with other versions of Windows.)
+Here is a way to make sure Visual Studio always opens with elevated privileges, even if you double click on a _.sln_ file. (I'm running Windows 8.)
 
 * Right-click _devenv.exe_
 * Select _Troubleshoot program_
@@ -36,3 +35,5 @@ Program | &nbsp;Default location
 &nbsp;VSLauncher.exe&nbsp; | &nbsp;_C:\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\VSLauncher.exe_ &nbsp;
 
 &nbsp;
+
+That's it. Now Visual Studio always opens with administrator privileges.
