@@ -1,0 +1,357 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>A review of NDepend 5 - ZeroSharp</title>
+  <meta name="author" content="Robert Anderson">
+
+  
+  <meta name="description" content="A review of NDepend version 5.">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ZeroSharp.github.com/a-review-of-ndepend-5/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="http://feeds.feedburner.com/zerosharp" rel="alternate" title="ZeroSharp" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> 
+
+<!-- <ra+> -->
+<link href="http://fonts.googleapis.com/css?family=Ubuntu:500" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
+
+<link href="/stylesheets/custom/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+<!-- </ra+> -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-30564687-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <!--<h1><a href="/">ZeroSharp</a></h1>-->
+  <a href="http://www.zerosharp.com/"><h1>ZeroSharp</h1></a>
+  
+    <h2>Robert Anderson's ones and zeros</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">  
+
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ZeroSharp.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/license/">License</a></li>  
+</ul>
+<ul class="subscription">
+    <li><a rel="me" href="https://plus.google.com/112685056596124127572?rel=author">
+      <img src="/images/asides/googleplus.png" width="24" height="24" alt="Rob on Google+">
+    </a></li>    
+    <li><a rel="me" href="http://twitter.com/8ctopus">
+      <img src="/images/asides/twitter.png" width="24" height="24" alt="Rob on Twitter" />
+    </a></li>
+    <!--<li><a rel="me" href="http://stackoverflow.com/users/1077279/shamp00">
+      <img src="/images/asides/stackoverflow.png" width="24" height="24" alt="Rob on StackOverflow" />
+    </a></li>
+    <li><a rel="me" href="https://github.com/zerosharp">
+      <img src="/images/asides/github.png" width="24" height="24" alt="Rob on GitHub" />
+    </a></li>
+    <li><a rel="me" href="http://www.linkedin.com/profile/view?id=926740"  class ="googleplus-hidden" >
+      <img src="/images/asides/linkedin.png" width="24" height="24" alt="Rob on LinkedIn" />
+    </a></li>
+    <li><a rel="me" href="http://springpad.com/#!/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/springpad.png" width="24" height="24" alt="Rob on SpringPad" />
+    </a></li>    
+    <li><a rel="me" href="http://pinterest.com/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/pinterest.png" width="24" height="24" alt="Rob on Pinterest" />
+    </a></li>
+    <li><a rel="me" href="http://www.last.fm/user/nosredna"  class ="googleplus-hidden" >
+      <img src="/images/asides/lastfm.png" width="24" height="24" alt="Rob on Last.fm" />
+    </a></li>-->
+    <li><a href="http://feeds.feedburner.com/zerosharp">
+      <img src="/images/asides/rss.png" rel="subscribe-rss" width="24" height="24" alt="RSS Feed" />
+    </a></li>
+</ul>
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">A Review of NDepend 5</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-02T17:54:00+01:00" pubdate data-updated="true">Oct 2<span>nd</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>NDepend is a commercial static analysis tool for .NET managed code. It&#8217;s been around a long time (since 2004!). Version 5 was just released and in this post I&#8217;m going to try it out on the DevExpress MainDemo.</p>
+
+<p><span class='pullquote-right' data-pullquote='In version 5, a lot of work has been done to improve the learning curve.'>
+In the past I have always thought of NDepend as a complex tool. I was never sure where to start. In version 5, a lot of work has been done to improve the learning curve. The installation process is easy and a wizard very quickly points you in the right direction.</p>
+
+<p>After <a href="http://ndepend.com/NDependDownload.aspx">downloading the v5 trial</a> and running the installation you get to the following screen.
+</span></p>
+
+<p><img src="/images/blog/ndepend/ndepend-001.png"></p>
+
+<p>You cannot miss that big red arrow. In fact, it&#8217;s even animated in the actual product. Click on it and choose a Visual Studio solution to analyse. I&#8217;m going to navigate to the DevExpress MainDemo 13.1.</p>
+
+<p>So long as the project has been built at some point, NDepend works out what to analyse (otherwise you&#8217;ll get helpful warnings).</p>
+
+<p><img src="/images/blog/ndepend/ndepend-003.png"></p>
+
+<p>It is very fast and we get to this help screen.</p>
+
+<p><img src="/images/blog/ndepend/ndepend-004.png"></p>
+
+<p>Choose the dashboard.</p>
+
+<p><img src="/images/blog/ndepend/ndepend-005.png"></p>
+
+<p>Now that&#8217;s a lot of information, but it&#8217;s all well presented and easy to navigate. Let&#8217;s focus on the worst: I can see <em>2 Critical Rules Violated</em>. Drill down to find out more:</p>
+
+<p><img src="/images/blog/ndepend/ndepend-009.png"></p>
+
+<p>It&#8217;s complaining that we have classes with duplicate names in our projects. In the pane on the left we can see what they are: 3 types named <code>MainDemoWinApplication</code>, 3 named <code>Program</code>, <em>etc.</em> And sure enough there are: <em>MainDemo.Win</em>, <em>MainDemo.Win.Mdi</em> and <em>MainDemo.Win.Ribbon</em> all duplicate those class names.</p>
+
+<p>We can also see 2 <code>TaskAnalysis1LayoutUpdater</code> types and a quick search reveals that there&#8217;s one in the web module and another in the win module.</p>
+
+<p>So NDepend has correctly discovered some potential issues. As we XAF fans know, this one is not really a problem, because those modules are never loaded into the same AppDomain, but nevertheless the information is accurate and relevant.</p>
+
+<p>Lets have a brief look at the other screens. The dependency graph:</p>
+
+<p><img src="/images/blog/ndepend/ndepend-006.png"></p>
+
+<p>With a million options.</p>
+
+<p><img src="/images/blog/ndepend/ndepend-010.png"></p>
+
+<p>A dependency matrix.</p>
+
+<p><img src="/images/blog/ndepend/ndepend-007.png"></p>
+
+<p>A metrics view showing class and assembly sizes.</p>
+
+<p><img src="/images/blog/ndepend/ndepend-008.png"></p>
+
+<p>All with reams of helpful documentation.</p>
+
+<p><img src="/images/blog/ndepend/ndepend-011.png"></p>
+
+<p>Overall, the tool felt fast, responsive and stable. I&#8217;ve focused on the user interface aspects, but there is so much more. Some things you can do:</p>
+
+<ul>
+<li>Create your own analysis rules</li>
+<li><a href="http://www.ndepend.com/Doc_CQLinq_Syntax.aspx#Edition">Query your own code with LINQ</a></li>
+<li>Run analysis from <a href="http://www.ndepend.com/NDependConsole.aspx">the command line</a></li>
+<li>Run from within Visual Studio</li>
+<li>Add output to continuous integration (<a href="http://www.ndepend.com/Doc_CI_TeamCity.aspx">TeamCity</a>, <a href="http://www.ndepend.com/Doc_CI_CCNet.aspx">CruiseControl.NET</a>, etc.)</li>
+<li>Track <a href="http://www.ndepend.com/Doc_Trend.aspx">trends and progress over time</a></li>
+</ul>
+
+
+<p>NDepend shines at providing a high-level overview of code quality and as such it is a very useful addition to any developer&#8217;s toolkit. There are some scenarios where NDepend would be particularly useful:</p>
+
+<ul>
+<li>For a developer joining a mature project.</li>
+<li>For a senior developer looking to track progress on a refactoring drive.</li>
+<li>For helping evaluate the quality of an open source third party library.</li>
+</ul>
+
+
+<p>In this quick review, I&#8217;m not going deep enough to say anything about whether the DevExpress MainDemo is good code or not - it&#8217;s just a sample project I happen to be quite familiar with. It might be interesting to unleash NDepend on the full DevExpress source code and maybe one day I&#8217;ll get around to writing a future post about that.</p>
+
+<p>With regard to my own projects, I feel I&#8217;m so familiar with them that I ought to be aware of most of the recommendations NDepend is likely to make, but I&#8217;ll give it a spin and see what comes out&#8230;</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-02T17:54:00+01:00" pubdate data-updated="true">Oct 2<span>nd</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/ndepend/'>ndepend</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/a-review-of-ndepend-5/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/a-review-of-ndepend-5/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/always-run-visual-studio-as-an-administrator/" title="Previous Post: Always run Visual Studio as an Administrator">&laquo; Always run Visual Studio as an Administrator</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Robert Anderson
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'zerosharp';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/a-review-of-ndepend-5/';
+        var disqus_url = 'http://ZeroSharp.github.com/a-review-of-ndepend-5/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

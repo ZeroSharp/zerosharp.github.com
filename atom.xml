@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-09-09T08:01:39+01:00</updated>
+  <updated>2013-10-07T09:27:30+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,92 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[A review of NDepend 5]]></title>
+    <link href="http://ZeroSharp.github.com/a-review-of-ndepend-5/"/>
+    <updated>2013-10-02T17:54:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/a-review-of-ndepend-5</id>
+    <content type="html"><![CDATA[<p>NDepend is a commercial static analysis tool for .NET managed code. It&#8217;s been around a long time (since 2004!). Version 5 was just released and in this post I&#8217;m going to try it out on the DevExpress MainDemo.</p>
+
+<p><span class='pullquote-right' data-pullquote='In version 5, a lot of work has been done to improve the learning curve.'>
+In the past I have always thought of NDepend as a complex tool. I was never sure where to start. In version 5, a lot of work has been done to improve the learning curve. The installation process is easy and a wizard very quickly points you in the right direction.</p>
+
+<p>After <a href="http://ndepend.com/NDependDownload.aspx">downloading the v5 trial</a> and running the installation you get to the following screen.
+</span></p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/ndepend/ndepend-001.png"></p>
+
+<p>You cannot miss that big red arrow. In fact, it&#8217;s even animated in the actual product. Click on it and choose a Visual Studio solution to analyse. I&#8217;m going to navigate to the DevExpress MainDemo 13.1.</p>
+
+<p>So long as the project has been built at some point, NDepend works out what to analyse (otherwise you&#8217;ll get helpful warnings).</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/ndepend/ndepend-003.png"></p>
+
+<p>It is very fast and we get to this help screen.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/ndepend/ndepend-004.png"></p>
+
+<p>Choose the dashboard.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/ndepend/ndepend-005.png"></p>
+
+<p>Now that&#8217;s a lot of information, but it&#8217;s all well presented and easy to navigate. Let&#8217;s focus on the worst: I can see <em>2 Critical Rules Violated</em>. Drill down to find out more:</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/ndepend/ndepend-009.png"></p>
+
+<p>It&#8217;s complaining that we have classes with duplicate names in our projects. In the pane on the left we can see what they are: 3 types named <code>MainDemoWinApplication</code>, 3 named <code>Program</code>, <em>etc.</em> And sure enough there are: <em>MainDemo.Win</em>, <em>MainDemo.Win.Mdi</em> and <em>MainDemo.Win.Ribbon</em> all duplicate those class names.</p>
+
+<p>We can also see 2 <code>TaskAnalysis1LayoutUpdater</code> types and a quick search reveals that there&#8217;s one in the web module and another in the win module.</p>
+
+<p>So NDepend has correctly discovered some potential issues. As we XAF fans know, this one is not really a problem, because those modules are never loaded into the same AppDomain, but nevertheless the information is accurate and relevant.</p>
+
+<p>Lets have a brief look at the other screens. The dependency graph:</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/ndepend/ndepend-006.png"></p>
+
+<p>With a million options.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/ndepend/ndepend-010.png"></p>
+
+<p>A dependency matrix.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/ndepend/ndepend-007.png"></p>
+
+<p>A metrics view showing class and assembly sizes.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/ndepend/ndepend-008.png"></p>
+
+<p>All with reams of helpful documentation.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/ndepend/ndepend-011.png"></p>
+
+<p>Overall, the tool felt fast, responsive and stable. I&#8217;ve focused on the user interface aspects, but there is so much more. Some things you can do:</p>
+
+<ul>
+<li>Create your own analysis rules</li>
+<li><a href="http://www.ndepend.com/Doc_CQLinq_Syntax.aspx#Edition">Query your own code with LINQ</a></li>
+<li>Run analysis from <a href="http://www.ndepend.com/NDependConsole.aspx">the command line</a></li>
+<li>Run from within Visual Studio</li>
+<li>Add output to continuous integration (<a href="http://www.ndepend.com/Doc_CI_TeamCity.aspx">TeamCity</a>, <a href="http://www.ndepend.com/Doc_CI_CCNet.aspx">CruiseControl.NET</a>, etc.)</li>
+<li>Track <a href="http://www.ndepend.com/Doc_Trend.aspx">trends and progress over time</a></li>
+</ul>
+
+
+<p>NDepend shines at providing a high-level overview of code quality and as such it is a very useful addition to any developer&#8217;s toolkit. There are some scenarios where NDepend would be particularly useful:</p>
+
+<ul>
+<li>For a developer joining a mature project.</li>
+<li>For a senior developer looking to track progress on a refactoring drive.</li>
+<li>For helping evaluate the quality of an open source third party library.</li>
+</ul>
+
+
+<p>In this quick review, I&#8217;m not going deep enough to say anything about whether the DevExpress MainDemo is good code or not - it&#8217;s just a sample project I happen to be quite familiar with. It might be interesting to unleash NDepend on the full DevExpress source code and maybe one day I&#8217;ll get around to writing a future post about that.</p>
+
+<p>With regard to my own projects, I feel I&#8217;m so familiar with them that I ought to be aware of most of the recommendations NDepend is likely to make, but I&#8217;ll give it a spin and see what comes out&#8230;</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Always run Visual Studio as an Administrator]]></title>
@@ -2225,77 +2311,6 @@ $ git push -u origin --all
 <p>That&#8217;s it. Now Git is integrated into your MonoDevelop environment. For instance, you can right-click in the editor to view the diff or the log of the current file, push changes, commit messages locally, etc.</p>
 
 <p>Note that instead of BitBucket, it would have been just as straightforward to host the repository on GitHub instead.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Clone your Octopress to blog from two places]]></title>
-    <link href="http://ZeroSharp.github.com/clone-your-octopress-to-blog-from-two-places/"/>
-    <updated>2013-02-01T11:59:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/clone-your-octopress-to-blog-from-two-places</id>
-    <content type="html"><![CDATA[<p><img class="right" src="http://ZeroSharp.github.com/images/blog/clone-your-octopress-001.png"></p>
-
-<p>This post covers how recreate a local repository of your Octopress blog. Perhaps you&#8217;ve accidentally lost it, or perhaps you would like to be able to blog from two different places. Recently <a href="http://ZeroSharp.github.com/the-best-pc-laptop-is-a-mac/">I bought a new computer</a> and I wanted to be able to blog from both my desktop and my laptop.</p>
-
-<h3>How Octopress works</h3>
-
-<p>Octopress repositories have two branches, <code>source</code> and <code>master</code>. The <code>source</code> branch contains the files that are used to generate the blog and the <code>master</code> contains the blog itself.</p>
-
-<p>When the local folders are initially configured according to the <a href="http://octopress.org/docs/setup/">Octopress Setup Guide</a>, the <code>master</code> branch is stored in a subfolder named &#8216;_deploy&#8217;. Since the folder name begins with an underscore, it is ignored when you <code>git push origin source</code>. Instead, the <code>master</code> branch (which contains your blog posts) gets updated when you <code>rake deploy</code>.</p>
-
-<h2>Recreating a local Octopress repository</h2>
-
-<p>To recreate the local directory structure of an existing Octopress blog, follow these instructions.</p>
-
-<h3>Clone your blog to the new machine</h3>
-
-<p>First you need to clone the <code>source</code> branch to the local octopress folder.</p>
-
-<pre><code>$ git clone -b source git@github.com:username/username.github.com.git octopress
-</code></pre>
-
-<p>Then clone the <code>master</code> branch to the _deploy subfolder.</p>
-
-<pre><code>$ cd octopress
-$ git clone git@github.com:username/username.github.com.git _deploy 
-</code></pre>
-
-<p>Then run the rake installation to configure everything</p>
-
-<pre><code>$ gem install bundler
-$ rbenv rehash    # If you use rbenv, rehash to be able to run the bundle command
-$ bundle install
-$ rake setup_github_pages
-</code></pre>
-
-<p>It will prompt you for your repository URL.</p>
-
-<pre><code>Enter the read/write url for your repository
-(For example, 'git@github.com:your_username/your_username.github.com)
-</code></pre>
-
-<p>That&#8217;s you setup with a new local copy of your Octopress blog.</p>
-
-<h3>Pushing changes from two different machines</h3>
-
-<p>If you want to blog from more than one computer, you need to make sure that you push everything before switching computers. From the first machine do the following whenever you&#8217;ve made changes:</p>
-
-<pre><code>$ rake generate
-$ git add .
-$ git commit -am "Some comment here." 
-$ git push origin source  # update the remote source branch 
-$ rake deploy             # update the remote master branch
-</code></pre>
-
-<p>Then on the other machine, you need to pull those changes.</p>
-
-<pre><code>$ cd octopress
-$ git pull origin source  # update the local source branch
-$ cd ./_deploy
-$ git pull origin master  # update the local master branch
-</code></pre>
-
-<p>Of course, it might be easier to deploy everything from a thumb drive instead&#8230;</p>
 ]]></content>
   </entry>
   

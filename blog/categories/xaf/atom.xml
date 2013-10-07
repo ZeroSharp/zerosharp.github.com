@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-09-09T08:01:39+01:00</updated>
+  <updated>2013-10-07T09:27:30+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,92 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[A review of NDepend 5]]></title>
+    <link href="http://ZeroSharp.github.com/a-review-of-ndepend-5/"/>
+    <updated>2013-10-02T17:54:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/a-review-of-ndepend-5</id>
+    <content type="html"><![CDATA[<p>NDepend is a commercial static analysis tool for .NET managed code. It's been around a long time (since 2004!). Version 5 was just released and in this post I'm going to try it out on the DevExpress MainDemo.</p>
+
+<p><span class='pullquote-right' data-pullquote='In version 5, a lot of work has been done to improve the learning curve.'>
+In the past I have always thought of NDepend as a complex tool. I was never sure where to start. In version 5, a lot of work has been done to improve the learning curve. The installation process is easy and a wizard very quickly points you in the right direction.</p>
+
+<p>After <a href="http://ndepend.com/NDependDownload.aspx">downloading the v5 trial</a> and running the installation you get to the following screen.
+</span></p>
+
+<p><img src="/images/blog/ndepend/ndepend-001.png"></p>
+
+<p>You cannot miss that big red arrow. In fact, it's even animated in the actual product. Click on it and choose a Visual Studio solution to analyse. I'm going to navigate to the DevExpress MainDemo 13.1.</p>
+
+<p>So long as the project has been built at some point, NDepend works out what to analyse (otherwise you'll get helpful warnings).</p>
+
+<p><img src="/images/blog/ndepend/ndepend-003.png"></p>
+
+<p>It is very fast and we get to this help screen.</p>
+
+<p><img src="/images/blog/ndepend/ndepend-004.png"></p>
+
+<p>Choose the dashboard.</p>
+
+<p><img src="/images/blog/ndepend/ndepend-005.png"></p>
+
+<p>Now that's a lot of information, but it's all well presented and easy to navigate. Let's focus on the worst: I can see <em>2 Critical Rules Violated</em>. Drill down to find out more:</p>
+
+<p><img src="/images/blog/ndepend/ndepend-009.png"></p>
+
+<p>It's complaining that we have classes with duplicate names in our projects. In the pane on the left we can see what they are: 3 types named <code>MainDemoWinApplication</code>, 3 named <code>Program</code>, <em>etc.</em> And sure enough there are: <em>MainDemo.Win</em>, <em>MainDemo.Win.Mdi</em> and <em>MainDemo.Win.Ribbon</em> all duplicate those class names.</p>
+
+<p>We can also see 2 <code>TaskAnalysis1LayoutUpdater</code> types and a quick search reveals that there's one in the web module and another in the win module.</p>
+
+<p>So NDepend has correctly discovered some potential issues. As we XAF fans know, this one is not really a problem, because those modules are never loaded into the same AppDomain, but nevertheless the information is accurate and relevant.</p>
+
+<p>Lets have a brief look at the other screens. The dependency graph:</p>
+
+<p><img src="/images/blog/ndepend/ndepend-006.png"></p>
+
+<p>With a million options.</p>
+
+<p><img src="/images/blog/ndepend/ndepend-010.png"></p>
+
+<p>A dependency matrix.</p>
+
+<p><img src="/images/blog/ndepend/ndepend-007.png"></p>
+
+<p>A metrics view showing class and assembly sizes.</p>
+
+<p><img src="/images/blog/ndepend/ndepend-008.png"></p>
+
+<p>All with reams of helpful documentation.</p>
+
+<p><img src="/images/blog/ndepend/ndepend-011.png"></p>
+
+<p>Overall, the tool felt fast, responsive and stable. I've focused on the user interface aspects, but there is so much more. Some things you can do:</p>
+
+<ul>
+<li>Create your own analysis rules</li>
+<li><a href="http://www.ndepend.com/Doc_CQLinq_Syntax.aspx#Edition">Query your own code with LINQ</a></li>
+<li>Run analysis from <a href="http://www.ndepend.com/NDependConsole.aspx">the command line</a></li>
+<li>Run from within Visual Studio</li>
+<li>Add output to continuous integration (<a href="http://www.ndepend.com/Doc_CI_TeamCity.aspx">TeamCity</a>, <a href="http://www.ndepend.com/Doc_CI_CCNet.aspx">CruiseControl.NET</a>, etc.)</li>
+<li>Track <a href="http://www.ndepend.com/Doc_Trend.aspx">trends and progress over time</a></li>
+</ul>
+
+
+<p>NDepend shines at providing a high-level overview of code quality and as such it is a very useful addition to any developer's toolkit. There are some scenarios where NDepend would be particularly useful:</p>
+
+<ul>
+<li>For a developer joining a mature project.</li>
+<li>For a senior developer looking to track progress on a refactoring drive.</li>
+<li>For helping evaluate the quality of an open source third party library.</li>
+</ul>
+
+
+<p>In this quick review, I'm not going deep enough to say anything about whether the DevExpress MainDemo is good code or not - it's just a sample project I happen to be quite familiar with. It might be interesting to unleash NDepend on the full DevExpress source code and maybe one day I'll get around to writing a future post about that.</p>
+
+<p>With regard to my own projects, I feel I'm so familiar with them that I ought to be aware of most of the recommendations NDepend is likely to make, but I'll give it a spin and see what comes out...</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[MiniProfiler with DevExpress XAF]]></title>
@@ -522,231 +608,6 @@ Good news. The conversion is now two-way. Get the source code <a href="https://g
 <p>Now, this is all highly experimental. You can see there are some warnings... Also, there is no connection with XPO, so the <em>Preview</em> is always empty.</p>
 
 <p>That said, it doesn't seem like too much of a stretch to eventually allow far more Visual Studio integration for XAF reports...</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Making XAF reports even better - Part 1]]></title>
-    <link href="http://ZeroSharp.github.com/making-xaf-reports-even-better-part-1/"/>
-    <updated>2013-05-21T14:38:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/making-xaf-reports-even-better-part-1</id>
-    <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='The aim of these posts is to provide a two-way conversion process between .repx and C# files.'>
-The ability to create reports using a report writer is a very powerful feature of <a href="http://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a>, but there are some limitations which are particularly cumbersome to deal with in complex project.</p>
-
-<p>One of the projects I work on has over 100 reports in it. Even though we make use of unit tests to ensure they are not broken, the maintenance of the code in the embedded scripts is particularly difficult to manage.</p>
-
-<ul>
-<li>XafReports are <em>.repx</em> files which are usually loaded into the report table during the database update routine. They are a subclass of XtraReports which with some added restrictions.</li>
-<li>Any scripts are stored as a string or serialized to a <em>resources</em> property.</li>
-<li>The report writer is available only in the Windows Forms application. This must be used whenever a change is made to a report. The modified report must be exported as a repx file and then added to the module as an embedded report. The procedure is <a href="http://documentation.devexpress.com/#Xaf/CustomDocument2786">described here</a>.</li>
-</ul>
-
-
-<p>These aspects of XAF reports give rise to several development headaches.</p>
-
-<ul>
-<li>While script syntax can be checked within the report writer at design time (via the Validate button in the scripts tab), the script code is still brittle.</li>
-<li>Errors that result from Script syntax are sometimes only discovered at run time (you can write a unit test to check during build, but we really want to the compiler to tell us).</li>
-<li>Refactoring any classes requires a considerable amount of work with the report writer in order to apply any changes to the code within the scripts.</li>
-<li>There is no Intellisense in the report writer.</li>
-<li>Version control diff comparisons and merging are impossible.</li>
-</ul>
-
-
-<p>The aim of these posts is to provide a two-way conversion process between .repx and C# files. In order to accomplish this we'll be relying on Visual Studio's excellent T4 templating engine.
-</span></p>
-
-<h2>Installing T4Toolbox</h2>
-
-<p><a href="http://msdn.microsoft.com/en-us/library/vstudio/bb126445.aspx">T4 Text Transformation Toolkit</a> is a template based code generation framework which is included with Visual Studio. On top of this <a href="http://www.olegsych.com/">Oleg Sych</a> provides a Visual Studio extension called <a href="http://visualstudiogallery.msdn.microsoft.com/7f9bd62f-2505-4aa4-9378-ee7830371684">T4 Toolbox</a> which adds some additional features.</p>
-
-<p>Install T4 Toolbox by selecting <strong>Tools/Extensions and Updates</strong> from Visual Studio and searching for it.</p>
-
-<p><img src="/images/blog/xaf-report-sync-001.png"></p>
-
-<h2>The ReportSync MainDemo</h2>
-
-<p>Next, download the modified MainDemo application from my <a href="https://github.com/ZeroSharp/Xaf_MainDemo_ReportSync">GitHub repository</a> and open it in Visual Studio.</p>
-
-<p>First lets look at the embedded reports which I have modified slightly so that they include scripts. I added these scripts via the MainDemo.Win application.</p>
-
-<p>Let's look at the <em>ContactsGroupByPosition.repx</em> file. You will find that there is a section:</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">this</span><span class="p">.</span><span class="n">ScriptsSource</span> <span class="p">=</span> <span class="s">&quot;\r\nprivate void xrLabel4_BeforePrint(object sender, System.Drawing.Printing.PrintE&quot;</span> <span class="p">+&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="s">&quot;ventArgs e) {\r\n\txrLabel4.Text = xrLabel4.Text + \&quot; Test!\&quot;;\r\n}\r\n&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>In this case, the script has been saved as a string. The other report, which has only slightly more complex script code looks like this:</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">private</span> <span class="n">System</span><span class="p">.</span><span class="n">Resources</span><span class="p">.</span><span class="n">ResourceManager</span> <span class="n">resources</span> <span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="k">get</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_resources</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="kt">string</span> <span class="n">resourceString</span> <span class="p">=</span> <span class="s">@&quot;zsrvvgEAAACRAAAAbFN5c3RlbS5SZXNvdXJjZXMuUmVzb3VyY2VSZWFkZXIsIG1zY29ybGliLCBWZXJzaW9uPT.....5kIFtEdWVEYXRlXSA8PSAnQEN1cnJlbnREYXRlJwABEFRhc2tzU3RhdGVSZXBvcnQ=&quot;</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="n">_resources</span> <span class="p">=</span> <span class="k">new</span> <span class="n">DevExpress</span><span class="p">.</span><span class="n">XtraReports</span><span class="p">.</span><span class="n">Serialization</span><span class="p">.</span><span class="n">XRResourceManager</span><span class="p">(</span><span class="n">resourceString</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="n">_resources</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}</span>
-</span><span class='line'><span class="c1">// ...</span>
-</span><span class='line'><span class="k">this</span><span class="p">.</span><span class="n">ScriptsSource</span> <span class="p">=</span> <span class="n">resources</span><span class="p">.</span><span class="n">GetString</span><span class="p">(</span><span class="s">&quot;$this.ScriptsSource&quot;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>Here, the scripts are not even in plain text. They have been serialised to the <em>resources</em> property.</p>
-
-<h2>The MainDemo.Reports assembly</h2>
-
-<p>You will find a new assembly <strong>MainDemo.Reports</strong> which contains a T4 template <em>RepxToCSharp.tt</em>. This is a T4 template which will search for repx files and transform them into much more helpful plain C#.</p>
-
-<p>The template will run every time it is saved. Currently, it depends on code within the MainDemo.Reports assembly, so make sure you have compiled it in Debug mode. Then open the <em>RepxToCSharp.tt</em> and press <code>Ctrl+S</code> to save (and run the T4 transformation).</p>
-
-<h2>The output</h2>
-
-<p>The template will generate two types of output. First, it generates the following report which you should find in <em>RepxToCSharp.txt</em></p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='text'><span class='line'>(This is an automatically generated file which should be excluded from version control)&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h1&gt;Summary of repx transformation&lt;/h1&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;Total repx files found                                      :  2
-</span><span class='line'>  Total reports generated                                   :  2
-</span><span class='line'>  Total reports skipped because unchanged                   :  0&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;Time elapsed: 00:00:02.1762029
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>In addition, each repx will have been transformed into two correpsonding files. All the generated files are highlighted in yellow:</p>
-
-<p><img src="/images/blog/xaf-report-sync-002.png"></p>
-
-<p>Now the scripts have been deserialized from the repx and put in a partial class and the remainder of the repx has been transformed into a corresponding <code>XafReport</code> descendant. See for instance, <em>ContactsGroupedByPosition.cs</em> (which stored its scripts as a string) is as follows:</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>ContactsGroupedByPosition.cs </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">_ContactsGroupedByPosition</span>
-</span><span class='line'><span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="c1">// -- Start of embedded scripts -- </span>
-</span><span class='line'>
-</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">xrLabel4_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">xrLabel4</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">xrLabel4</span><span class="p">.</span><span class="n">Text</span> <span class="p">+</span> <span class="s">&quot; Test!&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// -- End of embedded scripts --    </span>
-</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>And <em>TasksStateReport.cs</em> is now like this</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>TasksStateReport.cs </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">_TasksStateReport</span>
-</span><span class='line'><span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="c1">// -- Start of embedded scripts -- </span>
-</span><span class='line'>
-</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">xrLabel1_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">// This is a test</span>
-</span><span class='line'>    <span class="n">xrLabel1</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="s">&quot;Hello&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">xrLabel2_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">xrLabel2</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">GetLabel2Text</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">public</span> <span class="kt">string</span> <span class="nf">GetLabel2Text</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="s">&quot;Label 2!&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// -- End of embedded scripts --    </span>
-</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h2>A note about performance</h2>
-
-<p>The process of transforming the repx into C# is quite quick (a couple of seconds per <em>repx</em>), but when you have dozens of reports, it can quickly be tiresome. Therefore, there is a performance optimisation which checksums the repx and skips the transformation if it has not changed.</p>
-
-<p>(In a future version, we will also use a similar checksum in the other direction to determine whether the scripts have been modified).</p>
-
-<h2>Already much better</h2>
-
-<p>Now we have much more useful source files. Versions can be compared easily. The compiler will immediately inform us of any problems with the scripts within our reports.</p>
-
-<p>This is work in progress. Next up, I will be adding the 'reverse'. That is, a new transformation template which looks for scripts which have changed and 'injects' them back into the original <em>repx</em> file.</p>
 ]]></content>
   </entry>
   
