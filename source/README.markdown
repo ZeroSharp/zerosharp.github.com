@@ -1,6 +1,6 @@
-## Rob Anderson's Octopress Blog
+## Robert Anderson's Octopress Blog
 
-This is the source for Rob Anderson's [blog](http://blog.zerosharp.com/).
+This is the source for Robert Anderson's [blog](http://blog.zerosharp.com/).
 
 [Octopress](http://octopress.org/) is a blogging framework built on [Jekyll](https://github.com/mojombo/jekyll) by [Brandon Mathis](http://brandonmathis.com/).
 
