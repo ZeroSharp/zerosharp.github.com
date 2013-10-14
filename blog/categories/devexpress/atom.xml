@@ -4,7 +4,7 @@
   <title><![CDATA[Category: devexpress | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/devexpress/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-10-14T11:15:10+01:00</updated>
+  <updated>2013-10-14T14:35:32+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -30,7 +30,7 @@
 
 <p>Well that's a bit annoying - those edit boxes are far too wide. Wouldn't it look much better if it were narrower and centered? If we weren't using XAF, we'd probably have a separate <em>aspx</em> file for this view and we could just modify the html. With XAF there are several different recommended ways of modifying the output.</p>
 
-<h2>Use the model</h2>
+<h2>Option 1: Use the model</h2>
 
 <p>Well, one approach would be to use the layout designer to add some <em>EmptySpaceItems</em> to the default layout for the <code>ChangePasswordOnLogon</code>. Add something like this to <em>MainDemo.Web/Model.xafml</em>:</p>
 
@@ -75,11 +75,16 @@
 
 <p><blockquote><p>Verdict: too ugly</p></blockquote></p>
 
-<p><em>When should you use this approach?</em>: When the layout changes are within the main view area.</p>
+<p><em>When</em> <strong>should</strong> <em>you use this approach?</em>:</p>
+
+<ul>
+<li>When the layout changes are within the main view area.</li>
+</ul>
+
 
 <p>Let's look at another option.</p>
 
-<h2>Customise the ASP.NET template</h2>
+<h2>Option 2: Customise the ASP.NET template</h2>
 
 <p>If we were to <a href="http://documentation.devexpress.com/#Xaf/CustomDocument3460">follow the instructions here</a> we can modify the HTML exactly as we want. Unfortunately, this is even more work. We would need to:</p>
 
@@ -106,7 +111,7 @@
 </ul>
 
 
-<h2>Use a ViewController</h2>
+<h2>Option 3: Use a ViewController</h2>
 
 <p>The <code>ViewController</code> and <code>WindowController</code> are well-suited to this sort of task.</p>
 
@@ -151,7 +156,12 @@ protected override void OnViewControlsCreated()
 
 <p><blockquote><p>Verdict: good</p></blockquote></p>
 
-<p><em>When should you use this approach?</em>: When a layout change is easy to apply by modifying styles. When a change pertains only to one or few specific object types.</p>
+<p><em>When</em> <strong>should</strong> <em>you use this approach?</em>:</p>
+
+<ul>
+<li>When a layout change is easy to apply by modifying styles. When a change pertains only to one or few specific object types.</li>
+</ul>
+
 
 <h2>Conclusions</h2>
 
