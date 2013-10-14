@@ -18,7 +18,7 @@ Whenever my XAF web application asks me to change my password, I get a screen li
 
 Well that's a bit annoying - those edit boxes are far too wide. Wouldn't it look much better if it were narrower and centered? If we weren't using XAF, we'd probably have a separate _aspx_ file for this view and we could just modify the html. With XAF there are several different recommended ways of modifying the output.
 
-## Use the model ##
+## Option 1: Use the model ##
 
 Well, one approach would be to use the layout designer to add some _EmptySpaceItems_ to the default layout for the `ChangePasswordOnLogon`. Add something like this to _MainDemo.Web/Model.xafml_:
 
@@ -62,11 +62,13 @@ No!. It's a little better but it still looks ugly because the OK and Cancel butt
 Verdict: too ugly
 {% endblockquote %}
 
-_When should you use this approach?_: When the layout changes are within the main view area.
+_When_ **should** _you use this approach?_: 
+
+* When the layout changes are within the main view area.
 
 Let's look at another option.
 
-## Customise the ASP.NET template ##
+## Option 2: Customise the ASP.NET template ##
 
 If we were to [follow the instructions here](http://documentation.devexpress.com/#Xaf/CustomDocument3460) we can modify the HTML exactly as we want. Unfortunately, this is even more work. We would need to:
 
@@ -89,7 +91,7 @@ _When_ **should** _you use this approach?_:
 * When the same layout changes are to be applied to the views of all or many different object types. 
 * When the changes you are making are significant enough that they are hard to achieve by the solution below.
 
-## Use a ViewController ##
+## Option 3: Use a ViewController ##
 
 The `ViewController` and `WindowController` are well-suited to this sort of task.
 
@@ -133,7 +135,9 @@ Here's the resulting output, horizontally centered in the browser window:
 Verdict: good
 {% endblockquote %}
 
-_When should you use this approach?_: When a layout change is easy to apply by modifying styles. When a change pertains only to one or few specific object types.
+_When_ **should** _you use this approach?_: 
+
+* When a layout change is easy to apply by modifying styles. When a change pertains only to one or few specific object types.
 
 ## Conclusions ##
 
