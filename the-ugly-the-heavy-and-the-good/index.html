@@ -1,0 +1,464 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>The Ugly, the Heavy and the Good: 3 solutions to an XAF layout problem - ZeroSharp</title>
+  <meta name="author" content="Robert Anderson">
+
+  
+  <meta name="description" content="Three solutions to a simple layout change in DevExpress XAF.">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ZeroSharp.github.com/the-ugly-the-heavy-and-the-good/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="http://feeds.feedburner.com/zerosharp" rel="alternate" title="ZeroSharp" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> 
+
+<!-- <ra+> -->
+<link href="http://fonts.googleapis.com/css?family=Ubuntu:500" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
+
+<link href="/stylesheets/custom/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+<!-- </ra+> -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-30564687-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <!--<h1><a href="/">ZeroSharp</a></h1>-->
+  <a href="http://www.zerosharp.com/"><h1>ZeroSharp</h1></a>
+  
+    <h2>Robert Anderson's ones and zeros</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">  
+
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ZeroSharp.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/license/">License</a></li>  
+</ul>
+<ul class="subscription">
+    <li><a rel="me" href="https://plus.google.com/112685056596124127572?rel=author">
+      <img src="/images/asides/googleplus.png" width="24" height="24" alt="Rob on Google+">
+    </a></li>    
+    <li><a rel="me" href="http://twitter.com/8ctopus">
+      <img src="/images/asides/twitter.png" width="24" height="24" alt="Rob on Twitter" />
+    </a></li>
+    <!--<li><a rel="me" href="http://stackoverflow.com/users/1077279/shamp00">
+      <img src="/images/asides/stackoverflow.png" width="24" height="24" alt="Rob on StackOverflow" />
+    </a></li>
+    <li><a rel="me" href="https://github.com/zerosharp">
+      <img src="/images/asides/github.png" width="24" height="24" alt="Rob on GitHub" />
+    </a></li>
+    <li><a rel="me" href="http://www.linkedin.com/profile/view?id=926740"  class ="googleplus-hidden" >
+      <img src="/images/asides/linkedin.png" width="24" height="24" alt="Rob on LinkedIn" />
+    </a></li>
+    <li><a rel="me" href="http://springpad.com/#!/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/springpad.png" width="24" height="24" alt="Rob on SpringPad" />
+    </a></li>    
+    <li><a rel="me" href="http://pinterest.com/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/pinterest.png" width="24" height="24" alt="Rob on Pinterest" />
+    </a></li>
+    <li><a rel="me" href="http://www.last.fm/user/nosredna"  class ="googleplus-hidden" >
+      <img src="/images/asides/lastfm.png" width="24" height="24" alt="Rob on Last.fm" />
+    </a></li>-->
+    <li><a href="http://feeds.feedburner.com/zerosharp">
+      <img src="/images/asides/rss.png" rel="subscribe-rss" width="24" height="24" alt="RSS Feed" />
+    </a></li>
+</ul>
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">The Ugly, the Heavy and the Good: 3 Solutions to an XAF Layout Problem</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-14T09:51:00+01:00" pubdate data-updated="true">Oct 14<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>This post aims to look at various solutions to a seemingly simple layout change.</p>
+
+<p>With <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a>, a lot of the difficult things are easy: authentication, authorisation, ORM, reporting, complex form layouts, themes, etc., are all made easy by XAF. On the other hand, some of the easy things are hard. It can be frustratingly difficult to make a small modification to the basic layout. We will look at an example of such a change and evaluate the recommended DevExpress approaches.</p>
+
+<h2>The problem</h2>
+
+<p>Whenever my XAF web application asks me to change my password, I get a screen like this:</p>
+
+<p><img src="/images/blog/narrow-dialog-001.png"></p>
+
+<p>Well that&#8217;s a bit annoying - those edit boxes are far too wide. Wouldn&#8217;t it look much better if it were narrower and centered? If we weren&#8217;t using XAF, we&#8217;d probably have a separate <em>aspx</em> file for this view and we could just modify the html. With XAF there are several different recommended ways of modifying the output.</p>
+
+<h2>Use the model</h2>
+
+<p>Well, one approach would be to use the layout designer to add some <em>EmptySpaceItems</em> to the default layout for the <code>ChangePasswordOnLogon</code>. Add something like this to <em>MainDemo.Web/Model.xafml</em>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;Views&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;DetailView</span> <span class="na">Id=</span><span class="s">&quot;ChangePasswordOnLogonParameters_DetailView&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;Layout&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;Main&quot;</span> <span class="na">Removed=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;Narrow&quot;</span> <span class="na">RelativeSize=</span><span class="s">&quot;50&quot;</span> <span class="na">HorizontalAlign=</span><span class="s">&quot;Center&quot;</span> <span class="na">Direction=</span><span class="s">&quot;Horizontal&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;EmptySpaceItem1&quot;</span> <span class="na">Index=</span><span class="s">&quot;0&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;&quot;</span> <span class="na">RelativeSize=</span><span class="s">&quot;25&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;Main&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">Index=</span><span class="s">&quot;1&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;Static&quot;</span> <span class="na">Index=</span><span class="s">&quot;0&quot;</span> <span class="na">Direction=</span><span class="s">&quot;Horizontal&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;ChangePasswordImage&quot;</span> <span class="na">Index=</span><span class="s">&quot;0&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">RelativeSize=</span><span class="s">&quot;1&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;ChangePasswordImage&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;ChangePasswordText&quot;</span> <span class="na">Index=</span><span class="s">&quot;1&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">RelativeSize=</span><span class="s">&quot;99&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;ChangePasswordText&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/LayoutGroup&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;SimpleEditors&quot;</span> <span class="na">Index=</span><span class="s">&quot;1&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;ChangePasswordOnLogonParameters&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">Index=</span><span class="s">&quot;0&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;NewPassword&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;NewPassword&quot;</span> <span class="na">Index=</span><span class="s">&quot;0&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;ConfirmPassword&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;ConfirmPassword&quot;</span> <span class="na">Index=</span><span class="s">&quot;1&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;/LayoutGroup&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/LayoutGroup&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/LayoutGroup&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;EmptySpaceItem2&quot;</span> <span class="na">Index=</span><span class="s">&quot;2&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;&quot;</span> <span class="na">RelativeSize=</span><span class="s">&quot;25&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/LayoutGroup&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/Layout&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/DetailView&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/Views&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ugh. What a lot of work for such a small change. Another approach would be to make an equivalent model modification in code by subclassing <code>ModelNodesGeneratorUpdater&lt;ModelViewsNodesGenerator&gt;</code> but it would be even more effort.</p>
+
+<p>Is it easy to maintain? Not especially. If we make any changes to the parameters object, we would have to update the layout again. It is quite likely we&#8217;d have to make revisions when upgrading the framework.</p>
+
+<p>And does it work?</p>
+
+<p><img src="/images/blog/narrow-dialog-003.png"></p>
+
+<p>No!. It&#8217;s a little better but it still looks ugly because the OK and Cancel buttons are still out wide.</p>
+
+<blockquote><p>Verdict: too ugly</p></blockquote>
+
+
+<p><em>When should you use this approach?</em>: When the layout changes are within the main view area.</p>
+
+<p>Let&#8217;s look at another option.</p>
+
+<h2>Customise the ASP.NET template</h2>
+
+<p>If we were to <a href="http://documentation.devexpress.com/#Xaf/CustomDocument3460">follow the instructions here</a> we can modify the HTML exactly as we want. Unfortunately, this is even more work. We would need to:</p>
+
+<p><img src="/images/blog/narrow-dialog-004.jpg"></p>
+
+<ul>
+<li>Create a new MyNarrowTemplateDialogContent.ascx</li>
+<li>Modify the HTML within it to add a width to <code>Form1</code></li>
+<li>Find some way of applying this template to only the detail view for <em>Change Password</em>. This is <a href="http://www.devexpress.com/Support/Center/Question/Details/Q207853">currently not easy</a> but there is an example project at the end of <a href="http://www.devexpress.com/Support/Center/Question/Details/Q204692">this issue</a>.</li>
+</ul>
+
+
+<p>We&#8217;d end up with quite a few new files to maintain for just one little layout fix&#8230;</p>
+
+<p>Also, another problem with this approach is that it needs reviewing whenever a new version of the framework is released, because the default templates may have changed. Too much maintenance work for such a little change.</p>
+
+<blockquote><p>Verdict: too heavy</p></blockquote>
+
+
+<p><em>When</em> <strong>should</strong> <em>you use this approach?</em>:</p>
+
+<ul>
+<li>When the same layout changes are to be applied to the views of all or many different object types.</li>
+<li>When the changes you are making are significant enough that they are hard to achieve by the solution below.</li>
+</ul>
+
+
+<h2>Use a ViewController</h2>
+
+<p>The <code>ViewController</code> and <code>WindowController</code> are well-suited to this sort of task.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">NarrowDialogViewController</span> <span class="p">:</span> <span class="n">ViewController</span><span class="p">&lt;</span><span class="n">DetailView</span><span class="p">&gt;</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnActivated</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">base</span><span class="p">.</span><span class="n">OnActivated</span><span class="p">();</span>
+</span><span class='line'>        <span class="n">Active</span><span class="p">[</span><span class="s">&quot;ShouldUseNarrowForm&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="n">View</span><span class="p">.</span><span class="n">ObjectTypeInfo</span><span class="p">.</span><span class="n">Type</span> <span class="p">==</span> <span class="k">typeof</span><span class="p">(</span><span class="n">ChangePasswordOnLogonParameters</span><span class="p">);</span> <span class="c1">// see side-note below</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnViewControlsCreated</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">base</span><span class="p">.</span><span class="n">OnViewControlsCreated</span><span class="p">();</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">WebWindow</span><span class="p">.</span><span class="n">CurrentRequestPage</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="kt">var</span> <span class="n">htmlForm</span> <span class="p">=</span> <span class="n">WebWindow</span><span class="p">.</span><span class="n">CurrentRequestPage</span><span class="p">.</span><span class="n">FindControl</span><span class="p">(</span><span class="s">&quot;Form2&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">HtmlForm</span><span class="p">;</span> <span class="c1">// see note below</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">htmlForm</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="c1">// make the form narrow</span>
+</span><span class='line'>                <span class="n">htmlForm</span><span class="p">.</span><span class="n">Attributes</span><span class="p">.</span><span class="n">CssStyle</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;width&quot;</span><span class="p">,</span> <span class="n">Unit</span><span class="p">.</span><span class="n">Percentage</span><span class="p">(</span><span class="m">40</span><span class="p">).</span><span class="n">ToString</span><span class="p">());</span>
+</span><span class='line'>                <span class="c1">// center the form</span>
+</span><span class='line'>                <span class="n">htmlForm</span><span class="p">.</span><span class="n">Attributes</span><span class="p">.</span><span class="n">CssStyle</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;margin-left&quot;</span><span class="p">,</span> <span class="s">&quot;auto&quot;</span><span class="p">);</span>
+</span><span class='line'>                <span class="n">htmlForm</span><span class="p">.</span><span class="n">Attributes</span><span class="p">.</span><span class="n">CssStyle</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;margin-right&quot;</span><span class="p">,</span> <span class="s">&quot;auto&quot;</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A side note: do not use <code>TargetObjectType == typeof(ChangePasswordOnLogonParameters)</code> instead of the <code>OnActivated()</code> override. This is because <code>ChangePasswordParameters</code> which is used when the user clicks on <code>Change My Password</code> is a subclass of <code>ChangePasswordOnLogonParameters</code> and we do <em>not</em> want that view to be narrowed because it appears in a popup window instead of the main window.</p>
+
+<p>This solution is quite maintainable. We can delimit the views for which the modification applies making the controller is active. And the modification itself is relatively simple. It is also reasonably robust with regard to DevExpress upgrades. (They did just change the name of the main dialog Form <code>Form1</code> in 12.1 to <code>Form2</code> in 12.2, but it was the first time in years and it was simple to fix. Alternatively, you could use <code>FindControl</code> instead of using the hard-wired name).</p>
+
+<p>Here&#8217;s the resulting output, horizontally centered in the browser window:</p>
+
+<p><img src="/images/blog/narrow-dialog-002.png"></p>
+
+<blockquote><p>Verdict: good</p></blockquote>
+
+
+<p><em>When should you use this approach?</em>: When a layout change is easy to apply by modifying styles. When a change pertains only to one or few specific object types.</p>
+
+<h2>Conclusions</h2>
+
+<p>In this case, using a <code>ViewController</code> leads to relatively simple code and ease of maintenance. Other situations may well be better served by the other approaches.</p>
+
+<p>DevExpress XAF is a powerful mature product. As such, it can be daunting to new users because of all the different approaches for applying changes. It is always possible to find an elegant maintainable solution, but sometimes it is not obvious, even when the required change is small.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-14T09:51:00+01:00" pubdate data-updated="true">Oct 14<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/the-ugly-the-heavy-and-the-good/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/the-ugly-the-heavy-and-the-good/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/a-review-of-ndepend-5/" title="Previous Post: A review of NDepend 5">&laquo; A review of NDepend 5</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Robert Anderson
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'zerosharp';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/the-ugly-the-heavy-and-the-good/';
+        var disqus_url = 'http://ZeroSharp.github.com/the-ugly-the-heavy-and-the-good/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

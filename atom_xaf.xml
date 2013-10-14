@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-10-07T09:27:30+01:00</updated>
+  <updated>2013-10-14T11:15:10+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,199 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[The Ugly, the Heavy and the Good: 3 solutions to an XAF layout problem]]></title>
+    <link href="http://ZeroSharp.github.com/the-ugly-the-heavy-and-the-good/"/>
+    <updated>2013-10-14T09:51:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/the-ugly-the-heavy-and-the-good</id>
+    <content type="html"><![CDATA[<p>This post aims to look at various solutions to a seemingly simple layout change.</p>
+
+<p>With <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a>, a lot of the difficult things are easy: authentication, authorisation, ORM, reporting, complex form layouts, themes, etc., are all made easy by XAF. On the other hand, some of the easy things are hard. It can be frustratingly difficult to make a small modification to the basic layout. We will look at an example of such a change and evaluate the recommended DevExpress approaches.</p>
+
+<h2>The problem</h2>
+
+<p>Whenever my XAF web application asks me to change my password, I get a screen like this:</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/narrow-dialog-001.png"></p>
+
+<p>Well that&#8217;s a bit annoying - those edit boxes are far too wide. Wouldn&#8217;t it look much better if it were narrower and centered? If we weren&#8217;t using XAF, we&#8217;d probably have a separate <em>aspx</em> file for this view and we could just modify the html. With XAF there are several different recommended ways of modifying the output.</p>
+
+<h2>Use the model</h2>
+
+<p>Well, one approach would be to use the layout designer to add some <em>EmptySpaceItems</em> to the default layout for the <code>ChangePasswordOnLogon</code>. Add something like this to <em>MainDemo.Web/Model.xafml</em>:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;Views&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;DetailView</span> <span class="na">Id=</span><span class="s">&quot;ChangePasswordOnLogonParameters_DetailView&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;Layout&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;Main&quot;</span> <span class="na">Removed=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;Narrow&quot;</span> <span class="na">RelativeSize=</span><span class="s">&quot;50&quot;</span> <span class="na">HorizontalAlign=</span><span class="s">&quot;Center&quot;</span> <span class="na">Direction=</span><span class="s">&quot;Horizontal&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;EmptySpaceItem1&quot;</span> <span class="na">Index=</span><span class="s">&quot;0&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;&quot;</span> <span class="na">RelativeSize=</span><span class="s">&quot;25&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;Main&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">Index=</span><span class="s">&quot;1&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;Static&quot;</span> <span class="na">Index=</span><span class="s">&quot;0&quot;</span> <span class="na">Direction=</span><span class="s">&quot;Horizontal&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;ChangePasswordImage&quot;</span> <span class="na">Index=</span><span class="s">&quot;0&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">RelativeSize=</span><span class="s">&quot;1&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;ChangePasswordImage&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;ChangePasswordText&quot;</span> <span class="na">Index=</span><span class="s">&quot;1&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">RelativeSize=</span><span class="s">&quot;99&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;ChangePasswordText&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/LayoutGroup&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;SimpleEditors&quot;</span> <span class="na">Index=</span><span class="s">&quot;1&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;ChangePasswordOnLogonParameters&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">Index=</span><span class="s">&quot;0&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;NewPassword&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;NewPassword&quot;</span> <span class="na">Index=</span><span class="s">&quot;0&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>                <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;ConfirmPassword&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;ConfirmPassword&quot;</span> <span class="na">Index=</span><span class="s">&quot;1&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>              <span class="nt">&lt;/LayoutGroup&gt;</span>
+</span><span class='line'>            <span class="nt">&lt;/LayoutGroup&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;/LayoutGroup&gt;</span>
+</span><span class='line'>          <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;EmptySpaceItem2&quot;</span> <span class="na">Index=</span><span class="s">&quot;2&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;&quot;</span> <span class="na">RelativeSize=</span><span class="s">&quot;25&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;/LayoutGroup&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/Layout&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/DetailView&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/Views&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Ugh. What a lot of work for such a small change. Another approach would be to make an equivalent model modification in code by subclassing <code>ModelNodesGeneratorUpdater&lt;ModelViewsNodesGenerator&gt;</code> but it would be even more effort.</p>
+
+<p>Is it easy to maintain? Not especially. If we make any changes to the parameters object, we would have to update the layout again. It is quite likely we&#8217;d have to make revisions when upgrading the framework.</p>
+
+<p>And does it work?</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/narrow-dialog-003.png"></p>
+
+<p>No!. It&#8217;s a little better but it still looks ugly because the OK and Cancel buttons are still out wide.</p>
+
+<blockquote><p>Verdict: too ugly</p></blockquote>
+
+
+<p><em>When should you use this approach?</em>: When the layout changes are within the main view area.</p>
+
+<p>Let&#8217;s look at another option.</p>
+
+<h2>Customise the ASP.NET template</h2>
+
+<p>If we were to <a href="http://documentation.devexpress.com/#Xaf/CustomDocument3460">follow the instructions here</a> we can modify the HTML exactly as we want. Unfortunately, this is even more work. We would need to:</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/narrow-dialog-004.jpg"></p>
+
+<ul>
+<li>Create a new MyNarrowTemplateDialogContent.ascx</li>
+<li>Modify the HTML within it to add a width to <code>Form1</code></li>
+<li>Find some way of applying this template to only the detail view for <em>Change Password</em>. This is <a href="http://www.devexpress.com/Support/Center/Question/Details/Q207853">currently not easy</a> but there is an example project at the end of <a href="http://www.devexpress.com/Support/Center/Question/Details/Q204692">this issue</a>.</li>
+</ul>
+
+
+<p>We&#8217;d end up with quite a few new files to maintain for just one little layout fix&#8230;</p>
+
+<p>Also, another problem with this approach is that it needs reviewing whenever a new version of the framework is released, because the default templates may have changed. Too much maintenance work for such a little change.</p>
+
+<blockquote><p>Verdict: too heavy</p></blockquote>
+
+
+<p><em>When</em> <strong>should</strong> <em>you use this approach?</em>:</p>
+
+<ul>
+<li>When the same layout changes are to be applied to the views of all or many different object types.</li>
+<li>When the changes you are making are significant enough that they are hard to achieve by the solution below.</li>
+</ul>
+
+
+<h2>Use a ViewController</h2>
+
+<p>The <code>ViewController</code> and <code>WindowController</code> are well-suited to this sort of task.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">NarrowDialogViewController</span> <span class="p">:</span> <span class="n">ViewController</span><span class="p">&lt;</span><span class="n">DetailView</span><span class="p">&gt;</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnActivated</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">base</span><span class="p">.</span><span class="n">OnActivated</span><span class="p">();</span>
+</span><span class='line'>        <span class="n">Active</span><span class="p">[</span><span class="s">&quot;ShouldUseNarrowForm&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="n">View</span><span class="p">.</span><span class="n">ObjectTypeInfo</span><span class="p">.</span><span class="n">Type</span> <span class="p">==</span> <span class="k">typeof</span><span class="p">(</span><span class="n">ChangePasswordOnLogonParameters</span><span class="p">);</span> <span class="c1">// see side-note below</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnViewControlsCreated</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">base</span><span class="p">.</span><span class="n">OnViewControlsCreated</span><span class="p">();</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">WebWindow</span><span class="p">.</span><span class="n">CurrentRequestPage</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="kt">var</span> <span class="n">htmlForm</span> <span class="p">=</span> <span class="n">WebWindow</span><span class="p">.</span><span class="n">CurrentRequestPage</span><span class="p">.</span><span class="n">FindControl</span><span class="p">(</span><span class="s">&quot;Form2&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">HtmlForm</span><span class="p">;</span> <span class="c1">// see note below</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">htmlForm</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="c1">// make the form narrow</span>
+</span><span class='line'>                <span class="n">htmlForm</span><span class="p">.</span><span class="n">Attributes</span><span class="p">.</span><span class="n">CssStyle</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;width&quot;</span><span class="p">,</span> <span class="n">Unit</span><span class="p">.</span><span class="n">Percentage</span><span class="p">(</span><span class="m">40</span><span class="p">).</span><span class="n">ToString</span><span class="p">());</span>
+</span><span class='line'>                <span class="c1">// center the form</span>
+</span><span class='line'>                <span class="n">htmlForm</span><span class="p">.</span><span class="n">Attributes</span><span class="p">.</span><span class="n">CssStyle</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;margin-left&quot;</span><span class="p">,</span> <span class="s">&quot;auto&quot;</span><span class="p">);</span>
+</span><span class='line'>                <span class="n">htmlForm</span><span class="p">.</span><span class="n">Attributes</span><span class="p">.</span><span class="n">CssStyle</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;margin-right&quot;</span><span class="p">,</span> <span class="s">&quot;auto&quot;</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>A side note: do not use <code>TargetObjectType == typeof(ChangePasswordOnLogonParameters)</code> instead of the <code>OnActivated()</code> override. This is because <code>ChangePasswordParameters</code> which is used when the user clicks on <code>Change My Password</code> is a subclass of <code>ChangePasswordOnLogonParameters</code> and we do <em>not</em> want that view to be narrowed because it appears in a popup window instead of the main window.</p>
+
+<p>This solution is quite maintainable. We can delimit the views for which the modification applies making the controller is active. And the modification itself is relatively simple. It is also reasonably robust with regard to DevExpress upgrades. (They did just change the name of the main dialog Form <code>Form1</code> in 12.1 to <code>Form2</code> in 12.2, but it was the first time in years and it was simple to fix. Alternatively, you could use <code>FindControl</code> instead of using the hard-wired name).</p>
+
+<p>Here&#8217;s the resulting output, horizontally centered in the browser window:</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/narrow-dialog-002.png"></p>
+
+<blockquote><p>Verdict: good</p></blockquote>
+
+
+<p><em>When should you use this approach?</em>: When a layout change is easy to apply by modifying styles. When a change pertains only to one or few specific object types.</p>
+
+<h2>Conclusions</h2>
+
+<p>In this case, using a <code>ViewController</code> leads to relatively simple code and ease of maintenance. Other situations may well be better served by the other approaches.</p>
+
+<p>DevExpress XAF is a powerful mature product. As such, it can be daunting to new users because of all the different approaches for applying changes. It is always possible to find an elegant maintainable solution, but sometimes it is not obvious, even when the required change is small.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[A review of NDepend 5]]></title>
@@ -2474,90 +2667,6 @@ You can leave the account number blank.</p>
 <li><a href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Part 5 - Load balancing</a></li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[A look at the DevExpress MainDemo with Google Page Speed]]></title>
-    <link href="http://ZeroSharp.github.com/a-look-at-the-devexpress-maindemo-with-google-page-speed/"/>
-    <updated>2012-09-12T17:22:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/a-look-at-the-devexpress-maindemo-with-google-page-speed</id>
-    <content type="html"><![CDATA[<p>In this post I&#8217;ll demonstrate how to use the <a href="https://developers.google.com/speed/pagespeed/">Google Page Speed</a> tools to analyse the performance of the DevExpress XAF MainDemo.</p>
-
-<p>The easiest way to run Google Page Speed is as a Chrome or Firefox plugin. Both are available <a href="https://developers.google.com/speed/pagespeed/insights_extensions">here</a>. I use Chrome.</p>
-
-<p>Now open the DevExpress MainDemo from Visual Studio. By default it is installed to:</p>
-
-<pre><code>C:\Users\Public\Documents\DXperience 12.1 Demos\eXpressApp Framework\MainDemo\CS\MainDemo.sln
-</code></pre>
-
-<p>Set the MainDemo.Web as the startup project and change the connection string in web.config if necessary. Launch the application with Chrome and login as &#8216;Sam&#8217; (password is blank). Then press <code>F12</code> to bring up the developer tools. The last tab is the Page Speed Analysis and your browser should look like this:</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/google-page-speed-001.png"></p>
-
-<p>Now click <code>Start Analysis</code> button. After a few seconds you should get something like the following results.</p>
-
-<h4>Results against the debug webserver</h4>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/google-page-speed-002.png"></p>
-
-<p>It&#8217;s as easy as that. We now have a list of suggested improvements. The same report can be generated for any page you visit with your browser.</p>
-
-<p>I get an overall score of 72 out of 100. First thing to note is that the only &#8216;high priority&#8217; recommendation is to &#8216;enable keep-alive&#8217; which I suspect will not be necessary when running in IIS instead of the debug webserver.</p>
-
-<h4>Switch to use IIS</h4>
-
-<p>Actually to get the main demo to run in IIS is not altogether simple because of the security permissions required for logging in and creating or updating the schema. If you get an error message after login:</p>
-
-<pre><code>Login failed for user 'IIS APPPOOL\DefaultAppPool
-</code></pre>
-
-<p>you will need to add the IIS application pool identity to the SQL Server security.</p>
-
-<ul>
-<li>Launch SQL Server management studio and connect to the database.</li>
-<li>In the <code>Security\Logins</code> right click and select <code>New Login...</code>.</li>
-<li>Type in <code>IIS APPPOOL\DefaultAppPool</code> (you won&#8217;t find it by searching) or <code>IIS APPPOOL\ASP.NET v4.0</code> depending on the security context of the application pool you are using.</li>
-<li>Select <code>Server Roles</code> and check <code>public</code> and <code>sysadmin</code> to allow the MainDemo to create the database.</li>
-</ul>
-
-
-<p>(All of this is assuming you are using a non-public instance of SQL Server for development.)</p>
-
-<h4>Results against IIS</h4>
-
-<p>The results are much better: an overall score of 93.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/google-page-speed-003.png"></p>
-
-<h4>Other points of interest</h4>
-
-<p>Let&#8217;s experiment by turning off compression in the webconfig.</p>
-
-<pre><code>&lt;compression 
-  enableHtmlCompression="false" 
-  enableCallbackCompression="false" 
-  enableResourceCompression="false" 
-  enableResourceMerging="false" /&gt;
-</code></pre>
-
-<p>The overall score drops to 62.</p>
-
-<p><img class="right" src="http://ZeroSharp.github.com/images/blog/google-page-speed-004.png"></p>
-
-<p>You can alternatively use IIS&#8217;s dynamic compression by setting <code>enableResourceMerging="true"</code> and the others false and adding a <code>urlCompression</code> setting as follows.</p>
-
-<pre><code>&lt;system.webServer&gt;
-  &lt;urlCompression doDynamicCompression="true" /&gt;
-  ...
-&lt;/system.webServer&gt; 
-</code></pre>
-
-<p>(Note that you may need to install the dynamic compression module via <strong>Control Panel/Programs/Turn Windows Features On or Off</strong>.)</p>
-
-<p>Then the analysis is back up to 93. The advantage of IIS dynamic compression in IIS 7 is that it turns itself off automatically when the CPU load is high. See <a href="http://www.codeproject.com/Articles/242133/Making-the-most-out-of-IIS-compression-Part-1-conf">Matt Perdeck&#8217;s series of articles about IIS Compression</a> for more information.</p>
-
-<p>One mysterious point: if you navigate to the <a href="http://demos.devexpress.com/XAF/MainDemo/default.aspx">online version of the MainDemo</a> and run the analysis there you will notice that compression resource merging must be turned off for some reason and the overall score is only 75. Perhaps someone from DevExpress can explain&#8230;</p>
 ]]></content>
   </entry>
   

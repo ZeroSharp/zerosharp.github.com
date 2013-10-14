@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c# | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/c-/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-10-07T09:27:30+01:00</updated>
+  <updated>2013-10-14T11:15:10+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,154 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[The Ugly, the Heavy and the Good: 3 solutions to an XAF layout problem]]></title>
+    <link href="http://ZeroSharp.github.com/the-ugly-the-heavy-and-the-good/"/>
+    <updated>2013-10-14T09:51:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/the-ugly-the-heavy-and-the-good</id>
+    <content type="html"><![CDATA[<p>This post aims to look at various solutions to a seemingly simple layout change.</p>
+
+<p>With <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a>, a lot of the difficult things are easy: authentication, authorisation, ORM, reporting, complex form layouts, themes, etc., are all made easy by XAF. On the other hand, some of the easy things are hard. It can be frustratingly difficult to make a small modification to the basic layout. We will look at an example of such a change and evaluate the recommended DevExpress approaches.</p>
+
+<h2>The problem</h2>
+
+<p>Whenever my XAF web application asks me to change my password, I get a screen like this:</p>
+
+<p><img src="/images/blog/narrow-dialog-001.png"></p>
+
+<p>Well that's a bit annoying - those edit boxes are far too wide. Wouldn't it look much better if it were narrower and centered? If we weren't using XAF, we'd probably have a separate <em>aspx</em> file for this view and we could just modify the html. With XAF there are several different recommended ways of modifying the output.</p>
+
+<h2>Use the model</h2>
+
+<p>Well, one approach would be to use the layout designer to add some <em>EmptySpaceItems</em> to the default layout for the <code>ChangePasswordOnLogon</code>. Add something like this to <em>MainDemo.Web/Model.xafml</em>:</p>
+
+<p>```xml
+  <Views></p>
+
+<pre><code>&lt;DetailView Id="ChangePasswordOnLogonParameters_DetailView"&gt;
+  &lt;Layout&gt;
+    &lt;LayoutGroup Id="Main" Removed="True" /&gt;
+    &lt;LayoutGroup Id="Narrow" RelativeSize="50" HorizontalAlign="Center" Direction="Horizontal" IsNewNode="True"&gt;
+      &lt;LayoutItem Id="EmptySpaceItem1" Index="0" ViewItem="" RelativeSize="25" IsNewNode="True" /&gt;
+      &lt;LayoutGroup Id="Main" ShowCaption="False" Index="1" IsNewNode="True"&gt;
+        &lt;LayoutGroup Id="Static" Index="0" Direction="Horizontal" ShowCaption="False" IsNewNode="True"&gt;
+          &lt;LayoutItem Id="ChangePasswordImage" Index="0" ShowCaption="False" RelativeSize="1" ViewItem="ChangePasswordImage" IsNewNode="True" /&gt;
+          &lt;LayoutItem Id="ChangePasswordText" Index="1" ShowCaption="False" RelativeSize="99" ViewItem="ChangePasswordText" IsNewNode="True" /&gt;
+        &lt;/LayoutGroup&gt;
+        &lt;LayoutGroup Id="SimpleEditors" Index="1" ShowCaption="False" IsNewNode="True"&gt;
+          &lt;LayoutGroup Id="ChangePasswordOnLogonParameters" ShowCaption="False" Index="0" IsNewNode="True"&gt;
+            &lt;LayoutItem Id="NewPassword" ViewItem="NewPassword" Index="0" IsNewNode="True" /&gt;
+            &lt;LayoutItem Id="ConfirmPassword" ViewItem="ConfirmPassword" Index="1" IsNewNode="True" /&gt;
+          &lt;/LayoutGroup&gt;
+        &lt;/LayoutGroup&gt;
+      &lt;/LayoutGroup&gt;
+      &lt;LayoutItem Id="EmptySpaceItem2" Index="2" ViewItem="" RelativeSize="25" IsNewNode="True" /&gt;
+    &lt;/LayoutGroup&gt;
+  &lt;/Layout&gt;
+&lt;/DetailView&gt;
+</code></pre>
+
+<p>  </Views>  <br/>
+```</p>
+
+<p>Ugh. What a lot of work for such a small change. Another approach would be to make an equivalent model modification in code by subclassing <code>ModelNodesGeneratorUpdater&lt;ModelViewsNodesGenerator&gt;</code> but it would be even more effort.</p>
+
+<p>Is it easy to maintain? Not especially. If we make any changes to the parameters object, we would have to update the layout again. It is quite likely we'd have to make revisions when upgrading the framework.</p>
+
+<p>And does it work?</p>
+
+<p><img src="/images/blog/narrow-dialog-003.png"></p>
+
+<p>No!. It's a little better but it still looks ugly because the OK and Cancel buttons are still out wide.</p>
+
+<p><blockquote><p>Verdict: too ugly</p></blockquote></p>
+
+<p><em>When should you use this approach?</em>: When the layout changes are within the main view area.</p>
+
+<p>Let's look at another option.</p>
+
+<h2>Customise the ASP.NET template</h2>
+
+<p>If we were to <a href="http://documentation.devexpress.com/#Xaf/CustomDocument3460">follow the instructions here</a> we can modify the HTML exactly as we want. Unfortunately, this is even more work. We would need to:</p>
+
+<p><img src="/images/blog/narrow-dialog-004.jpg"></p>
+
+<ul>
+<li>Create a new MyNarrowTemplateDialogContent.ascx</li>
+<li>Modify the HTML within it to add a width to <code>Form1</code></li>
+<li>Find some way of applying this template to only the detail view for <em>Change Password</em>. This is <a href="http://www.devexpress.com/Support/Center/Question/Details/Q207853">currently not easy</a> but there is an example project at the end of <a href="http://www.devexpress.com/Support/Center/Question/Details/Q204692">this issue</a>.</li>
+</ul>
+
+
+<p>We'd end up with quite a few new files to maintain for just one little layout fix...</p>
+
+<p>Also, another problem with this approach is that it needs reviewing whenever a new version of the framework is released, because the default templates may have changed. Too much maintenance work for such a little change.</p>
+
+<p><blockquote><p>Verdict: too heavy</p></blockquote></p>
+
+<p><em>When</em> <strong>should</strong> <em>you use this approach?</em>:</p>
+
+<ul>
+<li>When the same layout changes are to be applied to the views of all or many different object types.</li>
+<li>When the changes you are making are significant enough that they are hard to achieve by the solution below.</li>
+</ul>
+
+
+<h2>Use a ViewController</h2>
+
+<p>The <code>ViewController</code> and <code>WindowController</code> are well-suited to this sort of task.</p>
+
+<p>```c#
+public class NarrowDialogViewController : ViewController<DetailView>
+{</p>
+
+<pre><code>protected override void OnActivated()
+{
+    base.OnActivated();
+    Active["ShouldUseNarrowForm"] = View.ObjectTypeInfo.Type == typeof(ChangePasswordOnLogonParameters); // see side-note below
+}
+
+protected override void OnViewControlsCreated()
+{
+    base.OnViewControlsCreated();
+    if (WebWindow.CurrentRequestPage != null)
+    {
+        var htmlForm = WebWindow.CurrentRequestPage.FindControl("Form2") as HtmlForm; // see note below
+        if (htmlForm != null)
+        {
+            // make the form narrow
+            htmlForm.Attributes.CssStyle.Add("width", Unit.Percentage(40).ToString());
+            // center the form
+            htmlForm.Attributes.CssStyle.Add("margin-left", "auto");
+            htmlForm.Attributes.CssStyle.Add("margin-right", "auto");
+        }
+    }
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>A side note: do not use <code>TargetObjectType == typeof(ChangePasswordOnLogonParameters)</code> instead of the <code>OnActivated()</code> override. This is because <code>ChangePasswordParameters</code> which is used when the user clicks on <code>Change My Password</code> is a subclass of <code>ChangePasswordOnLogonParameters</code> and we do <em>not</em> want that view to be narrowed because it appears in a popup window instead of the main window.</p>
+
+<p>This solution is quite maintainable. We can delimit the views for which the modification applies making the controller is active. And the modification itself is relatively simple. It is also reasonably robust with regard to DevExpress upgrades. (They did just change the name of the main dialog Form <code>Form1</code> in 12.1 to <code>Form2</code> in 12.2, but it was the first time in years and it was simple to fix. Alternatively, you could use <code>FindControl</code> instead of using the hard-wired name).</p>
+
+<p>Here's the resulting output, horizontally centered in the browser window:</p>
+
+<p><img src="/images/blog/narrow-dialog-002.png"></p>
+
+<p><blockquote><p>Verdict: good</p></blockquote></p>
+
+<p><em>When should you use this approach?</em>: When a layout change is easy to apply by modifying styles. When a change pertains only to one or few specific object types.</p>
+
+<h2>Conclusions</h2>
+
+<p>In this case, using a <code>ViewController</code> leads to relatively simple code and ease of maintenance. Other situations may well be better served by the other approaches.</p>
+
+<p>DevExpress XAF is a powerful mature product. As such, it can be daunting to new users because of all the different approaches for applying changes. It is always possible to find an elegant maintainable solution, but sometimes it is not obvious, even when the required change is small.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[A review of NDepend 5]]></title>
@@ -535,79 +683,6 @@ var customer = Session</p>
 <p>```</p>
 
 <p>In the next post I'll show how to put the fluent interface code together.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Making XAF reports even better - Part 2]]></title>
-    <link href="http://ZeroSharp.github.com/making-xaf-reports-even-better-part-2/"/>
-    <updated>2013-05-28T11:51:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/making-xaf-reports-even-better-part-2</id>
-    <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='Repx files with embedded scripts are now much more maintainable. You can correct syntax errors, refactor, version control, merge versions easily.'>
-Good news. The conversion is now two-way. Get the source code <a href="https://github.com/ZeroSharp/Xaf_MainDemo_ReportSync">from GitHub</a>. Make sure you have built MainDemo.Reports project.</p>
-
-<p>You will find there are now two T4 transforms in the project. <em>RepxToCSharp.tt</em> is covered in the <a href="/making-xaf-reports-even-better-part-1">Part 1</a>. It searches for any <em>.repx</em> files in the solution and converts the scripts into compilable C#.</p>
-
-<p>The second transform is new. <em>CSharpToRepx.tt</em> copies any changes to the script part back into the original <em>.repx</em> files. Again, there are performance optimisations via checksums to prevent overwriting unchanged files.</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='text'><span class='line'>(This is an automatically generated file which should be excluded from version control)&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h1&gt;Summary of C# transformation&lt;/h1&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;Total C# files found                                        :  2
-</span><span class='line'>  Total reports injected                                    :  1
-</span><span class='line'>  Total reports missing                                     :  0
-</span><span class='line'>  Total reports skipped because unchanged                   :  1&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;Time elapsed: 00:00:02.3483264
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>Repx files with embedded scripts are now much more maintainable. You can correct syntax errors, refactor, version control, merge versions easily. You could even write unit tests against the code in the scripts.</p>
-
-<p></span></p>
-
-<p>Currently the easiest way of running these scripts is to open them and save them with <code>Ctrl+S</code>. This is because T4 templates were originally designed as a Visual Studio tool.</p>
-
-<p>In the future I'm hoping to improve the integration further. There are ways of including the transformations into the build instead, most of which are covered in <a href="http://www.olegsych.com/2010/04/understanding-t4-msbuild-integration">a blog post by Mr T4, Oleg Sych</a>. I like the idea of it being a NuGet package that can be easily added to any XAF project, but there's a but I'll need some more time to work out how best to achieve this.</p>
-
-<h2>Basic usage summary</h2>
-
-<p>Until then, here are some basic usage instructions.</p>
-
-<ul>
-<li>Add the T4 Toolbox extension to Visual Studio</li>
-<li>Add a copy of the MainDemo.Reports project to your own solution</li>
-<li>Make sure you build it before running the transforms</li>
-<li>Open <em>RepxToCSharp.tt</em> in Visual Studio.</li>
-<li>Save it with <code>Ctrl+S</code> to run the transform. It will search all the folders in your Solution for <em>.repx</em> files and add corresponding C# classes.</li>
-<li>Make any changes you like to the script section (anything outside of <code>// -- Start of embedded scripts --</code> and <code>// -- End of embedded scripts --</code>) will be ignored.</li>
-<li>Open <em>CSharpToRepx.tt</em> and run it with <code>Ctrl+S</code>. The changes will be saved back to the corresponding <em>.repx</em>.</li>
-</ul>
-
-
-<h2>Even more power?</h2>
-
-<p>You may notice that if you reload the MainDemo.Reports project, you can now see <code>View in Designer</code> in the context menu when you right-click on the <em>.repx.cs</em> file.</p>
-
-<p><img src="/images/blog/xaf-report-sync-003.png"></p>
-
-<p>Let's click it and see what happens. It opens directly in Visual Studio (like an <code>XtraReport</code>).</p>
-
-<p><img src="/images/blog/xaf-report-sync-004.png"></p>
-
-<p>Now, this is all highly experimental. You can see there are some warnings... Also, there is no connection with XPO, so the <em>Preview</em> is always empty.</p>
-
-<p>That said, it doesn't seem like too much of a stretch to eventually allow far more Visual Studio integration for XAF reports...</p>
 ]]></content>
   </entry>
   
