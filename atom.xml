@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-10-14T14:35:32+01:00</updated>
+  <updated>2013-10-22T18:36:56+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,209 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Three ways to store a list of currency codes in XAF]]></title>
+    <link href="http://ZeroSharp.github.com/three-ways-to-store-a-list-of-currency-codes-in-xaf/"/>
+    <updated>2013-10-22T18:15:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/three-ways-to-store-a-list-of-currency-codes-in-xaf</id>
+    <content type="html"><![CDATA[<p>In the last post we looked at three solutions to a relatively simple XAF requirement. In this post I&#8217;ll discuss another XAF challenge explain the options and provide a versatile and maintainable solution.</p>
+
+<p>In my DevExpress XAF application, I have an object which has several properties like this:</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/currency-list-editor-002.png"></p>
+
+<p>In each case, the field is a comma-separated list of currency codes. These fields are not very important to the model - they are used mainly for reporting.</p>
+
+<p>Let&#8217;s look at 3 different ways of handling these fields.</p>
+
+<h2>Option 1 - Use a plain old string field</h2>
+
+<p>The <em>lightest</em> option would be just to declare them as a normal XPO string field:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">private</span> <span class="kt">string</span> <span class="n">_List1Currencies</span><span class="p">;</span>
+</span><span class='line'><span class="k">public</span> <span class="kt">string</span> <span class="n">List1Currencies</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">get</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_List1Currencies</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">set</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">SetPropertyValue</span><span class="p">(</span><span class="s">&quot;List1Currencies&quot;</span><span class="p">,</span> <span class="k">ref</span> <span class="n">_List1Currencies</span><span class="p">,</span> <span class="k">value</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It&#8217;s certainly simple and maintainable, but it&#8217;s not very user-friendly. There is no fancy interface to help with the input.  We can perhaps improve things slightly by providing edit masks and/or validation rules to check the input, but careful typing is the only way to change the values.</p>
+
+<h2>Option 2 - Declare an association property</h2>
+
+<p>The <em>heaviest</em> option is to declare each such property as a many-to-many relationship.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">Container</span><span class="p">:</span> <span class="n">XPObject</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">Container</span><span class="p">(</span><span class="n">Session</span> <span class="n">session</span><span class="p">)</span> <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">session</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="na">    [Association(&quot;List1Currencies&quot;)]</span>
+</span><span class='line'>    <span class="k">public</span> <span class="n">XPCollection</span><span class="p">&lt;</span><span class="n">Currency</span><span class="p">&gt;</span> <span class="n">List1</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">get</span> <span class="p">{</span> <span class="k">return</span> <span class="n">GetCollection</span><span class="p">&lt;</span><span class="n">Currency</span><span class="p">&gt;(</span><span class="s">&quot;List1&quot;</span><span class="p">);</span> <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">Currency</span><span class="p">:</span> <span class="n">XPObject</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">Currency</span><span class="p">(</span><span class="n">Session</span> <span class="n">session</span><span class="p">)</span> <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">session</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="na">    [Size(3)]</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">string</span> <span class="n">Code</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="na">    [Association(&quot;List1Currencies&quot;)]</span>
+</span><span class='line'>    <span class="k">public</span> <span class="n">XPCollection</span><span class="p">&lt;</span><span class="n">Container</span><span class="p">&gt;</span> <span class="n">List1Container</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">get</span> <span class="p">{</span> <span class="k">return</span> <span class="n">GetCollection</span><span class="p">&lt;</span><span class="n">Container</span><span class="p">&gt;(</span><span class="s">&quot;List1Container&quot;</span><span class="p">);</span> <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This works great - we get a nice interface for selecting the currencies and the end result looks like this:</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/currency-list-editor-003.png"></p>
+
+<p>However, it&#8217;s quite a heavy solution for something quite simple. For each such relationship XPO will generate a new intermediate table. If we look at the database schema, we see the following:</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/currency-list-editor-004.png"></p>
+
+<p>And in the model there are two new views.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/currency-list-editor-005.png"></p>
+
+<p>If we have 5 such properties, we end up with 5 intermediary tables and 10 new views.</p>
+
+<p>Now, depending on your requirements that may be acceptable. If those relationships are important to your model, then the overhead may be justified. In my situation, these are minor fields and I do not want to burden the model or the database with extra complexity if I can avoid it.</p>
+
+<h2>Option 3 - Create a custom property editor</h2>
+
+<p>With the help of <a href="http://documentation.devexpress.com/xaf/CustomDocument3097.aspx">the documentation</a> an old Support Center issues, I was able to quite quickly put together a custom editor which gives the end user a nice interface while keeping it simple. The bulk of the logic is in the <code>SerializedListPropertyEditor</code> base class (see the end of the article for the link to the code), but the principle is as follows:</p>
+
+<p>Create a new subclass:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[PropertyEditor(typeof(String), false)]</span>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">CurrencyListPropertyEditor</span> <span class="p">:</span> <span class="n">SerializedListPropertyEditor</span><span class="p">&lt;</span><span class="n">Currency</span><span class="p">&gt;</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">CurrencyListPropertyEditor</span><span class="p">(</span><span class="n">Type</span> <span class="n">objectType</span><span class="p">,</span> <span class="n">IModelMemberViewItem</span> <span class="n">info</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">objectType</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="kt">string</span> <span class="nf">GetDisplayText</span><span class="p">(</span><span class="n">Currency</span> <span class="n">currency</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">String</span><span class="p">.</span><span class="n">Format</span><span class="p">(</span><span class="s">&quot;{0}\t{1}&quot;</span><span class="p">,</span> <span class="n">currency</span><span class="p">.</span><span class="n">Code</span><span class="p">,</span> <span class="n">currency</span><span class="p">.</span><span class="n">Name</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="kt">string</span> <span class="nf">GetValue</span><span class="p">(</span><span class="n">Currency</span> <span class="n">currency</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">currency</span><span class="p">.</span><span class="n">Code</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then decorate each property with</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">private</span> <span class="kt">string</span> <span class="n">_List1Currencies</span><span class="p">;</span>
+</span><span class='line'><span class="na">[ModelDefault(&quot;PropertyEditorType&quot;, &quot;Solution1.Module.Web.CurrencyListPropertyEditor&quot;)]</span>
+</span><span class='line'><span class="k">public</span> <span class="kt">string</span> <span class="n">List1Currencies</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">get</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_List1Currencies</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">set</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">SetPropertyValue</span><span class="p">(</span><span class="s">&quot;List1Currencies&quot;</span><span class="p">,</span> <span class="k">ref</span> <span class="n">_List1Currencies</span><span class="p">,</span> <span class="k">value</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now the user gets a pretty editor to select the currencies, but the field is just a string field.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/currency-list-editor-001.png"></p>
+
+<p>The editor supports use of the <code>[DataSourceProperty]</code> and <code>[DataSourceCriteria]</code> properties too, so you can easily filter the collection.</p>
+
+<p>It is easy to provide a similar editor for any object type - just create a subclass of <code>SerializedListPropertyEditor&lt;T&gt;</code> where <code>T</code> is your persistent type.</p>
+
+<p>You can download <a href="https://github.com/ZeroSharp/Xaf_CurrencyListPropertyEditor">a working sample project on GitHub</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[The Ugly, the Heavy and the Good: 3 solutions to an XAF layout problem]]></title>
@@ -2390,18 +2593,6 @@ The ability to create reports using a report writer is a very powerful feature o
 </span><span class='line'><span class="n">pause</span>
 </span></code></pre></td></tr></table></div></figure>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Colourful git command line]]></title>
-    <link href="http://ZeroSharp.github.com/colourful-git-command-line/"/>
-    <updated>2013-02-14T05:10:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/colourful-git-command-line</id>
-    <content type="html"><![CDATA[<p>For Valentine&#8217;s Day, why not make your git command line a little more colourful.</p>
-
-<pre><code>git config --global color.ui true
-</code></pre>
 ]]></content>
   </entry>
   

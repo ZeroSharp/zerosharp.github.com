@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c# | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/c-/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-10-14T14:35:32+01:00</updated>
+  <updated>2013-10-22T18:36:56+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,158 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Three ways to store a list of currency codes in XAF]]></title>
+    <link href="http://ZeroSharp.github.com/three-ways-to-store-a-list-of-currency-codes-in-xaf/"/>
+    <updated>2013-10-22T18:15:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/three-ways-to-store-a-list-of-currency-codes-in-xaf</id>
+    <content type="html"><![CDATA[<p>In the last post we looked at three solutions to a relatively simple XAF requirement. In this post I'll discuss another XAF challenge explain the options and provide a versatile and maintainable solution.</p>
+
+<p>In my DevExpress XAF application, I have an object which has several properties like this:</p>
+
+<p><img src="/images/blog/currency-list-editor-002.png"></p>
+
+<p>In each case, the field is a comma-separated list of currency codes. These fields are not very important to the model - they are used mainly for reporting.</p>
+
+<p>Let's look at 3 different ways of handling these fields.</p>
+
+<h2>Option 1 - Use a plain old string field</h2>
+
+<p>The <em>lightest</em> option would be just to declare them as a normal XPO string field:</p>
+
+<p>```c#
+private string _List1Currencies;
+public string List1Currencies
+{</p>
+
+<pre><code>get
+{
+    return _List1Currencies;
+}
+set
+{
+    SetPropertyValue("List1Currencies", ref _List1Currencies, value);
+}
+</code></pre>
+
+<p>}
+```
+It's certainly simple and maintainable, but it's not very user-friendly. There is no fancy interface to help with the input.  We can perhaps improve things slightly by providing edit masks and/or validation rules to check the input, but careful typing is the only way to change the values.</p>
+
+<h2>Option 2 - Declare an association property</h2>
+
+<p>The <em>heaviest</em> option is to declare each such property as a many-to-many relationship.</p>
+
+<p>```c#
+public class Container: XPObject {</p>
+
+<pre><code>public Container(Session session) : base(session) { }
+
+public string Name;
+
+[Association("List1Currencies")]
+public XPCollection&lt;Currency&gt; List1 { 
+    get { return GetCollection&lt;Currency&gt;("List1"); }
+}
+</code></pre>
+
+<p>}</p>
+
+<p>public class Currency: XPObject {</p>
+
+<pre><code>public Currency(Session session) : base(session) { }
+
+[Size(3)]
+public string Code;
+
+public string Name;
+
+[Association("List1Currencies")]
+public XPCollection&lt;Container&gt; List1Container { 
+    get { return GetCollection&lt;Container&gt;("List1Container"); }
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>This works great - we get a nice interface for selecting the currencies and the end result looks like this:</p>
+
+<p><img src="/images/blog/currency-list-editor-003.png"></p>
+
+<p>However, it's quite a heavy solution for something quite simple. For each such relationship XPO will generate a new intermediate table. If we look at the database schema, we see the following:</p>
+
+<p><img src="/images/blog/currency-list-editor-004.png"></p>
+
+<p>And in the model there are two new views.</p>
+
+<p><img src="/images/blog/currency-list-editor-005.png"></p>
+
+<p>If we have 5 such properties, we end up with 5 intermediary tables and 10 new views.</p>
+
+<p>Now, depending on your requirements that may be acceptable. If those relationships are important to your model, then the overhead may be justified. In my situation, these are minor fields and I do not want to burden the model or the database with extra complexity if I can avoid it.</p>
+
+<h2>Option 3 - Create a custom property editor</h2>
+
+<p>With the help of <a href="http://documentation.devexpress.com/xaf/CustomDocument3097.aspx">the documentation</a> an old Support Center issues, I was able to quite quickly put together a custom editor which gives the end user a nice interface while keeping it simple. The bulk of the logic is in the <code>SerializedListPropertyEditor</code> base class (see the end of the article for the link to the code), but the principle is as follows:</p>
+
+<p>Create a new subclass:</p>
+
+<p>```c#</p>
+
+<pre><code>[PropertyEditor(typeof(String), false)]
+public class CurrencyListPropertyEditor : SerializedListPropertyEditor&lt;Currency&gt;
+{
+    public CurrencyListPropertyEditor(Type objectType, IModelMemberViewItem info)
+        : base(objectType, info) { }
+
+    protected override string GetDisplayText(Currency currency)
+    {
+        return String.Format("{0}\t{1}", currency.Code, currency.Name);
+    }
+
+    protected override string GetValue(Currency currency)
+    {
+        return currency.Code;
+    }
+}
+</code></pre>
+
+<p>```</p>
+
+<p>Then decorate each property with</p>
+
+<p>```c#
+private string _List1Currencies;
+[ModelDefault("PropertyEditorType", "Solution1.Module.Web.CurrencyListPropertyEditor")]
+public string List1Currencies
+{</p>
+
+<pre><code>get
+{
+    return _List1Currencies;
+}
+set
+{
+    SetPropertyValue("List1Currencies", ref _List1Currencies, value);
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Now the user gets a pretty editor to select the currencies, but the field is just a string field.</p>
+
+<p><img src="/images/blog/currency-list-editor-001.png"></p>
+
+<p>The editor supports use of the <code>[DataSourceProperty]</code> and <code>[DataSourceCriteria]</code> properties too, so you can easily filter the collection.</p>
+
+<p>It is easy to provide a similar editor for any object type - just create a subclass of <code>SerializedListPropertyEditor&lt;T&gt;</code> where <code>T</code> is your persistent type.</p>
+
+<p>You can download <a href="https://github.com/ZeroSharp/Xaf_CurrencyListPropertyEditor">a working sample project on GitHub</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[The Ugly, the Heavy and the Good: 3 solutions to an XAF layout problem]]></title>
@@ -618,81 +770,6 @@ var contacts = session.Query().Contacts.ByPosition("Manager");
 <p>Much more readable. Also more maintainable because all queries are in one place and make use of good old LINQ. It's also easier to test the queries because they are independent of the calling code.</p>
 
 <p>See <a href="https://github.com/ZeroSharp/Xaf_MainDemo_FluentQueries">a sample implementation</a> built against the DevExpress XAF MainDemo on GitHub.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Fluent queries with DevExpress XPO - Intro]]></title>
-    <link href="http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-intro/"/>
-    <updated>2013-08-12T17:54:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-intro</id>
-    <content type="html"><![CDATA[<p>There are <a href="http://documentation.devexpress.com/#xaf/CustomDocument3052">many ways to perform queries with XPO</a>.</p>
-
-<p>You can do this:
-```c#</p>
-
-<pre><code>Session.FindObject&lt;Contact&gt;(new BinaryOperator("Name", "Elvis"));
-</code></pre>
-
-<p><code>
-or this
-</code>c#</p>
-
-<pre><code>Session.FindObject&lt;Contact&gt;(CriteriaOperator.Parse("Name = 'Elvis'"));
-</code></pre>
-
-<p><code>
-Another way to use the [simplified criteria syntax](http://documentation.devexpress.com/#XPO/CustomDocument2537), and with the [Xpo_EasyFields CodeRush plugin](https://code.google.com/p/dxcorecommunityplugins/wiki/XPO_EasyFields). Then you can do:
-</code>c#
-Session.FindObject<Contact>(Customer.Fields.Name == "Elvis");
-<code>``
-For each of the above, you can optionally query within the transaction by passing in the</code>PersistentCriteriaEvaluationBehavior.InTransaction` parameter.</p>
-
-<p>Or we can use LINQ via <code>XPQuery&lt;T&gt;.TransformExpression()</code>.
-```
-Session.FindObject<Contact>(</p>
-
-<pre><code>XPQuery&lt;Contact&gt;.TransformExpression(Session, c =&gt; c.Name == "Elvis")
-);
-</code></pre>
-
-<p>```
-All of these methods are powerful, but the power comes at a cost. The syntax is neither elegant nor particularly clear and as a result it is not very practical to maintain or test.</p>
-
-<h2>A Fluent Interface for XPO</h2>
-
-<p>How about if we could do the following?</p>
-
-<p>```c#
-var customer = Session</p>
-
-<pre><code>            .Query()
-              .Contacts
-                .ByName("Elvis");
-</code></pre>
-
-<p>```
-Or, for a more elaborate example:</p>
-
-<p>```c#
-var customer = Session</p>
-
-<pre><code>             .Query()
-             .InTransaction
-                .Contacts
-                  .ByPosition("Developer")
-                    .ThatHave
-                      .NoPhoto()
-                    .And
-                      .TasksInProgress()
-                    .And
-                      .TasksWith(Priority.High)            
-             .FirstOrDefault();
-</code></pre>
-
-<p>```</p>
-
-<p>In the next post I'll show how to put the fluent interface code together.</p>
 ]]></content>
   </entry>
   
