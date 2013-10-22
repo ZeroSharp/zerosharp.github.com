@@ -85,7 +85,7 @@ Now, depending on your requirements that may be acceptable. If those relationshi
 
 ## Option 3 - Create a custom property editor ##
 
-With the help of [the documentation](http://documentation.devexpress.com/xaf/CustomDocument3097.aspx) an old Support Center issues, I was able to quite quickly put together a custom editor which gives the end user a nice interface while keeping it simple. The bulk of the logic is in the `SerializedListPropertyEditor` base class (see the end of the article for the link to the code), but the principle is as follows:
+With the help of [the documentation](http://documentation.devexpress.com/xaf/CustomDocument3097.aspx) and old Support Center issues, I was able to quite quickly put together a custom editor which gives the end user a nice interface while keeping it simple. The bulk of the logic is in the `SerializedListPropertyEditor` base class (see the end of the article for the link to the code), but the principle is as follows:
 
 Create a new subclass:
 
