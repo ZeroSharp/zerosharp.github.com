@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c# | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/c-/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-10-22T18:44:14+01:00</updated>
+  <updated>2013-10-23T07:22:53+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -18,7 +18,7 @@
     <link href="http://ZeroSharp.github.com/three-ways-to-store-a-list-of-currency-codes-in-xaf/"/>
     <updated>2013-10-22T18:15:00+01:00</updated>
     <id>http://ZeroSharp.github.com/three-ways-to-store-a-list-of-currency-codes-in-xaf</id>
-    <content type="html"><![CDATA[<p>In the last post we looked at three solutions to a relatively simple XAF requirement. In this post I'll discuss another XAF challenge explain the options and provide a versatile and maintainable solution.</p>
+    <content type="html"><![CDATA[<p>In the last post we looked at three solutions to a relatively simple XAF requirement. In this post I'll discuss another XAF challenge, explain the options and provide a versatile and maintainable solution.</p>
 
 <p>In my DevExpress XAF application, I have an object which has several properties like this:</p>
 
@@ -28,7 +28,7 @@
 
 <p>Let's look at 3 different ways of handling these fields.</p>
 
-<h2>Option 1 - Use a plain old string field</h2>
+<h2>Option 1 - Use a string field</h2>
 
 <p>The <em>lightest</em> option would be just to declare them as a normal XPO string field:</p>
 
@@ -132,7 +132,7 @@ public class CurrencyListPropertyEditor : SerializedListPropertyEditor&lt;Curren
 
 <p>```</p>
 
-<p>Then decorate each property with</p>
+<p>Then decorate each property with a <code>ModelDefault</code> attribute to set the <code>PropertyEditorType</code>.</p>
 
 <p>```c#
 private string _List1Currencies;
@@ -159,7 +159,7 @@ set
 
 <p>The editor supports use of the <code>[DataSourceProperty]</code> and <code>[DataSourceCriteria]</code> properties too, so you can easily filter the collection.</p>
 
-<p>It is easy to provide a similar editor for any object type - just create a subclass of <code>SerializedListPropertyEditor&lt;T&gt;</code> where <code>T</code> is your persistent type.</p>
+<p>It is easy to provide a similar editor for any object type - just create a new subclass of <code>SerializedListPropertyEditor&lt;T&gt;</code> where <code>T</code> is your persistent type.</p>
 
 <p>You can download <a href="https://github.com/ZeroSharp/Xaf_CurrencyListPropertyEditor">a working sample project on GitHub</a>.</p>
 ]]></content>

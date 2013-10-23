@@ -141,7 +141,7 @@
   </header>
 
 
-<div class="entry-content"><p>In the last post we looked at three solutions to a relatively simple XAF requirement. In this post I&#8217;ll discuss another XAF challenge explain the options and provide a versatile and maintainable solution.</p>
+<div class="entry-content"><p>In the last post we looked at three solutions to a relatively simple XAF requirement. In this post I&#8217;ll discuss another XAF challenge, explain the options and provide a versatile and maintainable solution.</p>
 
 <p>In my DevExpress XAF application, I have an object which has several properties like this:</p>
 
@@ -151,7 +151,7 @@
 
 <p>Let&#8217;s look at 3 different ways of handling these fields.</p>
 
-<h2>Option 1 - Use a plain old string field</h2>
+<h2>Option 1 - Use a string field</h2>
 
 <p>The <em>lightest</em> option would be just to declare them as a normal XPO string field:</p>
 
@@ -296,7 +296,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Then decorate each property with</p>
+<p>Then decorate each property with a <code>ModelDefault</code> attribute to set the <code>PropertyEditorType</code>.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -333,7 +333,7 @@
 
 <p>The editor supports use of the <code>[DataSourceProperty]</code> and <code>[DataSourceCriteria]</code> properties too, so you can easily filter the collection.</p>
 
-<p>It is easy to provide a similar editor for any object type - just create a subclass of <code>SerializedListPropertyEditor&lt;T&gt;</code> where <code>T</code> is your persistent type.</p>
+<p>It is easy to provide a similar editor for any object type - just create a new subclass of <code>SerializedListPropertyEditor&lt;T&gt;</code> where <code>T</code> is your persistent type.</p>
 
 <p>You can download <a href="https://github.com/ZeroSharp/Xaf_CurrencyListPropertyEditor">a working sample project on GitHub</a>.</p>
 </div>
