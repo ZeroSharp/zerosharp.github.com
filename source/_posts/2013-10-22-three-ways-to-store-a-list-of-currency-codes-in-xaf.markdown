@@ -6,7 +6,7 @@ comments: true
 categories: [c#, devexpress, xaf]
 description: Three solutions to a storing a list of related objects in DevExpress XAF.
 ---
-In the last post we looked at three solutions to a relatively simple XAF requirement. In this post I'll discuss another XAF challenge explain the options and provide a versatile and maintainable solution.
+In the last post we looked at three solutions to a relatively simple XAF requirement. In this post I'll discuss another XAF challenge, explain the options and provide a versatile and maintainable solution.
 
 In my DevExpress XAF application, I have an object which has several properties like this:
 
@@ -16,7 +16,7 @@ In each case, the field is a comma-separated list of currency codes. These field
 
 Let's look at 3 different ways of handling these fields.
 
-## Option 1 - Use a plain old string field ##
+## Option 1 - Use a string field ##
 
 The _lightest_ option would be just to declare them as a normal XPO string field:
 
@@ -108,7 +108,7 @@ Create a new subclass:
     }
 ```
 
-Then decorate each property with 
+Then decorate each property with a `ModelDefault` attribute to set the `PropertyEditorType`.
 
 ```c#
 private string _List1Currencies;
@@ -132,6 +132,6 @@ Now the user gets a pretty editor to select the currencies, but the field is jus
 
 The editor supports use of the `[DataSourceProperty]` and `[DataSourceCriteria]` properties too, so you can easily filter the collection.
 
-It is easy to provide a similar editor for any object type - just create a subclass of `SerializedListPropertyEditor<T>` where `T` is your persistent type.
+It is easy to provide a similar editor for any object type - just create a new subclass of `SerializedListPropertyEditor<T>` where `T` is your persistent type.
 
 You can download [a working sample project on GitHub](https://github.com/ZeroSharp/Xaf_CurrencyListPropertyEditor).
