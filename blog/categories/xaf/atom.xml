@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-10-23T07:22:53+01:00</updated>
+  <updated>2013-11-08T11:33:25+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -14,11 +14,95 @@
 
   
   <entry>
+    <title type="html"><![CDATA[How to improve XAF grid layout for Chrome]]></title>
+    <link href="http://ZeroSharp.github.com/how-to-improve-xaf-grid-layout-for-chrome/"/>
+    <updated>2013-11-08T09:55:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/how-to-improve-xaf-grid-layout-for-chrome</id>
+    <content type="html"><![CDATA[<p>This post proposes a workaround for a specific XAF rendering problem related to recent versions of Google Chrome.</p>
+
+<p>Here is an XAF list view as it looks with IE 10 and DevExpress 13.1.8.</p>
+
+<p><img src="/images/blog/chrome-grid-layout-001.png"></p>
+
+<p>This is how the same view looks with Chrome 30. Notice how the column widths are rendered poorly. The minimum space is given to the string field and the date and bool fields are too wide.</p>
+
+<p><img src="/images/blog/chrome-grid-layout-002.png"></p>
+
+<p>What's going on? An update to the Chrome browser occurred in which has caused problems with the rendering of grid views in certain situations. The problem exists in all versions of Chrome great than 25 and also affects the <a href="http://www.google.com/chromeframe">Google Chrome Frame</a> plugin for IE.</p>
+
+<p>DevExpress were able to fix some scenarios in 13.1.4 and 12.2.11 (such as column sorting), but there are other situations which still pose problems (<em>e.g.</em> the fix does not resolve the problem if the <em>Auto Filter Row</em> is enabled, which is the case above.)</p>
+
+<p>Hopefully the Chrome devs will one day fix the root problem. You can keep an eye on <a href="https://code.google.com/p/chromium/issues/detail?id=178369">the issue here</a></p>
+
+<h2>The fix</h2>
+
+<p>Not so much a fix as a workaround. We use a <code>ViewController&lt;ListView&gt;</code> to set the grid layout to <code>UseFixedTableLayout</code>, but only for Chrome browsers. Something like this:</p>
+
+<p>```c#
+/// <summary>
+/// Switches to fixed table layout for the main list view when using Chrome or ChromeFrame.
+/// </summary>
+public class ChromeSpecificListViewController : ViewController<ListView>
+{</p>
+
+<pre><code>protected override void OnViewChanging(View view)
+{
+    base.OnViewChanging(view);
+    Active["IsChrome"] = IsChrome;
+}
+
+private static bool IsChrome
+{
+    get
+    {
+        HttpContext context = HttpContext.Current;
+        return context != null &amp;&amp; context.Request.Browser.Browser == "Chrome";
+    }
+}
+
+protected override void OnViewControlsCreated()
+{
+    base.OnViewControlsCreated();
+
+    ASPxGridListEditor listEditor = View.Editor as ASPxGridListEditor;
+    if (listEditor == null)
+        return;
+
+    ASPxGridView gridView = listEditor.Grid as ASPxGridView;
+    if (gridView == null)
+        return;
+
+    gridView.Settings.UseFixedTableLayout = true;
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>The resulting view in Chrome:</p>
+
+<p><img src="/images/blog/chrome-grid-layout-003.png"></p>
+
+<p>That looks better. You may notice the columns will allways be the same width now, which is not quite as good as the IE rendering. As such, it may not be appropriate for all views. But since it's a <code>ViewController</code> it's easy to deactivate it by adding an <code>Active[]</code> criteria.</p>
+
+<h4>References</h4>
+
+<ul>
+<li><a href="https://code.google.com/p/chromium/issues/detail?id=178369">Chrome issue</a></li>
+<li><a href="http://www.devexpress.com/Support/Center/Question/Details/Q477066">Support Center Q477066</a></li>
+<li><a href="https://www.devexpress.com/Support/Center/Question/Details/B235945">Support Center B235945</a></li>
+<li><a href="https://www.devexpress.com/Support/Center/Question/Details/Q510468">Support Center Q510468</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Three ways to store a list of currency codes in XAF]]></title>
     <link href="http://ZeroSharp.github.com/three-ways-to-store-a-list-of-currency-codes-in-xaf/"/>
     <updated>2013-10-22T18:15:00+01:00</updated>
     <id>http://ZeroSharp.github.com/three-ways-to-store-a-list-of-currency-codes-in-xaf</id>
-    <content type="html"><![CDATA[<p>In the last post we looked at three solutions to a relatively simple XAF requirement. In this post I'll discuss another XAF challenge, explain the options and provide a versatile and maintainable solution.</p>
+    <content type="html"><![CDATA[<p>In the <a href="/the-ugly-the-heavy-and-the-good">last post</a> we looked at three solutions to a relatively simple XAF requirement. In this post I'll discuss another XAF challenge, explain the options and provide a versatile and maintainable solution.</p>
 
 <p>In my DevExpress XAF application, I have an object which has several properties like this:</p>
 
@@ -581,195 +665,6 @@ private void FindBySubjectAction_Execute(object sender, ParametrizedActionExecut
 <p>MiniProfiler is a great tool for providing helpful profiling benchmarks, even in production. It's often difficult to measure when a remote user complains to support that the site seems slow. How slow is slow? In a production environment, you can turn on MiniProfiler for the user (by setting a cookie for instance) and then ask them to share their profiling information for some basic operations. This information can be invaluable in determining where the fault lies.</p>
 
 <p>You can play around with <a href="https://github.com/ZeroSharp/Xaf_MainDemo_MiniProfiler">the sample solution</a> up on GitHub.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Fluent queries with DevExpress XPO - Implementation]]></title>
-    <link href="http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-implementation/"/>
-    <updated>2013-08-14T11:03:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-implementation</id>
-    <content type="html"><![CDATA[<p>Continuing from my <a href="/fluent-queries-with-devexpress-xpo-intro">last post</a>, I'll demonstrate how to create a fluent interface so that you can do:</p>
-
-<p>```c#
-var customer = Session</p>
-
-<pre><code>             .Query()
-             .InTransaction
-                .Contacts
-                  .ByPosition("Developer")
-                    .ThatHave
-                      .NoPhoto()
-                    .And
-                      .TasksInProgress()
-                    .And
-                      .TasksWith(Priority.High)            
-             .FirstOrDefault();
-</code></pre>
-
-<p>```</p>
-
-<p>First, let's look at the 'beginning' of the fluent interface: the <code>Query()</code> extension method.</p>
-
-<p>```c#
-public static class QueryExtensions
-{</p>
-
-<pre><code>public static IQueries Query(this Session session)
-{
-    return new Queries(session);
-}
-
-// If we're using XAF, do the same for ObjectSpace as well
-public static IQueries Query(this IObjectSpace objectSpace)
-{
-    var xpObjectSpace = objectSpace as XPObjectSpace;
-    var session = xpObjectSpace.Session;
-    return new Queries(session);
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>What does the <code>Queries()</code> class look like?</p>
-
-<p>```c#</p>
-
-<pre><code>public interface IQueries
-{
-    IQueries InTransaction { get; }
-    IContactQueries Contacts { get; }
-    // One for each queryable object type, e.g.,
-    // IDepartmentQueries Departments { get; }       
-    // ITaskQueries Tasks { get; }
-    // etc.
-}
-
-public class Queries : IQueries
-{       
-    public Queries(Session session)
-    {
-        _Session = session;
-    }
-
-    private readonly Session _Session;
-    private bool _InTransaction;
-
-    public IQueries InTransaction
-    {
-        get
-        {
-            _InTransaction = true;
-            return this;
-        }
-    }
-
-    private IContactQueries _Contacts;
-    public IContactQueries Contacts
-    {
-        get
-        {
-            if (_Contacts == null)
-                _Contacts = new ContactQueries(_Session, _InTransaction);
-            return _Contacts;
-        }
-    }
-}
-</code></pre>
-
-<p>```</p>
-
-<p>If we ignore the <code>InTransaction</code> property, it is just a container for the <code>IContactQueries</code>. In your application, you would have a similar property for each queryable object type. A new <code>ContactQueries</code> instance is created on demand taking into account the whether the <code>InTransaction</code> property was visited earlier in the syntax.</p>
-
-<p>Now, let's look at the base classes.</p>
-
-<p>```c#
-public interface IQueries<T> : IEnumerable<T>, IFluentInterface
-{
-}</p>
-
-<p>public class Queries<T> : IQueries<T>
-{</p>
-
-<pre><code>public Queries(Session session, bool inTransaction)
-{
-    _Session = session;
-    Query = new XPQuery&lt;T&gt;(session, inTransaction);
-}
-
-private readonly Session _Session;
-protected IQueryable&lt;T&gt; Query { get; set; }
-
-public IEnumerator&lt;T&gt; GetEnumerator()
-{
-    return Query.GetEnumerator();
-}
-
-IEnumerator IEnumerable.GetEnumerator()
-{
-    return Query.GetEnumerator();
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>So <code>Queries&lt;T&gt;</code> wraps an <code>XPQuery&lt;T&gt;</code>.</p>
-
-<p>Side note: the inclusion of <code>IFluentInterface</code> is a clever trick to improve Intellisense by hiding the <code>System.Object</code> members such as <code>ToString()</code>. See <a href="http://blogs.clariusconsulting.net/kzu/how-to-hide-system-object-members-from-your-interfaces/">Daniel Cazzulino's blog post</a>.</p>
-
-<p>And now we can implement the <code>Contact</code> generic as follows:</p>
-
-<p>```c#
-public interface IContactQueries : IQueries<Contact>
-{</p>
-
-<pre><code>IContactQueries ByDepartmentTitle(string departmentTitle);
-IContactQueries ByPosition(string position);
-Contact ByEmail(string email);
-</code></pre>
-
-<p>}</p>
-
-<p>public class ContactQueries : Queries<Contact>, IContactQueries, IContactThatHaveQueries
-{</p>
-
-<pre><code>public ContactQueries(Session session, bool inTransaction)
-    : base(session, inTransaction)
-{
-}
-
-public IContactQueries ByDepartmentTitle(string department)
-{
-    Query = Query.Where(c =&gt; c.Department.Title == department);
-    return this;
-}
-
-public IContactQueries ByPosition(string position)
-{
-    Query = Query.Where(c =&gt; c.Position.Title == position);
-    return this;
-}
-
-public Contact ByEmail(string email)
-{
-    return Query.SingleOrDefault(c =&gt; c.Email == email);
-}
-</code></pre>
-
-<p>}  <br/>
-```</p>
-
-<p>There we go. Now we can use our fluent interface:</p>
-
-<p><code>c#
-var contacts = session.Query().Contacts.ByPosition("Manager");
-</code></p>
-
-<p>Much more readable. Also more maintainable because all queries are in one place and make use of good old LINQ. It's also easier to test the queries because they are independent of the calling code.</p>
-
-<p>See <a href="https://github.com/ZeroSharp/Xaf_MainDemo_FluentQueries">a sample implementation</a> built against the DevExpress XAF MainDemo on GitHub.</p>
 ]]></content>
   </entry>
   

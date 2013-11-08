@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-10-23T07:22:53+01:00</updated>
+  <updated>2013-11-08T11:33:25+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -14,11 +14,129 @@
 
   
   <entry>
+    <title type="html"><![CDATA[How to improve XAF grid layout for Chrome]]></title>
+    <link href="http://ZeroSharp.github.com/how-to-improve-xaf-grid-layout-for-chrome/"/>
+    <updated>2013-11-08T09:55:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/how-to-improve-xaf-grid-layout-for-chrome</id>
+    <content type="html"><![CDATA[<p>This post proposes a workaround for a specific XAF rendering problem related to recent versions of Google Chrome.</p>
+
+<p>Here is an XAF list view as it looks with IE 10 and DevExpress 13.1.8.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/chrome-grid-layout-001.png"></p>
+
+<p>This is how the same view looks with Chrome 30. Notice how the column widths are rendered poorly. The minimum space is given to the string field and the date and bool fields are too wide.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/chrome-grid-layout-002.png"></p>
+
+<p>What&#8217;s going on? An update to the Chrome browser occurred in which has caused problems with the rendering of grid views in certain situations. The problem exists in all versions of Chrome great than 25 and also affects the <a href="http://www.google.com/chromeframe">Google Chrome Frame</a> plugin for IE.</p>
+
+<p>DevExpress were able to fix some scenarios in 13.1.4 and 12.2.11 (such as column sorting), but there are other situations which still pose problems (<em>e.g.</em> the fix does not resolve the problem if the <em>Auto Filter Row</em> is enabled, which is the case above.)</p>
+
+<p>Hopefully the Chrome devs will one day fix the root problem. You can keep an eye on <a href="https://code.google.com/p/chromium/issues/detail?id=178369">the issue here</a></p>
+
+<h2>The fix</h2>
+
+<p>Not so much a fix as a workaround. We use a <code>ViewController&lt;ListView&gt;</code> to set the grid layout to <code>UseFixedTableLayout</code>, but only for Chrome browsers. Something like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">/// &lt;summary&gt;</span>
+</span><span class='line'><span class="c1">/// Switches to fixed table layout for the main list view when using Chrome or ChromeFrame.</span>
+</span><span class='line'><span class="c1">/// &lt;/summary&gt;</span>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">ChromeSpecificListViewController</span> <span class="p">:</span> <span class="n">ViewController</span><span class="p">&lt;</span><span class="n">ListView</span><span class="p">&gt;</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnViewChanging</span><span class="p">(</span><span class="n">View</span> <span class="n">view</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">base</span><span class="p">.</span><span class="n">OnViewChanging</span><span class="p">(</span><span class="n">view</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">Active</span><span class="p">[</span><span class="s">&quot;IsChrome&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="n">IsChrome</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="k">static</span> <span class="kt">bool</span> <span class="n">IsChrome</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">get</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">HttpContext</span> <span class="n">context</span> <span class="p">=</span> <span class="n">HttpContext</span><span class="p">.</span><span class="n">Current</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">context</span> <span class="p">!=</span> <span class="k">null</span> <span class="p">&amp;&amp;</span> <span class="n">context</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">Browser</span><span class="p">.</span><span class="n">Browser</span> <span class="p">==</span> <span class="s">&quot;Chrome&quot;</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnViewControlsCreated</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">base</span><span class="p">.</span><span class="n">OnViewControlsCreated</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">ASPxGridListEditor</span> <span class="n">listEditor</span> <span class="p">=</span> <span class="n">View</span><span class="p">.</span><span class="n">Editor</span> <span class="k">as</span> <span class="n">ASPxGridListEditor</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">listEditor</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">ASPxGridView</span> <span class="n">gridView</span> <span class="p">=</span> <span class="n">listEditor</span><span class="p">.</span><span class="n">Grid</span> <span class="k">as</span> <span class="n">ASPxGridView</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">gridView</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">gridView</span><span class="p">.</span><span class="n">Settings</span><span class="p">.</span><span class="n">UseFixedTableLayout</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>The resulting view in Chrome:</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/chrome-grid-layout-003.png"></p>
+
+<p>That looks better. You may notice the columns will allways be the same width now, which is not quite as good as the IE rendering. As such, it may not be appropriate for all views. But since it&#8217;s a <code>ViewController</code> it&#8217;s easy to deactivate it by adding an <code>Active[]</code> criteria.</p>
+
+<h4>References</h4>
+
+<ul>
+<li><a href="https://code.google.com/p/chromium/issues/detail?id=178369">Chrome issue</a></li>
+<li><a href="http://www.devexpress.com/Support/Center/Question/Details/Q477066">Support Center Q477066</a></li>
+<li><a href="https://www.devexpress.com/Support/Center/Question/Details/B235945">Support Center B235945</a></li>
+<li><a href="https://www.devexpress.com/Support/Center/Question/Details/Q510468">Support Center Q510468</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Three ways to store a list of currency codes in XAF]]></title>
     <link href="http://ZeroSharp.github.com/three-ways-to-store-a-list-of-currency-codes-in-xaf/"/>
     <updated>2013-10-22T18:15:00+01:00</updated>
     <id>http://ZeroSharp.github.com/three-ways-to-store-a-list-of-currency-codes-in-xaf</id>
-    <content type="html"><![CDATA[<p>In the last post we looked at three solutions to a relatively simple XAF requirement. In this post I&#8217;ll discuss another XAF challenge, explain the options and provide a versatile and maintainable solution.</p>
+    <content type="html"><![CDATA[<p>In the <a href="http://ZeroSharp.github.com/the-ugly-the-heavy-and-the-good">last post</a> we looked at three solutions to a relatively simple XAF requirement. In this post I&#8217;ll discuss another XAF challenge, explain the options and provide a versatile and maintainable solution.</p>
 
 <p>In my DevExpress XAF application, I have an object which has several properties like this:</p>
 
@@ -2560,39 +2678,6 @@ The ability to create reports using a report writer is a very powerful feature o
 
 
 <p>If you follow all the steps, expect to pay a handful of dollars in Amazon EC2 costs and a few more in Neustar costs. You could alternatively skip step 1 and target one of your own development machines instead.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[How to recursively change file ownership]]></title>
-    <link href="http://ZeroSharp.github.com/how-to-recursively-change-file-ownership/"/>
-    <updated>2013-02-28T17:40:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/how-to-recursively-change-file-ownership</id>
-    <content type="html"><![CDATA[<p>I recently ran into some file ownership trouble after cloning a bitbucket repository.</p>
-
-<p>The following script saved my bacon.</p>
-
-<figure class='code'><figcaption><span>FixOwnership.ps1 </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='powershell'><span class='line'><span class="c"># This script recursively fixes the ownership on the files in the </span>
-</span><span class='line'><span class="c"># current and subdirectories.</span>
-</span><span class='line'>
-</span><span class='line'><span class="nv">$acct1</span> <span class="p">=</span> <span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="n">Security</span><span class="p">.</span><span class="n">Principal</span><span class="p">.</span><span class="n">NTAccount</span><span class="p">(</span><span class="s1">&#39;Administrators&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="nv">$profilefolder</span> <span class="p">=</span> <span class="nb">Get-Item</span> <span class="p">.</span>
-</span><span class='line'><span class="nv">$acl1</span> <span class="p">=</span> <span class="nv">$profilefolder</span><span class="p">.</span><span class="n">GetAccessControl</span><span class="p">()</span>
-</span><span class='line'><span class="nv">$acl1</span><span class="p">.</span><span class="n">SetOwner</span><span class="p">(</span><span class="nv">$acct1</span><span class="p">)</span>
-</span><span class='line'><span class="n">dir</span> <span class="n">-r</span> <span class="p">.</span> <span class="p">|</span> <span class="nb">set-acl</span> <span class="n">-aclobject</span> <span class="nv">$acl1</span>
-</span><span class='line'><span class="n">pause</span>
-</span></code></pre></td></tr></table></div></figure>
-
 ]]></content>
   </entry>
   

@@ -1,0 +1,389 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>How to improve XAF grid layout for Chrome - ZeroSharp</title>
+  <meta name="author" content="Robert Anderson">
+
+  
+  <meta name="description" content="The column widths of the DevExpress expressAppFramework list views render poorly when using recent versions of Chrome. Here is a fix.">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ZeroSharp.github.com/how-to-improve-xaf-grid-layout-for-chrome/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="http://feeds.feedburner.com/zerosharp" rel="alternate" title="ZeroSharp" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> 
+
+<!-- <ra+> -->
+<link href="http://fonts.googleapis.com/css?family=Ubuntu:500" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
+
+<link href="/stylesheets/custom/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+<!-- </ra+> -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-30564687-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <!--<h1><a href="/">ZeroSharp</a></h1>-->
+  <a href="http://www.zerosharp.com/"><h1>ZeroSharp</h1></a>
+  
+    <h2>Robert Anderson's ones and zeros</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">  
+
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ZeroSharp.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/license/">License</a></li>  
+</ul>
+<ul class="subscription">
+    <li><a rel="me" href="https://plus.google.com/112685056596124127572?rel=author">
+      <img src="/images/asides/googleplus.png" width="24" height="24" alt="Rob on Google+">
+    </a></li>    
+    <li><a rel="me" href="http://twitter.com/8ctopus">
+      <img src="/images/asides/twitter.png" width="24" height="24" alt="Rob on Twitter" />
+    </a></li>
+    <!--<li><a rel="me" href="http://stackoverflow.com/users/1077279/shamp00">
+      <img src="/images/asides/stackoverflow.png" width="24" height="24" alt="Rob on StackOverflow" />
+    </a></li>
+    <li><a rel="me" href="https://github.com/zerosharp">
+      <img src="/images/asides/github.png" width="24" height="24" alt="Rob on GitHub" />
+    </a></li>
+    <li><a rel="me" href="http://www.linkedin.com/profile/view?id=926740"  class ="googleplus-hidden" >
+      <img src="/images/asides/linkedin.png" width="24" height="24" alt="Rob on LinkedIn" />
+    </a></li>
+    <li><a rel="me" href="http://springpad.com/#!/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/springpad.png" width="24" height="24" alt="Rob on SpringPad" />
+    </a></li>    
+    <li><a rel="me" href="http://pinterest.com/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/pinterest.png" width="24" height="24" alt="Rob on Pinterest" />
+    </a></li>
+    <li><a rel="me" href="http://www.last.fm/user/nosredna"  class ="googleplus-hidden" >
+      <img src="/images/asides/lastfm.png" width="24" height="24" alt="Rob on Last.fm" />
+    </a></li>-->
+    <li><a href="http://feeds.feedburner.com/zerosharp">
+      <img src="/images/asides/rss.png" rel="subscribe-rss" width="24" height="24" alt="RSS Feed" />
+    </a></li>
+</ul>
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">How to Improve XAF Grid Layout for Chrome</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-08T09:55:00+00:00" pubdate data-updated="true">Nov 8<span>th</span>, 2013</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>This post proposes a workaround for a specific XAF rendering problem related to recent versions of Google Chrome.</p>
+
+<p>Here is an XAF list view as it looks with IE 10 and DevExpress 13.1.8.</p>
+
+<p><img src="/images/blog/chrome-grid-layout-001.png"></p>
+
+<p>This is how the same view looks with Chrome 30. Notice how the column widths are rendered poorly. The minimum space is given to the string field and the date and bool fields are too wide.</p>
+
+<p><img src="/images/blog/chrome-grid-layout-002.png"></p>
+
+<p>What&#8217;s going on? An update to the Chrome browser occurred in which has caused problems with the rendering of grid views in certain situations. The problem exists in all versions of Chrome great than 25 and also affects the <a href="http://www.google.com/chromeframe">Google Chrome Frame</a> plugin for IE.</p>
+
+<p>DevExpress were able to fix some scenarios in 13.1.4 and 12.2.11 (such as column sorting), but there are other situations which still pose problems (<em>e.g.</em> the fix does not resolve the problem if the <em>Auto Filter Row</em> is enabled, which is the case above.)</p>
+
+<p>Hopefully the Chrome devs will one day fix the root problem. You can keep an eye on <a href="https://code.google.com/p/chromium/issues/detail?id=178369">the issue here</a></p>
+
+<h2>The fix</h2>
+
+<p>Not so much a fix as a workaround. We use a <code>ViewController&lt;ListView&gt;</code> to set the grid layout to <code>UseFixedTableLayout</code>, but only for Chrome browsers. Something like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">/// &lt;summary&gt;</span>
+</span><span class='line'><span class="c1">/// Switches to fixed table layout for the main list view when using Chrome or ChromeFrame.</span>
+</span><span class='line'><span class="c1">/// &lt;/summary&gt;</span>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">ChromeSpecificListViewController</span> <span class="p">:</span> <span class="n">ViewController</span><span class="p">&lt;</span><span class="n">ListView</span><span class="p">&gt;</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnViewChanging</span><span class="p">(</span><span class="n">View</span> <span class="n">view</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">base</span><span class="p">.</span><span class="n">OnViewChanging</span><span class="p">(</span><span class="n">view</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">Active</span><span class="p">[</span><span class="s">&quot;IsChrome&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="n">IsChrome</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="k">static</span> <span class="kt">bool</span> <span class="n">IsChrome</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">get</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">HttpContext</span> <span class="n">context</span> <span class="p">=</span> <span class="n">HttpContext</span><span class="p">.</span><span class="n">Current</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">context</span> <span class="p">!=</span> <span class="k">null</span> <span class="p">&amp;&amp;</span> <span class="n">context</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">Browser</span><span class="p">.</span><span class="n">Browser</span> <span class="p">==</span> <span class="s">&quot;Chrome&quot;</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnViewControlsCreated</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">base</span><span class="p">.</span><span class="n">OnViewControlsCreated</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">ASPxGridListEditor</span> <span class="n">listEditor</span> <span class="p">=</span> <span class="n">View</span><span class="p">.</span><span class="n">Editor</span> <span class="k">as</span> <span class="n">ASPxGridListEditor</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">listEditor</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">ASPxGridView</span> <span class="n">gridView</span> <span class="p">=</span> <span class="n">listEditor</span><span class="p">.</span><span class="n">Grid</span> <span class="k">as</span> <span class="n">ASPxGridView</span><span class="p">;</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">gridView</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">gridView</span><span class="p">.</span><span class="n">Settings</span><span class="p">.</span><span class="n">UseFixedTableLayout</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>The resulting view in Chrome:</p>
+
+<p><img src="/images/blog/chrome-grid-layout-003.png"></p>
+
+<p>That looks better. You may notice the columns will allways be the same width now, which is not quite as good as the IE rendering. As such, it may not be appropriate for all views. But since it&#8217;s a <code>ViewController</code> it&#8217;s easy to deactivate it by adding an <code>Active[]</code> criteria.</p>
+
+<h4>References</h4>
+
+<ul>
+<li><a href="https://code.google.com/p/chromium/issues/detail?id=178369">Chrome issue</a></li>
+<li><a href="http://www.devexpress.com/Support/Center/Question/Details/Q477066">Support Center Q477066</a></li>
+<li><a href="https://www.devexpress.com/Support/Center/Question/Details/B235945">Support Center B235945</a></li>
+<li><a href="https://www.devexpress.com/Support/Center/Question/Details/Q510468">Support Center Q510468</a></li>
+</ul>
+
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-11-08T09:55:00+00:00" pubdate data-updated="true">Nov 8<span>th</span>, 2013</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/how-to-improve-xaf-grid-layout-for-chrome/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/how-to-improve-xaf-grid-layout-for-chrome/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/three-ways-to-store-a-list-of-currency-codes-in-xaf/" title="Previous Post: Three ways to store a list of currency codes in XAF">&laquo; Three ways to store a list of currency codes in XAF</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2013 - Robert Anderson
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'zerosharp';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/how-to-improve-xaf-grid-layout-for-chrome/';
+        var disqus_url = 'http://ZeroSharp.github.com/how-to-improve-xaf-grid-layout-for-chrome/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
