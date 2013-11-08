@@ -6,7 +6,7 @@ comments: true
 categories: [c#, devexpress, xaf]
 description: Three solutions to a storing a list of related objects in DevExpress XAF.
 ---
-In the last post we looked at three solutions to a relatively simple XAF requirement. In this post I'll discuss another XAF challenge, explain the options and provide a versatile and maintainable solution.
+In the [last post](/the-ugly-the-heavy-and-the-good) we looked at three solutions to a relatively simple XAF requirement. In this post I'll discuss another XAF challenge, explain the options and provide a versatile and maintainable solution.
 
 In my DevExpress XAF application, I have an object which has several properties like this:
 
