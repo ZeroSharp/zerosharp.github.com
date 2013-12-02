@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-12-02T17:30:42+00:00</updated>
+  <updated>2013-12-02T18:42:47+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -18,7 +18,7 @@
     <link href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1/"/>
     <updated>2013-12-02T16:23:00+00:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1</id>
-    <content type="html"><![CDATA[<p>The first version of XAF I ever installed was called <em>eXpressApp-1.0.CTP2.exe</em> in July 2006! It has certainly come along way since then.</p>
+    <content type="html"><![CDATA[<p>The first version of XAF I ever installed was called <em>eXpressApp-1.0.CTP2.exe</em> in July 2006! It has certainly come a long way since then.</p>
 
 <p>This post is the first part of an overview of the brand new version XAF 13.2 which will be released any day now. This part is an in-depth review of the new report writer features (still in beta).</p>
 
