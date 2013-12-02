@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-12-02T17:01:45+00:00</updated>
+  <updated>2013-12-02T17:30:42+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -24,7 +24,7 @@
 
 <h2>Reports V2</h2>
 
-<p>Prior to this version, XAF reports were not source code. They were objects serialized to a file and then loaded into the database during initialisation. This has a lot of shortcomings some of which I have addressed in previous <a href="http://octopress.dev/making-xaf-reports-even-better-part-1/">blog posts</a>.</p>
+<p>Prior to this version, XAF reports were not source code. They were objects serialized to a file and then loaded into the database during initialisation. This has a lot of shortcomings some of which I have addressed in previous <a href="/making-xaf-reports-even-better-part-1/">blog posts</a>.</p>
 
 <p>But now finally it is now possible to build XAF reports directly from Visual Studio. DevExpress is calling this <a href="https://community.devexpress.com/blogs/eaf/archive/2013/11/08/easy-large-reports-in-13-2-ctp-of-reportsv2-module.aspx">Reports V2</a> and it largely supersedes my previous workarounds. The immediate advantages of Reports V2 are:</p>
 
