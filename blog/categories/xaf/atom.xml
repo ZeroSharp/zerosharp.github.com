@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-11-08T11:33:25+00:00</updated>
+  <updated>2013-12-02T17:01:45+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,150 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[DevExpress 13.2 Review - Part 1]]></title>
+    <link href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1/"/>
+    <updated>2013-12-02T16:23:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1</id>
+    <content type="html"><![CDATA[<p>The first version of XAF I ever installed was called <em>eXpressApp-1.0.CTP2.exe</em> in July 2006! It has certainly come along way since then.</p>
+
+<p>This post is the first part of an overview of the brand new version XAF 13.2 which will be released any day now. This part is an in-depth review of the new report writer features (still in beta).</p>
+
+<h2>Reports V2</h2>
+
+<p>Prior to this version, XAF reports were not source code. They were objects serialized to a file and then loaded into the database during initialisation. This has a lot of shortcomings some of which I have addressed in previous <a href="http://octopress.dev/making-xaf-reports-even-better-part-1/">blog posts</a>.</p>
+
+<p>But now finally it is now possible to build XAF reports directly from Visual Studio. DevExpress is calling this <a href="https://community.devexpress.com/blogs/eaf/archive/2013/11/08/easy-large-reports-in-13-2-ctp-of-reportsv2-module.aspx">Reports V2</a> and it largely supersedes my previous workarounds. The immediate advantages of Reports V2 are:</p>
+
+<ul>
+<li>Build time syntax checking</li>
+<li>Easily merge/compare report versions</li>
+<li>Painless version control of reports</li>
+<li>Better unit testing possibilities</li>
+</ul>
+
+
+<p>Let's have a look at the details. DevExpress have provided us with a new sample project called <em>ReportsV2Demo</em>. The interesting part of the project solution is here:</p>
+
+<p><img src="/images/blog/devexpress-13-2-review-003.png"></p>
+
+<p>Notice that there are two folders containing reports. <em>PredefinedEditableReports</em> contains V1 reports. That is, the report is serialised as a string and loaded into the database during initialisation. If we look at the source for one of these, here is what it looks like:</p>
+
+<p>```c#
+namespace ReportV2Demo.Module.PredefinedEditableReports {</p>
+
+<pre><code>public class OrdinalReportResource {
+    public static string ReportLayout = @"
+</code></pre>
+
+<p>/// <XRTypeInfo>
+///   <AssemblyFullName>DevExpress.XtraReportsVSuffix, Version=dllVersion, Culture=neutral, PublicKeyToken=dllPublicKeyToken</AssemblyFullName>
+///   <AssemblyLocation>C:\Windows\Microsoft.Net\assembly\GAC_MSIL\DevExpress.XtraReportsVSuffix\v4.0_dllVersion__dllPublicKeyToken\DevExpress.XtraReportsVSuffix.dll</AssemblyLocation>
+///   <TypeName>DevExpress.XtraReports.UI.XtraReport</TypeName>
+///   <Localization>en-US</Localization>
+///   <Version>VersionShort</Version>
+///   <References>
+///     <Reference Path=""C:\Windows\Microsoft.Net\assembly\GAC_MSIL\DevExpress.Persistent.BaseVSuffix\v4.0_dllVersion__dllPublicKeyToken\DevExpress.Persistent.BaseVSuffix.dll"" />
+///     <Reference Path=""C:\Windows\Microsoft.Net\assembly\GAC_MSIL\System\v4.0_4.0.0.0__b77a5c561934e089\System.dll"" /></p>
+
+<p>/// etc.
+```
+The second folder, <em>PredefinedReadonlyReports</em> contains the V2 reports. With these reports, we can right-click and <strong>View Designer</strong> and up pops the XtraReport designer.</p>
+
+<p><img src="/images/blog/devexpress-13-2-review-004.png"></p>
+
+<p>Now I can make changes to my report within Visual Studio. In theory I can preview the report and view the HTML output. However, in the beta (13.2.4) the Preview view prints the report correctly but fails to fetch any data so all the fields are empty (maybe this is by design).</p>
+
+<p>(Actually, I think the names of these folders could be improved. Maybe XafReports vs. XtraReports. Or RuntimeReports vs. DesigntimeReports.)</p>
+
+<p>With respect to event scripts which in the past were particularly arduous to maintain, we now have two options.</p>
+
+<h3>Scripts option 1 - Use serialized scripts</h3>
+
+<p> Firstly, you can continue to use the scripts as before. You can use Visual Studio's <em>Properties</em> window to navigate to the script you need and then add the necessary code in the custom editor.</p>
+
+<p><img src="/images/blog/devexpress-13-2-review-005.png"></p>
+
+<p>Unfortunately, this is not the best from a maintenance perspective. The Scripts code editor view is not at all comparable to Visual Studio. No Intellisense. No CodeRush. In addition, the script itself gets serialized to a string.</p>
+
+<p>```c#
+this.ScriptsSource = "\r\nprivate void xrLabel2_BeforePrint(object sender,System.Drawing.Printing.PrintE" +</p>
+
+<pre><code>"ventArgs e) {\r\n    string something = \"something\";\r\n}\r\n";
+</code></pre>
+
+<p>```
+So unfortunately this approach does not improve things much with regard to compile-time syntax checking or code merging/version control.</p>
+
+<h3>Scripts option 2 - Move the scripts to the C# file</h3>
+
+<p>Now that the report is more like an <code>XtraReport</code>, we can attach an event in code. To test it I'll replace the output of the <em>First name</em> with the current time.</p>
+
+<p>```c#
+public partial class XtraReportOrdinary : DevExpress.XtraReports.UI.XtraReport
+{</p>
+
+<pre><code>public XtraReportOrdinary()
+{
+    InitializeComponent();
+    xrLabel2.BeforePrint += xrLabel2_BeforePrint;
+}
+
+private void xrLabel2_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e)
+{
+    // Today's date and time
+    xrLabel2.Text = DateTime.Now.ToString("G");
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Now let's see if it works. We start up the web application and run the report.</p>
+
+<p><img src="/images/blog/devexpress-13-2-review-006.png"></p>
+
+<p>Excellent! You can see the report has successfully run the event and is displaying the current time instead of the first name. Here are the advantages of handling events this way.</p>
+
+<ul>
+<li>If there's a mistake in an event, the project will not compile until it's fixed.</li>
+<li>The code is more readable.</li>
+<li>The source code of the events can easily be compared with older versions.</li>
+<li>The source code can be merged much more easily when handling version control conflicts.</li>
+<li>Unit testing of the events becomes feasible.</li>
+</ul>
+
+
+<h3>Runtime tailoring</h3>
+
+<p>Can an end-user still make a copy and tailor the report as they could with the older versions? Yes they can! Let's start up the WinForms client and have a look.</p>
+
+<p><img src="/images/blog/devexpress-13-2-review-007.png"></p>
+
+<p>Each of the <em>PredefinedReadonlyReports</em> has a new option <em>Copy predefined report</em>. Also, notice that the <em>Show Report Designer</em> is greyed out. Now compare with the copy.</p>
+
+<p><img src="/images/blog/devexpress-13-2-review-008.png"></p>
+
+<p>This time it is the <em>Copy predefined report</em> is greyed out and the familiar <em>Show Report Designer</em> has become available. (A little suggestion to the DevExpress crew. It would be better if the new copy got renamed to <em>Copy of Inplace Report</em> like Windows does when copying a file). Now we can open the Report Designer and customise the report further. Fantastic!</p>
+
+<p>Let's check what happened to our events?</p>
+
+<p><img src="/images/blog/devexpress-13-2-review-009.png"></p>
+
+<p>Well, the serialized event was copied correctly, but the script that we put in the C# file has not been copied. A bit unfortunate - that event would have to be re-written or copied manually from the C# source file, but in most cases, additional tailoring of reports is a one-off occasional activity. For me at least, the benefits of having more maintainable code outweigh the inconvenience of losing the events when cloning a report.</p>
+
+<h2>Conclusions</h2>
+
+<p>Reports V2 is certainly the most significant improvement to the XAF reporting engine yet. I'm sure there are a few beta issues to iron out and a few further improvements down the line. In this post, I haven't looked at features such as views, sub-reports and custom reporting components, all of which deserve further investigation.</p>
+
+<p>In my <a href="http://www.coprocess.com/">main development project</a>, there are currently 110 different reports and maintaining them takes some effort. Reports V2 will help considerably. Hats off to the DevExpress team.</p>
+
+<h2>Next up</h2>
+
+<p>In my next post I'll be taking a look at the new soft validation along with some other 13.2 improvements.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[How to improve XAF grid layout for Chrome]]></title>
@@ -490,181 +634,6 @@ In the past I have always thought of NDepend as a complex tool. I was never sure
 <p>In this quick review, I'm not going deep enough to say anything about whether the DevExpress MainDemo is good code or not - it's just a sample project I happen to be quite familiar with. It might be interesting to unleash NDepend on the full DevExpress source code and maybe one day I'll get around to writing a future post about that.</p>
 
 <p>With regard to my own projects, I feel I'm so familiar with them that I ought to be aware of most of the recommendations NDepend is likely to make, but I'll give it a spin and see what comes out...</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[MiniProfiler with DevExpress XAF]]></title>
-    <link href="http://ZeroSharp.github.com/miniprofiler-with-devexpress-xaf/"/>
-    <updated>2013-08-27T09:14:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/miniprofiler-with-devexpress-xaf</id>
-    <content type="html"><![CDATA[<p>In this post I will demonstrate how to add <a href="http://miniprofiler.com/">MiniProfiler</a> to the XAF MainDemo web application.</p>
-
-<p>MiniProfiler is a simple fast profiler with a pretty user interface. It is fast because it only profiles code that you have explicitly decorated with the <code>MiniProfiler.Step()</code> method. It was designed by the team at <a href="http://stackoverflow.com/">StackOverflow</a>.</p>
-
-<p>First, add the MiniProfiler NuGet package to the MainDemo.Web project. Then add a placeholder to <em>default.aspx</em> just before the last <code>&lt;body&gt;</code> tag.</p>
-
-<p>```html</p>
-
-<pre><code>&lt;!-- MiniProfiler --&gt;
-&lt;!-- Include jquery here to avoid a bug in MiniProfiler. --&gt;
-&lt;script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"&gt;&lt;/script&gt;
-&lt;asp:PlaceHolder ID="mp" runat="server"&gt;
-  &lt;%= StackExchange.Profiling.MiniProfiler.RenderIncludes() %&gt;
-&lt;/asp:PlaceHolder&gt;
-</code></pre>
-
-<p></body>
-</html>
-```</p>
-
-<p>(MiniProfiler uses jQuery, but it does not usually require XAF to include it since it will automatically retrieve it if missing. Unfortunately there is currently <a href="http://community.miniprofiler.com/permalinks/149/jquery-is-undefined">a bug</a> which causes a '<em>jQuery is undefined</em>' javascript error when initially launching the application. The easiest workaround I found is to explicitly include jQuery before calling <code>RenderIncludes()</code>. Hopefully this will be fixed in a future version of MiniProfiler.)</p>
-
-<p>In <em>global.asax.cs</em> add the following to the <code>Application_Start</code> method.</p>
-
-<p>```diff
-protected void Application_Start(object sender, EventArgs e) {</p>
-
-<pre><code>RenderHelper.RenderMode = DevExpress.Web.ASPxClasses.ControlRenderMode.Lightweight;
-</code></pre>
-
-<ul>
-<li>MiniProfilerHelper.RegisterPathsToIgnore();
-ASPxWebControl.CallbackError += new EventHandler(Application_Error);
-// etc...
-<code>
-and modify `BeginRequest` and `EndRequest` as follows:
-</code>diff
-protected void Application_BeginRequest(object sender, EventArgs e) {</li>
-<li>if (MiniProfilerHelper.IsEnabled())</li>
-<li>{</li>
-<li><pre><code>MiniProfiler.Start();
-</code></pre></li>
-<li>}
-string filePath = HttpContext.Current.Request.PhysicalPath;
-if(!string.IsNullOrEmpty(filePath)
-
-<pre><code>&amp;&amp; (filePath.IndexOf("Images") &gt;= 0) &amp;&amp; !System.IO.File.Exists(filePath)) {
-HttpContext.Current.Response.End();
-</code></pre>
-
-<p>}
-}</p></li>
-</ul>
-
-
-<p>protected void Application_EndRequest(Object sender, EventArgs e)
-{
-+   if (MiniProfilerHelper.IsEnabled())
-+       MiniProfiler.Stop();
-}      <br/>
-<code>
-Now we implement a helper class which determines whether profiling is enabled and which URLs to profile. We can use a variety of methods, the cookie probably being the most versatile one, but for the moment, the `IsEnabled()` function always returns true.
-</code>c#  <br/>
-public static class MiniProfilerHelper
-{</p>
-
-<pre><code>public static bool IsEnabled()
-{
-    // While we are testing let's always return true
-    return true;
-
-    // We should not profile if we are EasyTesting
-    if (TestScriptsManager.EasyTestEnabled == true)
-        return false;
-
-    // We could choose to profile only local requests
-    if (HttpContext.Current.Request.IsLocal)
-        return true;
-
-    // Or based on a cookie
-    HttpCookie miniProfileCookie = HttpContext.Current.Request.Cookies["MainDemoMiniProfiler"];
-    return miniProfileCookie != null &amp;&amp; miniProfileCookie.Value != "0";
-}
-
-// Optionally ignore some paths to prevent the output being too busy.
-public static void RegisterPathsToIgnore()
-{
-    if (!NetSecuritySettings.IsProfilingAllowed())
-        return;
-
-    List&lt;String&gt; ignoredByMiniProfiler = new List&lt;String&gt;(MiniProfiler.Settings.IgnoredPaths);
-    // these are a substring search so wildcards are not supported
-    ignoredByMiniProfiler.Add("SessionKeepAliveReconnect.aspx");
-    ignoredByMiniProfiler.Add("TemplateScripts.js");
-    ignoredByMiniProfiler.Add("EasyTestJavaScripts.js");
-    ignoredByMiniProfiler.Add("MoveFooter.js");
-    ignoredByMiniProfiler.Add("ImageResource.axd");
-    MiniProfiler.Settings.IgnoredPaths = ignoredByMiniProfiler.ToArray(); 
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>Done. Now whenever you run the web application, you get timing statistics for the loading of the assets. They appear as little clickable 'chiclets' in the top left of the browser page.</p>
-
-<p><img src="/images/blog/xaf-miniprofiler-1.png"></p>
-
-<p>However, the real strength of MiniProfiler comes with the ability to add your own profiling steps. Let's say we want to know exactly what percentage of the load takes place in the <code>OnLoad</code> event. Then we add the following to <em>default.aspx.cs</em> in order to add a 'step' to the MiniProfiler breakdown.</p>
-
-<p>```c#
-protected override void OnLoad(EventArgs e)
-{</p>
-
-<pre><code>var profiler = MiniProfiler.Current; // it's ok for this to be null
-using (profiler.Step("ASP.NET: Page_Load(Default)"))
-{
-     base.OnLoad(e);
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>Now, the output is a good deal richer. Also, note that if the MiniProfiler assembly is missing from the web application's <em>bin</em> directory, the profiling is ignored completely without error.</p>
-
-<p><img src="/images/blog/xaf-miniprofiler-2.png"></p>
-
-<p>As another example, let's profile the <em>FindBySubject</em> controller action.</p>
-
-<p>Add the MiniProfiler NuGet package to the MainDemo.Module project. Then modify the FindBySubjectController.cs as follows</p>
-
-<p>```diff
-private void FindBySubjectAction_Execute(object sender, ParametrizedActionExecuteEventArgs e)
-{
-+   var profiler = MiniProfiler.Current;
-+   using (profiler.Step("FindBySubject")) // doesn't matter if profiler is null
-+   {</p>
-
-<pre><code>    IObjectSpace objectSpace = Application.CreateObjectSpace();
-    string paramValue = e.ParameterCurrentValue as string;
-    if (!string.IsNullOrEmpty(paramValue))
-    {
-        paramValue = "%" + paramValue + "%";
-    }
-    object obj = objectSpace.FindObject(((ListView)View).ObjectTypeInfo.Type,
-        new BinaryOperator("Subject", paramValue, BinaryOperatorType.Like));
-    if (obj != null)
-    {
-        e.ShowViewParameters.CreatedView = Application.CreateDetailView(objectSpace, obj);
-    }
-</code></pre>
-
-<ul>
-<li>}
-}     <br/>
-```</li>
-</ul>
-
-
-<p><img class="right" src="/images/blog/xaf-miniprofiler-3.png"></p>
-
-<p>Now navigate to the <em>Tasks</em> list view and enter some text where it says 'Type Subject...'. You should see a new chiclet appear which contains the timing details as shown here.</p>
-
-<p>MiniProfiler is a great tool for providing helpful profiling benchmarks, even in production. It's often difficult to measure when a remote user complains to support that the site seems slow. How slow is slow? In a production environment, you can turn on MiniProfiler for the user (by setting a cookie for instance) and then ask them to share their profiling information for some basic operations. This information can be invaluable in determining where the fault lies.</p>
-
-<p>You can play around with <a href="https://github.com/ZeroSharp/Xaf_MainDemo_MiniProfiler">the sample solution</a> up on GitHub.</p>
 ]]></content>
   </entry>
   

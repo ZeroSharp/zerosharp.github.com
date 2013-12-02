@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-11-08T11:33:25+00:00</updated>
+  <updated>2013-12-02T17:01:45+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,173 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[DevExpress 13.2 Review - Part 1]]></title>
+    <link href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1/"/>
+    <updated>2013-12-02T16:23:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1</id>
+    <content type="html"><![CDATA[<p>The first version of XAF I ever installed was called <em>eXpressApp-1.0.CTP2.exe</em> in July 2006! It has certainly come along way since then.</p>
+
+<p>This post is the first part of an overview of the brand new version XAF 13.2 which will be released any day now. This part is an in-depth review of the new report writer features (still in beta).</p>
+
+<h2>Reports V2</h2>
+
+<p>Prior to this version, XAF reports were not source code. They were objects serialized to a file and then loaded into the database during initialisation. This has a lot of shortcomings some of which I have addressed in previous <a href="http://octopress.dev/making-xaf-reports-even-better-part-1/">blog posts</a>.</p>
+
+<p>But now finally it is now possible to build XAF reports directly from Visual Studio. DevExpress is calling this <a href="https://community.devexpress.com/blogs/eaf/archive/2013/11/08/easy-large-reports-in-13-2-ctp-of-reportsv2-module.aspx">Reports V2</a> and it largely supersedes my previous workarounds. The immediate advantages of Reports V2 are:</p>
+
+<ul>
+<li>Build time syntax checking</li>
+<li>Easily merge/compare report versions</li>
+<li>Painless version control of reports</li>
+<li>Better unit testing possibilities</li>
+</ul>
+
+
+<p>Let&#8217;s have a look at the details. DevExpress have provided us with a new sample project called <em>ReportsV2Demo</em>. The interesting part of the project solution is here:</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-13-2-review-003.png"></p>
+
+<p>Notice that there are two folders containing reports. <em>PredefinedEditableReports</em> contains V1 reports. That is, the report is serialised as a string and loaded into the database during initialisation. If we look at the source for one of these, here is what it looks like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">namespace</span> <span class="nn">ReportV2Demo.Module.PredefinedEditableReports</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">class</span> <span class="nc">OrdinalReportResource</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">public</span> <span class="k">static</span> <span class="kt">string</span> <span class="n">ReportLayout</span> <span class="p">=</span> <span class="s">@&quot;</span>
+</span><span class='line'><span class="s">/// &lt;XRTypeInfo&gt;</span>
+</span><span class='line'><span class="s">///   &lt;AssemblyFullName&gt;DevExpress.XtraReportsVSuffix, Version=dllVersion, Culture=neutral, PublicKeyToken=dllPublicKeyToken&lt;/AssemblyFullName&gt;</span>
+</span><span class='line'><span class="s">///   &lt;AssemblyLocation&gt;C:\Windows\Microsoft.Net\assembly\GAC_MSIL\DevExpress.XtraReportsVSuffix\v4.0_dllVersion__dllPublicKeyToken\DevExpress.XtraReportsVSuffix.dll&lt;/AssemblyLocation&gt;</span>
+</span><span class='line'><span class="s">///   &lt;TypeName&gt;DevExpress.XtraReports.UI.XtraReport&lt;/TypeName&gt;</span>
+</span><span class='line'><span class="s">///   &lt;Localization&gt;en-US&lt;/Localization&gt;</span>
+</span><span class='line'><span class="s">///   &lt;Version&gt;VersionShort&lt;/Version&gt;</span>
+</span><span class='line'><span class="s">///   &lt;References&gt;</span>
+</span><span class='line'><span class="s">///     &lt;Reference Path=&quot;&quot;C:\Windows\Microsoft.Net\assembly\GAC_MSIL\DevExpress.Persistent.BaseVSuffix\v4.0_dllVersion__dllPublicKeyToken\DevExpress.Persistent.BaseVSuffix.dll&quot;&quot; /&gt;</span>
+</span><span class='line'><span class="s">///     &lt;Reference Path=&quot;&quot;C:\Windows\Microsoft.Net\assembly\GAC_MSIL\System\v4.0_4.0.0.0__b77a5c561934e089\System.dll&quot;&quot; /&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">/// etc.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The second folder, <em>PredefinedReadonlyReports</em> contains the V2 reports. With these reports, we can right-click and <strong>View Designer</strong> and up pops the XtraReport designer.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-13-2-review-004.png"></p>
+
+<p>Now I can make changes to my report within Visual Studio. In theory I can preview the report and view the HTML output. However, in the beta (13.2.4) the Preview view prints the report correctly but fails to fetch any data so all the fields are empty (maybe this is by design).</p>
+
+<p>(Actually, I think the names of these folders could be improved. Maybe XafReports vs. XtraReports. Or RuntimeReports vs. DesigntimeReports.)</p>
+
+<p>With respect to event scripts which in the past were particularly arduous to maintain, we now have two options.</p>
+
+<h3>Scripts option 1 - Use serialized scripts</h3>
+
+<p> Firstly, you can continue to use the scripts as before. You can use Visual Studio&#8217;s <em>Properties</em> window to navigate to the script you need and then add the necessary code in the custom editor.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-13-2-review-005.png"></p>
+
+<p>Unfortunately, this is not the best from a maintenance perspective. The Scripts code editor view is not at all comparable to Visual Studio. No Intellisense. No CodeRush. In addition, the script itself gets serialized to a string.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">this</span><span class="p">.</span><span class="n">ScriptsSource</span> <span class="p">=</span> <span class="s">&quot;\r\nprivate void xrLabel2_BeforePrint(object sender,System.Drawing.Printing.PrintE&quot;</span> <span class="p">+</span>
+</span><span class='line'>    <span class="s">&quot;ventArgs e) {\r\n    string something = \&quot;something\&quot;;\r\n}\r\n&quot;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So unfortunately this approach does not improve things much with regard to compile-time syntax checking or code merging/version control.</p>
+
+<h3>Scripts option 2 - Move the scripts to the C# file</h3>
+
+<p>Now that the report is more like an <code>XtraReport</code>, we can attach an event in code. To test it I&#8217;ll replace the output of the <em>First name</em> with the current time.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">XtraReportOrdinary</span> <span class="p">:</span> <span class="n">DevExpress</span><span class="p">.</span><span class="n">XtraReports</span><span class="p">.</span><span class="n">UI</span><span class="p">.</span><span class="n">XtraReport</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">XtraReportOrdinary</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">InitializeComponent</span><span class="p">();</span>
+</span><span class='line'>        <span class="n">xrLabel2</span><span class="p">.</span><span class="n">BeforePrint</span> <span class="p">+=</span> <span class="n">xrLabel2_BeforePrint</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="k">void</span> <span class="nf">xrLabel2_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// Today&#39;s date and time</span>
+</span><span class='line'>        <span class="n">xrLabel2</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span><span class="p">.</span><span class="n">ToString</span><span class="p">(</span><span class="s">&quot;G&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now let&#8217;s see if it works. We start up the web application and run the report.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-13-2-review-006.png"></p>
+
+<p>Excellent! You can see the report has successfully run the event and is displaying the current time instead of the first name. Here are the advantages of handling events this way.</p>
+
+<ul>
+<li>If there&#8217;s a mistake in an event, the project will not compile until it&#8217;s fixed.</li>
+<li>The code is more readable.</li>
+<li>The source code of the events can easily be compared with older versions.</li>
+<li>The source code can be merged much more easily when handling version control conflicts.</li>
+<li>Unit testing of the events becomes feasible.</li>
+</ul>
+
+
+<h3>Runtime tailoring</h3>
+
+<p>Can an end-user still make a copy and tailor the report as they could with the older versions? Yes they can! Let&#8217;s start up the WinForms client and have a look.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-13-2-review-007.png"></p>
+
+<p>Each of the <em>PredefinedReadonlyReports</em> has a new option <em>Copy predefined report</em>. Also, notice that the <em>Show Report Designer</em> is greyed out. Now compare with the copy.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-13-2-review-008.png"></p>
+
+<p>This time it is the <em>Copy predefined report</em> is greyed out and the familiar <em>Show Report Designer</em> has become available. (A little suggestion to the DevExpress crew. It would be better if the new copy got renamed to <em>Copy of Inplace Report</em> like Windows does when copying a file). Now we can open the Report Designer and customise the report further. Fantastic!</p>
+
+<p>Let&#8217;s check what happened to our events?</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-13-2-review-009.png"></p>
+
+<p>Well, the serialized event was copied correctly, but the script that we put in the C# file has not been copied. A bit unfortunate - that event would have to be re-written or copied manually from the C# source file, but in most cases, additional tailoring of reports is a one-off occasional activity. For me at least, the benefits of having more maintainable code outweigh the inconvenience of losing the events when cloning a report.</p>
+
+<h2>Conclusions</h2>
+
+<p>Reports V2 is certainly the most significant improvement to the XAF reporting engine yet. I&#8217;m sure there are a few beta issues to iron out and a few further improvements down the line. In this post, I haven&#8217;t looked at features such as views, sub-reports and custom reporting components, all of which deserve further investigation.</p>
+
+<p>In my <a href="http://www.coprocess.com/">main development project</a>, there are currently 110 different reports and maintaining them takes some effort. Reports V2 will help considerably. Hats off to the DevExpress team.</p>
+
+<h2>Next up</h2>
+
+<p>In my next post I&#8217;ll be taking a look at the new soft validation along with some other 13.2 improvements.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[How to improve XAF grid layout for Chrome]]></title>
@@ -2634,50 +2801,6 @@ The ability to create reports using a report writer is a very powerful feature o
 <p>The reason for this is that we are trying to determine the breaking point of our application. If the elastic load balancer detects that a system is struggling, it might automatically flag it as unhealthy and replace it with a newly launched instance. While this behaviour might be desirable for a production system, it doesn&#8217;t make sense for a load test.</p>
 
 <p>Make sure you can connect to your installation from a web browser before continuing. I chose to deploy to a Windows 2012 instance running IIS 8.0 (which was not available when I wrote my previous XAF AWS tutorial) and I had a little trouble with the URL. If I navigate to the application&#8217;s base URL (<em>http://zerosharp-maindemo.elasticbeanstalk.com/</em> in my case), then I get forwarding problems after logging in. Instead, I navigate to the full address <em>http://zerosharp-maindemo.elasticbeanstalk.com/MainDemo.Web_deploy/Default.aspx</em> and everything works. I&#8217;ll try to look into it later, but it&#8217;s not important for the load testing.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Load Testing XAF: Overview]]></title>
-    <link href="http://ZeroSharp.github.com/load-testing-xaf-overview/"/>
-    <updated>2013-03-12T18:20:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/load-testing-xaf-overview</id>
-    <content type="html"><![CDATA[<p>Over the next few posts, I will demonstrate how to load test XAF web applications.</p>
-
-<h2>History</h2>
-
-<p>Performance testing has traditionally been difficult and expensive. A few years ago, to do it well required a powerful piece of dedicated load testing software such as HP LoadRunner (typical cost back in 2007: USD 50,000-100,000 or more per year!). This software was capable of simulating multiple virtual users via the use of recorded scripts and providing detailed performance statistics. Usually the cost was increased further increased by the need for powerful hardware to be able to run the application.</p>
-
-<p>In 2007 we were required by a big customer (a global bank) to provide load testing statistics for our expressApp Framework application. We could not afford anything as sophisticated as LoadRunner so we went with a cheaper alternative (NeoLoad, which was still several thousand per year). It was extremely painstaking work to produce a test. The approach was to record the http requests (as a stream of text values) and write a script to check the http response. Since there was no real browser involved, it was very difficult to determine if our test was really representative. Several machines in the office had to be dedicated to simulating virtual users. Nobody was allowed to use the internet for fear of skewing the results during a test. If an error occurred, it was almost impossible to determine what went wrong. We wrestled with it and managed to fulfill our requirements, but it was all a lot of effort for no real return.</p>
-
-<p>Part of the problem was certainly that XAF is complex to test. The user interface is rich and makes use of complex controls. Most of these load testing tools work better when targetting a simple <code>&lt;INPUT type="button"&gt;</code> rather than an image of a button that sometimes is not even clickable until the mouse has hovered over it. DevExpress have made it easy to run tests via their EasyTests, but no load testing tool supports them yet. (They have informed me it&#8217;s in their plans&#8230;)</p>
-
-<h2>Enter the cloud</h2>
-
-<p><span class='pullquote-right' data-pullquote='The increased availability of cheap cloud-based virtualised machines has revolutionised load testing.'></p>
-
-<p>The basic idea is this: instead of simulating users with specialised software, why not fire up a virtual machine and test with a real browser instance which is &#8216;remote controlled&#8217; via a script.</p>
-
-<p>The increased availability of cheap cloud-based virtualised machines has revolutionised load testing. The rental of the virtualised machines is not free, but it is very cheap.  In about 2008, I started using the Amazon cloud to perform load tests. Our basic test costs us about USD 10.00 per run. We probably run this a dozen times a year, so our total cost is about USD 120.00 per year.
-</span></p>
-
-<p>We get better statistics than we ever got out of NeoLoad. We are confident that the test is realistic and we can compare with the actual performance of our production environments. We have been able to find and solve memory leak problems and various tricky multi-user problems with these tests.</p>
-
-<p>Load testing is still a complex business. There are a lot of pieces to put together, but with the cloud, each piece is relatively simple and cheap.</p>
-
-<h2>The solution</h2>
-
-<ul>
-<li>In <a href="http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/">Part 1</a>, we install the DevExpress MainDemo on an Amazon EC2 instance.</li>
-<li>In <a href="http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/">Part 2</a>, we use Selenium to write a script which will run on the client machines to control a real browser instance.</li>
-<li>In <a href="http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Part 3</a>, we create a NeuStar Web Performance test and validate the script.</li>
-<li>In <a href="http://ZeroSharp.github.com/load-testing-xaf-part-4-launching-the-load-test/">Part 4</a>, we launch a performance test and monitor the server.</li>
-<li>In <a href="http://ZeroSharp.github.com/load-testing-xaf-part-5-analysis/">Part 5</a>, we analyse the results of the clients.</li>
-<li>In <a href="http://ZeroSharp.github.com/load-testing-xaf-bonus-simultaneous-easytests/">a bonus part</a>, we learn how to run multiple simultaneous EasyTests as an alternative method of isolating performance and concurrency problems.</li>
-</ul>
-
-
-<p>If you follow all the steps, expect to pay a handful of dollars in Amazon EC2 costs and a few more in Neustar costs. You could alternatively skip step 1 and target one of your own development machines instead.</p>
 ]]></content>
   </entry>
   
