@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-12-02T18:42:47+00:00</updated>
+  <updated>2013-12-10T17:04:48+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,107 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[DevExpress 13.2 Review - Part 2]]></title>
+    <link href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-2/"/>
+    <updated>2013-12-10T16:10:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-2</id>
+    <content type="html"><![CDATA[<p>This is the second part of a review of the new DevExpress 13.2. In <a href="/devexpress-13-dot-2-review-part-1">the last part</a> we looked in-depth at the new <a href="">Reports V2</a>. In this part I'll go over some of the other new features including the support for warnings and confirmations in the validation module.</p>
+
+<h2>Soft Validation Rules</h2>
+
+<p>With 13.2, DevExpress adds support for warning/confirmation messages to the validation engine. Warnings can be used to handle an unusual but valid data entry. An example would be:</p>
+
+<p><blockquote><p>The date of birth results in an age of over 100. Are you sure?</p></blockquote></p>
+
+<p>Here the age of the contact is unusual but not impossible, so instead of prohibiting it entirely, we ask the user for confirmation before saving.</p>
+
+<p>Let's add this rule to the MainDemo. Open the model and navigate to the Validation node. Add a <code>RuleValueComparison</code> and configure it as follows</p>
+
+<p><img src="/images/blog/devexpress-13-2-review-010.png"></p>
+
+<p>Of course you could instead also define the same rule with an attribute on the <code>Birthday</code> property. Something like:</p>
+
+<p>```c#
+[RuleValueComparison("IsOlderThan100_Warning",</p>
+
+<pre><code>DefaultContexts.Save,
+ValueComparisonType.GreaterThan, "AddYears(Now(), -100)",
+"Birthday makes this Contact older than 100. Are you sure?",
+ParametersMode.Expression,
+ResultType = ValidationResultType.Warning)]
+</code></pre>
+
+<p>```</p>
+
+<p>Notice the new <code>ResultType</code> parameter is set to <code>ValidationResultType.Warning</code>.</p>
+
+<p>Another typical use is to provide better handling of duplicates. Consider the following:</p>
+
+<p>```c#
+[RuleCombinationOfPropertiesIsUnique("DuplicateName_Warning",</p>
+
+<pre><code>DefaultContexts.Save, 
+"LastName;FirstName", 
+"There is already a Contact with the name {FullName}. Are you sure?", 
+ResultType = ValidationResultType.Warning)]
+</code></pre>
+
+<p>public class Contact : Person {
+  //etc ...
+```</p>
+
+<p>And then this is what happens if I try to add another John Nilsen.</p>
+
+<p><img src="/images/blog/devexpress-13-2-review-011.png"></p>
+
+<p>Another scenario would be to warn the user of something which needs attention. Such as "Warning! You are running out of funds in your current account." Or "Warning! Deleting this record will format your hard drive."</p>
+
+<h3>List Views</h3>
+
+<p>Soft validation also works in the list views, even with multiple selection, but there are a couple of things that don't work very smoothly yet and I would expect the web implementation to evolve over the coming releases.</p>
+
+<p>In order to demonstrate this I need to use a context which allows multiple selection such as deletion. So let's decorate our class with the following simple rule.</p>
+
+<p>```c#</p>
+
+<pre><code>[RuleCriteria("Deletion_Warning", DefaultContexts.Delete, "1=0", "Warning! Are you sure?", ResultType = ValidationResultType.Warning)]
+</code></pre>
+
+<p>```</p>
+
+<p>Then I select all the contacts and press <code>Delete</code>, after the confirmation window, I get this:</p>
+
+<p><img src="/images/blog/devexpress-13-2-review-014.png"></p>
+
+<h3>Web Application</h3>
+
+<p>Soft validation is also available in the web application. This is what a warning looks like.</p>
+
+<p><img src="/images/blog/devexpress-13-2-review-015.png"></p>
+
+<p>I would prefer to see a <em>Confirm</em> button rather than the current <em>Ignore</em> checkbox since a button requires a single click to validate.</p>
+
+<p>When there are several warnings and errors at the same time, the current implementation displays them all. I think it would be preferable if warnings were not displayed unless there are no errors. Unless DevExpress provide this as an option soon, I will attempt to extend the controller in this regard in a future post.</p>
+
+<h2>Other new features</h2>
+
+<p>In the 13.2 release, there is now support for runtime extension of the model. DevExpress is calling this feature <em>custom fields</em> and (again) it is marked as beta. This is not a feature I've looked at, but there are a few other non-XAF DevExpress novelties which I'd like to see working within XAF. These include <a href="https://www.devexpress.com/Subscriptions/New-2013-v2-Beta.xml?product=aspnet#ctl00_ctl00_Content_Content_ctl659">new themes</a> and <a href="https://www.devexpress.com/Subscriptions/New-2013-v2-Beta.xml?product=aspnet#ctl00_ctl00_Content_Content_ctl660">support for grid batch editing</a>.</p>
+
+<h2>One warning</h2>
+
+<p><img class="left" src="/images/blog/devexpress-13-2-review-001.png">
+<img class="right" src="/images/blog/devexpress-13-2-review-002.png">
+The default directories for the installation have changed again. I'm sure DevExpress has some good reason for this, but if, like me, you have several different versions installed you end up with a confusing directory tree. Whenever this happens I always end up having to modify build scripts and config files so that all my tools work as expected. For those of you who use Red Gate's <em>.NET Reflector</em>, you can find my config file <a href="https://gist.github.com/shamp00/7748150">in this gist</a>.</p>
+
+<h2>Conclusions</h2>
+
+<p>For the 13.2 release, DevExpress have focused on making the existing functionality work better rather than developing new modules.</p>
+
+<p>Better reports. Better validation. A better framework all round.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[DevExpress 13.2 Review - Part 1]]></title>
@@ -548,92 +649,6 @@ protected override void OnViewControlsCreated()
 <p>In this case, using a <code>ViewController</code> leads to relatively simple code and ease of maintenance. Other situations may well be better served by the other approaches.</p>
 
 <p>DevExpress XAF is a powerful mature product. As such, it can be daunting to new users because of all the different approaches for applying changes. It is always possible to find an elegant maintainable solution, but sometimes it is not obvious, even when the required change is small.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[A review of NDepend 5]]></title>
-    <link href="http://ZeroSharp.github.com/a-review-of-ndepend-5/"/>
-    <updated>2013-10-02T17:54:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/a-review-of-ndepend-5</id>
-    <content type="html"><![CDATA[<p>NDepend is a commercial static analysis tool for .NET managed code. It's been around a long time (since 2004!). Version 5 was just released and in this post I'm going to try it out on the DevExpress MainDemo.</p>
-
-<p><span class='pullquote-right' data-pullquote='In version 5, a lot of work has been done to improve the learning curve.'>
-In the past I have always thought of NDepend as a complex tool. I was never sure where to start. In version 5, a lot of work has been done to improve the learning curve. The installation process is easy and a wizard very quickly points you in the right direction.</p>
-
-<p>After <a href="http://ndepend.com/NDependDownload.aspx">downloading the v5 trial</a> and running the installation you get to the following screen.
-</span></p>
-
-<p><img src="/images/blog/ndepend/ndepend-001.png"></p>
-
-<p>You cannot miss that big red arrow. In fact, it's even animated in the actual product. Click on it and choose a Visual Studio solution to analyse. I'm going to navigate to the DevExpress MainDemo 13.1.</p>
-
-<p>So long as the project has been built at some point, NDepend works out what to analyse (otherwise you'll get helpful warnings).</p>
-
-<p><img src="/images/blog/ndepend/ndepend-003.png"></p>
-
-<p>It is very fast and we get to this help screen.</p>
-
-<p><img src="/images/blog/ndepend/ndepend-004.png"></p>
-
-<p>Choose the dashboard.</p>
-
-<p><img src="/images/blog/ndepend/ndepend-005.png"></p>
-
-<p>Now that's a lot of information, but it's all well presented and easy to navigate. Let's focus on the worst: I can see <em>2 Critical Rules Violated</em>. Drill down to find out more:</p>
-
-<p><img src="/images/blog/ndepend/ndepend-009.png"></p>
-
-<p>It's complaining that we have classes with duplicate names in our projects. In the pane on the left we can see what they are: 3 types named <code>MainDemoWinApplication</code>, 3 named <code>Program</code>, <em>etc.</em> And sure enough there are: <em>MainDemo.Win</em>, <em>MainDemo.Win.Mdi</em> and <em>MainDemo.Win.Ribbon</em> all duplicate those class names.</p>
-
-<p>We can also see 2 <code>TaskAnalysis1LayoutUpdater</code> types and a quick search reveals that there's one in the web module and another in the win module.</p>
-
-<p>So NDepend has correctly discovered some potential issues. As we XAF fans know, this one is not really a problem, because those modules are never loaded into the same AppDomain, but nevertheless the information is accurate and relevant.</p>
-
-<p>Lets have a brief look at the other screens. The dependency graph:</p>
-
-<p><img src="/images/blog/ndepend/ndepend-006.png"></p>
-
-<p>With a million options.</p>
-
-<p><img src="/images/blog/ndepend/ndepend-010.png"></p>
-
-<p>A dependency matrix.</p>
-
-<p><img src="/images/blog/ndepend/ndepend-007.png"></p>
-
-<p>A metrics view showing class and assembly sizes.</p>
-
-<p><img src="/images/blog/ndepend/ndepend-008.png"></p>
-
-<p>All with reams of helpful documentation.</p>
-
-<p><img src="/images/blog/ndepend/ndepend-011.png"></p>
-
-<p>Overall, the tool felt fast, responsive and stable. I've focused on the user interface aspects, but there is so much more. Some things you can do:</p>
-
-<ul>
-<li>Create your own analysis rules</li>
-<li><a href="http://www.ndepend.com/Doc_CQLinq_Syntax.aspx#Edition">Query your own code with LINQ</a></li>
-<li>Run analysis from <a href="http://www.ndepend.com/NDependConsole.aspx">the command line</a></li>
-<li>Run from within Visual Studio</li>
-<li>Add output to continuous integration (<a href="http://www.ndepend.com/Doc_CI_TeamCity.aspx">TeamCity</a>, <a href="http://www.ndepend.com/Doc_CI_CCNet.aspx">CruiseControl.NET</a>, etc.)</li>
-<li>Track <a href="http://www.ndepend.com/Doc_Trend.aspx">trends and progress over time</a></li>
-</ul>
-
-
-<p>NDepend shines at providing a high-level overview of code quality and as such it is a very useful addition to any developer's toolkit. There are some scenarios where NDepend would be particularly useful:</p>
-
-<ul>
-<li>For a developer joining a mature project.</li>
-<li>For a senior developer looking to track progress on a refactoring drive.</li>
-<li>For helping evaluate the quality of an open source third party library.</li>
-</ul>
-
-
-<p>In this quick review, I'm not going deep enough to say anything about whether the DevExpress MainDemo is good code or not - it's just a sample project I happen to be quite familiar with. It might be interesting to unleash NDepend on the full DevExpress source code and maybe one day I'll get around to writing a future post about that.</p>
-
-<p>With regard to my own projects, I feel I'm so familiar with them that I ought to be aware of most of the recommendations NDepend is likely to make, but I'll give it a spin and see what comes out...</p>
 ]]></content>
   </entry>
   
