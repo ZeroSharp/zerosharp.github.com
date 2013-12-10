@@ -6,12 +6,12 @@ comments: true
 categories: [c#, devexpress, xaf]
 description: A review of the new DevExpress 13.2 release with particular focus on XAF Reports V2.
 ---
-The first version of XAF I ever installed was called _eXpressApp-1.0.CTP2.exe_ in July 2006! It has certainly come along way since then. 
+The first version of XAF I ever installed was called _eXpressApp-1.0.CTP2.exe_ in July 2006! It has certainly come a long way since then. 
 
 This post is the first part of an overview of the brand new version XAF 13.2 which will be released any day now. This part is an in-depth review of the new report writer features (still in beta).
 
 ## Reports V2 ##
-Prior to this version, XAF reports were not source code. They were objects serialized to a file and then loaded into the database during initialisation. This has a lot of shortcomings some of which I have addressed in previous [blog posts](http://octopress.dev/making-xaf-reports-even-better-part-1/).
+Prior to this version, XAF reports were not source code. They were objects serialized to a file and then loaded into the database during initialisation. This has a lot of shortcomings some of which I have addressed in previous [blog posts](/making-xaf-reports-even-better-part-1/).
 
 But now finally it is now possible to build XAF reports directly from Visual Studio. DevExpress is calling this [Reports V2](https://community.devexpress.com/blogs/eaf/archive/2013/11/08/easy-large-reports-in-13-2-ctp-of-reportsv2-module.aspx) and it largely supersedes my previous workarounds. The immediate advantages of Reports V2 are:
 
