@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c# | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/c-/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-12-10T17:04:48+00:00</updated>
+  <updated>2013-12-10T17:07:47+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -18,7 +18,7 @@
     <link href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-2/"/>
     <updated>2013-12-10T16:10:00+00:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-2</id>
-    <content type="html"><![CDATA[<p>This is the second part of a review of the new DevExpress 13.2. In <a href="/devexpress-13-dot-2-review-part-1">the last part</a> we looked in-depth at the new <a href="">Reports V2</a>. In this part I'll go over some of the other new features including the support for warnings and confirmations in the validation module.</p>
+    <content type="html"><![CDATA[<p>This is the second part of a review of the new DevExpress 13.2. In <a href="/devexpress-13-dot-2-review-part-1">the last part</a> we looked in-depth at the new <a href="https://community.devexpress.com/blogs/eaf/archive/2013/11/08/easy-large-reports-in-13-2-ctp-of-reportsv2-module.aspx">Reports V2</a>. In this part I'll go over some of the other new features including the support for warnings and confirmations in the validation module.</p>
 
 <h2>Soft Validation Rules</h2>
 
