@@ -6,7 +6,7 @@ comments: true
 categories: [c#, devexpress, xaf]
 description: Part 2 of a review of the new DevExpress 13.2 release with particular focus on XAF soft validation.
 ---
-This is the second part of a review of the new DevExpress 13.2. In [the last part](/devexpress-13-dot-2-review-part-1) we looked in-depth at the new [Reports V2](). In this part I'll go over some of the other new features including the support for warnings and confirmations in the validation module.
+This is the second part of a review of the new DevExpress 13.2. In [the last part](/devexpress-13-dot-2-review-part-1) we looked in-depth at the new [Reports V2](https://community.devexpress.com/blogs/eaf/archive/2013/11/08/easy-large-reports-in-13-2-ctp-of-reportsv2-module.aspx). In this part I'll go over some of the other new features including the support for warnings and confirmations in the validation module.
 
 ## Soft Validation Rules ##
 With 13.2, DevExpress adds support for warning/confirmation messages to the validation engine. Warnings can be used to handle an unusual but valid data entry. An example would be:
