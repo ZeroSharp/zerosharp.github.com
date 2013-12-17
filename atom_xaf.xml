@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-12-10T17:07:47+00:00</updated>
+  <updated>2013-12-17T14:19:35+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,187 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Glimpse with DevExpress XAF]]></title>
+    <link href="http://ZeroSharp.github.com/glimpse-with-devexpress-xaf/"/>
+    <updated>2013-12-17T12:41:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/glimpse-with-devexpress-xaf</id>
+    <content type="html"><![CDATA[<p>I have finally got around to getting Glimpse working with XAF. Glimpse is an amazing extensible ASP.NET plug-in which gives you valuable information about what is going on within your server in production. It&#8217;s also very pretty.</p>
+
+<p>Let&#8217;s jump right in and have a look at what XAF looks like with Glimpse running.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-016.png"></p>
+
+<p>That banner along the bottom of the screen is the Glimpse heads up display (HUD). Hovering over various sections of it pops up more information:</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-019.png"></p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-018.png"></p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-017.png"></p>
+
+<p>If you click on the Glimpse icon in the bottom right, you get even more goodies. Here&#8217;s the <em>Timeline</em> view.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-011.png"></p>
+
+<p>And there are many other tabs available. The <em>Configuration</em> tab shows the contents of the <em>web.config</em> file.
+<img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-009.png">
+Here&#8217;s the <em>Control Tree</em> tab:
+<img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-010.png">
+The <em>Page Life Cycle tab:
+<img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-005.png">
+The </em>Request<em> tab:
+<img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-004.png">
+The </em>Session<em> tab:
+<img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-003.png">
+And the </em>Trace_ tab including the DevExpress log items that were added to the trace during this page load:
+<img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-002.png">
+As you can see, this is a very valuable glimpse into the server which can be turned on as needed in production.</p>
+
+<h2>Adding Glimpse to an XAF application</h2>
+
+<p>First install the Glimpse Nuget package into the project.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-001.png"></p>
+
+<p>The Nuget installation will make various incorrect changes to the web.config. The corrected sections are below:</p>
+
+<p>First, add Glimpse to the <code>&lt;configSections&gt;</code>.</p>
+
+<figure class='code'><figcaption><span>web.config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>  &lt;configSections&gt;
+</span><span class='line'>    &lt;sectionGroup name=&quot;devExpress&quot;&gt;
+</span><span class='line'>      &lt;section name=&quot;compression&quot; requirePermission=&quot;false&quot; type=&quot;DevExpress.Web.ASPxClasses.CompressionConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'>      &lt;section name=&quot;themes&quot; type=&quot;DevExpress.Web.ASPxClasses.ThemesConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'>      &lt;section name=&quot;settings&quot; type=&quot;DevExpress.Web.ASPxClasses.SettingsConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'>    &lt;/sectionGroup&gt;
+</span><span class='line'><span class="gi">+   &lt;section name=&quot;glimpse&quot; type=&quot;Glimpse.Core.Configuration.Section, Glimpse.Core&quot; /&gt;</span>
+</span><span class='line'>  &lt;/configSections&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Next, <code>&lt;system.webserver&gt;</code> should look like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>  &lt;system.webServer&gt;
+</span><span class='line'>    &lt;handlers&gt;
+</span><span class='line'>      &lt;add name=&quot;TestControls.axd_*&quot; path=&quot;TestControls.axd&quot; verb=&quot;*&quot; type=&quot;DevExpress.ExpressApp.Web.TestScripts.TestScriptsManager, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; preCondition=&quot;integratedMode&quot; /&gt;
+</span><span class='line'>      &lt;add name=&quot;ImageResource.axd_*&quot; path=&quot;ImageResource.axd&quot; verb=&quot;*&quot; type=&quot;DevExpress.ExpressApp.Web.ImageResourceHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; preCondition=&quot;integratedMode&quot; /&gt;
+</span><span class='line'>      &lt;add name=&quot;SessionKeepAliveReconnectHttpHandler&quot; verb=&quot;*&quot; path=&quot;SessionKeepAliveReconnect.aspx*&quot; type=&quot;DevExpress.ExpressApp.Web.SessionKeepAliveReconnectHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; preCondition=&quot;integratedMode&quot; /&gt;
+</span><span class='line'>      &lt;add name=&quot;WebWindowTemplateHttpHandler&quot; verb=&quot;*&quot; path=&quot;*.aspx&quot; type=&quot;DevExpress.ExpressApp.Web.WebWindowTemplateHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; preCondition=&quot;integratedMode&quot; /&gt;
+</span><span class='line'>      &lt;add name=&quot;ASPxUploadProgressHandler&quot; verb=&quot;GET,POST&quot; path=&quot;ASPxUploadProgressHandlerPage.ashx&quot; type=&quot;DevExpress.Web.ASPxUploadControl.ASPxUploadProgressHttpHandler, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; preCondition=&quot;integratedMode&quot; /&gt;
+</span><span class='line'>      &lt;add name=&quot;ReportExportResource.axd_*&quot; preCondition=&quot;integratedMode&quot; verb=&quot;*&quot; path=&quot;ReportExportResource.axd&quot; type=&quot;DevExpress.ExpressApp.Reports.Web.ReportExportHttpHandler, DevExpress.ExpressApp.Reports.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'> +    &lt;add name=&quot;Glimpse&quot; path=&quot;glimpse.axd&quot; verb=&quot;GET&quot; type=&quot;Glimpse.AspNet.HttpHandler, Glimpse.AspNet&quot; preCondition=&quot;integratedMode&quot; /&gt;
+</span><span class='line'>    &lt;/handlers&gt;
+</span><span class='line'>    &lt;validation validateIntegratedModeConfiguration=&quot;false&quot; /&gt;
+</span><span class='line'>    &lt;modules&gt;
+</span><span class='line'>      &lt;add name=&quot;ASPxHttpHandlerModule&quot; type=&quot;DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'> +    &lt;add name=&quot;Glimpse&quot; type=&quot;Glimpse.AspNet.HttpModule, Glimpse.AspNet&quot; preCondition=&quot;integratedMode&quot; /&gt;
+</span><span class='line'>    &lt;/modules&gt;
+</span><span class='line'>  &lt;/system.webServer&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>NuGet added some incorrect definitions to <code>system.web</code>. Make sure to restore this section to the DevExpress default:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;system.web&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;httpRuntime</span> <span class="na">requestValidationMode=</span><span class="s">&quot;2.0&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;sessionState</span> <span class="na">mode=</span><span class="s">&quot;InProc&quot;</span> <span class="na">timeout=</span><span class="s">&quot;2&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;httpHandlers</span> <span class="na">configSource=</span><span class="s">&quot;HttpHandlers.Web.Config&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;httpModules</span> <span class="na">configSource=</span><span class="s">&quot;HttpModules.Web.Config&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And now we&#8217;ll add the corrected changes to <code>HttpHandlers.Web.Config</code> and <code>HttpModule.Web.Config</code></p>
+
+<figure class='code'><figcaption><span>HttpHandlers.Web.Config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+</span><span class='line'>&lt;httpHandlers&gt;
+</span><span class='line'><span class="gi">+ &lt;add verb=&quot;GET&quot; path=&quot;glimpse.axd&quot; type=&quot;Glimpse.AspNet.HttpHandler, Glimpse.AspNet&quot; /&gt;</span>
+</span><span class='line'>  &lt;add verb=&quot;*&quot; path=&quot;TestControls.axd&quot; type=&quot;DevExpress.ExpressApp.Web.TestScripts.TestScriptsManager, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'>  &lt;add verb=&quot;*&quot; path=&quot;ImageResource.axd&quot; type=&quot;DevExpress.ExpressApp.Web.ImageResourceHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'>  &lt;add verb=&quot;*&quot; path=&quot;SessionKeepAliveReconnect.aspx*&quot; type=&quot;DevExpress.ExpressApp.Web.SessionKeepAliveReconnectHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'>  &lt;add verb=&quot;*&quot; path=&quot;*.aspx&quot; type=&quot;DevExpress.ExpressApp.Web.WebWindowTemplateHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'>  &lt;add verb=&quot;GET,POST&quot; path=&quot;ASPxUploadProgressHandlerPage.ashx&quot; validate=&quot;false&quot; type=&quot;DevExpress.Web.ASPxUploadControl.ASPxUploadProgressHttpHandler, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'>  &lt;add verb=&quot;*&quot; path=&quot;ReportExportResource.axd&quot; type=&quot;DevExpress.ExpressApp.Reports.Web.ReportExportHttpHandler, DevExpress.ExpressApp.Reports.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'>&lt;/httpHandlers&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>HttpModules.Web.Config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;httpModules&gt;</span>
+</span><span class='line'>+ <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;Glimpse&quot;</span> <span class="na">type=</span><span class="s">&quot;Glimpse.AspNet.HttpModule, Glimpse.AspNet&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ASPxHttpHandlerModule&quot;</span> <span class="na">type=</span><span class="s">&quot;DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/httpModules&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Next, there is <a href="https://github.com/Glimpse/Glimpse/issues/632">an outstanding problem</a> with the current release version of the Glimpse ASP.NET NuGet package (1.6.0) which prevents it from working with the development webserver. (Apparently it&#8217;s fixed in 1.7.0 which should be released soon). If you try to run MainDemo.Web you will get the following error:</p>
+
+<pre><code>Type 'System.Web.HttpContextWrapper' in assembly 'System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' is not marked as serializable.
+</code></pre>
+
+<p>However it works fine against IIS Express (or full IIS). Go to the MainDemo.Web and change the debug properties as follows:</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-015.png"></p>
+
+<p>Then run the web application. Glimpse is off by default. In order to turn it on, you need to set a cookie, which you can do by navigating to <code>Glimpse.axd</code>. This is the Glimpse configuration screen.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-014.png"></p>
+
+<h2>Additional Glimpse extensions</h2>
+
+<p>Glimpse is extensible and there are <a href="http://getglimpse.com/Packages">many additional plugins</a> available. Many of these take the form of additional tabs with details about a particular aspect of your application: SQL Queries, Elmah errors, ASP.NET caching, logging, dependency injection, <em>etc.</em></p>
+
+<h2>MainDemo Sample Project</h2>
+
+<p>I have uploaded a modified XAF MainDemo to this <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Glimpse">GitHub repository</a> with all the above changes. (Don&#8217;t forget to debug against IIS Express).</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[DevExpress 13.2 Review - Part 2]]></title>
@@ -2861,69 +3042,6 @@ The ability to create reports using a report writer is a very powerful feature o
 <p>And then the same change would be logged as follows.</p>
 
 <p><img src="http://ZeroSharp.github.com/images/blog/audit-trail-002.jpg"></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Deploy XAF ASP.NET Applications to Amazon Web Services: Part 5]]></title>
-    <link href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/"/>
-    <updated>2012-12-05T11:03:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing</id>
-    <content type="html"><![CDATA[<h2>Part 5: Load balancing</h2>
-
-<p>This is the final post in this 5 part series about deploying XAF to the Amazon cloud. The other parts are:</p>
-
-<ul>
-<li><a href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1 - Creating a database in RDS</a></li>
-<li><a href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2 - Deploying to ElasticBeanstalk</a></li>
-<li><a href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3 - Troubleshooting</a></li>
-<li><a href="http://ZeroSharp.github.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
-</ul>
-
-
-<p>This part covers load balancing and autoscaling.</p>
-
-<h3>Load balancing</h3>
-
-<p>In order to enable load balancing with DevExpress XAF applications, you must activate client affinity (sticky sessions) which you can do in the <strong>Load Balancer tab</strong>.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/aws/aws-autoscaling-2.jpg" title="'figure 19'" ></p>
-
-<p>This is because XAF relies http session variables (notably the <code>WebApplication</code>). With sticky sessions enabled, when a user first hits the Elastic Load Balancer, they are assigned a random server but all subsequent requests are routed to the same server instance.</p>
-
-<h2>Autoscaling</h2>
-
-<h3>Adding Capacity (Works)</h3>
-
-<p>Switch to the <strong>Auto Scaling</strong> tab of the Elastic Beanstalk instance.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/aws/aws-autoscaling-1.jpg" title="'figure 19'" ></p>
-
-<p>The options for autoscaling are extensive and there is plenty information on the <a href="http://aws.amazon.com/autoscaling">Amazon website</a>. In the above screenshot we have the Elastic Load Balancer configured so that it will initially deploy 1 server (the Minimum Instance Count), but whenever the NetworkOut measurement of 600,000 bytes over a 5 minute interval, a new server launch is triggered up to a maximum of 4 servers. Adding capacity works fine with XAF applications.</p>
-
-<h3>Removing Capacity (Fails)</h3>
-
-<p>The configuration above also shows that if the NetworkOut drops to below 200,000 bytes over a period of 5 minutes then the number of servers should decrease. <strong>This will NOT work</strong>.</p>
-
-<p>The problem is that the Elastic Load Balancer will terminate the surplus server immediately (the equivalent of a <code>shutdown -s</code>). Any users connected to that server will immediately lose their session and will probably receive an ugly error.</p>
-
-<p>One workaround is to allow scaling out but to disable scaling in. To do this, set the &#8216;Lower Threshold&#8217; to zero.</p>
-
-<h3>Possible Improvements</h3>
-
-<p>There are a couple of potential longer term solutions to the problem of dropped sessions when scaling in.</p>
-
-<p>DevExpress could make the classes they use in the session variables serializable (e.g., <code>WebApplication</code>). When this is the case, the application can be configured to store the session variables to a persistent data store (SQL Server for instance) instead of in the session and then we could configure autoscaling to work correctly. There is <a href="http://www.devexpress.com/Support/Center/Question/Details/Q426045">an item in the Support Center in this regard</a> and <a href="http://www.devexpress.com/Support/Center/p/S36497.aspx">another one here</a>.</p>
-
-<p>Another solution would be if Amazon provided a new option to handle a server termination in a less brutal fashion. That is, stop routing new users to the surplus server but continue to server existing users until their sessions have all terminated. This approach is discussed in <a href="https://forums.aws.amazon.com/thread.jspa?threadID=61278">this AWS forum thread</a>.</p>
-
-<h2>Conclusions</h2>
-
-<p>The load balancing features of AWS work fine with XAF applications, but the benefits of autoscaling are lost because there is currently no effective method of removing capacity without knocking out existing sessions.</p>
-
-<h2>What next</h2>
-
-<p>In a future series, I will demonstrate how to load test XAF applications cheaply and effectively by making use of Amazon Web Services. Stay tuned.</p>
 ]]></content>
   </entry>
   

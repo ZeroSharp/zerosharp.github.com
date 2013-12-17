@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="This is the second part of a review of the new DevExpress 13.2. In the last part we looked in-depth at the new Reports V2. In this part I&#8217;ll go &hellip;">
+  <meta name="description" content="I have finally got around to getting Glimpse working with XAF. Glimpse is an amazing extensible ASP.NET plug-in which gives you valuable information &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,216 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/glimpse-with-devexpress-xaf/">Glimpse With DevExpress XAF</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-12-17T12:41:00+00:00" pubdate data-updated="true">Dec 17<span>th</span>, 2013</time>
+        
+         | <a href="/glimpse-with-devexpress-xaf/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I have finally got around to getting Glimpse working with XAF. Glimpse is an amazing extensible ASP.NET plug-in which gives you valuable information about what is going on within your server in production. It&#8217;s also very pretty.</p>
+
+<p>Let&#8217;s jump right in and have a look at what XAF looks like with Glimpse running.</p>
+
+<p><img src="/images/blog/xaf-with-glimpse-016.png"></p>
+
+<p>That banner along the bottom of the screen is the Glimpse heads up display (HUD). Hovering over various sections of it pops up more information:</p>
+
+<p><img src="/images/blog/xaf-with-glimpse-019.png"></p>
+
+<p><img src="/images/blog/xaf-with-glimpse-018.png"></p>
+
+<p><img src="/images/blog/xaf-with-glimpse-017.png"></p>
+
+<p>If you click on the Glimpse icon in the bottom right, you get even more goodies. Here&#8217;s the <em>Timeline</em> view.</p>
+
+<p><img src="/images/blog/xaf-with-glimpse-011.png"></p>
+
+<p>And there are many other tabs available. The <em>Configuration</em> tab shows the contents of the <em>web.config</em> file.
+<img src="/images/blog/xaf-with-glimpse-009.png">
+Here&#8217;s the <em>Control Tree</em> tab:
+<img src="/images/blog/xaf-with-glimpse-010.png">
+The <em>Page Life Cycle tab:
+<img src="/images/blog/xaf-with-glimpse-005.png">
+The </em>Request<em> tab:
+<img src="/images/blog/xaf-with-glimpse-004.png">
+The </em>Session<em> tab:
+<img src="/images/blog/xaf-with-glimpse-003.png">
+And the </em>Trace_ tab including the DevExpress log items that were added to the trace during this page load:
+<img src="/images/blog/xaf-with-glimpse-002.png">
+As you can see, this is a very valuable glimpse into the server which can be turned on as needed in production.</p>
+
+<h2>Adding Glimpse to an XAF application</h2>
+
+<p>First install the Glimpse Nuget package into the project.</p>
+
+<p><img src="/images/blog/xaf-with-glimpse-001.png"></p>
+
+<p>The Nuget installation will make various incorrect changes to the web.config. The corrected sections are below:</p>
+
+<p>First, add Glimpse to the <code>&lt;configSections&gt;</code>.</p>
+
+<figure class='code'><figcaption><span>web.config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>  &lt;configSections&gt;
+</span><span class='line'>    &lt;sectionGroup name=&quot;devExpress&quot;&gt;
+</span><span class='line'>      &lt;section name=&quot;compression&quot; requirePermission=&quot;false&quot; type=&quot;DevExpress.Web.ASPxClasses.CompressionConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'>      &lt;section name=&quot;themes&quot; type=&quot;DevExpress.Web.ASPxClasses.ThemesConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'>      &lt;section name=&quot;settings&quot; type=&quot;DevExpress.Web.ASPxClasses.SettingsConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'>    &lt;/sectionGroup&gt;
+</span><span class='line'><span class="gi">+   &lt;section name=&quot;glimpse&quot; type=&quot;Glimpse.Core.Configuration.Section, Glimpse.Core&quot; /&gt;</span>
+</span><span class='line'>  &lt;/configSections&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Next, <code>&lt;system.webserver&gt;</code> should look like this:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>  &lt;system.webServer&gt;
+</span><span class='line'>    &lt;handlers&gt;
+</span><span class='line'>      &lt;add name=&quot;TestControls.axd_*&quot; path=&quot;TestControls.axd&quot; verb=&quot;*&quot; type=&quot;DevExpress.ExpressApp.Web.TestScripts.TestScriptsManager, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; preCondition=&quot;integratedMode&quot; /&gt;
+</span><span class='line'>      &lt;add name=&quot;ImageResource.axd_*&quot; path=&quot;ImageResource.axd&quot; verb=&quot;*&quot; type=&quot;DevExpress.ExpressApp.Web.ImageResourceHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; preCondition=&quot;integratedMode&quot; /&gt;
+</span><span class='line'>      &lt;add name=&quot;SessionKeepAliveReconnectHttpHandler&quot; verb=&quot;*&quot; path=&quot;SessionKeepAliveReconnect.aspx*&quot; type=&quot;DevExpress.ExpressApp.Web.SessionKeepAliveReconnectHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; preCondition=&quot;integratedMode&quot; /&gt;
+</span><span class='line'>      &lt;add name=&quot;WebWindowTemplateHttpHandler&quot; verb=&quot;*&quot; path=&quot;*.aspx&quot; type=&quot;DevExpress.ExpressApp.Web.WebWindowTemplateHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; preCondition=&quot;integratedMode&quot; /&gt;
+</span><span class='line'>      &lt;add name=&quot;ASPxUploadProgressHandler&quot; verb=&quot;GET,POST&quot; path=&quot;ASPxUploadProgressHandlerPage.ashx&quot; type=&quot;DevExpress.Web.ASPxUploadControl.ASPxUploadProgressHttpHandler, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; preCondition=&quot;integratedMode&quot; /&gt;
+</span><span class='line'>      &lt;add name=&quot;ReportExportResource.axd_*&quot; preCondition=&quot;integratedMode&quot; verb=&quot;*&quot; path=&quot;ReportExportResource.axd&quot; type=&quot;DevExpress.ExpressApp.Reports.Web.ReportExportHttpHandler, DevExpress.ExpressApp.Reports.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'> +    &lt;add name=&quot;Glimpse&quot; path=&quot;glimpse.axd&quot; verb=&quot;GET&quot; type=&quot;Glimpse.AspNet.HttpHandler, Glimpse.AspNet&quot; preCondition=&quot;integratedMode&quot; /&gt;
+</span><span class='line'>    &lt;/handlers&gt;
+</span><span class='line'>    &lt;validation validateIntegratedModeConfiguration=&quot;false&quot; /&gt;
+</span><span class='line'>    &lt;modules&gt;
+</span><span class='line'>      &lt;add name=&quot;ASPxHttpHandlerModule&quot; type=&quot;DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'> +    &lt;add name=&quot;Glimpse&quot; type=&quot;Glimpse.AspNet.HttpModule, Glimpse.AspNet&quot; preCondition=&quot;integratedMode&quot; /&gt;
+</span><span class='line'>    &lt;/modules&gt;
+</span><span class='line'>  &lt;/system.webServer&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>NuGet added some incorrect definitions to <code>system.web</code>. Make sure to restore this section to the DevExpress default:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;system.web&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;httpRuntime</span> <span class="na">requestValidationMode=</span><span class="s">&quot;2.0&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;sessionState</span> <span class="na">mode=</span><span class="s">&quot;InProc&quot;</span> <span class="na">timeout=</span><span class="s">&quot;2&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;httpHandlers</span> <span class="na">configSource=</span><span class="s">&quot;HttpHandlers.Web.Config&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;httpModules</span> <span class="na">configSource=</span><span class="s">&quot;HttpModules.Web.Config&quot;</span> <span class="nt">/&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And now we&#8217;ll add the corrected changes to <code>HttpHandlers.Web.Config</code> and <code>HttpModule.Web.Config</code></p>
+
+<figure class='code'><figcaption><span>HttpHandlers.Web.Config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+</span><span class='line'>&lt;httpHandlers&gt;
+</span><span class='line'><span class="gi">+ &lt;add verb=&quot;GET&quot; path=&quot;glimpse.axd&quot; type=&quot;Glimpse.AspNet.HttpHandler, Glimpse.AspNet&quot; /&gt;</span>
+</span><span class='line'>  &lt;add verb=&quot;*&quot; path=&quot;TestControls.axd&quot; type=&quot;DevExpress.ExpressApp.Web.TestScripts.TestScriptsManager, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'>  &lt;add verb=&quot;*&quot; path=&quot;ImageResource.axd&quot; type=&quot;DevExpress.ExpressApp.Web.ImageResourceHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'>  &lt;add verb=&quot;*&quot; path=&quot;SessionKeepAliveReconnect.aspx*&quot; type=&quot;DevExpress.ExpressApp.Web.SessionKeepAliveReconnectHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'>  &lt;add verb=&quot;*&quot; path=&quot;*.aspx&quot; type=&quot;DevExpress.ExpressApp.Web.WebWindowTemplateHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'>  &lt;add verb=&quot;GET,POST&quot; path=&quot;ASPxUploadProgressHandlerPage.ashx&quot; validate=&quot;false&quot; type=&quot;DevExpress.Web.ASPxUploadControl.ASPxUploadProgressHttpHandler, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'>  &lt;add verb=&quot;*&quot; path=&quot;ReportExportResource.axd&quot; type=&quot;DevExpress.ExpressApp.Reports.Web.ReportExportHttpHandler, DevExpress.ExpressApp.Reports.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
+</span><span class='line'>&lt;/httpHandlers&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span>HttpModules.Web.Config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;httpModules&gt;</span>
+</span><span class='line'>+ <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;Glimpse&quot;</span> <span class="na">type=</span><span class="s">&quot;Glimpse.AspNet.HttpModule, Glimpse.AspNet&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ASPxHttpHandlerModule&quot;</span> <span class="na">type=</span><span class="s">&quot;DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/httpModules&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Next, there is <a href="https://github.com/Glimpse/Glimpse/issues/632">an outstanding problem</a> with the current release version of the Glimpse ASP.NET NuGet package (1.6.0) which prevents it from working with the development webserver. (Apparently it&#8217;s fixed in 1.7.0 which should be released soon). If you try to run MainDemo.Web you will get the following error:</p>
+
+<pre><code>Type 'System.Web.HttpContextWrapper' in assembly 'System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' is not marked as serializable.
+</code></pre>
+
+<p>However it works fine against IIS Express (or full IIS). Go to the MainDemo.Web and change the debug properties as follows:</p>
+
+<p><img src="/images/blog/xaf-with-glimpse-015.png"></p>
+
+<p>Then run the web application. Glimpse is off by default. In order to turn it on, you need to set a cookie, which you can do by navigating to <code>Glimpse.axd</code>. This is the Glimpse configuration screen.</p>
+
+<p><img src="/images/blog/xaf-with-glimpse-014.png"></p>
+
+<h2>Additional Glimpse extensions</h2>
+
+<p>Glimpse is extensible and there are <a href="http://getglimpse.com/Packages">many additional plugins</a> available. Many of these take the form of additional tabs with details about a particular aspect of your application: SQL Queries, Elmah errors, ASP.NET caching, logging, dependency injection, <em>etc.</em></p>
+
+<h2>MainDemo Sample Project</h2>
+
+<p>I have uploaded a modified XAF MainDemo to this <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Glimpse">GitHub repository</a> with all the above changes. (Don&#8217;t forget to debug against IIS Express).</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1607,332 +1817,6 @@ In the past I have always thought of NDepend as a complex tool. I was never sure
 <p>MiniProfiler is a great tool for providing helpful profiling benchmarks, even in production. It&#8217;s often difficult to measure when a remote user complains to support that the site seems slow. How slow is slow? In a production environment, you can turn on MiniProfiler for the user (by setting a cookie for instance) and then ask them to share their profiling information for some basic operations. This information can be invaluable in determining where the fault lies.</p>
 
 <p>You can play around with <a href="https://github.com/ZeroSharp/Xaf_MainDemo_MiniProfiler">the sample solution</a> up on GitHub.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/fluent-queries-with-devexpress-xpo-implementation/">Fluent Queries With DevExpress XPO - Implementation</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-14T11:03:00+01:00" pubdate data-updated="true">Aug 14<span>th</span>, 2013</time>
-        
-         | <a href="/fluent-queries-with-devexpress-xpo-implementation/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Continuing from my <a href="/fluent-queries-with-devexpress-xpo-intro">last post</a>, I&#8217;ll demonstrate how to create a fluent interface so that you can do:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">var</span> <span class="n">customer</span> <span class="p">=</span> <span class="n">Session</span>
-</span><span class='line'>                 <span class="p">.</span><span class="n">Query</span><span class="p">()</span>
-</span><span class='line'>                 <span class="p">.</span><span class="n">InTransaction</span>
-</span><span class='line'>                    <span class="p">.</span><span class="n">Contacts</span>
-</span><span class='line'>                      <span class="p">.</span><span class="n">ByPosition</span><span class="p">(</span><span class="s">&quot;Developer&quot;</span><span class="p">)</span>
-</span><span class='line'>                        <span class="p">.</span><span class="n">ThatHave</span>
-</span><span class='line'>                          <span class="p">.</span><span class="n">NoPhoto</span><span class="p">()</span>
-</span><span class='line'>                        <span class="p">.</span><span class="n">And</span>
-</span><span class='line'>                          <span class="p">.</span><span class="n">TasksInProgress</span><span class="p">()</span>
-</span><span class='line'>                        <span class="p">.</span><span class="n">And</span>
-</span><span class='line'>                          <span class="p">.</span><span class="n">TasksWith</span><span class="p">(</span><span class="n">Priority</span><span class="p">.</span><span class="n">High</span><span class="p">)</span>
-</span><span class='line'>                 <span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>First, let&#8217;s look at the &#8216;beginning&#8217; of the fluent interface: the <code>Query()</code> extension method.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">QueryExtensions</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="n">IQueries</span> <span class="nf">Query</span><span class="p">(</span><span class="k">this</span> <span class="n">Session</span> <span class="n">session</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nf">Queries</span><span class="p">(</span><span class="n">session</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// If we&#39;re using XAF, do the same for ObjectSpace as well</span>
-</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="n">IQueries</span> <span class="nf">Query</span><span class="p">(</span><span class="k">this</span> <span class="n">IObjectSpace</span> <span class="n">objectSpace</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="kt">var</span> <span class="n">xpObjectSpace</span> <span class="p">=</span> <span class="n">objectSpace</span> <span class="k">as</span> <span class="n">XPObjectSpace</span><span class="p">;</span>
-</span><span class='line'>        <span class="kt">var</span> <span class="n">session</span> <span class="p">=</span> <span class="n">xpObjectSpace</span><span class="p">.</span><span class="n">Session</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nf">Queries</span><span class="p">(</span><span class="n">session</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>What does the <code>Queries()</code> class look like?</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">interface</span> <span class="n">IQueries</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">IQueries</span> <span class="n">InTransaction</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'>    <span class="n">IContactQueries</span> <span class="n">Contacts</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'>    <span class="c1">// One for each queryable object type, e.g.,</span>
-</span><span class='line'>    <span class="c1">// IDepartmentQueries Departments { get; }       </span>
-</span><span class='line'>    <span class="c1">// ITaskQueries Tasks { get; }</span>
-</span><span class='line'>    <span class="c1">// etc.</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">Queries</span> <span class="p">:</span> <span class="n">IQueries</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="nf">Queries</span><span class="p">(</span><span class="n">Session</span> <span class="n">session</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">_Session</span> <span class="p">=</span> <span class="n">session</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">private</span> <span class="k">readonly</span> <span class="n">Session</span> <span class="n">_Session</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">private</span> <span class="kt">bool</span> <span class="n">_InTransaction</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">public</span> <span class="n">IQueries</span> <span class="n">InTransaction</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">get</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="n">_InTransaction</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
-</span><span class='line'>            <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">private</span> <span class="n">IContactQueries</span> <span class="n">_Contacts</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">public</span> <span class="n">IContactQueries</span> <span class="n">Contacts</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">get</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">_Contacts</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
-</span><span class='line'>                <span class="n">_Contacts</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ContactQueries</span><span class="p">(</span><span class="n">_Session</span><span class="p">,</span> <span class="n">_InTransaction</span><span class="p">);</span>
-</span><span class='line'>            <span class="k">return</span> <span class="n">_Contacts</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>If we ignore the <code>InTransaction</code> property, it is just a container for the <code>IContactQueries</code>. In your application, you would have a similar property for each queryable object type. A new <code>ContactQueries</code> instance is created on demand taking into account the whether the <code>InTransaction</code> property was visited earlier in the syntax.</p>
-
-<p>Now, let&#8217;s look at the base classes.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">interface</span> <span class="n">IQueries</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">:</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;,</span> <span class="n">IFluentInterface</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">Queries</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">:</span> <span class="n">IQueries</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="nf">Queries</span><span class="p">(</span><span class="n">Session</span> <span class="n">session</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">inTransaction</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">_Session</span> <span class="p">=</span> <span class="n">session</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">Query</span> <span class="p">=</span> <span class="k">new</span> <span class="n">XPQuery</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span><span class="n">session</span><span class="p">,</span> <span class="n">inTransaction</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">private</span> <span class="k">readonly</span> <span class="n">Session</span> <span class="n">_Session</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">protected</span> <span class="n">IQueryable</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="n">Query</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">public</span> <span class="n">IEnumerator</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="n">GetEnumerator</span><span class="p">()</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">Query</span><span class="p">.</span><span class="n">GetEnumerator</span><span class="p">();</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">IEnumerator</span> <span class="n">IEnumerable</span><span class="p">.</span><span class="n">GetEnumerator</span><span class="p">()</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">Query</span><span class="p">.</span><span class="n">GetEnumerator</span><span class="p">();</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So <code>Queries&lt;T&gt;</code> wraps an <code>XPQuery&lt;T&gt;</code>.</p>
-
-<p>Side note: the inclusion of <code>IFluentInterface</code> is a clever trick to improve Intellisense by hiding the <code>System.Object</code> members such as <code>ToString()</code>. See <a href="http://blogs.clariusconsulting.net/kzu/how-to-hide-system-object-members-from-your-interfaces/">Daniel Cazzulino&#8217;s blog post</a>.</p>
-
-<p>And now we can implement the <code>Contact</code> generic as follows:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">interface</span> <span class="n">IContactQueries</span> <span class="p">:</span> <span class="n">IQueries</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">IContactQueries</span> <span class="nf">ByDepartmentTitle</span><span class="p">(</span><span class="kt">string</span> <span class="n">departmentTitle</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">IContactQueries</span> <span class="nf">ByPosition</span><span class="p">(</span><span class="kt">string</span> <span class="n">position</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">Contact</span> <span class="nf">ByEmail</span><span class="p">(</span><span class="kt">string</span> <span class="n">email</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">ContactQueries</span> <span class="p">:</span> <span class="n">Queries</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;,</span> <span class="n">IContactQueries</span><span class="p">,</span> <span class="n">IContactThatHaveQueries</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="nf">ContactQueries</span><span class="p">(</span><span class="n">Session</span> <span class="n">session</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">inTransaction</span><span class="p">)</span>
-</span><span class='line'>        <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">inTransaction</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">public</span> <span class="n">IContactQueries</span> <span class="nf">ByDepartmentTitle</span><span class="p">(</span><span class="kt">string</span> <span class="n">department</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">Query</span> <span class="p">=</span> <span class="n">Query</span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">Department</span><span class="p">.</span><span class="n">Title</span> <span class="p">==</span> <span class="n">department</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">public</span> <span class="n">IContactQueries</span> <span class="nf">ByPosition</span><span class="p">(</span><span class="kt">string</span> <span class="n">position</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">Query</span> <span class="p">=</span> <span class="n">Query</span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">Position</span><span class="p">.</span><span class="n">Title</span> <span class="p">==</span> <span class="n">position</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">public</span> <span class="n">Contact</span> <span class="nf">ByEmail</span><span class="p">(</span><span class="kt">string</span> <span class="n">email</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">Query</span><span class="p">.</span><span class="n">SingleOrDefault</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">Email</span> <span class="p">==</span> <span class="n">email</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>There we go. Now we can use our fluent interface:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">var</span> <span class="n">contacts</span> <span class="p">=</span> <span class="n">session</span><span class="p">.</span><span class="n">Query</span><span class="p">().</span><span class="n">Contacts</span><span class="p">.</span><span class="n">ByPosition</span><span class="p">(</span><span class="s">&quot;Manager&quot;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Much more readable. Also more maintainable because all queries are in one place and make use of good old LINQ. It&#8217;s also easier to test the queries because they are independent of the calling code.</p>
-
-<p>See <a href="https://github.com/ZeroSharp/Xaf_MainDemo_FluentQueries">a sample implementation</a> built against the DevExpress XAF MainDemo on GitHub.</p>
 </div>
   
   

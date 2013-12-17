@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-12-10T17:07:47+00:00</updated>
+  <updated>2013-12-17T14:19:35+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,154 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Glimpse with DevExpress XAF]]></title>
+    <link href="http://ZeroSharp.github.com/glimpse-with-devexpress-xaf/"/>
+    <updated>2013-12-17T12:41:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/glimpse-with-devexpress-xaf</id>
+    <content type="html"><![CDATA[<p>I have finally got around to getting Glimpse working with XAF. Glimpse is an amazing extensible ASP.NET plug-in which gives you valuable information about what is going on within your server in production. It's also very pretty.</p>
+
+<p>Let's jump right in and have a look at what XAF looks like with Glimpse running.</p>
+
+<p><img src="/images/blog/xaf-with-glimpse-016.png"></p>
+
+<p>That banner along the bottom of the screen is the Glimpse heads up display (HUD). Hovering over various sections of it pops up more information:</p>
+
+<p><img src="/images/blog/xaf-with-glimpse-019.png"></p>
+
+<p><img src="/images/blog/xaf-with-glimpse-018.png"></p>
+
+<p><img src="/images/blog/xaf-with-glimpse-017.png"></p>
+
+<p>If you click on the Glimpse icon in the bottom right, you get even more goodies. Here's the <em>Timeline</em> view.</p>
+
+<p><img src="/images/blog/xaf-with-glimpse-011.png"></p>
+
+<p>And there are many other tabs available. The <em>Configuration</em> tab shows the contents of the <em>web.config</em> file.
+<img src="/images/blog/xaf-with-glimpse-009.png">
+Here's the <em>Control Tree</em> tab:
+<img src="/images/blog/xaf-with-glimpse-010.png">
+The <em>Page Life Cycle tab:
+<img src="/images/blog/xaf-with-glimpse-005.png">
+The </em>Request<em> tab:
+<img src="/images/blog/xaf-with-glimpse-004.png">
+The </em>Session<em> tab:
+<img src="/images/blog/xaf-with-glimpse-003.png">
+And the </em>Trace_ tab including the DevExpress log items that were added to the trace during this page load:
+<img src="/images/blog/xaf-with-glimpse-002.png">
+As you can see, this is a very valuable glimpse into the server which can be turned on as needed in production.</p>
+
+<h2>Adding Glimpse to an XAF application</h2>
+
+<p>First install the Glimpse Nuget package into the project.</p>
+
+<p><img src="/images/blog/xaf-with-glimpse-001.png"></p>
+
+<p>The Nuget installation will make various incorrect changes to the web.config. The corrected sections are below:</p>
+
+<p>First, add Glimpse to the <code>&lt;configSections&gt;</code>.
+```diff web.config
+  <configSections></p>
+
+<pre><code>&lt;sectionGroup name="devExpress"&gt;
+  &lt;section name="compression" requirePermission="false" type="DevExpress.Web.ASPxClasses.CompressionConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
+  &lt;section name="themes" type="DevExpress.Web.ASPxClasses.ThemesConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
+  &lt;section name="settings" type="DevExpress.Web.ASPxClasses.SettingsConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
+&lt;/sectionGroup&gt;
+</code></pre>
+
+<ul>
+<li><section name="glimpse" type="Glimpse.Core.Configuration.Section, Glimpse.Core" />
+</configSections>
+```</li>
+</ul>
+
+
+<p>Next, <code>&lt;system.webserver&gt;</code> should look like this:
+```diff
+  &lt;system.webServer></p>
+
+<pre><code>&lt;handlers&gt;
+  &lt;add name="TestControls.axd_*" path="TestControls.axd" verb="*" type="DevExpress.ExpressApp.Web.TestScripts.TestScriptsManager, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a" preCondition="integratedMode" /&gt;
+  &lt;add name="ImageResource.axd_*" path="ImageResource.axd" verb="*" type="DevExpress.ExpressApp.Web.ImageResourceHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a" preCondition="integratedMode" /&gt;
+  &lt;add name="SessionKeepAliveReconnectHttpHandler" verb="*" path="SessionKeepAliveReconnect.aspx*" type="DevExpress.ExpressApp.Web.SessionKeepAliveReconnectHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a" preCondition="integratedMode" /&gt;
+  &lt;add name="WebWindowTemplateHttpHandler" verb="*" path="*.aspx" type="DevExpress.ExpressApp.Web.WebWindowTemplateHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a" preCondition="integratedMode" /&gt;
+  &lt;add name="ASPxUploadProgressHandler" verb="GET,POST" path="ASPxUploadProgressHandlerPage.ashx" type="DevExpress.Web.ASPxUploadControl.ASPxUploadProgressHttpHandler, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" preCondition="integratedMode" /&gt;
+  &lt;add name="ReportExportResource.axd_*" preCondition="integratedMode" verb="*" path="ReportExportResource.axd" type="DevExpress.ExpressApp.Reports.Web.ReportExportHttpHandler, DevExpress.ExpressApp.Reports.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
+</code></pre>
+
+<ul>
+<li>  <add name="Glimpse" path="glimpse.axd" verb="GET" type="Glimpse.AspNet.HttpHandler, Glimpse.AspNet" preCondition="integratedMode" />
+</handlers>
+<validation validateIntegratedModeConfiguration="false" />
+<modules>
+  <add name="ASPxHttpHandlerModule" type="DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /></li>
+<li>  <add name="Glimpse" type="Glimpse.AspNet.HttpModule, Glimpse.AspNet" preCondition="integratedMode" />
+</modules>
+&lt;/system.webServer>
+```</li>
+</ul>
+
+
+<p>NuGet added some incorrect definitions to <code>system.web</code>. Make sure to restore this section to the DevExpress default:</p>
+
+<p>```xml
+  &lt;system.web></p>
+
+<pre><code>&lt;httpRuntime requestValidationMode="2.0" /&gt;
+&lt;sessionState mode="InProc" timeout="2" /&gt;
+&lt;httpHandlers configSource="HttpHandlers.Web.Config" /&gt;
+&lt;httpModules configSource="HttpModules.Web.Config" /&gt;
+</code></pre>
+
+<p>```</p>
+
+<p>And now we'll add the corrected changes to <code>HttpHandlers.Web.Config</code> and <code>HttpModule.Web.Config</code></p>
+
+<p><code>diff HttpHandlers.Web.Config
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;httpHandlers&gt;
++ &lt;add verb="GET" path="glimpse.axd" type="Glimpse.AspNet.HttpHandler, Glimpse.AspNet" /&gt;
+  &lt;add verb="*" path="TestControls.axd" type="DevExpress.ExpressApp.Web.TestScripts.TestScriptsManager, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
+  &lt;add verb="*" path="ImageResource.axd" type="DevExpress.ExpressApp.Web.ImageResourceHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
+  &lt;add verb="*" path="SessionKeepAliveReconnect.aspx*" type="DevExpress.ExpressApp.Web.SessionKeepAliveReconnectHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
+  &lt;add verb="*" path="*.aspx" type="DevExpress.ExpressApp.Web.WebWindowTemplateHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
+  &lt;add verb="GET,POST" path="ASPxUploadProgressHandlerPage.ashx" validate="false" type="DevExpress.Web.ASPxUploadControl.ASPxUploadProgressHttpHandler, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
+  &lt;add verb="*" path="ReportExportResource.axd" type="DevExpress.ExpressApp.Reports.Web.ReportExportHttpHandler, DevExpress.ExpressApp.Reports.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
+&lt;/httpHandlers&gt;
+</code></p>
+
+<p><code>xml HttpModules.Web.Config
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;httpModules&gt;
++ &lt;add name="Glimpse" type="Glimpse.AspNet.HttpModule, Glimpse.AspNet" /&gt;
+  &lt;add name="ASPxHttpHandlerModule" type="DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
+&lt;/httpModules&gt;
+</code></p>
+
+<p>Next, there is <a href="https://github.com/Glimpse/Glimpse/issues/632">an outstanding problem</a> with the current release version of the Glimpse ASP.NET NuGet package (1.6.0) which prevents it from working with the development webserver. (Apparently it's fixed in 1.7.0 which should be released soon). If you try to run MainDemo.Web you will get the following error:</p>
+
+<pre><code>Type 'System.Web.HttpContextWrapper' in assembly 'System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' is not marked as serializable.
+</code></pre>
+
+<p>However it works fine against IIS Express (or full IIS). Go to the MainDemo.Web and change the debug properties as follows:</p>
+
+<p><img src="/images/blog/xaf-with-glimpse-015.png"></p>
+
+<p>Then run the web application. Glimpse is off by default. In order to turn it on, you need to set a cookie, which you can do by navigating to <code>Glimpse.axd</code>. This is the Glimpse configuration screen.</p>
+
+<p><img src="/images/blog/xaf-with-glimpse-014.png"></p>
+
+<h2>Additional Glimpse extensions</h2>
+
+<p>Glimpse is extensible and there are <a href="http://getglimpse.com/Packages">many additional plugins</a> available. Many of these take the form of additional tabs with details about a particular aspect of your application: SQL Queries, Elmah errors, ASP.NET caching, logging, dependency injection, <em>etc.</em></p>
+
+<h2>MainDemo Sample Project</h2>
+
+<p>I have uploaded a modified XAF MainDemo to this <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Glimpse">GitHub repository</a> with all the above changes. (Don't forget to debug against IIS Express).</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[DevExpress 13.2 Review - Part 2]]></title>
@@ -491,164 +639,6 @@ set
 <p>It is easy to provide a similar editor for any object type - just create a new subclass of <code>SerializedListPropertyEditor&lt;T&gt;</code> where <code>T</code> is your persistent type.</p>
 
 <p>You can download <a href="https://github.com/ZeroSharp/Xaf_CurrencyListPropertyEditor">a working sample project on GitHub</a>.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[The Ugly, the Heavy and the Good: 3 solutions to an XAF layout problem]]></title>
-    <link href="http://ZeroSharp.github.com/the-ugly-the-heavy-and-the-good/"/>
-    <updated>2013-10-14T09:51:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/the-ugly-the-heavy-and-the-good</id>
-    <content type="html"><![CDATA[<p>This post aims to look at various solutions to a seemingly simple layout change.</p>
-
-<p>With <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a>, a lot of the difficult things are easy: authentication, authorisation, ORM, reporting, complex form layouts, themes, etc., are all made easy by XAF. On the other hand, some of the easy things are hard. It can be frustratingly difficult to make a small modification to the basic layout. We will look at an example of such a change and evaluate the recommended DevExpress approaches.</p>
-
-<h2>The problem</h2>
-
-<p>Whenever my XAF web application asks me to change my password, I get a screen like this:</p>
-
-<p><img src="/images/blog/narrow-dialog-001.png"></p>
-
-<p>Well that's a bit annoying - those edit boxes are far too wide. Wouldn't it look much better if it were narrower and centered? If we weren't using XAF, we'd probably have a separate <em>aspx</em> file for this view and we could just modify the html. With XAF there are several different recommended ways of modifying the output.</p>
-
-<h2>Option 1: Use the model</h2>
-
-<p>Well, one approach would be to use the layout designer to add some <em>EmptySpaceItems</em> to the default layout for the <code>ChangePasswordOnLogon</code>. Add something like this to <em>MainDemo.Web/Model.xafml</em>:</p>
-
-<p>```xml
-  <Views></p>
-
-<pre><code>&lt;DetailView Id="ChangePasswordOnLogonParameters_DetailView"&gt;
-  &lt;Layout&gt;
-    &lt;LayoutGroup Id="Main" Removed="True" /&gt;
-    &lt;LayoutGroup Id="Narrow" RelativeSize="50" HorizontalAlign="Center" Direction="Horizontal" IsNewNode="True"&gt;
-      &lt;LayoutItem Id="EmptySpaceItem1" Index="0" ViewItem="" RelativeSize="25" IsNewNode="True" /&gt;
-      &lt;LayoutGroup Id="Main" ShowCaption="False" Index="1" IsNewNode="True"&gt;
-        &lt;LayoutGroup Id="Static" Index="0" Direction="Horizontal" ShowCaption="False" IsNewNode="True"&gt;
-          &lt;LayoutItem Id="ChangePasswordImage" Index="0" ShowCaption="False" RelativeSize="1" ViewItem="ChangePasswordImage" IsNewNode="True" /&gt;
-          &lt;LayoutItem Id="ChangePasswordText" Index="1" ShowCaption="False" RelativeSize="99" ViewItem="ChangePasswordText" IsNewNode="True" /&gt;
-        &lt;/LayoutGroup&gt;
-        &lt;LayoutGroup Id="SimpleEditors" Index="1" ShowCaption="False" IsNewNode="True"&gt;
-          &lt;LayoutGroup Id="ChangePasswordOnLogonParameters" ShowCaption="False" Index="0" IsNewNode="True"&gt;
-            &lt;LayoutItem Id="NewPassword" ViewItem="NewPassword" Index="0" IsNewNode="True" /&gt;
-            &lt;LayoutItem Id="ConfirmPassword" ViewItem="ConfirmPassword" Index="1" IsNewNode="True" /&gt;
-          &lt;/LayoutGroup&gt;
-        &lt;/LayoutGroup&gt;
-      &lt;/LayoutGroup&gt;
-      &lt;LayoutItem Id="EmptySpaceItem2" Index="2" ViewItem="" RelativeSize="25" IsNewNode="True" /&gt;
-    &lt;/LayoutGroup&gt;
-  &lt;/Layout&gt;
-&lt;/DetailView&gt;
-</code></pre>
-
-<p>  </Views>  <br/>
-```</p>
-
-<p>Ugh. What a lot of work for such a small change. Another approach would be to make an equivalent model modification in code by subclassing <code>ModelNodesGeneratorUpdater&lt;ModelViewsNodesGenerator&gt;</code> but it would be even more effort.</p>
-
-<p>Is it easy to maintain? Not especially. If we make any changes to the parameters object, we would have to update the layout again. It is quite likely we'd have to make revisions when upgrading the framework.</p>
-
-<p>And does it work?</p>
-
-<p><img src="/images/blog/narrow-dialog-003.png"></p>
-
-<p>No!. It's a little better but it still looks ugly because the OK and Cancel buttons are still out wide.</p>
-
-<p><blockquote><p>Verdict: too ugly</p></blockquote></p>
-
-<p><em>When</em> <strong>should</strong> <em>you use this approach?</em>:</p>
-
-<ul>
-<li>When the layout changes are within the main view area.</li>
-</ul>
-
-
-<p>Let's look at another option.</p>
-
-<h2>Option 2: Customise the ASP.NET template</h2>
-
-<p>If we were to <a href="http://documentation.devexpress.com/#Xaf/CustomDocument3460">follow the instructions here</a> we can modify the HTML exactly as we want. Unfortunately, this is even more work. We would need to:</p>
-
-<p><img src="/images/blog/narrow-dialog-004.jpg"></p>
-
-<ul>
-<li>Create a new MyNarrowTemplateDialogContent.ascx</li>
-<li>Modify the HTML within it to add a width to <code>Form1</code></li>
-<li>Find some way of applying this template to only the detail view for <em>Change Password</em>. This is <a href="http://www.devexpress.com/Support/Center/Question/Details/Q207853">currently not easy</a> but there is an example project at the end of <a href="http://www.devexpress.com/Support/Center/Question/Details/Q204692">this issue</a>.</li>
-</ul>
-
-
-<p>We'd end up with quite a few new files to maintain for just one little layout fix...</p>
-
-<p>Also, another problem with this approach is that it needs reviewing whenever a new version of the framework is released, because the default templates may have changed. Too much maintenance work for such a little change.</p>
-
-<p><blockquote><p>Verdict: too heavy</p></blockquote></p>
-
-<p><em>When</em> <strong>should</strong> <em>you use this approach?</em>:</p>
-
-<ul>
-<li>When the same layout changes are to be applied to the views of all or many different object types.</li>
-<li>When the changes you are making are significant enough that they are hard to achieve by the solution below.</li>
-</ul>
-
-
-<h2>Option 3: Use a ViewController</h2>
-
-<p>The <code>ViewController</code> and <code>WindowController</code> are well-suited to this sort of task.</p>
-
-<p>```c#
-public class NarrowDialogViewController : ViewController<DetailView>
-{</p>
-
-<pre><code>protected override void OnActivated()
-{
-    base.OnActivated();
-    Active["ShouldUseNarrowForm"] = View.ObjectTypeInfo.Type == typeof(ChangePasswordOnLogonParameters); // see side-note below
-}
-
-protected override void OnViewControlsCreated()
-{
-    base.OnViewControlsCreated();
-    if (WebWindow.CurrentRequestPage != null)
-    {
-        var htmlForm = WebWindow.CurrentRequestPage.FindControl("Form2") as HtmlForm; // see note below
-        if (htmlForm != null)
-        {
-            // make the form narrow
-            htmlForm.Attributes.CssStyle.Add("width", Unit.Percentage(40).ToString());
-            // center the form
-            htmlForm.Attributes.CssStyle.Add("margin-left", "auto");
-            htmlForm.Attributes.CssStyle.Add("margin-right", "auto");
-        }
-    }
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>A side note: do not use <code>TargetObjectType == typeof(ChangePasswordOnLogonParameters)</code> instead of the <code>OnActivated()</code> override. This is because <code>ChangePasswordParameters</code> which is used when the user clicks on <code>Change My Password</code> is a subclass of <code>ChangePasswordOnLogonParameters</code> and we do <em>not</em> want that view to be narrowed because it appears in a popup window instead of the main window.</p>
-
-<p>This solution is quite maintainable. We can delimit the views for which the modification applies making the controller is active. And the modification itself is relatively simple. It is also reasonably robust with regard to DevExpress upgrades. (They did just change the name of the main dialog Form <code>Form1</code> in 12.1 to <code>Form2</code> in 12.2, but it was the first time in years and it was simple to fix. Alternatively, you could use <code>FindControl</code> instead of using the hard-wired name).</p>
-
-<p>Here's the resulting output, horizontally centered in the browser window:</p>
-
-<p><img src="/images/blog/narrow-dialog-002.png"></p>
-
-<p><blockquote><p>Verdict: good</p></blockquote></p>
-
-<p><em>When</em> <strong>should</strong> <em>you use this approach?</em>:</p>
-
-<ul>
-<li>When a layout change is easy to apply by modifying styles. When a change pertains only to one or few specific object types.</li>
-</ul>
-
-
-<h2>Conclusions</h2>
-
-<p>In this case, using a <code>ViewController</code> leads to relatively simple code and ease of maintenance. Other situations may well be better served by the other approaches.</p>
-
-<p>DevExpress XAF is a powerful mature product. As such, it can be daunting to new users because of all the different approaches for applying changes. It is always possible to find an elegant maintainable solution, but sometimes it is not obvious, even when the required change is small.</p>
 ]]></content>
   </entry>
   
