@@ -28,7 +28,7 @@ And there are many other tabs available. The _Configuration_ tab shows the conte
 {% img /images/blog/xaf-with-glimpse-009.png %}
 Here's the _Control Tree_ tab:
 {% img /images/blog/xaf-with-glimpse-010.png %}
-The _Page Life Cycle tab:
+The _Page Life Cycle_ tab:
 {% img /images/blog/xaf-with-glimpse-005.png %}
 The _Request_ tab:
 {% img /images/blog/xaf-with-glimpse-004.png %}
