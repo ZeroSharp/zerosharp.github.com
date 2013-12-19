@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-12-17T14:19:35+00:00</updated>
+  <updated>2013-12-19T11:36:39+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -40,13 +40,13 @@
 <img src="/images/blog/xaf-with-glimpse-009.png">
 Here's the <em>Control Tree</em> tab:
 <img src="/images/blog/xaf-with-glimpse-010.png">
-The <em>Page Life Cycle tab:
+The <em>Page Life Cycle</em> tab:
 <img src="/images/blog/xaf-with-glimpse-005.png">
-The </em>Request<em> tab:
+The <em>Request</em> tab:
 <img src="/images/blog/xaf-with-glimpse-004.png">
-The </em>Session<em> tab:
+The <em>Session</em> tab:
 <img src="/images/blog/xaf-with-glimpse-003.png">
-And the </em>Trace_ tab including the DevExpress log items that were added to the trace during this page load:
+And the <em>Trace</em> tab including the DevExpress log items that were added to the trace during this page load:
 <img src="/images/blog/xaf-with-glimpse-002.png">
 As you can see, this is a very valuable glimpse into the server which can be turned on as needed in production.</p>
 
