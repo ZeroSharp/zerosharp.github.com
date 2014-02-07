@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-12-19T11:36:39+00:00</updated>
+  <updated>2014-02-07T12:02:14+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,31 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[CruiseControl Notifications on your iPhone]]></title>
+    <link href="http://ZeroSharp.github.com/cruisecontrol-notifications-on-your-iphone/"/>
+    <updated>2014-02-07T11:32:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/cruisecontrol-notifications-on-your-iphone</id>
+    <content type="html"><![CDATA[<p><img class="right" src="http://ZeroSharp.github.com/images/blog/ccwatcher-002.jpg" width="200"></p>
+
+<p><a href="http://sixafter.com/portfolio/continuous-integration-monitoring-for-ios/">CCWatcher</a> is great iPhone app for any developer who is using CruiseControl.NET, Jenkins or Hudson for their continuous integration.</p>
+
+<p>We have used <a href="http://www.cruisecontrolnet.org/">CruiseControl.NET</a> for several years to automate all builds. The build kicks off automatically whenever we push changes and this frequently happens a few times a day. We aim to have everything <em>green</em> at the end of every day.</p>
+
+<p>A full build with unit tests and functional tests takes about an hour, so often, I will leave the office while the build is still running. But then I wouldn&#8217;t know if I&#8217;d broken the build.</p>
+
+<p>For a long while I was looking for a better way of being informed of build failures on my phone so that I would be aware before getting to the office.</p>
+
+<p><img class="left" src="http://ZeroSharp.github.com/images/blog/ccwatcher-001.png" width="300"></p>
+
+<p>Enter <strong>CCWatcher</strong>. It&#8217;s a simple application which allows you to enter the address of your build server and it will tell you the status of the projects you&#8217;ve configured.</p>
+
+<p>Whenever I need to check whether I&#8217;ve broken the build, I can just <em>pull to refresh</em>.</p>
+
+<p>When I first discovered the application had a problem with CruiseControl.NET&#8217;s <a href="http://cruisecontrolnet.org/projects/ccnet/wiki/RemoteServices">remote services</a> (which we needed because the actual build server is on a network machine not visible from the internet). I contacted <em>SixAfter</em> and was very impressed with the helpful response from Michael Primeaux. Within a couple of weeks there was a new version of the app with support for the remote services configuration. Hats off.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Glimpse with DevExpress XAF]]></title>
@@ -2652,40 +2677,6 @@ The ability to create reports using a report writer is a very powerful feature o
 <p>When you click <code>Launch</code>, Neustar takes 7 or 8 minutes to provision the Amazon machines and stage the test, after which you will get realtime detail information about response times, bandwidth and errors.</p>
 
 <p>In the next post we&#8217;ll analyse the results of this test.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Load Testing XAF: Part 3 - Uploading and Validating the Virtual User Script]]></title>
-    <link href="http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/"/>
-    <updated>2013-04-03T16:39:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script</id>
-    <content type="html"><![CDATA[<p>This is another post in a series about load testing XAF applications.  Previously in the series:</p>
-
-<ul>
-<li><a href="http://ZeroSharp.github.com/load-testing-xaf-overview/">Load Testing XAF: Overview</a></li>
-<li><a href="http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/">Part 1: Deploying the target webserver</a></li>
-<li><a href="http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/">Part 2: Selenium</a></li>
-</ul>
-
-
-<p>In this part, we will load test the application we set up in <a href="http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/">Part 1</a>, using the Selenium load test we created in <a href="http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/">Part 2</a>.</p>
-
-<h2>Neustar Web Performance Management</h2>
-
-<p>NeuStar (formerly BrowserMob) are a company specialised in web application performance monitoring. We are interested in their <a href="https://home.wpm.neustar.biz/">web performance module</a>. It is free to create an account. To run a test with less than 25 virtual users costs only $0.15 per virtual user. Tests with more than 25 users (up to 5000) require an additional paid plan.</p>
-
-<h2>Create a script</h2>
-
-<p>In order to run a load test, we first need to create the script and validate it. Go to the <a href="https://script.wpm.neustar.biz/">scripting</a> page and select &#8216;Create a new script&#8217;. Then cut and paste the <a href="https://gist.github.com/shamp00/5302223">Selenium code for <code>MainDemo_CycleThroughTabs.js</code></a> from the <a href="http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/">previous post</a>.</p>
-
-<p>Now change the <code>targetHost</code> variable near the top of the file to point to the location of your MainDemo installation. You can then validate the script. This will actually run through the Selenium test on a newly provisioned Amazon instance to ensure that it passes.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/load-testing/load-testing-004.png"></p>
-
-<p>If you get a green icon, you can proceed with setting up a load test, otherwise you can see what went wrong in a video of the user session.</p>
-
-<p>In the next post we will configure and launch the load test.</p>
 ]]></content>
   </entry>
   

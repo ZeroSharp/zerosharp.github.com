@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iphone | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/iphone/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2013-12-19T11:36:39+00:00</updated>
+  <updated>2014-02-07T12:02:14+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,31 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[CruiseControl Notifications on your iPhone]]></title>
+    <link href="http://ZeroSharp.github.com/cruisecontrol-notifications-on-your-iphone/"/>
+    <updated>2014-02-07T11:32:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/cruisecontrol-notifications-on-your-iphone</id>
+    <content type="html"><![CDATA[<p><img class="right" src="/images/blog/ccwatcher-002.jpg" width="200"></p>
+
+<p><a href="http://sixafter.com/portfolio/continuous-integration-monitoring-for-ios/">CCWatcher</a> is great iPhone app for any developer who is using CruiseControl.NET, Jenkins or Hudson for their continuous integration.</p>
+
+<p>We have used <a href="http://www.cruisecontrolnet.org/">CruiseControl.NET</a> for several years to automate all builds. The build kicks off automatically whenever we push changes and this frequently happens a few times a day. We aim to have everything <em>green</em> at the end of every day.</p>
+
+<p>A full build with unit tests and functional tests takes about an hour, so often, I will leave the office while the build is still running. But then I wouldn't know if I'd broken the build.</p>
+
+<p>For a long while I was looking for a better way of being informed of build failures on my phone so that I would be aware before getting to the office.</p>
+
+<p><img class="left" src="/images/blog/ccwatcher-001.png" width="300"></p>
+
+<p>Enter <strong>CCWatcher</strong>. It's a simple application which allows you to enter the address of your build server and it will tell you the status of the projects you've configured.</p>
+
+<p>Whenever I need to check whether I've broken the build, I can just <em>pull to refresh</em>.</p>
+
+<p>When I first discovered the application had a problem with CruiseControl.NET's <a href="http://cruisecontrolnet.org/projects/ccnet/wiki/RemoteServices">remote services</a> (which we needed because the actual build server is on a network machine not visible from the internet). I contacted <em>SixAfter</em> and was very impressed with the helpful response from Michael Primeaux. Within a couple of weeks there was a new version of the app with support for the remote services configuration. Hats off.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[A C# Developer's Adventures in iOS - Integrating Git and MonoDevelop]]></title>

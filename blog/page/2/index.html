@@ -9,19 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Continuing from my last post, I&#8217;ll demonstrate how to create a fluent interface so that you can do: 1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-var customer = &hellip;">
+  <meta name="description" content="In this post I will demonstrate how to add MiniProfiler to the XAF MainDemo web application. MiniProfiler is a simple fast profiler with a pretty &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -125,6 +113,284 @@ var customer = &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/miniprofiler-with-devexpress-xaf/">MiniProfiler With DevExpress XAF</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-08-27T09:14:00+01:00" pubdate data-updated="true">Aug 27<span>th</span>, 2013</time>
+        
+         | <a href="/miniprofiler-with-devexpress-xaf/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In this post I will demonstrate how to add <a href="http://miniprofiler.com/">MiniProfiler</a> to the XAF MainDemo web application.</p>
+
+<p>MiniProfiler is a simple fast profiler with a pretty user interface. It is fast because it only profiles code that you have explicitly decorated with the <code>MiniProfiler.Step()</code> method. It was designed by the team at <a href="http://stackoverflow.com/">StackOverflow</a>.</p>
+
+<p>First, add the MiniProfiler NuGet package to the MainDemo.Web project. Then add a placeholder to <em>default.aspx</em> just before the last <code>&lt;body&gt;</code> tag.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='html'><span class='line'><span class="c">&lt;!-- MiniProfiler --&gt;</span>
+</span><span class='line'><span class="c">&lt;!-- Include jquery here to avoid a bug in MiniProfiler. --&gt;</span>
+</span><span class='line'><span class="nt">&lt;script </span><span class="na">src=</span><span class="s">&quot;https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js&quot;</span><span class="nt">&gt;&lt;/script&gt;</span>
+</span><span class='line'><span class="nt">&lt;asp:PlaceHolder</span> <span class="na">ID=</span><span class="s">&quot;mp&quot;</span> <span class="na">runat=</span><span class="s">&quot;server&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="err">&lt;</span>%= StackExchange.Profiling.MiniProfiler.RenderIncludes() %&gt;
+</span><span class='line'><span class="nt">&lt;/asp:PlaceHolder&gt;</span>
+</span><span class='line'><span class="nt">&lt;/body&gt;</span>
+</span><span class='line'><span class="nt">&lt;/html&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>(MiniProfiler uses jQuery, but it does not usually require XAF to include it since it will automatically retrieve it if missing. Unfortunately there is currently <a href="http://community.miniprofiler.com/permalinks/149/jquery-is-undefined">a bug</a> which causes a &#8217;<em>jQuery is undefined</em>&#8217; javascript error when initially launching the application. The easiest workaround I found is to explicitly include jQuery before calling <code>RenderIncludes()</code>. Hopefully this will be fixed in a future version of MiniProfiler.)</p>
+
+<p>In <em>global.asax.cs</em> add the following to the <code>Application_Start</code> method.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>protected void Application_Start(object sender, EventArgs e) {
+</span><span class='line'>    RenderHelper.RenderMode = DevExpress.Web.ASPxClasses.ControlRenderMode.Lightweight;
+</span><span class='line'><span class="gi">+   MiniProfilerHelper.RegisterPathsToIgnore();</span>
+</span><span class='line'>    ASPxWebControl.CallbackError += new EventHandler(Application_Error);
+</span><span class='line'>    // etc...
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>and modify <code>BeginRequest</code> and <code>EndRequest</code> as follows:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>protected void Application_BeginRequest(object sender, EventArgs e) {
+</span><span class='line'><span class="gi">+   if (MiniProfilerHelper.IsEnabled())</span>
+</span><span class='line'><span class="gi">+   {</span>
+</span><span class='line'><span class="gi">+       MiniProfiler.Start();</span>
+</span><span class='line'><span class="gi">+   }</span>
+</span><span class='line'>    string filePath = HttpContext.Current.Request.PhysicalPath;
+</span><span class='line'>    if(!string.IsNullOrEmpty(filePath)
+</span><span class='line'>        &amp;&amp; (filePath.IndexOf(&quot;Images&quot;) &gt;= 0) &amp;&amp; !System.IO.File.Exists(filePath)) {
+</span><span class='line'>        HttpContext.Current.Response.End();
+</span><span class='line'>    }
+</span><span class='line'>}
+</span><span class='line'>
+</span><span class='line'>protected void Application_EndRequest(Object sender, EventArgs e)
+</span><span class='line'>{
+</span><span class='line'><span class="gi">+   if (MiniProfilerHelper.IsEnabled())</span>
+</span><span class='line'><span class="gi">+       MiniProfiler.Stop();</span>
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we implement a helper class which determines whether profiling is enabled and which URLs to profile. We can use a variety of methods, the cookie probably being the most versatile one, but for the moment, the <code>IsEnabled()</code> function always returns true.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">MiniProfilerHelper</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="kt">bool</span> <span class="nf">IsEnabled</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// While we are testing let&#39;s always return true</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// We should not profile if we are EasyTesting</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">TestScriptsManager</span><span class="p">.</span><span class="n">EasyTestEnabled</span> <span class="p">==</span> <span class="k">true</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// We could choose to profile only local requests</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">HttpContext</span><span class="p">.</span><span class="n">Current</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">IsLocal</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Or based on a cookie</span>
+</span><span class='line'>        <span class="n">HttpCookie</span> <span class="n">miniProfileCookie</span> <span class="p">=</span> <span class="n">HttpContext</span><span class="p">.</span><span class="n">Current</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">Cookies</span><span class="p">[</span><span class="s">&quot;MainDemoMiniProfiler&quot;</span><span class="p">];</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">miniProfileCookie</span> <span class="p">!=</span> <span class="k">null</span> <span class="p">&amp;&amp;</span> <span class="n">miniProfileCookie</span><span class="p">.</span><span class="n">Value</span> <span class="p">!=</span> <span class="s">&quot;0&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// Optionally ignore some paths to prevent the output being too busy.</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">RegisterPathsToIgnore</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(!</span><span class="n">NetSecuritySettings</span><span class="p">.</span><span class="n">IsProfilingAllowed</span><span class="p">())</span>
+</span><span class='line'>            <span class="k">return</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">List</span><span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;</span> <span class="n">ignoredByMiniProfiler</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">String</span><span class="p">&gt;(</span><span class="n">MiniProfiler</span><span class="p">.</span><span class="n">Settings</span><span class="p">.</span><span class="n">IgnoredPaths</span><span class="p">);</span>
+</span><span class='line'>        <span class="c1">// these are a substring search so wildcards are not supported</span>
+</span><span class='line'>        <span class="n">ignoredByMiniProfiler</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;SessionKeepAliveReconnect.aspx&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">ignoredByMiniProfiler</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;TemplateScripts.js&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">ignoredByMiniProfiler</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;EasyTestJavaScripts.js&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">ignoredByMiniProfiler</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;MoveFooter.js&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">ignoredByMiniProfiler</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;ImageResource.axd&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">MiniProfiler</span><span class="p">.</span><span class="n">Settings</span><span class="p">.</span><span class="n">IgnoredPaths</span> <span class="p">=</span> <span class="n">ignoredByMiniProfiler</span><span class="p">.</span><span class="n">ToArray</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Done. Now whenever you run the web application, you get timing statistics for the loading of the assets. They appear as little clickable &#8216;chiclets&#8217; in the top left of the browser page.</p>
+
+<p><img src="/images/blog/xaf-miniprofiler-1.png"></p>
+
+<p>However, the real strength of MiniProfiler comes with the ability to add your own profiling steps. Let&#8217;s say we want to know exactly what percentage of the load takes place in the <code>OnLoad</code> event. Then we add the following to <em>default.aspx.cs</em> in order to add a &#8216;step&#8217; to the MiniProfiler breakdown.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnLoad</span><span class="p">(</span><span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">var</span> <span class="n">profiler</span> <span class="p">=</span> <span class="n">MiniProfiler</span><span class="p">.</span><span class="n">Current</span><span class="p">;</span> <span class="c1">// it&#39;s ok for this to be null</span>
+</span><span class='line'>    <span class="k">using</span> <span class="p">(</span><span class="n">profiler</span><span class="p">.</span><span class="n">Step</span><span class="p">(</span><span class="s">&quot;ASP.NET: Page_Load(Default)&quot;</span><span class="p">))</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>         <span class="k">base</span><span class="p">.</span><span class="n">OnLoad</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now, the output is a good deal richer. Also, note that if the MiniProfiler assembly is missing from the web application&#8217;s <em>bin</em> directory, the profiling is ignored completely without error.</p>
+
+<p><img src="/images/blog/xaf-miniprofiler-2.png"></p>
+
+<p>As another example, let&#8217;s profile the <em>FindBySubject</em> controller action.</p>
+
+<p>Add the MiniProfiler NuGet package to the MainDemo.Module project. Then modify the FindBySubjectController.cs as follows</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>private void FindBySubjectAction_Execute(object sender, ParametrizedActionExecuteEventArgs e)
+</span><span class='line'>{
+</span><span class='line'><span class="gi">+   var profiler = MiniProfiler.Current;</span>
+</span><span class='line'><span class="gi">+   using (profiler.Step(&quot;FindBySubject&quot;)) // doesn&#39;t matter if profiler is null</span>
+</span><span class='line'><span class="gi">+   {</span>
+</span><span class='line'>        IObjectSpace objectSpace = Application.CreateObjectSpace();
+</span><span class='line'>        string paramValue = e.ParameterCurrentValue as string;
+</span><span class='line'>        if (!string.IsNullOrEmpty(paramValue))
+</span><span class='line'>        {
+</span><span class='line'>            paramValue = &quot;%&quot; + paramValue + &quot;%&quot;;
+</span><span class='line'>        }
+</span><span class='line'>        object obj = objectSpace.FindObject(((ListView)View).ObjectTypeInfo.Type,
+</span><span class='line'>            new BinaryOperator(&quot;Subject&quot;, paramValue, BinaryOperatorType.Like));
+</span><span class='line'>        if (obj != null)
+</span><span class='line'>        {
+</span><span class='line'>            e.ShowViewParameters.CreatedView = Application.CreateDetailView(objectSpace, obj);
+</span><span class='line'>        }
+</span><span class='line'><span class="gi">+   }</span>
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p><img class="right" src="/images/blog/xaf-miniprofiler-3.png"></p>
+
+<p>Now navigate to the <em>Tasks</em> list view and enter some text where it says &#8216;Type Subject&#8230;&#8217;. You should see a new chiclet appear which contains the timing details as shown here.</p>
+
+<p>MiniProfiler is a great tool for providing helpful profiling benchmarks, even in production. It&#8217;s often difficult to measure when a remote user complains to support that the site seems slow. How slow is slow? In a production environment, you can turn on MiniProfiler for the user (by setting a cookie for instance) and then ask them to share their profiling information for some basic operations. This information can be invaluable in determining where the fault lies.</p>
+
+<p>You can play around with <a href="https://github.com/ZeroSharp/Xaf_MainDemo_MiniProfiler">the sample solution</a> up on GitHub.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1609,69 +1875,6 @@ The ability to create reports using a report writer is a very powerful feature o
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Load Testing XAF: Part 3 - Uploading and Validating the Virtual User Script</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-03T16:39:00+01:00" pubdate data-updated="true">Apr 3<span>rd</span>, 2013</time>
-        
-         | <a href="/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>This is another post in a series about load testing XAF applications.  Previously in the series:</p>
-
-<ul>
-<li><a href="/load-testing-xaf-overview/">Load Testing XAF: Overview</a></li>
-<li><a href="/load-testing-xaf-part-1-deploying/">Part 1: Deploying the target webserver</a></li>
-<li><a href="/load-testing-xaf-part-2-selenium/">Part 2: Selenium</a></li>
-</ul>
-
-
-<p>In this part, we will load test the application we set up in <a href="/load-testing-xaf-part-1-deploying/">Part 1</a>, using the Selenium load test we created in <a href="/load-testing-xaf-part-2-selenium/">Part 2</a>.</p>
-
-<h2>Neustar Web Performance Management</h2>
-
-<p>NeuStar (formerly BrowserMob) are a company specialised in web application performance monitoring. We are interested in their <a href="https://home.wpm.neustar.biz/">web performance module</a>. It is free to create an account. To run a test with less than 25 virtual users costs only $0.15 per virtual user. Tests with more than 25 users (up to 5000) require an additional paid plan.</p>
-
-<h2>Create a script</h2>
-
-<p>In order to run a load test, we first need to create the script and validate it. Go to the <a href="https://script.wpm.neustar.biz/">scripting</a> page and select &#8216;Create a new script&#8217;. Then cut and paste the <a href="https://gist.github.com/shamp00/5302223">Selenium code for <code>MainDemo_CycleThroughTabs.js</code></a> from the <a href="/load-testing-xaf-part-2-selenium/">previous post</a>.</p>
-
-<p>Now change the <code>targetHost</code> variable near the top of the file to point to the location of your MainDemo installation. You can then validate the script. This will actually run through the Selenium test on a newly provisioned Amazon instance to ensure that it passes.</p>
-
-<p><img src="/images/blog/load-testing/load-testing-004.png"></p>
-
-<p>If you get a green icon, you can proceed with setting up a load test, otherwise you can see what went wrong in a video of the user session.</p>
-
-<p>In the next post we will configure and launch the load test.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -1691,7 +1894,7 @@ The ability to create reports using a report writer is a very powerful feature o
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2013 - Robert Anderson
+  Copyright &copy; 2014 - Robert Anderson
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
