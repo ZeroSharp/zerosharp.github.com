@@ -1,0 +1,497 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Provisioning a new development machine with BoxStarter - ZeroSharp</title>
+  <meta name="author" content="Robert Anderson">
+
+  
+  <meta name="description" content="How to provision a new development machine with BoxStarter.">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="http://feeds.feedburner.com/zerosharp" rel="alternate" title="ZeroSharp" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> 
+
+<!-- <ra+> -->
+<link href="http://fonts.googleapis.com/css?family=Ubuntu:500" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
+
+<link href="/stylesheets/custom/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+<!-- </ra+> -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-30564687-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <!--<h1><a href="/">ZeroSharp</a></h1>-->
+  <a href="http://www.zerosharp.com/"><h1>ZeroSharp</h1></a>
+  
+    <h2>Robert Anderson's ones and zeros</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">  
+
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ZeroSharp.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/license/">License</a></li>  
+</ul>
+<ul class="subscription">
+    <li><a rel="me" href="https://plus.google.com/112685056596124127572?rel=author">
+      <img src="/images/asides/googleplus.png" width="24" height="24" alt="Rob on Google+">
+    </a></li>    
+    <li><a rel="me" href="http://twitter.com/8ctopus">
+      <img src="/images/asides/twitter.png" width="24" height="24" alt="Rob on Twitter" />
+    </a></li>
+    <!--<li><a rel="me" href="http://stackoverflow.com/users/1077279/shamp00">
+      <img src="/images/asides/stackoverflow.png" width="24" height="24" alt="Rob on StackOverflow" />
+    </a></li>
+    <li><a rel="me" href="https://github.com/zerosharp">
+      <img src="/images/asides/github.png" width="24" height="24" alt="Rob on GitHub" />
+    </a></li>
+    <li><a rel="me" href="http://www.linkedin.com/profile/view?id=926740"  class ="googleplus-hidden" >
+      <img src="/images/asides/linkedin.png" width="24" height="24" alt="Rob on LinkedIn" />
+    </a></li>
+    <li><a rel="me" href="http://springpad.com/#!/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/springpad.png" width="24" height="24" alt="Rob on SpringPad" />
+    </a></li>    
+    <li><a rel="me" href="http://pinterest.com/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/pinterest.png" width="24" height="24" alt="Rob on Pinterest" />
+    </a></li>
+    <li><a rel="me" href="http://www.last.fm/user/nosredna"  class ="googleplus-hidden" >
+      <img src="/images/asides/lastfm.png" width="24" height="24" alt="Rob on Last.fm" />
+    </a></li>-->
+    <li><a href="http://feeds.feedburner.com/zerosharp">
+      <img src="/images/asides/rss.png" rel="subscribe-rss" width="24" height="24" alt="RSS Feed" />
+    </a></li>
+</ul>
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Provisioning a New Development Machine With BoxStarter</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-25T15:29:00+00:00" pubdate data-updated="true">Feb 25<span>th</span>, 2014</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I&#8217;ve been playing around with <a href="http://boxstarter.org/">Boxstarter</a> to configure my entire development environment with hardly any user intervention.</p>
+
+<p><img class="right" src="/images/blog/boxstarter-001.png" width="300"></p>
+
+<p>Here are the steps:</p>
+
+<ol>
+<li>Install Windows 8.1 on a new machine.</li>
+<li>Login.</li>
+<li>Open a command prompt and enter the following.</li>
+</ol>
+
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>START http://boxstarter.org/package/nr/url?http://bit.ly/1kapDXI</span></code></pre></td></tr></table></div></figure>
+
+
+<p>That&#8217;s it!</p>
+
+<p>Boxstarter will self-install via ClickOnce, asking for various confirmations and ultimately it will prompt you for your login password. (This gets saved and encrypted to allow for unattended reboots and re-logins during the installation). Then the real magic begins. Boxstarter downloads and installs all your tools and configures your environment, rebooting as necessary. An hour later your full development setup is installed, including Visual Studio 2013, any VS extensions, any other programs and tools, all the browsers you need, all critical Windows updates, etc. You just saved yourself a couple of days of work and a lot of hassle.</p>
+
+<p>How does Boxstarter know what to install? There&#8217;s a Powershell script located at that bitly address. Let&#8217;s take a look at the script.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+</pre></td><td class='code'><pre><code class='powershell'><span class='line'><span class="c"># Boxstarter options</span>
+</span><span class='line'><span class="nv">$Boxstarter</span><span class="p">.</span><span class="n">RebootOk</span><span class="p">=</span><span class="nv">$true</span> <span class="c"># Allow reboots?</span>
+</span><span class='line'><span class="nv">$Boxstarter</span><span class="p">.</span><span class="n">NoPassword</span><span class="p">=</span><span class="nv">$false</span> <span class="c"># Is this a machine with no login password?</span>
+</span><span class='line'><span class="nv">$Boxstarter</span><span class="p">.</span><span class="n">AutoLogin</span><span class="p">=</span><span class="nv">$true</span> <span class="c"># Save my password securely and auto-login after a reboot</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Basic setup</span>
+</span><span class='line'><span class="nb">Update-ExecutionPolicy</span> <span class="n">Unrestricted</span>
+</span><span class='line'><span class="nb">Set-ExplorerOptions</span> <span class="n">-showHidenFilesFoldersDrives</span> <span class="n">-showProtectedOSFiles</span> <span class="n">-showFileExtensions</span>
+</span><span class='line'><span class="nb">Enable-RemoteDesktop</span>
+</span><span class='line'><span class="nb">Disable-InternetExplorerESC</span>
+</span><span class='line'><span class="nb">Disable-UAC</span>
+</span><span class='line'><span class="nb">Set-TaskbarSmall</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nb">Test-PendingReboot</span><span class="p">)</span> <span class="p">{</span> <span class="nb">Invoke-Reboot</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Update Windows and reboot if necessary</span>
+</span><span class='line'><span class="n">Install-WindowsUpdate</span> <span class="n">-AcceptEula</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nb">Test-PendingReboot</span><span class="p">)</span> <span class="p">{</span> <span class="nb">Invoke-Reboot</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Install Visual Studio 2013 Professional </span>
+</span><span class='line'><span class="n">cinstm</span> <span class="n">VisualStudio2013Professional</span> <span class="n">-InstallArguments</span> <span class="n">WebTools</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nb">Test-PendingReboot</span><span class="p">)</span> <span class="p">{</span> <span class="nb">Invoke-Reboot</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Visual Studio SDK required for PoshTools extension</span>
+</span><span class='line'><span class="n">cinstm</span> <span class="n">VS2013SDK</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nb">Test-PendingReboot</span><span class="p">)</span> <span class="p">{</span> <span class="nb">Invoke-Reboot</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">cinstm</span> <span class="n">DotNet3</span><span class="p">.</span><span class="n">5</span> <span class="c"># Not automatically installed with VS 2013. Includes .NET 2.0. Uses Windows Features to install.</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nb">Test-PendingReboot</span><span class="p">)</span> <span class="p">{</span> <span class="nb">Invoke-Reboot</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># VS extensions</span>
+</span><span class='line'><span class="n">Install-ChocolateyVsixPackage</span> <span class="n">PowerShellTools</span> <span class="n">http</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">c9eb3ba8</span><span class="p">-</span><span class="n">0c59</span><span class="p">-</span><span class="n">4944</span><span class="p">-</span><span class="n">9a62</span><span class="p">-</span><span class="n">6eee37294597</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">112013</span><span class="p">/</span><span class="n">6</span><span class="p">/</span><span class="n">PowerShellTools</span><span class="p">.</span><span class="n">vsix</span>
+</span><span class='line'><span class="n">Install-ChocolateyVsixPackage</span> <span class="n">WebEssentials2013</span> <span class="n">http</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">56633663</span><span class="p">-</span><span class="n">6799</span><span class="p">-</span><span class="n">41d7</span><span class="p">-</span><span class="n">9df7</span><span class="p">-</span><span class="n">0f2a504ca361</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">105627</span><span class="p">/</span><span class="n">31</span><span class="p">/</span><span class="n">WebEssentials2013</span><span class="p">.</span><span class="n">vsix</span>
+</span><span class='line'><span class="n">Install-ChocolateyVsixPackage</span> <span class="n">T4Toolbox</span> <span class="n">http</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">791817a4-eb9a</span><span class="p">-</span><span class="n">4000</span><span class="p">-</span><span class="n">9c85</span><span class="p">-</span><span class="n">972cc60fd5aa</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">116854</span><span class="p">/</span><span class="n">1</span><span class="p">/</span><span class="n">T4Toolbox</span><span class="p">.</span><span class="n">12</span><span class="p">.</span><span class="n">vsix</span>
+</span><span class='line'><span class="n">Install-ChocolateyVsixPackage</span> <span class="n">StopOnFirstBuildError</span> <span class="n">http</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">91aaa139</span><span class="p">-</span><span class="n">5d3c</span><span class="p">-</span><span class="n">43a7-b39f</span><span class="p">-</span><span class="n">369196a84fa5</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">44205</span><span class="p">/</span><span class="n">3</span><span class="p">/</span><span class="n">StopOnFirstBuildError</span><span class="p">.</span><span class="n">vsix</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># AWS Toolkit is now an MSI available here http://sdk-for-net.amazonwebservices.com/latest/AWSToolsAndSDKForNet.msi (no chocolatey package as of FEB 2014)</span>
+</span><span class='line'><span class="c"># Install-ChocolateyVsixPackage AwsToolkit http://visualstudiogallery.msdn.microsoft.com/175787af-a563-4306-957b-686b4ee9b497</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#Other dev tools</span>
+</span><span class='line'><span class="n">cinstm</span> <span class="n">fiddler4</span>
+</span><span class='line'><span class="n">cinstm</span> <span class="n">beyondcompare</span>
+</span><span class='line'><span class="n">cinstm</span> <span class="n">ProcExp</span> <span class="c">#cinstm sysinternals</span>
+</span><span class='line'><span class="n">cinstm</span> <span class="n">NugetPackageExplorer</span>
+</span><span class='line'><span class="n">cinstm</span> <span class="n">windbg</span>
+</span><span class='line'><span class="n">cinstm</span> <span class="n">Devbox-Clink</span>
+</span><span class='line'><span class="n">cinstm</span> <span class="n">TortoiseHg</span>
+</span><span class='line'><span class="c">#cinstm VisualHG # Chocolatey package is corrupt as of Feb 2014 </span>
+</span><span class='line'><span class="n">cinstm</span> <span class="n">linqpad4</span>
+</span><span class='line'><span class="n">cinstm</span> <span class="n">TestDriven</span><span class="p">.</span><span class="n">Net</span>
+</span><span class='line'><span class="n">cinstm</span> <span class="n">ncrunch2</span><span class="p">.</span><span class="n">vs2013</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#Browsers</span>
+</span><span class='line'><span class="n">cinstm</span> <span class="n">googlechrome</span>
+</span><span class='line'><span class="n">cinstm</span> <span class="n">firefox</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#Other essential tools</span>
+</span><span class='line'><span class="n">cinstm</span> <span class="n">7zip</span>
+</span><span class='line'><span class="n">cinstm</span> <span class="n">adobereader</span>
+</span><span class='line'><span class="n">cinstm</span> <span class="n">javaruntime</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">#cinst Microsoft-Hyper-V-All -source windowsFeatures</span>
+</span><span class='line'><span class="n">cinst</span> <span class="n">IIS-WebServerRole</span> <span class="n">-source</span> <span class="n">windowsfeatures</span>
+</span><span class='line'><span class="n">cinst</span> <span class="n">IIS-HttpCompressionDynamic</span> <span class="n">-source</span> <span class="n">windowsfeatures</span>
+</span><span class='line'><span class="n">cinst</span> <span class="n">IIS-ManagementScriptingTools</span> <span class="n">-source</span> <span class="n">windowsfeatures</span>
+</span><span class='line'><span class="n">cinst</span> <span class="n">IIS-WindowsAuthentication</span> <span class="n">-source</span> <span class="n">windowsfeatures</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">Install-ChocolateyPinnedTaskBarItem</span> <span class="s2">&quot;</span><span class="si">$(</span><span class="err">$</span><span class="si">Boxstarter.programFiles86)</span><span class="s2">\Google\Chrome\Application\chrome.exe&quot;</span>
+</span><span class='line'><span class="n">Install-ChocolateyPinnedTaskBarItem</span> <span class="s2">&quot;</span><span class="si">$(</span><span class="err">$</span><span class="si">Boxstarter.programFiles86)</span><span class="s2">\Microsoft Visual Studio 12.0\Common7\IDE\devenv.exe&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Boxstarter works with <a href="http://chocolatey.org/">Chocolatey</a> and you can install anything with a Chocolatey package very easily. As you can see, most of the lines begin with <code>cinstm</code> which is a shortcut for <em>install with Chocolatey if missing</em>. You will notice there are also commands for configuring Windows and IIS options. There is plenty of additional information on the <a href="http://boxstarter.org/WhyBoxstarter">Boxstarter</a> documentation.</p>
+
+<h2>What about DevExpress?</h2>
+
+<p>Want to install your registered CodeRush and DexExpress components? Easy. Since the installation packages are not available on chocolatey, you will have to put them on a network share accessible from the newly provisioned machine.</p>
+
+<p>Then add the following to your boxstarter script:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='powershell'><span class='line'><span class="c"># Set the following to the network location of the DevExpress installers</span>
+</span><span class='line'><span class="nv">$pathToDevExpressComponentsSetup</span> <span class="p">=</span> <span class="s2">&quot;\\somewhere\DevExpressComponents-13.2.7.exe&quot;</span>
+</span><span class='line'><span class="nv">$pathToDevExpressComponentsSetup</span> <span class="p">=</span> <span class="s2">&quot;\\somewhere\DevExpressCodeRush-13.2.7.exe&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Command line options for unattended installation</span>
+</span><span class='line'><span class="c"># (/EULA is not required for versions earlier than 10.2.10)</span>
+</span><span class='line'><span class="nv">$silentArgs</span> <span class="p">=</span> <span class="s2">&quot;/Q /EMAIL:myaddress@company.com /CUSTOMERID:A1111 /PASSWORD:MYPASSWORD /DEBUG /EULA:accept&quot;</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Install .NET Components</span>
+</span><span class='line'><span class="n">Install-ChocolateyInstallPackage</span> <span class="s2">&quot;DevExpressComponents_13.2&quot;</span> <span class="s2">&quot;EXE&quot;</span> <span class="nv">$silentArgs</span> <span class="nv">$pathToDevExpressComponentsSetup</span>
+</span><span class='line'>
+</span><span class='line'><span class="c"># Install CodeRush</span>
+</span><span class='line'><span class="n">Install-ChocolateyInstallPackage</span> <span class="s2">&quot;DevExpressCodeRush_13.2&quot;</span> <span class="s2">&quot;EXE&quot;</span> <span class="nv">$silentArgs</span> <span class="nv">$pathToDevExpressCodeRushSetup</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><strong>Warning! don&#8217;t put your DevExpress passwords on a public website.</strong></p>
+
+<p>There are plenty of other ways of <em>launching</em> Boxstarter. You can <a href="https://chocolatey.org/packages/boxstarter">install Boxstarter via Chocolatey</a>. You can <a href="http://boxstarter.org/InstallingPackages">run Boxstarter remotely</a>. If you are putting passwords in the installation script, you should choose one of the other options.</p>
+
+<h2>Advantages</h2>
+
+<ul>
+<li>I save time!</li>
+<li>I can now version control the exact development environment along with the source code!</li>
+<li>Onboarding new and junior developers is much quicker.</li>
+<li>In a pinch, I can use this method to quickly provision a development machine with Azure or Amazon Web Services</li>
+</ul>
+
+
+<h2>One Last Hiccup</h2>
+
+<p>While I was testing my BoxStarter script I used the Windows 8.1 image from <a href="http://www.modern.ie/">http://www.modern.ie/</a>. Much later in the process I realised that Modern.IE only supplies 32-bit images and the chocolatey installer for Visual Studio extensions currently works only with 64-bit Windows.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-25T15:29:00+00:00" pubdate data-updated="true">Feb 25<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/visual-studio/'>visual studio</a>, <a class='category' href='/blog/categories/windows/'>windows</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/cruisecontrol-notifications-on-your-iphone/" title="Previous Post: CruiseControl Notifications on your iPhone">&laquo; CruiseControl Notifications on your iPhone</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Robert Anderson
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'zerosharp';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter/';
+        var disqus_url = 'http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

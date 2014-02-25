@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2014-02-07T13:57:21+00:00</updated>
+  <updated>2014-02-25T17:57:50+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,169 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Provisioning a new development machine with BoxStarter]]></title>
+    <link href="http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter/"/>
+    <updated>2014-02-25T15:29:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter</id>
+    <content type="html"><![CDATA[<p>I've been playing around with <a href="http://boxstarter.org/">Boxstarter</a> to configure my entire development environment with hardly any user intervention.</p>
+
+<p><img class="right" src="/images/blog/boxstarter-001.png" width="300"></p>
+
+<p>Here are the steps:</p>
+
+<ol>
+<li>Install Windows 8.1 on a new machine.</li>
+<li>Login.</li>
+<li>Open a command prompt and enter the following.
+<code>
+START http://boxstarter.org/package/nr/url?http://bit.ly/1kapDXI
+</code></li>
+</ol>
+
+
+<p>That's it!</p>
+
+<p>Boxstarter will self-install via ClickOnce, asking for various confirmations and ultimately it will prompt you for your login password. (This gets saved and encrypted to allow for unattended reboots and re-logins during the installation). Then the real magic begins. Boxstarter downloads and installs all your tools and configures your environment, rebooting as necessary. An hour later your full development setup is installed, including Visual Studio 2013, any VS extensions, any other programs and tools, all the browsers you need, all critical Windows updates, etc. You just saved yourself a couple of days of work and a lot of hassle.</p>
+
+<p>How does Boxstarter know what to install? There's a Powershell script located at that bitly address. Let's take a look at the script.</p>
+
+<p>```powershell</p>
+
+<h1>Boxstarter options</h1>
+
+<p>$Boxstarter.RebootOk=$true # Allow reboots?
+$Boxstarter.NoPassword=$false # Is this a machine with no login password?
+$Boxstarter.AutoLogin=$true # Save my password securely and auto-login after a reboot</p>
+
+<h1>Basic setup</h1>
+
+<p>Update-ExecutionPolicy Unrestricted
+Set-ExplorerOptions -showHidenFilesFoldersDrives -showProtectedOSFiles -showFileExtensions
+Enable-RemoteDesktop
+Disable-InternetExplorerESC
+Disable-UAC
+Set-TaskbarSmall</p>
+
+<p>if (Test-PendingReboot) { Invoke-Reboot }</p>
+
+<h1>Update Windows and reboot if necessary</h1>
+
+<p>Install-WindowsUpdate -AcceptEula
+if (Test-PendingReboot) { Invoke-Reboot }</p>
+
+<h1>Install Visual Studio 2013 Professional</h1>
+
+<p>cinstm VisualStudio2013Professional -InstallArguments WebTools
+if (Test-PendingReboot) { Invoke-Reboot }</p>
+
+<h1>Visual Studio SDK required for PoshTools extension</h1>
+
+<p>cinstm VS2013SDK
+if (Test-PendingReboot) { Invoke-Reboot }</p>
+
+<p>cinstm DotNet3.5 # Not automatically installed with VS 2013. Includes .NET 2.0. Uses Windows Features to install.
+if (Test-PendingReboot) { Invoke-Reboot }</p>
+
+<h1>VS extensions</h1>
+
+<p>Install-ChocolateyVsixPackage PowerShellTools http://visualstudiogallery.msdn.microsoft.com/c9eb3ba8-0c59-4944-9a62-6eee37294597/file/112013/6/PowerShellTools.vsix
+Install-ChocolateyVsixPackage WebEssentials2013 http://visualstudiogallery.msdn.microsoft.com/56633663-6799-41d7-9df7-0f2a504ca361/file/105627/31/WebEssentials2013.vsix
+Install-ChocolateyVsixPackage T4Toolbox http://visualstudiogallery.msdn.microsoft.com/791817a4-eb9a-4000-9c85-972cc60fd5aa/file/116854/1/T4Toolbox.12.vsix
+Install-ChocolateyVsixPackage StopOnFirstBuildError http://visualstudiogallery.msdn.microsoft.com/91aaa139-5d3c-43a7-b39f-369196a84fa5/file/44205/3/StopOnFirstBuildError.vsix</p>
+
+<h1>AWS Toolkit is now an MSI available here http://sdk-for-net.amazonwebservices.com/latest/AWSToolsAndSDKForNet.msi (no chocolatey package as of FEB 2014)</h1>
+
+<h1>Install-ChocolateyVsixPackage AwsToolkit http://visualstudiogallery.msdn.microsoft.com/175787af-a563-4306-957b-686b4ee9b497</h1>
+
+<h1>Other dev tools</h1>
+
+<p>cinstm fiddler4
+cinstm beyondcompare
+cinstm ProcExp #cinstm sysinternals
+cinstm NugetPackageExplorer
+cinstm windbg
+cinstm Devbox-Clink
+cinstm TortoiseHg</p>
+
+<h1>cinstm VisualHG # Chocolatey package is corrupt as of Feb 2014</h1>
+
+<p>cinstm linqpad4
+cinstm TestDriven.Net
+cinstm ncrunch2.vs2013</p>
+
+<h1>Browsers</h1>
+
+<p>cinstm googlechrome
+cinstm firefox</p>
+
+<h1>Other essential tools</h1>
+
+<p>cinstm 7zip
+cinstm adobereader
+cinstm javaruntime</p>
+
+<h1>cinst Microsoft-Hyper-V-All -source windowsFeatures</h1>
+
+<p>cinst IIS-WebServerRole -source windowsfeatures
+cinst IIS-HttpCompressionDynamic -source windowsfeatures
+cinst IIS-ManagementScriptingTools -source windowsfeatures
+cinst IIS-WindowsAuthentication -source windowsfeatures</p>
+
+<p>Install-ChocolateyPinnedTaskBarItem "$($Boxstarter.programFiles86)\Google\Chrome\Application\chrome.exe"
+Install-ChocolateyPinnedTaskBarItem "$($Boxstarter.programFiles86)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.exe"
+```</p>
+
+<p>Boxstarter works with <a href="http://chocolatey.org/">Chocolatey</a> and you can install anything with a Chocolatey package very easily. As you can see, most of the lines begin with <code>cinstm</code> which is a shortcut for <em>install with Chocolatey if missing</em>. You will notice there are also commands for configuring Windows and IIS options. There is plenty of additional information on the <a href="http://boxstarter.org/WhyBoxstarter">Boxstarter</a> documentation.</p>
+
+<h2>What about DevExpress?</h2>
+
+<p>Want to install your registered CodeRush and DexExpress components? Easy. Since the installation packages are not available on chocolatey, you will have to put them on a network share accessible from the newly provisioned machine.</p>
+
+<p>Then add the following to your boxstarter script:</p>
+
+<p>```powershell</p>
+
+<h1>Set the following to the network location of the DevExpress installers</h1>
+
+<p>$pathToDevExpressComponentsSetup = "\somewhere\DevExpressComponents-13.2.7.exe"
+$pathToDevExpressComponentsSetup = "\somewhere\DevExpressCodeRush-13.2.7.exe"</p>
+
+<h1>Command line options for unattended installation</h1>
+
+<h1>(/EULA is not required for versions earlier than 10.2.10)</h1>
+
+<p>$silentArgs = "/Q /EMAIL:myaddress@company.com /CUSTOMERID:A1111 /PASSWORD:MYPASSWORD /DEBUG /EULA:accept"</p>
+
+<h1>Install .NET Components</h1>
+
+<p>Install-ChocolateyInstallPackage "DevExpressComponents_13.2" "EXE" $silentArgs $pathToDevExpressComponentsSetup</p>
+
+<h1>Install CodeRush</h1>
+
+<p>Install-ChocolateyInstallPackage "DevExpressCodeRush_13.2" "EXE" $silentArgs $pathToDevExpressCodeRushSetup
+```</p>
+
+<p><strong>Warning! don't put your DevExpress passwords on a public website.</strong></p>
+
+<p>There are plenty of other ways of <em>launching</em> Boxstarter. You can <a href="https://chocolatey.org/packages/boxstarter">install Boxstarter via Chocolatey</a>. You can <a href="http://boxstarter.org/InstallingPackages">run Boxstarter remotely</a>. If you are putting passwords in the installation script, you should choose one of the other options.</p>
+
+<h2>Advantages</h2>
+
+<ul>
+<li>I save time!</li>
+<li>I can now version control the exact development environment along with the source code!</li>
+<li>Onboarding new and junior developers is much quicker.</li>
+<li>In a pinch, I can use this method to quickly provision a development machine with Azure or Amazon Web Services</li>
+</ul>
+
+
+<h2>One Last Hiccup</h2>
+
+<p>While I was testing my BoxStarter script I used the Windows 8.1 image from <a href="http://www.modern.ie/">http://www.modern.ie/</a>. Much later in the process I realised that Modern.IE only supplies 32-bit images and the chocolatey installer for Visual Studio extensions currently works only with 64-bit Windows.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Glimpse with DevExpress XAF]]></title>
@@ -487,158 +650,6 @@ protected override void OnViewControlsCreated()
 <li><a href="https://www.devexpress.com/Support/Center/Question/Details/Q510468">Support Center Q510468</a></li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Three ways to store a list of currency codes in XAF]]></title>
-    <link href="http://ZeroSharp.github.com/three-ways-to-store-a-list-of-currency-codes-in-xaf/"/>
-    <updated>2013-10-22T18:15:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/three-ways-to-store-a-list-of-currency-codes-in-xaf</id>
-    <content type="html"><![CDATA[<p>In the <a href="/the-ugly-the-heavy-and-the-good">last post</a> we looked at three solutions to a relatively simple XAF requirement. In this post I'll discuss another XAF challenge, explain the options and provide a versatile and maintainable solution.</p>
-
-<p>In my DevExpress XAF application, I have an object which has several properties like this:</p>
-
-<p><img src="/images/blog/currency-list-editor-002.png"></p>
-
-<p>In each case, the field is a comma-separated list of currency codes. These fields are not very important to the model - they are used mainly for reporting.</p>
-
-<p>Let's look at 3 different ways of handling these fields.</p>
-
-<h2>Option 1 - Use a string field</h2>
-
-<p>The <em>lightest</em> option would be just to declare them as a normal XPO string field:</p>
-
-<p>```c#
-private string _List1Currencies;
-public string List1Currencies
-{</p>
-
-<pre><code>get
-{
-    return _List1Currencies;
-}
-set
-{
-    SetPropertyValue("List1Currencies", ref _List1Currencies, value);
-}
-</code></pre>
-
-<p>}
-```
-It's certainly simple and maintainable, but it's not very user-friendly. There is no fancy interface to help with the input.  We can perhaps improve things slightly by providing edit masks and/or validation rules to check the input, but careful typing is the only way to change the values.</p>
-
-<h2>Option 2 - Declare an association property</h2>
-
-<p>The <em>heaviest</em> option is to declare each such property as a many-to-many relationship.</p>
-
-<p>```c#
-public class Container: XPObject {</p>
-
-<pre><code>public Container(Session session) : base(session) { }
-
-public string Name;
-
-[Association("List1Currencies")]
-public XPCollection&lt;Currency&gt; List1 { 
-    get { return GetCollection&lt;Currency&gt;("List1"); }
-}
-</code></pre>
-
-<p>}</p>
-
-<p>public class Currency: XPObject {</p>
-
-<pre><code>public Currency(Session session) : base(session) { }
-
-[Size(3)]
-public string Code;
-
-public string Name;
-
-[Association("List1Currencies")]
-public XPCollection&lt;Container&gt; List1Container { 
-    get { return GetCollection&lt;Container&gt;("List1Container"); }
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>This works great - we get a nice interface for selecting the currencies and the end result looks like this:</p>
-
-<p><img src="/images/blog/currency-list-editor-003.png"></p>
-
-<p>However, it's quite a heavy solution for something quite simple. For each such relationship XPO will generate a new intermediate table. If we look at the database schema, we see the following:</p>
-
-<p><img src="/images/blog/currency-list-editor-004.png"></p>
-
-<p>And in the model there are two new views.</p>
-
-<p><img src="/images/blog/currency-list-editor-005.png"></p>
-
-<p>If we have 5 such properties, we end up with 5 intermediary tables and 10 new views.</p>
-
-<p>Now, depending on your requirements that may be acceptable. If those relationships are important to your model, then the overhead may be justified. In my situation, these are minor fields and I do not want to burden the model or the database with extra complexity if I can avoid it.</p>
-
-<h2>Option 3 - Create a custom property editor</h2>
-
-<p>With the help of <a href="http://documentation.devexpress.com/xaf/CustomDocument3097.aspx">the documentation</a> and old Support Center issues, I was able to quite quickly put together a custom editor which gives the end user a nice interface while keeping it simple. The bulk of the logic is in the <code>SerializedListPropertyEditor</code> base class (see the end of the article for the link to the code), but the principle is as follows:</p>
-
-<p>Create a new subclass:</p>
-
-<p>```c#</p>
-
-<pre><code>[PropertyEditor(typeof(String), false)]
-public class CurrencyListPropertyEditor : SerializedListPropertyEditor&lt;Currency&gt;
-{
-    public CurrencyListPropertyEditor(Type objectType, IModelMemberViewItem info)
-        : base(objectType, info) { }
-
-    protected override string GetDisplayText(Currency currency)
-    {
-        return String.Format("{0}\t{1}", currency.Code, currency.Name);
-    }
-
-    protected override string GetValue(Currency currency)
-    {
-        return currency.Code;
-    }
-}
-</code></pre>
-
-<p>```</p>
-
-<p>Then decorate each property with a <code>ModelDefault</code> attribute to set the <code>PropertyEditorType</code>.</p>
-
-<p>```c#
-private string _List1Currencies;
-[ModelDefault("PropertyEditorType", "Solution1.Module.Web.CurrencyListPropertyEditor")]
-public string List1Currencies
-{</p>
-
-<pre><code>get
-{
-    return _List1Currencies;
-}
-set
-{
-    SetPropertyValue("List1Currencies", ref _List1Currencies, value);
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>Now the user gets a pretty editor to select the currencies, but the field is just a string field.</p>
-
-<p><img src="/images/blog/currency-list-editor-001.png"></p>
-
-<p>The editor supports use of the <code>[DataSourceProperty]</code> and <code>[DataSourceCriteria]</code> properties too, so you can easily filter the collection.</p>
-
-<p>It is easy to provide a similar editor for any object type - just create a new subclass of <code>SerializedListPropertyEditor&lt;T&gt;</code> where <code>T</code> is your persistent type.</p>
-
-<p>You can download <a href="https://github.com/ZeroSharp/Xaf_CurrencyListPropertyEditor">a working sample project on GitHub</a>.</p>
 ]]></content>
   </entry>
   
