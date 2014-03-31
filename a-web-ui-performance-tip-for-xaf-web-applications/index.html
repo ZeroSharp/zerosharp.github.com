@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>About Me - ZeroSharp</title>
+  <title>A web UI performance tip for XAF web applications - ZeroSharp</title>
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="About Me I&#8217;m Robert Anderson. I&#8217;m a software developer based in London (via Paris and Geneva). I work from a little office overlooking &hellip;">
+  <meta name="description" content="A description of the DelayedViewItemsInitialization toggle in the DevExpress expressAppFramework.">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ZeroSharp.github.com/about/">
+  <link rel="canonical" href="http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -112,25 +112,119 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">About Me</h1>
+    
+      <h1 class="entry-title">A Web UI Performance Tip for XAF Web Applications</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-31T10:16:00+01:00" pubdate data-updated="true">Mar 31<span>st</span>, 2014</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
+
+
+<div class="entry-content"><p>The purpose of this post is to raise your awareness of a toggle which exists in the <a href="http://www.devexpress.com/xaf/">DevExpress XAF framework</a> which can significantly improve UI performance in the web application.</p>
+
+<p><span class='pullquote-right' data-pullquote='In fact the general responsiveness of the entire web-application seems much better.'>
+The biggest XAF project I work with has one very complex business object. The layout for this screen includes about 100 properties, several nested tabs, some custom editors, several collection properties and a whole lot of <a href="https://documentation.devexpress.com/#Xaf/CustomDocument3286">Conditional Appearance</a> rules. It was very sluggish to navigate - it was taking several seconds to load the detail view and then it was very slow switching between tabs. Switching to edit mode was also slow.</p>
+
+<p>Last week, I almost accidentally changed the value of <code>DelayedViewItemsInitialization</code> to <code>false</code> and noticed that the UI speed was much much better. In fact the general responsiveness of the entire web-application seems much better.</p>
+
+<p>In order to give it a whirl, navigate to the WebApplication.cs file (normally in the ApplicationCode subfolder of your web project) and modify the constructor as follows:</p>
+
+<p></span></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="nf">MainDemoWebApplication</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">InitializeComponent</span><span class="p">();</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="n">DelayedViewItemsInitialization</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Certainly this is not without consequences, and I would urge a careful reading of the <a href="https://documentation.devexpress.com/#xaf/DevExpressExpressAppXafApplication_DelayedViewItemsInitializationtopic">relevant documentation</a>. To be honest, I still don&#8217;t really understand why my detail view is so much slower without this change. I have tried to isolate the cause without much success and I will update this post if I find anything new. But if some of your detail views seem overly slow, certainly try it out.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
   
-  <p><img class="right" src="/images/asides/Rob.jpg" title="title Robert Anderson" ></p>
 
-<p>I&#8217;m Robert Anderson.  I&#8217;m a software developer based in London (via Paris and Geneva). I work from a little office overlooking Regent&#8217;s Canal with ducks and barges floating past. I have two children with my wife <a href="http://zaklinaanderson.com/">Zaklina</a> who is a photographer.</p>
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
 
-<p>I am the founder and director of <a href="http://www.zerosharp.com/">ZeroSharp</a>.</p>
+      
 
-<p>I have been the lead developer at <a href="http://www.coprocess.com/">Coprocess</a> for nearly 20 years which builds enterprise software for corporate treasuries.</p>
 
-<p>I also like robots, artifical intelligence, mathematics, chess, Rubik&#8217;s cubes, classical guitar, skiing, squash, bicycle holidays, learning Slovenian&#8230;</p>
+
+
+
+
+
 
   
+
+
+<time datetime="2014-03-31T10:16:00+01:00" pubdate data-updated="true">Mar 31<span>st</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/provisioning-a-new-development-machine-with-boxstarter/" title="Previous Post: Provisioning a new development machine with BoxStarter">&laquo; Provisioning a new development machine with BoxStarter</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -150,6 +244,22 @@
 
 </footer>
   
+
+<script type="text/javascript">
+      var disqus_shortname = 'zerosharp';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications/';
+        var disqus_url = 'http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
 
 
 

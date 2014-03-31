@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2014-02-25T17:57:50+00:00</updated>
+  <updated>2014-03-31T10:32:59+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,37 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[A web UI performance tip for XAF web applications]]></title>
+    <link href="http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications/"/>
+    <updated>2014-03-31T10:16:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications</id>
+    <content type="html"><![CDATA[<p>The purpose of this post is to raise your awareness of a toggle which exists in the <a href="http://www.devexpress.com/xaf/">DevExpress XAF framework</a> which can significantly improve UI performance in the web application.</p>
+
+<p><span class='pullquote-right' data-pullquote='In fact the general responsiveness of the entire web-application seems much better.'>
+The biggest XAF project I work with has one very complex business object. The layout for this screen includes about 100 properties, several nested tabs, some custom editors, several collection properties and a whole lot of <a href="https://documentation.devexpress.com/#Xaf/CustomDocument3286">Conditional Appearance</a> rules. It was very sluggish to navigate - it was taking several seconds to load the detail view and then it was very slow switching between tabs. Switching to edit mode was also slow.</p>
+
+<p>Last week, I almost accidentally changed the value of <code>DelayedViewItemsInitialization</code> to <code>false</code> and noticed that the UI speed was much much better. In fact the general responsiveness of the entire web-application seems much better.</p>
+
+<p>In order to give it a whirl, navigate to the WebApplication.cs file (normally in the ApplicationCode subfolder of your web project) and modify the constructor as follows:</p>
+
+<p></span></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="nf">MainDemoWebApplication</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">InitializeComponent</span><span class="p">();</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="n">DelayedViewItemsInitialization</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Certainly this is not without consequences, and I would urge a careful reading of the <a href="https://documentation.devexpress.com/#xaf/DevExpressExpressAppXafApplication_DelayedViewItemsInitializationtopic">relevant documentation</a>. To be honest, I still don&#8217;t really understand why my detail view is so much slower without this change. I have tried to isolate the cause without much success and I will update this post if I find anything new. But if some of your detail views seem overly slow, certainly try it out.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Provisioning a new development machine with BoxStarter]]></title>
@@ -2771,107 +2802,6 @@ The ability to create reports using a report writer is a very powerful feature o
 <h2>Conclusion</h2>
 
 <p>As a load test, you do not get much useful information. Even if we managed to extract accurate data for client response times and throughput, the overhead of running the multiple browsers would skew the results too much. However, this approach is extremely useful for isolating concurrency and performance problems.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Load Testing XAF: Part 5 - Analysis]]></title>
-    <link href="http://ZeroSharp.github.com/load-testing-xaf-part-5-analysis/"/>
-    <updated>2013-04-14T07:37:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/load-testing-xaf-part-5-analysis</id>
-    <content type="html"><![CDATA[<p>This is the final post in a series about load testing XAF applications.  Previously in the series:</p>
-
-<ul>
-<li><a href="http://ZeroSharp.github.com/load-testing-xaf-overview/">Load Testing XAF: Overview</a></li>
-<li><a href="http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/">Part 1: Deploying the target webserver</a></li>
-<li><a href="http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/">Part 2: Selenium</a></li>
-<li><a href="http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Part 3: Uploading and validating a script</a></li>
-<li><a href="http://ZeroSharp.github.com/load-testing-xaf-part-4-launching-the-load-test/">Part 4: Launching the load test</a></li>
-</ul>
-
-
-<p>In this part, we analyse the results of the load test we ran in <a href="http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Part 4</a>.</p>
-
-<h2>Results</h2>
-
-<p>The results of the test we ran are <a href="https://load.wpm.neustar.biz/load/test/share/e0f547d711624168bc7fa0a69ddd8283">here</a>. The graphs are interactive and give quite interesting data about the load tests. Feel free to have a look and play around with the results.</p>
-
-<h2>The Performance Graphs</h2>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/load-testing/load-testing-006.png"></p>
-
-<p>The above graph shows the basic information about the test. We can see there were 649 transactions (the Selenium script was run 649 times) and there were 17 errors.</p>
-
-<p>You can see that the test managed to follow the planned scenario (the actual number of users follows the yellow line). You can also see information about the throughput in bytes during the test.</p>
-
-<h2>The Script Performance Graphs</h2>
-
-<p>Here we see information pertaining to the script we chose to run. Had we run multiple different scripts, we would be able to isolate each one.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/load-testing/load-testing-009.png"></p>
-
-<p>It is clear that the transaction time rises quite slowly with the load until about 12:17 when there is a jump. More on that later.</p>
-
-<p>First, I have removed the plot of the total transaction time, so that we can see more detail from the remaining steps. Two things seem to be clear: the response time for each individual step does not seem to be much affected by the load, but the login step rises gradually.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/load-testing/load-testing-010.png"></p>
-
-<p>Now back to the spike at 12:17, if you look at the transaction data more closely (not shown here but available on the <a href="https://load.wpm.neustar.biz/load/test/share/e0f547d711624168bc7fa0a69ddd8283">NeuStar results page</a>, it looks like several transactions finished at the same time and that the jump coincides with several simultaneous logins.</p>
-
-<p>So again, it seems that login is the &#8216;weakest link&#8217;, i.e., the most resource intensive step and the one that suffers the most under load.</p>
-
-<h2>The Errors</h2>
-
-<p>Lets look more closely at the errors.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/load-testing/load-testing-007.png"></p>
-
-<p>The first type of error we can see from the screen-shot occurred at the login page. This error happened 6 times and was very similar to another error which occurred once. In fact, all 6 of these errors happened at the very end of the test. As such, they can be ignored, because it is likely that the load test was scaling down and interrupting sessions at this point.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/load-testing/load-testing-008.png"></p>
-
-<p>One of the very nice features of NeuStar&#8217;s load testing solution is that you not only get a screenshot, but also a video which shows you exactly what the user experienced when an error occurs. By clicking on the second error, it looks like there may be a problem  when the system is under load. There were 6 errors and it is clear in the video that the errors occur when attempting to navigate away from the <em>Scheduler Event</em> view to the <em>My Details</em> view. The screen-shot gives us some useful information. DevExpress? Any ideas?</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/load-testing/load-testing-011.jpg"></p>
-
-<p>There are a couple of other errors, but I think these are most likely a result of problems with the Selenium script rather than XAF. The AJAX update panels make it quite hard to detect when the page is fully ready and although we try to accommodate this with <code>selenium.waitForCondition()</code> my feeling is that the <code>click()</code> occurred before everything was properly wired up.</p>
-
-<h2>Further tests</h2>
-
-<p>This series has covered the process of load testing XAF applications in its entirety, but in some ways, it feels like only the beginning. There are many other configurations and tests which would be interesting.</p>
-
-<p>For instance</p>
-
-<ul>
-<li>Reduce think time which is currently set to 3 seconds per step</li>
-<li>Use a smaller/larger EC2 instance</li>
-<li>Increase the number of virtual users</li>
-<li>Try load balancing with sticky sessions</li>
-<li>Experiment with/without compression (IIS or via the <code>web.config</code>)</li>
-<li>Experiment with/without caching (both at the http level, and via the <a href="http://documentation.devexpress.com/#XPO/CustomDocument9892">cached data store</a></li>
-</ul>
-
-
-<p>There are also many ways of improving XAF performance that are not in the MainDemo. These include:</p>
-
-<ul>
-<li><a href="http://documentation.devexpress.com/#wpf/CustomDocument6279">Server mode</a> in all grids</li>
-<li><a href="http://community.devexpress.com/blogs/xpo/archive/2006/03/27/session-management-and-caching.aspx">XPO Caching</a></li>
-<li>Where possible, move any heavy operations to a separate asynchronous web service call</li>
-</ul>
-
-
-<p>We have implemented all of these in our production application.</p>
-
-<h2>A note about concurrency</h2>
-
-<p>In our experience, people tend to over estimate the number of concurrent users for their application. Our application has probably upwards of 5000 users defined, but we know from our logs that there have never been more than 80 simultaneously logged in. Also, even with 80 concurrent users, they have a much longer &#8216;think time&#8217; than 3 seconds on average.</p>
-
-<p>For the production environment, we run at least one 25 user test for every major release and ensure the performance is at least as good as the previous release. We have occasionally run tests with up to 200 simultaneous users. The response time goes down to unacceptable levels (~30 seconds), but the application behaves. In production, the system is load balanced (with sticky sessions) and we know from previous experience that this is sufficient for our application.</p>
-
-<h2>Conclusion</h2>
-
-<p>This concludes my series on load testing. We&#8217;ve managed to get some very useful information with some very low-cost tools. The largest part of effort is the writing of the Selenium script which is certainly tricky. In the future I&#8217;d really like to harness the DevExpress EasyTests to replace the script but I haven&#8217;t yet found a way of doing this. Feel free to use my Selenium script as a starting point for testing your own XAF applications, and let us know of any interesting results!</p>
 ]]></content>
   </entry>
   

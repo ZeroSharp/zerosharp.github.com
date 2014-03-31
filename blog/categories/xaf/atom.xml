@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2014-02-25T17:57:50+00:00</updated>
+  <updated>2014-03-31T10:32:59+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,36 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[A web UI performance tip for XAF web applications]]></title>
+    <link href="http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications/"/>
+    <updated>2014-03-31T10:16:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications</id>
+    <content type="html"><![CDATA[<p>The purpose of this post is to raise your awareness of a toggle which exists in the <a href="http://www.devexpress.com/xaf/">DevExpress XAF framework</a> which can significantly improve UI performance in the web application.</p>
+
+<p><span class='pullquote-right' data-pullquote='In fact the general responsiveness of the entire web-application seems much better.'>
+The biggest XAF project I work with has one very complex business object. The layout for this screen includes about 100 properties, several nested tabs, some custom editors, several collection properties and a whole lot of <a href="https://documentation.devexpress.com/#Xaf/CustomDocument3286">Conditional Appearance</a> rules. It was very sluggish to navigate - it was taking several seconds to load the detail view and then it was very slow switching between tabs. Switching to edit mode was also slow.</p>
+
+<p>Last week, I almost accidentally changed the value of <code>DelayedViewItemsInitialization</code> to <code>false</code> and noticed that the UI speed was much much better. In fact the general responsiveness of the entire web-application seems much better.</p>
+
+<p>In order to give it a whirl, navigate to the WebApplication.cs file (normally in the ApplicationCode subfolder of your web project) and modify the constructor as follows:</p>
+
+<p></span></p>
+
+<p>```c#
+public MainDemoWebApplication() {</p>
+
+<pre><code>InitializeComponent();
+this.DelayedViewItemsInitialization = false;
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Certainly this is not without consequences, and I would urge a careful reading of the <a href="https://documentation.devexpress.com/#xaf/DevExpressExpressAppXafApplication_DelayedViewItemsInitializationtopic">relevant documentation</a>. To be honest, I still don't really understand why my detail view is so much slower without this change. I have tried to isolate the cause without much success and I will update this post if I find anything new. But if some of your detail views seem overly slow, certainly try it out.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Provisioning a new development machine with BoxStarter]]></title>
@@ -566,90 +596,6 @@ private void xrLabel2_BeforePrint(object sender, System.Drawing.Printing.PrintEv
 <h2>Next up</h2>
 
 <p>In my next post I'll be taking a look at the new soft validation along with some other 13.2 improvements.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[How to improve XAF grid layout for Chrome]]></title>
-    <link href="http://ZeroSharp.github.com/how-to-improve-xaf-grid-layout-for-chrome/"/>
-    <updated>2013-11-08T09:55:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/how-to-improve-xaf-grid-layout-for-chrome</id>
-    <content type="html"><![CDATA[<p>This post proposes a workaround for a specific XAF rendering problem related to recent versions of Google Chrome.</p>
-
-<p>Here is an XAF list view as it looks with IE 10 and DevExpress 13.1.8.</p>
-
-<p><img src="/images/blog/chrome-grid-layout-001.png"></p>
-
-<p>This is how the same view looks with Chrome 30. Notice how the column widths are rendered poorly. The minimum space is given to the string field and the date and bool fields are too wide.</p>
-
-<p><img src="/images/blog/chrome-grid-layout-002.png"></p>
-
-<p>What's going on? An update to the Chrome browser occurred in which has caused problems with the rendering of grid views in certain situations. The problem exists in all versions of Chrome great than 25 and also affects the <a href="http://www.google.com/chromeframe">Google Chrome Frame</a> plugin for IE.</p>
-
-<p>DevExpress were able to fix some scenarios in 13.1.4 and 12.2.11 (such as column sorting), but there are other situations which still pose problems (<em>e.g.</em> the fix does not resolve the problem if the <em>Auto Filter Row</em> is enabled, which is the case above.)</p>
-
-<p>Hopefully the Chrome devs will one day fix the root problem. You can keep an eye on <a href="https://code.google.com/p/chromium/issues/detail?id=178369">the issue here</a></p>
-
-<h2>The fix</h2>
-
-<p>Not so much a fix as a workaround. We use a <code>ViewController&lt;ListView&gt;</code> to set the grid layout to <code>UseFixedTableLayout</code>, but only for Chrome browsers. Something like this:</p>
-
-<p>```c#
-/// <summary>
-/// Switches to fixed table layout for the main list view when using Chrome or ChromeFrame.
-/// </summary>
-public class ChromeSpecificListViewController : ViewController<ListView>
-{</p>
-
-<pre><code>protected override void OnViewChanging(View view)
-{
-    base.OnViewChanging(view);
-    Active["IsChrome"] = IsChrome;
-}
-
-private static bool IsChrome
-{
-    get
-    {
-        HttpContext context = HttpContext.Current;
-        return context != null &amp;&amp; context.Request.Browser.Browser == "Chrome";
-    }
-}
-
-protected override void OnViewControlsCreated()
-{
-    base.OnViewControlsCreated();
-
-    ASPxGridListEditor listEditor = View.Editor as ASPxGridListEditor;
-    if (listEditor == null)
-        return;
-
-    ASPxGridView gridView = listEditor.Grid as ASPxGridView;
-    if (gridView == null)
-        return;
-
-    gridView.Settings.UseFixedTableLayout = true;
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>The resulting view in Chrome:</p>
-
-<p><img src="/images/blog/chrome-grid-layout-003.png"></p>
-
-<p>That looks better. You may notice the columns will allways be the same width now, which is not quite as good as the IE rendering. As such, it may not be appropriate for all views. But since it's a <code>ViewController</code> it's easy to deactivate it by adding an <code>Active[]</code> criteria.</p>
-
-<h4>References</h4>
-
-<ul>
-<li><a href="https://code.google.com/p/chromium/issues/detail?id=178369">Chrome issue</a></li>
-<li><a href="http://www.devexpress.com/Support/Center/Question/Details/Q477066">Support Center Q477066</a></li>
-<li><a href="https://www.devexpress.com/Support/Center/Question/Details/B235945">Support Center B235945</a></li>
-<li><a href="https://www.devexpress.com/Support/Center/Question/Details/Q510468">Support Center Q510468</a></li>
-</ul>
-
 ]]></content>
   </entry>
   

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c# | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/c-/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2014-02-25T17:57:50+00:00</updated>
+  <updated>2014-03-31T10:32:59+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,36 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[A web UI performance tip for XAF web applications]]></title>
+    <link href="http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications/"/>
+    <updated>2014-03-31T10:16:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications</id>
+    <content type="html"><![CDATA[<p>The purpose of this post is to raise your awareness of a toggle which exists in the <a href="http://www.devexpress.com/xaf/">DevExpress XAF framework</a> which can significantly improve UI performance in the web application.</p>
+
+<p><span class='pullquote-right' data-pullquote='In fact the general responsiveness of the entire web-application seems much better.'>
+The biggest XAF project I work with has one very complex business object. The layout for this screen includes about 100 properties, several nested tabs, some custom editors, several collection properties and a whole lot of <a href="https://documentation.devexpress.com/#Xaf/CustomDocument3286">Conditional Appearance</a> rules. It was very sluggish to navigate - it was taking several seconds to load the detail view and then it was very slow switching between tabs. Switching to edit mode was also slow.</p>
+
+<p>Last week, I almost accidentally changed the value of <code>DelayedViewItemsInitialization</code> to <code>false</code> and noticed that the UI speed was much much better. In fact the general responsiveness of the entire web-application seems much better.</p>
+
+<p>In order to give it a whirl, navigate to the WebApplication.cs file (normally in the ApplicationCode subfolder of your web project) and modify the constructor as follows:</p>
+
+<p></span></p>
+
+<p>```c#
+public MainDemoWebApplication() {</p>
+
+<pre><code>InitializeComponent();
+this.DelayedViewItemsInitialization = false;
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Certainly this is not without consequences, and I would urge a careful reading of the <a href="https://documentation.devexpress.com/#xaf/DevExpressExpressAppXafApplication_DelayedViewItemsInitializationtopic">relevant documentation</a>. To be honest, I still don't really understand why my detail view is so much slower without this change. I have tried to isolate the cause without much success and I will update this post if I find anything new. But if some of your detail views seem overly slow, certainly try it out.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Glimpse with DevExpress XAF]]></title>
@@ -487,158 +517,6 @@ protected override void OnViewControlsCreated()
 <li><a href="https://www.devexpress.com/Support/Center/Question/Details/Q510468">Support Center Q510468</a></li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Three ways to store a list of currency codes in XAF]]></title>
-    <link href="http://ZeroSharp.github.com/three-ways-to-store-a-list-of-currency-codes-in-xaf/"/>
-    <updated>2013-10-22T18:15:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/three-ways-to-store-a-list-of-currency-codes-in-xaf</id>
-    <content type="html"><![CDATA[<p>In the <a href="/the-ugly-the-heavy-and-the-good">last post</a> we looked at three solutions to a relatively simple XAF requirement. In this post I'll discuss another XAF challenge, explain the options and provide a versatile and maintainable solution.</p>
-
-<p>In my DevExpress XAF application, I have an object which has several properties like this:</p>
-
-<p><img src="/images/blog/currency-list-editor-002.png"></p>
-
-<p>In each case, the field is a comma-separated list of currency codes. These fields are not very important to the model - they are used mainly for reporting.</p>
-
-<p>Let's look at 3 different ways of handling these fields.</p>
-
-<h2>Option 1 - Use a string field</h2>
-
-<p>The <em>lightest</em> option would be just to declare them as a normal XPO string field:</p>
-
-<p>```c#
-private string _List1Currencies;
-public string List1Currencies
-{</p>
-
-<pre><code>get
-{
-    return _List1Currencies;
-}
-set
-{
-    SetPropertyValue("List1Currencies", ref _List1Currencies, value);
-}
-</code></pre>
-
-<p>}
-```
-It's certainly simple and maintainable, but it's not very user-friendly. There is no fancy interface to help with the input.  We can perhaps improve things slightly by providing edit masks and/or validation rules to check the input, but careful typing is the only way to change the values.</p>
-
-<h2>Option 2 - Declare an association property</h2>
-
-<p>The <em>heaviest</em> option is to declare each such property as a many-to-many relationship.</p>
-
-<p>```c#
-public class Container: XPObject {</p>
-
-<pre><code>public Container(Session session) : base(session) { }
-
-public string Name;
-
-[Association("List1Currencies")]
-public XPCollection&lt;Currency&gt; List1 { 
-    get { return GetCollection&lt;Currency&gt;("List1"); }
-}
-</code></pre>
-
-<p>}</p>
-
-<p>public class Currency: XPObject {</p>
-
-<pre><code>public Currency(Session session) : base(session) { }
-
-[Size(3)]
-public string Code;
-
-public string Name;
-
-[Association("List1Currencies")]
-public XPCollection&lt;Container&gt; List1Container { 
-    get { return GetCollection&lt;Container&gt;("List1Container"); }
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>This works great - we get a nice interface for selecting the currencies and the end result looks like this:</p>
-
-<p><img src="/images/blog/currency-list-editor-003.png"></p>
-
-<p>However, it's quite a heavy solution for something quite simple. For each such relationship XPO will generate a new intermediate table. If we look at the database schema, we see the following:</p>
-
-<p><img src="/images/blog/currency-list-editor-004.png"></p>
-
-<p>And in the model there are two new views.</p>
-
-<p><img src="/images/blog/currency-list-editor-005.png"></p>
-
-<p>If we have 5 such properties, we end up with 5 intermediary tables and 10 new views.</p>
-
-<p>Now, depending on your requirements that may be acceptable. If those relationships are important to your model, then the overhead may be justified. In my situation, these are minor fields and I do not want to burden the model or the database with extra complexity if I can avoid it.</p>
-
-<h2>Option 3 - Create a custom property editor</h2>
-
-<p>With the help of <a href="http://documentation.devexpress.com/xaf/CustomDocument3097.aspx">the documentation</a> and old Support Center issues, I was able to quite quickly put together a custom editor which gives the end user a nice interface while keeping it simple. The bulk of the logic is in the <code>SerializedListPropertyEditor</code> base class (see the end of the article for the link to the code), but the principle is as follows:</p>
-
-<p>Create a new subclass:</p>
-
-<p>```c#</p>
-
-<pre><code>[PropertyEditor(typeof(String), false)]
-public class CurrencyListPropertyEditor : SerializedListPropertyEditor&lt;Currency&gt;
-{
-    public CurrencyListPropertyEditor(Type objectType, IModelMemberViewItem info)
-        : base(objectType, info) { }
-
-    protected override string GetDisplayText(Currency currency)
-    {
-        return String.Format("{0}\t{1}", currency.Code, currency.Name);
-    }
-
-    protected override string GetValue(Currency currency)
-    {
-        return currency.Code;
-    }
-}
-</code></pre>
-
-<p>```</p>
-
-<p>Then decorate each property with a <code>ModelDefault</code> attribute to set the <code>PropertyEditorType</code>.</p>
-
-<p>```c#
-private string _List1Currencies;
-[ModelDefault("PropertyEditorType", "Solution1.Module.Web.CurrencyListPropertyEditor")]
-public string List1Currencies
-{</p>
-
-<pre><code>get
-{
-    return _List1Currencies;
-}
-set
-{
-    SetPropertyValue("List1Currencies", ref _List1Currencies, value);
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>Now the user gets a pretty editor to select the currencies, but the field is just a string field.</p>
-
-<p><img src="/images/blog/currency-list-editor-001.png"></p>
-
-<p>The editor supports use of the <code>[DataSourceProperty]</code> and <code>[DataSourceCriteria]</code> properties too, so you can easily filter the collection.</p>
-
-<p>It is easy to provide a similar editor for any object type - just create a new subclass of <code>SerializedListPropertyEditor&lt;T&gt;</code> where <code>T</code> is your persistent type.</p>
-
-<p>You can download <a href="https://github.com/ZeroSharp/Xaf_CurrencyListPropertyEditor">a working sample project on GitHub</a>.</p>
 ]]></content>
   </entry>
   
