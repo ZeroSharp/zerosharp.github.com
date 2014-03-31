@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "A web UI performance tip for XAF web applications"
-date: 2014-03-31 8:35
+date: 2014-03-31 10:16
 comments: true
 categories: [c#, devexpress, xaf]
 description: A description of the DelayedViewItemsInitialization toggle in the DevExpress expressAppFramework.
@@ -24,5 +24,4 @@ public MainDemoWebApplication() {
 }
 ```
 
-Certainly this is not without consequences, and I would urge a careful reading of the [relevant documentation](https://documentation.devexpress.com/#xaf/DevExpressExpressAppXafApplication_DelayedViewItemsInitializationtopic), but certainly try it out in your web applications.
-
+Certainly this is not without consequences, and I would urge a careful reading of the [relevant documentation](https://documentation.devexpress.com/#xaf/DevExpressExpressAppXafApplication_DelayedViewItemsInitializationtopic). To be honest, I still don't really understand why my detail view is so much slower without this change. I have tried to isolate the cause without much success and I will update this post if I find anything new. But if some of your detail views seem overly slow, certainly try it out.
