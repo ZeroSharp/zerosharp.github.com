@@ -9,8 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="I left my laptop on a train a couple of months ago. Good thing I remembered my brain. I&#8217;m back now. This blog still lives.
-">
+  <meta name="description" content="Whenever NuGet updates or restores a NuGet package, the config files within it are overwritten. Here&#8217;s a method to make sure the changes are &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -114,6 +113,105 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/persisting-changes-to-config-files-within-nuget-packages/">Persisting Changes to Config Files Within NuGet Packages</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-08-13T06:39:00+01:00" pubdate data-updated="true">Aug 13<span>th</span>, 2014</time>
+        
+         | <a href="/persisting-changes-to-config-files-within-nuget-packages/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Whenever NuGet updates or restores a NuGet package, the config files within it are overwritten. Here&#8217;s a method to make sure the changes are reapplied via a <a href="http://msdn.microsoft.com/en-us/library/dd465326.aspx">config transform</a> whenever the solution is built.</p>
+
+<p>I&#8217;m using the NUnit.Runners NuGet packages. To get our coverage tool to play nicely, I need to replace <code>&lt;supportedRuntime "v2.0.50727"&gt;</code> with <code>&lt;supportedRuntime "v4.0.30319"&gt;</code> within the <em>NUnit-console-x86.exe.config</em>.</p>
+
+<p>Normally, a config transform is for modifying the <em>web.config</em> or <em>app.config</em> files. Here, we need to modify a config file within the <em>packages</em> subdirectory.</p>
+
+<p>In my <em>.csproj</em> file, I have added the following:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;PropertyGroup&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;NUnitRunnerDir&gt;</span>$(SolutionDir)packages\NUnit.Runners.2.6.3\tools\<span class="nt">&lt;/NUnitRunnerDir&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;PropertyGroup&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c">&lt;!-- Default NUnit test runner requires a modification to the config file--&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;UsingTask</span>
+</span><span class='line'>    <span class="na">TaskName=</span><span class="s">&quot;TransformXml&quot;</span>
+</span><span class='line'>    <span class="na">AssemblyFile=</span><span class="s">&quot;$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v12.0\Web\Microsoft.Web.Publishing.Tasks.dll&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;Target</span> <span class="na">Name=</span><span class="s">&quot;AfterBuild&quot;</span> <span class="na">Condition=</span><span class="s">&quot;exists(&#39;$(NUnitRunnerDir)NUnit-console-x86.exe.config&#39;)&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;TransformXml</span>
+</span><span class='line'>        <span class="na">Source=</span><span class="s">&quot;$(NUnitRunnerDir)NUnit-console-x86.exe.config&quot;</span>
+</span><span class='line'>        <span class="na">Destination=</span><span class="s">&quot;$(NUnitRunnerDir)NUnit-console-x86.exe.config&quot;</span>
+</span><span class='line'>        <span class="na">Transform=</span><span class="s">&quot;$(SolutionDir)UnitTests\Transforms\NUnit-console-x86.exe.CLR4.config&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/Target&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And the transform file itself looks like this:</p>
+
+<figure class='code'><figcaption><span>NUnit-console-x86.exe.CLR4.config </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;configuration</span> <span class="na">xmlns:xdt=</span><span class="s">&quot;http://schemas.microsoft.com/XML-Document-Transform&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;startup&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;supportedRuntime</span> <span class="na">version=</span><span class="s">&quot;v4.0.30319&quot;</span> <span class="na">xdt:Transform=</span><span class="s">&quot;Replace&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/startup&gt;</span>
+</span><span class='line'><span class="nt">&lt;/configuration&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>By the way, <a href="https://webconfigtransformationtester.apphb.com/">Web.config Transformation Tester</a> is a handy tool!</p>
+
+<p>Now whenever I build the project, the <em>AfterBuild</em> event ensures the supportedRuntime version is set correctly.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1436,238 +1534,6 @@ The default directories for the installation have changed again. I&#8217;m sure 
 <p>It is easy to provide a similar editor for any object type - just create a new subclass of <code>SerializedListPropertyEditor&lt;T&gt;</code> where <code>T</code> is your persistent type.</p>
 
 <p>You can download <a href="https://github.com/ZeroSharp/Xaf_CurrencyListPropertyEditor">a working sample project on GitHub</a>.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/the-ugly-the-heavy-and-the-good/">The Ugly, the Heavy and the Good: 3 Solutions to an XAF Layout Problem</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-10-14T09:51:00+01:00" pubdate data-updated="true">Oct 14<span>th</span>, 2013</time>
-        
-         | <a href="/the-ugly-the-heavy-and-the-good/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>This post aims to look at various solutions to a seemingly simple layout change.</p>
-
-<p>With <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a>, a lot of the difficult things are easy: authentication, authorisation, ORM, reporting, complex form layouts, themes, etc., are all made easy by XAF. On the other hand, some of the easy things are hard. It can be frustratingly difficult to make a small modification to the basic layout. We will look at an example of such a change and evaluate the recommended DevExpress approaches.</p>
-
-<h2>The problem</h2>
-
-<p>Whenever my XAF web application asks me to change my password, I get a screen like this:</p>
-
-<p><img src="/images/blog/narrow-dialog-001.png"></p>
-
-<p>Well that&#8217;s a bit annoying - those edit boxes are far too wide. Wouldn&#8217;t it look much better if it were narrower and centered? If we weren&#8217;t using XAF, we&#8217;d probably have a separate <em>aspx</em> file for this view and we could just modify the html. With XAF there are several different recommended ways of modifying the output.</p>
-
-<h2>Option 1: Use the model</h2>
-
-<p>Well, one approach would be to use the layout designer to add some <em>EmptySpaceItems</em> to the default layout for the <code>ChangePasswordOnLogon</code>. Add something like this to <em>MainDemo.Web/Model.xafml</em>:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;Views&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;DetailView</span> <span class="na">Id=</span><span class="s">&quot;ChangePasswordOnLogonParameters_DetailView&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;Layout&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;Main&quot;</span> <span class="na">Removed=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;Narrow&quot;</span> <span class="na">RelativeSize=</span><span class="s">&quot;50&quot;</span> <span class="na">HorizontalAlign=</span><span class="s">&quot;Center&quot;</span> <span class="na">Direction=</span><span class="s">&quot;Horizontal&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;EmptySpaceItem1&quot;</span> <span class="na">Index=</span><span class="s">&quot;0&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;&quot;</span> <span class="na">RelativeSize=</span><span class="s">&quot;25&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;Main&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">Index=</span><span class="s">&quot;1&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;Static&quot;</span> <span class="na">Index=</span><span class="s">&quot;0&quot;</span> <span class="na">Direction=</span><span class="s">&quot;Horizontal&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;ChangePasswordImage&quot;</span> <span class="na">Index=</span><span class="s">&quot;0&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">RelativeSize=</span><span class="s">&quot;1&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;ChangePasswordImage&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;ChangePasswordText&quot;</span> <span class="na">Index=</span><span class="s">&quot;1&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">RelativeSize=</span><span class="s">&quot;99&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;ChangePasswordText&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/LayoutGroup&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;SimpleEditors&quot;</span> <span class="na">Index=</span><span class="s">&quot;1&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;ChangePasswordOnLogonParameters&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">Index=</span><span class="s">&quot;0&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;NewPassword&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;NewPassword&quot;</span> <span class="na">Index=</span><span class="s">&quot;0&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;ConfirmPassword&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;ConfirmPassword&quot;</span> <span class="na">Index=</span><span class="s">&quot;1&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/LayoutGroup&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/LayoutGroup&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/LayoutGroup&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;EmptySpaceItem2&quot;</span> <span class="na">Index=</span><span class="s">&quot;2&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;&quot;</span> <span class="na">RelativeSize=</span><span class="s">&quot;25&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/LayoutGroup&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/Layout&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/DetailView&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/Views&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Ugh. What a lot of work for such a small change. Another approach would be to make an equivalent model modification in code by subclassing <code>ModelNodesGeneratorUpdater&lt;ModelViewsNodesGenerator&gt;</code> but it would be even more effort.</p>
-
-<p>Is it easy to maintain? Not especially. If we make any changes to the parameters object, we would have to update the layout again. It is quite likely we&#8217;d have to make revisions when upgrading the framework.</p>
-
-<p>And does it work?</p>
-
-<p><img src="/images/blog/narrow-dialog-003.png"></p>
-
-<p>No!. It&#8217;s a little better but it still looks ugly because the OK and Cancel buttons are still out wide.</p>
-
-<blockquote><p>Verdict: too ugly</p></blockquote>
-
-
-<p><em>When</em> <strong>should</strong> <em>you use this approach?</em>:</p>
-
-<ul>
-<li>When the layout changes are within the main view area.</li>
-</ul>
-
-
-<p>Let&#8217;s look at another option.</p>
-
-<h2>Option 2: Customise the ASP.NET template</h2>
-
-<p>If we were to <a href="http://documentation.devexpress.com/#Xaf/CustomDocument3460">follow the instructions here</a> we can modify the HTML exactly as we want. Unfortunately, this is even more work. We would need to:</p>
-
-<p><img src="/images/blog/narrow-dialog-004.jpg"></p>
-
-<ul>
-<li>Create a new MyNarrowTemplateDialogContent.ascx</li>
-<li>Modify the HTML within it to add a width to <code>Form1</code></li>
-<li>Find some way of applying this template to only the detail view for <em>Change Password</em>. This is <a href="http://www.devexpress.com/Support/Center/Question/Details/Q207853">currently not easy</a> but there is an example project at the end of <a href="http://www.devexpress.com/Support/Center/Question/Details/Q204692">this issue</a>.</li>
-</ul>
-
-
-<p>We&#8217;d end up with quite a few new files to maintain for just one little layout fix&#8230;</p>
-
-<p>Also, another problem with this approach is that it needs reviewing whenever a new version of the framework is released, because the default templates may have changed. Too much maintenance work for such a little change.</p>
-
-<blockquote><p>Verdict: too heavy</p></blockquote>
-
-
-<p><em>When</em> <strong>should</strong> <em>you use this approach?</em>:</p>
-
-<ul>
-<li>When the same layout changes are to be applied to the views of all or many different object types.</li>
-<li>When the changes you are making are significant enough that they are hard to achieve by the solution below.</li>
-</ul>
-
-
-<h2>Option 3: Use a ViewController</h2>
-
-<p>The <code>ViewController</code> and <code>WindowController</code> are well-suited to this sort of task.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">NarrowDialogViewController</span> <span class="p">:</span> <span class="n">ViewController</span><span class="p">&lt;</span><span class="n">DetailView</span><span class="p">&gt;</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnActivated</span><span class="p">()</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">base</span><span class="p">.</span><span class="n">OnActivated</span><span class="p">();</span>
-</span><span class='line'>        <span class="n">Active</span><span class="p">[</span><span class="s">&quot;ShouldUseNarrowForm&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="n">View</span><span class="p">.</span><span class="n">ObjectTypeInfo</span><span class="p">.</span><span class="n">Type</span> <span class="p">==</span> <span class="k">typeof</span><span class="p">(</span><span class="n">ChangePasswordOnLogonParameters</span><span class="p">);</span> <span class="c1">// see side-note below</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnViewControlsCreated</span><span class="p">()</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">base</span><span class="p">.</span><span class="n">OnViewControlsCreated</span><span class="p">();</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">WebWindow</span><span class="p">.</span><span class="n">CurrentRequestPage</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="kt">var</span> <span class="n">htmlForm</span> <span class="p">=</span> <span class="n">WebWindow</span><span class="p">.</span><span class="n">CurrentRequestPage</span><span class="p">.</span><span class="n">FindControl</span><span class="p">(</span><span class="s">&quot;Form2&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">HtmlForm</span><span class="p">;</span> <span class="c1">// see note below</span>
-</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">htmlForm</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
-</span><span class='line'>            <span class="p">{</span>
-</span><span class='line'>                <span class="c1">// make the form narrow</span>
-</span><span class='line'>                <span class="n">htmlForm</span><span class="p">.</span><span class="n">Attributes</span><span class="p">.</span><span class="n">CssStyle</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;width&quot;</span><span class="p">,</span> <span class="n">Unit</span><span class="p">.</span><span class="n">Percentage</span><span class="p">(</span><span class="m">40</span><span class="p">).</span><span class="n">ToString</span><span class="p">());</span>
-</span><span class='line'>                <span class="c1">// center the form</span>
-</span><span class='line'>                <span class="n">htmlForm</span><span class="p">.</span><span class="n">Attributes</span><span class="p">.</span><span class="n">CssStyle</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;margin-left&quot;</span><span class="p">,</span> <span class="s">&quot;auto&quot;</span><span class="p">);</span>
-</span><span class='line'>                <span class="n">htmlForm</span><span class="p">.</span><span class="n">Attributes</span><span class="p">.</span><span class="n">CssStyle</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;margin-right&quot;</span><span class="p">,</span> <span class="s">&quot;auto&quot;</span><span class="p">);</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>A side note: do not use <code>TargetObjectType == typeof(ChangePasswordOnLogonParameters)</code> instead of the <code>OnActivated()</code> override. This is because <code>ChangePasswordParameters</code> which is used when the user clicks on <code>Change My Password</code> is a subclass of <code>ChangePasswordOnLogonParameters</code> and we do <em>not</em> want that view to be narrowed because it appears in a popup window instead of the main window.</p>
-
-<p>This solution is quite maintainable. We can delimit the views for which the modification applies making the controller is active. And the modification itself is relatively simple. It is also reasonably robust with regard to DevExpress upgrades. (They did just change the name of the main dialog Form <code>Form1</code> in 12.1 to <code>Form2</code> in 12.2, but it was the first time in years and it was simple to fix. Alternatively, you could use <code>FindControl</code> instead of using the hard-wired name).</p>
-
-<p>Here&#8217;s the resulting output, horizontally centered in the browser window:</p>
-
-<p><img src="/images/blog/narrow-dialog-002.png"></p>
-
-<blockquote><p>Verdict: good</p></blockquote>
-
-
-<p><em>When</em> <strong>should</strong> <em>you use this approach?</em>:</p>
-
-<ul>
-<li>When a layout change is easy to apply by modifying styles. When a change pertains only to one or few specific object types.</li>
-</ul>
-
-
-<h2>Conclusions</h2>
-
-<p>In this case, using a <code>ViewController</code> leads to relatively simple code and ease of maintenance. Other situations may well be better served by the other approaches.</p>
-
-<p>DevExpress XAF is a powerful mature product. As such, it can be daunting to new users because of all the different approaches for applying changes. It is always possible to find an elegant maintainable solution, but sometimes it is not obvious, even when the required change is small.</p>
 </div>
   
   

@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2014-08-11T10:37:24+01:00</updated>
+  <updated>2014-08-13T06:59:06+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,76 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Persisting changes to config files within NuGet packages]]></title>
+    <link href="http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages/"/>
+    <updated>2014-08-13T06:39:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages</id>
+    <content type="html"><![CDATA[<p>Whenever NuGet updates or restores a NuGet package, the config files within it are overwritten. Here&#8217;s a method to make sure the changes are reapplied via a <a href="http://msdn.microsoft.com/en-us/library/dd465326.aspx">config transform</a> whenever the solution is built.</p>
+
+<p>I&#8217;m using the NUnit.Runners NuGet packages. To get our coverage tool to play nicely, I need to replace <code>&lt;supportedRuntime "v2.0.50727"&gt;</code> with <code>&lt;supportedRuntime "v4.0.30319"&gt;</code> within the <em>NUnit-console-x86.exe.config</em>.</p>
+
+<p>Normally, a config transform is for modifying the <em>web.config</em> or <em>app.config</em> files. Here, we need to modify a config file within the <em>packages</em> subdirectory.</p>
+
+<p>In my <em>.csproj</em> file, I have added the following:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;PropertyGroup&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;NUnitRunnerDir&gt;</span>$(SolutionDir)packages\NUnit.Runners.2.6.3\tools\<span class="nt">&lt;/NUnitRunnerDir&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;PropertyGroup&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c">&lt;!-- Default NUnit test runner requires a modification to the config file--&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;UsingTask</span>
+</span><span class='line'>    <span class="na">TaskName=</span><span class="s">&quot;TransformXml&quot;</span>
+</span><span class='line'>    <span class="na">AssemblyFile=</span><span class="s">&quot;$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v12.0\Web\Microsoft.Web.Publishing.Tasks.dll&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;Target</span> <span class="na">Name=</span><span class="s">&quot;AfterBuild&quot;</span> <span class="na">Condition=</span><span class="s">&quot;exists(&#39;$(NUnitRunnerDir)NUnit-console-x86.exe.config&#39;)&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;TransformXml</span>
+</span><span class='line'>        <span class="na">Source=</span><span class="s">&quot;$(NUnitRunnerDir)NUnit-console-x86.exe.config&quot;</span>
+</span><span class='line'>        <span class="na">Destination=</span><span class="s">&quot;$(NUnitRunnerDir)NUnit-console-x86.exe.config&quot;</span>
+</span><span class='line'>        <span class="na">Transform=</span><span class="s">&quot;$(SolutionDir)UnitTests\Transforms\NUnit-console-x86.exe.CLR4.config&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/Target&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And the transform file itself looks like this:</p>
+
+<figure class='code'><figcaption><span>NUnit-console-x86.exe.CLR4.config </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;configuration</span> <span class="na">xmlns:xdt=</span><span class="s">&quot;http://schemas.microsoft.com/XML-Document-Transform&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;startup&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;supportedRuntime</span> <span class="na">version=</span><span class="s">&quot;v4.0.30319&quot;</span> <span class="na">xdt:Transform=</span><span class="s">&quot;Replace&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/startup&gt;</span>
+</span><span class='line'><span class="nt">&lt;/configuration&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>By the way, <a href="https://webconfigtransformationtester.apphb.com/">Web.config Transformation Tester</a> is a handy tool!</p>
+
+<p>Now whenever I build the project, the <em>AfterBuild</em> event ensures the supportedRuntime version is set correctly.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Pardon the interruption]]></title>
@@ -2456,99 +2526,6 @@ The ability to create reports using a report writer is a very powerful feature o
 <p>Now we have much more useful source files. Versions can be compared easily. The compiler will immediately inform us of any problems with the scripts within our reports.</p>
 
 <p>This is work in progress. Next up, I will be adding the &#8216;reverse&#8217;. That is, a new transformation template which looks for scripts which have changed and &#8216;injects&#8217; them back into the original <em>repx</em> file.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Fixing an unmanaged code AppCrash]]></title>
-    <link href="http://ZeroSharp.github.com/fixing-an-unmanaged-code-appcrash/"/>
-    <updated>2013-04-29T16:21:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/fixing-an-unmanaged-code-appcrash</id>
-    <content type="html"><![CDATA[<p>This post is the result of a recent bug hunt in which I came across a tricky bug, found a debugging switch I&#8217;d completely forgotten existed and learned a little about calling <code>extern</code> string functions from C#.</p>
-
-<p>I love bug hunting. It&#8217;s like a murder mystery: you&#8217;ve got your suspects and you try to eliminate them one at a time until, as a famous bug hunter said:</p>
-
-<blockquote><p>&#8230; when you have eliminated the impossible, whatever remains, however improbable, must be the truth.</p><footer><strong>Sherlock Holmes</strong> <cite>The Sign of Four</cite></footer></blockquote>
-
-
-<p>Between about 1995 and 2006, I used a data library called Apollo almost every day. It was a bunch of C++ drivers for dBase files with some more advanced options for encryption and indexing and was a popular option for <a href="http://en.wikipedia.org/wiki/Clipper_(programming_language">Clipper</a>) programmers. I joined a software project which was based on Clipper and Apollo in 1995. Apollo went through many different incarnations SuccessWare, Luxent, Vista, ApolloDB. All of these companies were essentially providing wrappers for different languages (Delphi, .NET) but the core C++ drivers always remained more or less the same <a href="http://www.apollodb.com/products.asp">and it&#8217;s still going</a>.</p>
-
-<p>Fast forward to 2013 and we have a legacy console utility for migrating data from the old format, which traverses the Apollo tables and converts the data to our model (DevExpress XPO objects). This code hardly ever changes, but when I converted all our core libraries to .NET 4.5., I found I had to jump in and fix it one last time.</p>
-
-<p>When I tried to run the upgraded .NET 4.5 library I got a mysterious app crash.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/appcrash/app-crash-001.png"></p>
-
-<p>The application would then close without any error message or stack trace. Nothing I did was allowing me catch any exception. None of the signatures, e.g., the <code>c0000374</code> exception code show up on Google. It shows up in the Windows event log, but apparently EventID 1000 is a very generic error message.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/appcrash/app-crash-002.png"></p>
-
-<p>I had a suspicion the problem was something to do with the Apollo assembly and I also knew that Apollo was not all managed code. I stumbled over the <em>Enable native code debugging</em> in the project settings. I&#8217;ve never used this setting. (My next approach would have been to use tracing to try to pinpoint the location of the crash.)</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/appcrash/app-crash-003.png"></p>
-
-<p>Visual Studio really impresses with its debugging capabilities. When we run again, we get a stack trace and an error message.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/appcrash/app-crash-004.png"></p>
-
-<p>Well Google didn&#8217;t seem to have much to say about <em>&#8216;This may be due to a corruption of the heap&#8217;</em>. But the problem seems to do with <code>apolloTable.FieldName(i)</code>. With a decompiler I had a look at its definition.</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="kt">string</span> <span class="nf">FieldName</span><span class="p">(</span><span class="kt">short</span> <span class="n">fieldNum</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="c1">//...</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">ApolloAPI</span><span class="p">.</span><span class="n">sx_FieldName</span><span class="p">(</span><span class="n">fieldNum</span><span class="p">);</span>
-</span><span class='line'>    <span class="c1">//...</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Let&#8217;s find <code>ApolloAPI.sx_FieldName(fieldNum);</code></p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="na">[DllImport(&quot;SDE7.dll&quot;, CharSet=CharSet.Ansi, ExactSpelling=true)]</span>
-</span><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">extern</span> <span class="kt">string</span> <span class="nf">sx_FieldName</span><span class="p">(</span><span class="kt">short</span> <span class="n">uiFieldNum</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now, knowing that SDE7.dll is written in C++, I guessed it might be having trouble with the return value being a <code>string</code>. The C++ memory management of the returned string might be getting in the way. <a href="http://stackoverflow.com/a/8242828/1077279">A bit of StackOverflow</a> gave me this trick: declare the return type as <code>IntPtr</code> and use <code>Marshal.PtrToStringAnsi()</code> to get a C# <code>string</code> from the pointer. (It seems that .NET 4.5 is stricter about marshalling than earlier frameworks. Perhaps someone can enlighten me why the error did not occur with .NET 4.0?) I wrote a new extension method for <code>ApolloTable</code> and changed the code to use <code>apolloTable.SafeFieldName(i)</code> instead.</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">TApolloTableExtensions</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'><span class="na">        [DllImport(&quot;SDE7.dll&quot;, CharSet = CharSet.Ansi, ExactSpelling = true)]</span>
-</span><span class='line'>        <span class="k">public</span> <span class="k">static</span> <span class="k">extern</span> <span class="n">IntPtr</span> <span class="nf">sx_FieldName</span><span class="p">(</span><span class="kt">short</span> <span class="n">uiFieldNum</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">public</span> <span class="k">static</span> <span class="kt">string</span> <span class="nf">SafeFieldName</span><span class="p">(</span><span class="k">this</span> <span class="n">ApolloTable</span> <span class="n">apolloTable</span><span class="p">,</span> <span class="kt">short</span> <span class="n">fieldNum</span><span class="p">)</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>          <span class="c1">//...</span>
-</span><span class='line'>            <span class="n">IntPtr</span> <span class="n">strPtr</span> <span class="p">=</span> <span class="n">sx_FieldName</span><span class="p">(</span><span class="n">fieldNum</span><span class="p">);</span>
-</span><span class='line'>            <span class="k">return</span> <span class="n">Marshal</span><span class="p">.</span><span class="n">PtrToStringAnsi</span><span class="p">(</span><span class="n">strPtr</span><span class="p">);</span>
-</span><span class='line'>            <span class="c1">//...</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And bingo! The application now runs without error.</p>
 ]]></content>
   </entry>
   

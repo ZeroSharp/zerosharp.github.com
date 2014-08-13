@@ -5,12 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Pardon the interruption - ZeroSharp</title>
+  <title>Persisting changes to config files within NuGet packages - ZeroSharp</title>
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="I left my laptop on a train a couple of months ago. Good thing I remembered my brain. I&#8217;m back now. This blog still lives.
-">
+  <meta name="description" content="Use an MSBuild target to make automatic changes to any xml file.">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -19,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ZeroSharp.github.com/pardon-the-interruption/">
+  <link rel="canonical" href="http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -117,7 +116,7 @@
   
   <header>
     
-      <h1 class="entry-title">Pardon the Interruption</h1>
+      <h1 class="entry-title">Persisting Changes to Config Files Within NuGet Packages</h1>
     
     
       <p class="meta">
@@ -133,7 +132,7 @@
   
 
 
-<time datetime="2014-08-11T10:33:00+01:00" pubdate data-updated="true">Aug 11<span>th</span>, 2014</time>
+<time datetime="2014-08-13T06:39:00+01:00" pubdate data-updated="true">Aug 13<span>th</span>, 2014</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -142,7 +141,68 @@
   </header>
 
 
-<div class="entry-content"><p>I left my laptop on a train a couple of months ago. Good thing I remembered my brain. I&#8217;m back now. This blog still lives.</p>
+<div class="entry-content"><p>Whenever NuGet updates or restores a NuGet package, the config files within it are overwritten. Here&#8217;s a method to make sure the changes are reapplied via a <a href="http://msdn.microsoft.com/en-us/library/dd465326.aspx">config transform</a> whenever the solution is built.</p>
+
+<p>I&#8217;m using the NUnit.Runners NuGet packages. To get our coverage tool to play nicely, I need to replace <code>&lt;supportedRuntime "v2.0.50727"&gt;</code> with <code>&lt;supportedRuntime "v4.0.30319"&gt;</code> within the <em>NUnit-console-x86.exe.config</em>.</p>
+
+<p>Normally, a config transform is for modifying the <em>web.config</em> or <em>app.config</em> files. Here, we need to modify a config file within the <em>packages</em> subdirectory.</p>
+
+<p>In my <em>.csproj</em> file, I have added the following:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;PropertyGroup&gt;</span>
+</span><span class='line'>   <span class="nt">&lt;NUnitRunnerDir&gt;</span>$(SolutionDir)packages\NUnit.Runners.2.6.3\tools\<span class="nt">&lt;/NUnitRunnerDir&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;PropertyGroup&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c">&lt;!-- Default NUnit test runner requires a modification to the config file--&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;UsingTask</span>
+</span><span class='line'>    <span class="na">TaskName=</span><span class="s">&quot;TransformXml&quot;</span>
+</span><span class='line'>    <span class="na">AssemblyFile=</span><span class="s">&quot;$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v12.0\Web\Microsoft.Web.Publishing.Tasks.dll&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nt">&lt;Target</span> <span class="na">Name=</span><span class="s">&quot;AfterBuild&quot;</span> <span class="na">Condition=</span><span class="s">&quot;exists(&#39;$(NUnitRunnerDir)NUnit-console-x86.exe.config&#39;)&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;TransformXml</span>
+</span><span class='line'>        <span class="na">Source=</span><span class="s">&quot;$(NUnitRunnerDir)NUnit-console-x86.exe.config&quot;</span>
+</span><span class='line'>        <span class="na">Destination=</span><span class="s">&quot;$(NUnitRunnerDir)NUnit-console-x86.exe.config&quot;</span>
+</span><span class='line'>        <span class="na">Transform=</span><span class="s">&quot;$(SolutionDir)UnitTests\Transforms\NUnit-console-x86.exe.CLR4.config&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/Target&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And the transform file itself looks like this:</p>
+
+<figure class='code'><figcaption><span>NUnit-console-x86.exe.CLR4.config </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;configuration</span> <span class="na">xmlns:xdt=</span><span class="s">&quot;http://schemas.microsoft.com/XML-Document-Transform&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;startup&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;supportedRuntime</span> <span class="na">version=</span><span class="s">&quot;v4.0.30319&quot;</span> <span class="na">xdt:Transform=</span><span class="s">&quot;Replace&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/startup&gt;</span>
+</span><span class='line'><span class="nt">&lt;/configuration&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>By the way, <a href="https://webconfigtransformationtester.apphb.com/">Web.config Transformation Tester</a> is a handy tool!</p>
+
+<p>Now whenever I build the project, the <em>AfterBuild</em> event ensures the supportedRuntime version is set correctly.</p>
 </div>
 
 
@@ -165,15 +225,21 @@
   
 
 
-<time datetime="2014-08-11T10:33:00+01:00" pubdate data-updated="true">Aug 11<span>th</span>, 2014</time>
+<time datetime="2014-08-13T06:39:00+01:00" pubdate data-updated="true">Aug 13<span>th</span>, 2014</time>
       
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/msbuild/'>msbuild</a>, <a class='category' href='/blog/categories/nuget/'>nuget</a>
+  
+</span>
 
 
     </p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/pardon-the-interruption/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/pardon-the-interruption/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -186,10 +252,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/a-web-ui-performance-tip-for-xaf-web-applications/" title="Previous Post: A web UI performance tip for XAF web applications">&laquo; A web UI performance tip for XAF web applications</a>
+        <a class="basic-alignment left" href="/pardon-the-interruption/" title="Previous Post: Pardon the interruption">&laquo; Pardon the interruption</a>
       
-      
-        <a class="basic-alignment right" href="/persisting-changes-to-config-files-within-nuget-packages/" title="Next Post: Persisting changes to config files within NuGet packages">Persisting changes to config files within NuGet packages &raquo;</a>
       
     </p>
   </footer>
@@ -225,8 +289,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://ZeroSharp.github.com/pardon-the-interruption/';
-        var disqus_url = 'http://ZeroSharp.github.com/pardon-the-interruption/';
+        var disqus_identifier = 'http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages/';
+        var disqus_url = 'http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages/';
         var disqus_script = 'embed.js';
       
     (function () {
