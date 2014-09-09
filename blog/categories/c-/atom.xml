@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c# | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/c-/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2014-08-13T06:59:06+01:00</updated>
+  <updated>2014-09-09T10:56:09+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,86 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 1: The Goal]]></title>
+    <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/"/>
+    <updated>2014-09-09T10:47:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1</id>
+    <content type="html"><![CDATA[<h2>The goal</h2>
+
+<p><span class='pullquote-right' data-pullquote='How can we replace a given class&#8217;s code with new code at runtime?'>
+How can we replace a given class's code with new code at runtime? In particular, how we can we do this while allowing dependency injection and  sidestepping assembly versioning issues.
+</span></p>
+
+<p>Let's say you have bunch of classes like this:</p>
+
+<p>```c# SomeGenerator.cs
+public class SomeGenerator : IGenerator
+{</p>
+
+<pre><code>public SomeGenerator(ISomeDependency dependency, IAnotherDependency another)
+{
+    ...
+}
+
+public void Generate()
+{
+    ...
+    // generate some output
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Now let's assume that you need the ability to modify the behaviour of these classes at runtime without upgrading. And change the dependencies. Without restarting the application.</p>
+
+<h4>Old school - The MEF approach (and most other plug-in frameworks)</h4>
+
+<p>One approach would be to place each generator in a separate assembly and then you could load them at runtime. (This was my first effort - <em>oh how I struggled</em>).</p>
+
+<p>You can make use of something like <a href="http://msdn.microsoft.com/en-us/library/dd460648.aspx">MEF</a> to help with the grunt work, but can still be very complex.</p>
+
+<p>One difficulty is the dependencies. The dependencies are often defined in other assemblies and you have to be very careful to avoid 'dll hell'. It is very easy to get message like:</p>
+
+<pre><code>Could not load file or assembly 'SomeAssembly, Version=1.2.9.1, Culture=neutral, PublicKeyToken=ad2d246d2bace800' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference.
+</code></pre>
+
+<p>Or even exceptions like</p>
+
+<pre><code>Object (of type 'SomeGenerator') is not of type 'SomeGenerator'.
+</code></pre>
+
+<p>You either have to write your plug-in code so that it is totally independent (i.e., has no dependencies), or you need to resort to a heap of <code>&lt;bindingRedirect&gt;</code> tags in your web.config.</p>
+
+<p>Also, with one assembly per format, you can end up with a huge proliferation of assemblies. If you have 50 different formats, that would be 50 assemblies.</p>
+
+<h4>New school - The Rosyln approach</h4>
+
+<p>An alternative is to use the compiler-as-a-service features of <a href="http://msdn.microsoft.com/en-gb/vstudio/roslyn.aspx">Roslyn</a>.</p>
+
+<p>Can we upload a modified <em>SomeGenerator.cs</em> and get the it to reference the deployed assemblies and thereby avoid dll hell? With Roslyn we can do this.</p>
+
+<p>If the compilation fails, we can immediately inform the user that the file is not compatible. If it succeeds, we can use it in lieu of the version that was originally deployed.</p>
+
+<p>Also, you do <strong>not</strong> need separate assemblies for the plug-ins. Your production code contains, within it somewhere a class named <code>SomeGenerator</code>. At runtime, we are going to create an in-memory assembly which contains only a single class (still named <code>SomeGenerator</code>), but which can nevertheless reference any other class available to the original implementation. Then we will get our IoC container to 'replace' the old generator with the new one.</p>
+
+<h2>The plan</h2>
+
+<ul>
+<li>Build an ASP.NET MVC 5 web application. It will use an instance of <code>HelloWorldGenerator</code> to generate some output. (This is the <em>original implementation</em>).</li>
+<li>Allow a replacement for the <code>HelloWorldGenerator</code> class to be uploaded into the application as raw C# code. (This is the <em>plug-in implementation</em>.)</li>
+<li>Store the C# code in a database. If the application is restarted, the plug-in code will be reloaded.</li>
+<li>When the output is next requested, compile the new C# class. Any dependencies will be instantiated by the IoC container. If there are any compilation errors, these will be displayed.</li>
+<li>Show that the plug-in class is now being used and the output has changed. The originally shipped <code>HelloWorldGenerator</code> class has been replaced by our plug-in.</li>
+<li>Delete the plug-in from the table and show the output has reverted to the default (the originally implementation code).</li>
+</ul>
+
+
+<p>Over next few posts I'll guide you through building the application and demonstrate the runtime replacement of the generator class.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Persisting changes to config files within NuGet packages]]></title>
@@ -353,150 +433,6 @@ The default directories for the installation have changed again. I'm sure DevExp
 <p>For the 13.2 release, DevExpress have focused on making the existing functionality work better rather than developing new modules.</p>
 
 <p>Better reports. Better validation. A better framework all round.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[DevExpress 13.2 Review - Part 1]]></title>
-    <link href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1/"/>
-    <updated>2013-12-02T16:23:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1</id>
-    <content type="html"><![CDATA[<p>The first version of XAF I ever installed was called <em>eXpressApp-1.0.CTP2.exe</em> in July 2006! It has certainly come a long way since then.</p>
-
-<p>This post is the first part of an overview of the brand new version XAF 13.2 which will be released any day now. This part is an in-depth review of the new report writer features (still in beta).</p>
-
-<h2>Reports V2</h2>
-
-<p>Prior to this version, XAF reports were not source code. They were objects serialized to a file and then loaded into the database during initialisation. This has a lot of shortcomings some of which I have addressed in previous <a href="/making-xaf-reports-even-better-part-1/">blog posts</a>.</p>
-
-<p>But now finally it is now possible to build XAF reports directly from Visual Studio. DevExpress is calling this <a href="https://community.devexpress.com/blogs/eaf/archive/2013/11/08/easy-large-reports-in-13-2-ctp-of-reportsv2-module.aspx">Reports V2</a> and it largely supersedes my previous workarounds. The immediate advantages of Reports V2 are:</p>
-
-<ul>
-<li>Build time syntax checking</li>
-<li>Easily merge/compare report versions</li>
-<li>Painless version control of reports</li>
-<li>Better unit testing possibilities</li>
-</ul>
-
-
-<p>Let's have a look at the details. DevExpress have provided us with a new sample project called <em>ReportsV2Demo</em>. The interesting part of the project solution is here:</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-003.png"></p>
-
-<p>Notice that there are two folders containing reports. <em>PredefinedEditableReports</em> contains V1 reports. That is, the report is serialised as a string and loaded into the database during initialisation. If we look at the source for one of these, here is what it looks like:</p>
-
-<p>```c#
-namespace ReportV2Demo.Module.PredefinedEditableReports {</p>
-
-<pre><code>public class OrdinalReportResource {
-    public static string ReportLayout = @"
-</code></pre>
-
-<p>/// <XRTypeInfo>
-///   <AssemblyFullName>DevExpress.XtraReportsVSuffix, Version=dllVersion, Culture=neutral, PublicKeyToken=dllPublicKeyToken</AssemblyFullName>
-///   <AssemblyLocation>C:\Windows\Microsoft.Net\assembly\GAC_MSIL\DevExpress.XtraReportsVSuffix\v4.0_dllVersion__dllPublicKeyToken\DevExpress.XtraReportsVSuffix.dll</AssemblyLocation>
-///   <TypeName>DevExpress.XtraReports.UI.XtraReport</TypeName>
-///   <Localization>en-US</Localization>
-///   <Version>VersionShort</Version>
-///   <References>
-///     <Reference Path=""C:\Windows\Microsoft.Net\assembly\GAC_MSIL\DevExpress.Persistent.BaseVSuffix\v4.0_dllVersion__dllPublicKeyToken\DevExpress.Persistent.BaseVSuffix.dll"" />
-///     <Reference Path=""C:\Windows\Microsoft.Net\assembly\GAC_MSIL\System\v4.0_4.0.0.0__b77a5c561934e089\System.dll"" /></p>
-
-<p>/// etc.
-```
-The second folder, <em>PredefinedReadonlyReports</em> contains the V2 reports. With these reports, we can right-click and <strong>View Designer</strong> and up pops the XtraReport designer.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-004.png"></p>
-
-<p>Now I can make changes to my report within Visual Studio. In theory I can preview the report and view the HTML output. However, in the beta (13.2.4) the Preview view prints the report correctly but fails to fetch any data so all the fields are empty (maybe this is by design).</p>
-
-<p>(Actually, I think the names of these folders could be improved. Maybe XafReports vs. XtraReports. Or RuntimeReports vs. DesigntimeReports.)</p>
-
-<p>With respect to event scripts which in the past were particularly arduous to maintain, we now have two options.</p>
-
-<h3>Scripts option 1 - Use serialized scripts</h3>
-
-<p> Firstly, you can continue to use the scripts as before. You can use Visual Studio's <em>Properties</em> window to navigate to the script you need and then add the necessary code in the custom editor.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-005.png"></p>
-
-<p>Unfortunately, this is not the best from a maintenance perspective. The Scripts code editor view is not at all comparable to Visual Studio. No Intellisense. No CodeRush. In addition, the script itself gets serialized to a string.</p>
-
-<p>```c#
-this.ScriptsSource = "\r\nprivate void xrLabel2_BeforePrint(object sender,System.Drawing.Printing.PrintE" +</p>
-
-<pre><code>"ventArgs e) {\r\n    string something = \"something\";\r\n}\r\n";
-</code></pre>
-
-<p>```
-So unfortunately this approach does not improve things much with regard to compile-time syntax checking or code merging/version control.</p>
-
-<h3>Scripts option 2 - Move the scripts to the C# file</h3>
-
-<p>Now that the report is more like an <code>XtraReport</code>, we can attach an event in code. To test it I'll replace the output of the <em>First name</em> with the current time.</p>
-
-<p>```c#
-public partial class XtraReportOrdinary : DevExpress.XtraReports.UI.XtraReport
-{</p>
-
-<pre><code>public XtraReportOrdinary()
-{
-    InitializeComponent();
-    xrLabel2.BeforePrint += xrLabel2_BeforePrint;
-}
-
-private void xrLabel2_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e)
-{
-    // Today's date and time
-    xrLabel2.Text = DateTime.Now.ToString("G");
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>Now let's see if it works. We start up the web application and run the report.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-006.png"></p>
-
-<p>Excellent! You can see the report has successfully run the event and is displaying the current time instead of the first name. Here are the advantages of handling events this way.</p>
-
-<ul>
-<li>If there's a mistake in an event, the project will not compile until it's fixed.</li>
-<li>The code is more readable.</li>
-<li>The source code of the events can easily be compared with older versions.</li>
-<li>The source code can be merged much more easily when handling version control conflicts.</li>
-<li>Unit testing of the events becomes feasible.</li>
-</ul>
-
-
-<h3>Runtime tailoring</h3>
-
-<p>Can an end-user still make a copy and tailor the report as they could with the older versions? Yes they can! Let's start up the WinForms client and have a look.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-007.png"></p>
-
-<p>Each of the <em>PredefinedReadonlyReports</em> has a new option <em>Copy predefined report</em>. Also, notice that the <em>Show Report Designer</em> is greyed out. Now compare with the copy.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-008.png"></p>
-
-<p>This time it is the <em>Copy predefined report</em> is greyed out and the familiar <em>Show Report Designer</em> has become available. (A little suggestion to the DevExpress crew. It would be better if the new copy got renamed to <em>Copy of Inplace Report</em> like Windows does when copying a file). Now we can open the Report Designer and customise the report further. Fantastic!</p>
-
-<p>Let's check what happened to our events?</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-009.png"></p>
-
-<p>Well, the serialized event was copied correctly, but the script that we put in the C# file has not been copied. A bit unfortunate - that event would have to be re-written or copied manually from the C# source file, but in most cases, additional tailoring of reports is a one-off occasional activity. For me at least, the benefits of having more maintainable code outweigh the inconvenience of losing the events when cloning a report.</p>
-
-<h2>Conclusions</h2>
-
-<p>Reports V2 is certainly the most significant improvement to the XAF reporting engine yet. I'm sure there are a few beta issues to iron out and a few further improvements down the line. In this post, I haven't looked at features such as views, sub-reports and custom reporting components, all of which deserve further investigation.</p>
-
-<p>In my <a href="http://www.coprocess.com/">main development project</a>, there are currently 110 different reports and maintaining them takes some effort. Reports V2 will help considerably. Hats off to the DevExpress team.</p>
-
-<h2>Next up</h2>
-
-<p>In my next post I'll be taking a look at the new soft validation along with some other 13.2 improvements.</p>
 ]]></content>
   </entry>
   

@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="This post aims to look at various solutions to a seemingly simple layout change. With DevExpress XAF, a lot of the difficult things are easy: &hellip;">
+  <meta name="description" content="In the last post we looked at three solutions to a relatively simple XAF requirement. In this post I&#8217;ll discuss another XAF challenge, explain &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,238 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/three-ways-to-store-a-list-of-currency-codes-in-xaf/">Three Ways to Store a List of Currency Codes in XAF</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-22T18:15:00+01:00" pubdate data-updated="true">Oct 22<span>nd</span>, 2013</time>
+        
+         | <a href="/three-ways-to-store-a-list-of-currency-codes-in-xaf/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>In the <a href="/the-ugly-the-heavy-and-the-good">last post</a> we looked at three solutions to a relatively simple XAF requirement. In this post I&#8217;ll discuss another XAF challenge, explain the options and provide a versatile and maintainable solution.</p>
+
+<p>In my DevExpress XAF application, I have an object which has several properties like this:</p>
+
+<p><img src="/images/blog/currency-list-editor-002.png"></p>
+
+<p>In each case, the field is a comma-separated list of currency codes. These fields are not very important to the model - they are used mainly for reporting.</p>
+
+<p>Let&#8217;s look at 3 different ways of handling these fields.</p>
+
+<h2>Option 1 - Use a string field</h2>
+
+<p>The <em>lightest</em> option would be just to declare them as a normal XPO string field:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">private</span> <span class="kt">string</span> <span class="n">_List1Currencies</span><span class="p">;</span>
+</span><span class='line'><span class="k">public</span> <span class="kt">string</span> <span class="n">List1Currencies</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">get</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_List1Currencies</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">set</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">SetPropertyValue</span><span class="p">(</span><span class="s">&quot;List1Currencies&quot;</span><span class="p">,</span> <span class="k">ref</span> <span class="n">_List1Currencies</span><span class="p">,</span> <span class="k">value</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It&#8217;s certainly simple and maintainable, but it&#8217;s not very user-friendly. There is no fancy interface to help with the input.  We can perhaps improve things slightly by providing edit masks and/or validation rules to check the input, but careful typing is the only way to change the values.</p>
+
+<h2>Option 2 - Declare an association property</h2>
+
+<p>The <em>heaviest</em> option is to declare each such property as a many-to-many relationship.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">Container</span><span class="p">:</span> <span class="n">XPObject</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">Container</span><span class="p">(</span><span class="n">Session</span> <span class="n">session</span><span class="p">)</span> <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">session</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="na">    [Association(&quot;List1Currencies&quot;)]</span>
+</span><span class='line'>    <span class="k">public</span> <span class="n">XPCollection</span><span class="p">&lt;</span><span class="n">Currency</span><span class="p">&gt;</span> <span class="n">List1</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">get</span> <span class="p">{</span> <span class="k">return</span> <span class="n">GetCollection</span><span class="p">&lt;</span><span class="n">Currency</span><span class="p">&gt;(</span><span class="s">&quot;List1&quot;</span><span class="p">);</span> <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">Currency</span><span class="p">:</span> <span class="n">XPObject</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">Currency</span><span class="p">(</span><span class="n">Session</span> <span class="n">session</span><span class="p">)</span> <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">session</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="na">    [Size(3)]</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">string</span> <span class="n">Code</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="na">    [Association(&quot;List1Currencies&quot;)]</span>
+</span><span class='line'>    <span class="k">public</span> <span class="n">XPCollection</span><span class="p">&lt;</span><span class="n">Container</span><span class="p">&gt;</span> <span class="n">List1Container</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">get</span> <span class="p">{</span> <span class="k">return</span> <span class="n">GetCollection</span><span class="p">&lt;</span><span class="n">Container</span><span class="p">&gt;(</span><span class="s">&quot;List1Container&quot;</span><span class="p">);</span> <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This works great - we get a nice interface for selecting the currencies and the end result looks like this:</p>
+
+<p><img src="/images/blog/currency-list-editor-003.png"></p>
+
+<p>However, it&#8217;s quite a heavy solution for something quite simple. For each such relationship XPO will generate a new intermediate table. If we look at the database schema, we see the following:</p>
+
+<p><img src="/images/blog/currency-list-editor-004.png"></p>
+
+<p>And in the model there are two new views.</p>
+
+<p><img src="/images/blog/currency-list-editor-005.png"></p>
+
+<p>If we have 5 such properties, we end up with 5 intermediary tables and 10 new views.</p>
+
+<p>Now, depending on your requirements that may be acceptable. If those relationships are important to your model, then the overhead may be justified. In my situation, these are minor fields and I do not want to burden the model or the database with extra complexity if I can avoid it.</p>
+
+<h2>Option 3 - Create a custom property editor</h2>
+
+<p>With the help of <a href="http://documentation.devexpress.com/xaf/CustomDocument3097.aspx">the documentation</a> and old Support Center issues, I was able to quite quickly put together a custom editor which gives the end user a nice interface while keeping it simple. The bulk of the logic is in the <code>SerializedListPropertyEditor</code> base class (see the end of the article for the link to the code), but the principle is as follows:</p>
+
+<p>Create a new subclass:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[PropertyEditor(typeof(String), false)]</span>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">CurrencyListPropertyEditor</span> <span class="p">:</span> <span class="n">SerializedListPropertyEditor</span><span class="p">&lt;</span><span class="n">Currency</span><span class="p">&gt;</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">CurrencyListPropertyEditor</span><span class="p">(</span><span class="n">Type</span> <span class="n">objectType</span><span class="p">,</span> <span class="n">IModelMemberViewItem</span> <span class="n">info</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">objectType</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="kt">string</span> <span class="nf">GetDisplayText</span><span class="p">(</span><span class="n">Currency</span> <span class="n">currency</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">String</span><span class="p">.</span><span class="n">Format</span><span class="p">(</span><span class="s">&quot;{0}\t{1}&quot;</span><span class="p">,</span> <span class="n">currency</span><span class="p">.</span><span class="n">Code</span><span class="p">,</span> <span class="n">currency</span><span class="p">.</span><span class="n">Name</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="kt">string</span> <span class="nf">GetValue</span><span class="p">(</span><span class="n">Currency</span> <span class="n">currency</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">currency</span><span class="p">.</span><span class="n">Code</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then decorate each property with a <code>ModelDefault</code> attribute to set the <code>PropertyEditorType</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">private</span> <span class="kt">string</span> <span class="n">_List1Currencies</span><span class="p">;</span>
+</span><span class='line'><span class="na">[ModelDefault(&quot;PropertyEditorType&quot;, &quot;Solution1.Module.Web.CurrencyListPropertyEditor&quot;)]</span>
+</span><span class='line'><span class="k">public</span> <span class="kt">string</span> <span class="n">List1Currencies</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">get</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_List1Currencies</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="k">set</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">SetPropertyValue</span><span class="p">(</span><span class="s">&quot;List1Currencies&quot;</span><span class="p">,</span> <span class="k">ref</span> <span class="n">_List1Currencies</span><span class="p">,</span> <span class="k">value</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now the user gets a pretty editor to select the currencies, but the field is just a string field.</p>
+
+<p><img src="/images/blog/currency-list-editor-001.png"></p>
+
+<p>The editor supports use of the <code>[DataSourceProperty]</code> and <code>[DataSourceCriteria]</code> properties too, so you can easily filter the collection.</p>
+
+<p>It is easy to provide a similar editor for any object type - just create a new subclass of <code>SerializedListPropertyEditor&lt;T&gt;</code> where <code>T</code> is your persistent type.</p>
+
+<p>You can download <a href="https://github.com/ZeroSharp/Xaf_CurrencyListPropertyEditor">a working sample project on GitHub</a>.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1543,239 +1775,6 @@ Good news. The conversion is now two-way. Get the source code <a href="https://g
 <p>Now, this is all highly experimental. You can see there are some warnings&#8230; Also, there is no connection with XPO, so the <em>Preview</em> is always empty.</p>
 
 <p>That said, it doesn&#8217;t seem like too much of a stretch to eventually allow far more Visual Studio integration for XAF reports&#8230;</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/making-xaf-reports-even-better-part-1/">Making XAF Reports Even Better - Part 1</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-05-21T14:38:00+01:00" pubdate data-updated="true">May 21<span>st</span>, 2013</time>
-        
-         | <a href="/making-xaf-reports-even-better-part-1/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><span class='pullquote-right' data-pullquote='The aim of these posts is to provide a two-way conversion process between .repx and C# files.'>
-The ability to create reports using a report writer is a very powerful feature of <a href="http://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a>, but there are some limitations which are particularly cumbersome to deal with in complex project.</p>
-
-<p>One of the projects I work on has over 100 reports in it. Even though we make use of unit tests to ensure they are not broken, the maintenance of the code in the embedded scripts is particularly difficult to manage.</p>
-
-<ul>
-<li>XafReports are <em>.repx</em> files which are usually loaded into the report table during the database update routine. They are a subclass of XtraReports which with some added restrictions.</li>
-<li>Any scripts are stored as a string or serialized to a <em>resources</em> property.</li>
-<li>The report writer is available only in the Windows Forms application. This must be used whenever a change is made to a report. The modified report must be exported as a repx file and then added to the module as an embedded report. The procedure is <a href="http://documentation.devexpress.com/#Xaf/CustomDocument2786">described here</a>.</li>
-</ul>
-
-
-<p>These aspects of XAF reports give rise to several development headaches.</p>
-
-<ul>
-<li>While script syntax can be checked within the report writer at design time (via the Validate button in the scripts tab), the script code is still brittle.</li>
-<li>Errors that result from Script syntax are sometimes only discovered at run time (you can write a unit test to check during build, but we really want to the compiler to tell us).</li>
-<li>Refactoring any classes requires a considerable amount of work with the report writer in order to apply any changes to the code within the scripts.</li>
-<li>There is no Intellisense in the report writer.</li>
-<li>Version control diff comparisons and merging are impossible.</li>
-</ul>
-
-
-<p>The aim of these posts is to provide a two-way conversion process between .repx and C# files. In order to accomplish this we&#8217;ll be relying on Visual Studio&#8217;s excellent T4 templating engine.
-</span></p>
-
-<h2>Installing T4Toolbox</h2>
-
-<p><a href="http://msdn.microsoft.com/en-us/library/vstudio/bb126445.aspx">T4 Text Transformation Toolkit</a> is a template based code generation framework which is included with Visual Studio. On top of this <a href="http://www.olegsych.com/">Oleg Sych</a> provides a Visual Studio extension called <a href="http://visualstudiogallery.msdn.microsoft.com/7f9bd62f-2505-4aa4-9378-ee7830371684">T4 Toolbox</a> which adds some additional features.</p>
-
-<p>Install T4 Toolbox by selecting <strong>Tools/Extensions and Updates</strong> from Visual Studio and searching for it.</p>
-
-<p><img src="/images/blog/xaf-report-sync-001.png"></p>
-
-<h2>The ReportSync MainDemo</h2>
-
-<p>Next, download the modified MainDemo application from my <a href="https://github.com/ZeroSharp/Xaf_MainDemo_ReportSync">GitHub repository</a> and open it in Visual Studio.</p>
-
-<p>First lets look at the embedded reports which I have modified slightly so that they include scripts. I added these scripts via the MainDemo.Win application.</p>
-
-<p>Let&#8217;s look at the <em>ContactsGroupByPosition.repx</em> file. You will find that there is a section:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">this</span><span class="p">.</span><span class="n">ScriptsSource</span> <span class="p">=</span> <span class="s">&quot;\r\nprivate void xrLabel4_BeforePrint(object sender, System.Drawing.Printing.PrintE&quot;</span> <span class="p">+</span>
-</span><span class='line'>    <span class="s">&quot;ventArgs e) {\r\n\txrLabel4.Text = xrLabel4.Text + \&quot; Test!\&quot;;\r\n}\r\n&quot;</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>In this case, the script has been saved as a string. The other report, which has only slightly more complex script code looks like this:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">private</span> <span class="n">System</span><span class="p">.</span><span class="n">Resources</span><span class="p">.</span><span class="n">ResourceManager</span> <span class="n">resources</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">get</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">_resources</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="kt">string</span> <span class="n">resourceString</span> <span class="p">=</span> <span class="s">@&quot;zsrvvgEAAACRAAAAbFN5c3RlbS5SZXNvdXJjZXMuUmVzb3VyY2VSZWFkZXIsIG1zY29ybGliLCBWZXJzaW9uPT.....5kIFtEdWVEYXRlXSA8PSAnQEN1cnJlbnREYXRlJwABEFRhc2tzU3RhdGVSZXBvcnQ=&quot;</span><span class="p">;</span>
-</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="n">_resources</span> <span class="p">=</span> <span class="k">new</span> <span class="n">DevExpress</span><span class="p">.</span><span class="n">XtraReports</span><span class="p">.</span><span class="n">Serialization</span><span class="p">.</span><span class="n">XRResourceManager</span><span class="p">(</span><span class="n">resourceString</span><span class="p">);</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="n">_resources</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="c1">// ...</span>
-</span><span class='line'><span class="k">this</span><span class="p">.</span><span class="n">ScriptsSource</span> <span class="p">=</span> <span class="n">resources</span><span class="p">.</span><span class="n">GetString</span><span class="p">(</span><span class="s">&quot;$this.ScriptsSource&quot;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Here, the scripts are not even in plain text. They have been serialised to the <em>resources</em> property.</p>
-
-<h2>The MainDemo.Reports assembly</h2>
-
-<p>You will find a new assembly <strong>MainDemo.Reports</strong> which contains a T4 template <em>RepxToCSharp.tt</em>. This is a T4 template which will search for repx files and transform them into much more helpful plain C#.</p>
-
-<p>The template will run every time it is saved. Currently, it depends on code within the MainDemo.Reports assembly, so make sure you have compiled it in Debug mode. Then open the <em>RepxToCSharp.tt</em> and press <code>Ctrl+S</code> to save (and run the T4 transformation).</p>
-
-<h2>The output</h2>
-
-<p>The template will generate two types of output. First, it generates the following report which you should find in <em>RepxToCSharp.txt</em></p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='text'><span class='line'>(This is an automatically generated file which should be excluded from version control)
-</span><span class='line'>
-</span><span class='line'>Summary of repx transformation
-</span><span class='line'>==============================
-</span><span class='line'>Total repx files found                                      :  2
-</span><span class='line'>  Total reports generated                                   :  2
-</span><span class='line'>  Total reports skipped because unchanged                   :  0
-</span><span class='line'>
-</span><span class='line'>Time elapsed: 00:00:02.1762029
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>In addition, each repx will have been transformed into two correpsonding files. All the generated files are highlighted in yellow:</p>
-
-<p><img src="/images/blog/xaf-report-sync-002.png"></p>
-
-<p>Now the scripts have been deserialized from the repx and put in a partial class and the remainder of the repx has been transformed into a corresponding <code>XafReport</code> descendant. See for instance, <em>ContactsGroupedByPosition.cs</em> (which stored its scripts as a string) is as follows:</p>
-
-<figure class='code'><figcaption><span>ContactsGroupedByPosition.cs </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">_ContactsGroupedByPosition</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// -- Start of embedded scripts -- </span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">private</span> <span class="k">void</span> <span class="nf">xrLabel4_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="n">xrLabel4</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">xrLabel4</span><span class="p">.</span><span class="n">Text</span> <span class="p">+</span> <span class="s">&quot; Test!&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// -- End of embedded scripts --    </span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And <em>TasksStateReport.cs</em> is now like this</p>
-
-<figure class='code'><figcaption><span>TasksStateReport.cs </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">_TasksStateReport</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// -- Start of embedded scripts -- </span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">private</span> <span class="k">void</span> <span class="nf">xrLabel1_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// This is a test</span>
-</span><span class='line'>        <span class="n">xrLabel1</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="s">&quot;Hello&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">private</span> <span class="k">void</span> <span class="nf">xrLabel2_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">xrLabel2</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">GetLabel2Text</span><span class="p">();</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">public</span> <span class="kt">string</span> <span class="nf">GetLabel2Text</span><span class="p">()</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>      <span class="k">return</span> <span class="s">&quot;Label 2!&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// -- End of embedded scripts --    </span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>A note about performance</h2>
-
-<p>The process of transforming the repx into C# is quite quick (a couple of seconds per <em>repx</em>), but when you have dozens of reports, it can quickly be tiresome. Therefore, there is a performance optimisation which checksums the repx and skips the transformation if it has not changed.</p>
-
-<p>(In a future version, we will also use a similar checksum in the other direction to determine whether the scripts have been modified).</p>
-
-<h2>Already much better</h2>
-
-<p>Now we have much more useful source files. Versions can be compared easily. The compiler will immediately inform us of any problems with the scripts within our reports.</p>
-
-<p>This is work in progress. Next up, I will be adding the &#8216;reverse&#8217;. That is, a new transformation template which looks for scripts which have changed and &#8216;injects&#8217; them back into the original <em>repx</em> file.</p>
 </div>
   
   

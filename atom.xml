@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2014-08-13T06:59:06+01:00</updated>
+  <updated>2014-09-09T10:56:09+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,96 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 1: The Goal]]></title>
+    <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/"/>
+    <updated>2014-09-09T10:47:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1</id>
+    <content type="html"><![CDATA[<h2>The goal</h2>
+
+<p><span class='pullquote-right' data-pullquote='How can we replace a given class&#8217;s code with new code at runtime?'>
+How can we replace a given class&#8217;s code with new code at runtime? In particular, how we can we do this while allowing dependency injection and  sidestepping assembly versioning issues.
+</span></p>
+
+<p>Let&#8217;s say you have bunch of classes like this:</p>
+
+<figure class='code'><figcaption><span>SomeGenerator.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">SomeGenerator</span> <span class="p">:</span> <span class="n">IGenerator</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">SomeGenerator</span><span class="p">(</span><span class="n">ISomeDependency</span> <span class="n">dependency</span><span class="p">,</span> <span class="n">IAnotherDependency</span> <span class="n">another</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="p">...</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="k">void</span> <span class="nf">Generate</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="p">...</span>
+</span><span class='line'>        <span class="c1">// generate some output</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now let&#8217;s assume that you need the ability to modify the behaviour of these classes at runtime without upgrading. And change the dependencies. Without restarting the application.</p>
+
+<h4>Old school - The MEF approach (and most other plug-in frameworks)</h4>
+
+<p>One approach would be to place each generator in a separate assembly and then you could load them at runtime. (This was my first effort - <em>oh how I struggled</em>).</p>
+
+<p>You can make use of something like <a href="http://msdn.microsoft.com/en-us/library/dd460648.aspx">MEF</a> to help with the grunt work, but can still be very complex.</p>
+
+<p>One difficulty is the dependencies. The dependencies are often defined in other assemblies and you have to be very careful to avoid &#8216;dll hell&#8217;. It is very easy to get message like:</p>
+
+<pre><code>Could not load file or assembly 'SomeAssembly, Version=1.2.9.1, Culture=neutral, PublicKeyToken=ad2d246d2bace800' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference.
+</code></pre>
+
+<p>Or even exceptions like</p>
+
+<pre><code>Object (of type 'SomeGenerator') is not of type 'SomeGenerator'.
+</code></pre>
+
+<p>You either have to write your plug-in code so that it is totally independent (i.e., has no dependencies), or you need to resort to a heap of <code>&lt;bindingRedirect&gt;</code> tags in your web.config.</p>
+
+<p>Also, with one assembly per format, you can end up with a huge proliferation of assemblies. If you have 50 different formats, that would be 50 assemblies.</p>
+
+<h4>New school - The Rosyln approach</h4>
+
+<p>An alternative is to use the compiler-as-a-service features of <a href="http://msdn.microsoft.com/en-gb/vstudio/roslyn.aspx">Roslyn</a>.</p>
+
+<p>Can we upload a modified <em>SomeGenerator.cs</em> and get the it to reference the deployed assemblies and thereby avoid dll hell? With Roslyn we can do this.</p>
+
+<p>If the compilation fails, we can immediately inform the user that the file is not compatible. If it succeeds, we can use it in lieu of the version that was originally deployed.</p>
+
+<p>Also, you do <strong>not</strong> need separate assemblies for the plug-ins. Your production code contains, within it somewhere a class named <code>SomeGenerator</code>. At runtime, we are going to create an in-memory assembly which contains only a single class (still named <code>SomeGenerator</code>), but which can nevertheless reference any other class available to the original implementation. Then we will get our IoC container to &#8216;replace&#8217; the old generator with the new one.</p>
+
+<h2>The plan</h2>
+
+<ul>
+<li>Build an ASP.NET MVC 5 web application. It will use an instance of <code>HelloWorldGenerator</code> to generate some output. (This is the <em>original implementation</em>).</li>
+<li>Allow a replacement for the <code>HelloWorldGenerator</code> class to be uploaded into the application as raw C# code. (This is the <em>plug-in implementation</em>.)</li>
+<li>Store the C# code in a database. If the application is restarted, the plug-in code will be reloaded.</li>
+<li>When the output is next requested, compile the new C# class. Any dependencies will be instantiated by the IoC container. If there are any compilation errors, these will be displayed.</li>
+<li>Show that the plug-in class is now being used and the output has changed. The originally shipped <code>HelloWorldGenerator</code> class has been replaced by our plug-in.</li>
+<li>Delete the plug-in from the table and show the output has reverted to the default (the originally implementation code).</li>
+</ul>
+
+
+<p>Over next few posts I&#8217;ll guide you through building the application and demonstrate the runtime replacement of the generator class.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Persisting changes to config files within NuGet packages]]></title>
@@ -2322,210 +2412,6 @@ Good news. The conversion is now two-way. Get the source code <a href="https://g
 <p>Now, this is all highly experimental. You can see there are some warnings&#8230; Also, there is no connection with XPO, so the <em>Preview</em> is always empty.</p>
 
 <p>That said, it doesn&#8217;t seem like too much of a stretch to eventually allow far more Visual Studio integration for XAF reports&#8230;</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Making XAF reports even better - Part 1]]></title>
-    <link href="http://ZeroSharp.github.com/making-xaf-reports-even-better-part-1/"/>
-    <updated>2013-05-21T14:38:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/making-xaf-reports-even-better-part-1</id>
-    <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='The aim of these posts is to provide a two-way conversion process between .repx and C# files.'>
-The ability to create reports using a report writer is a very powerful feature of <a href="http://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a>, but there are some limitations which are particularly cumbersome to deal with in complex project.</p>
-
-<p>One of the projects I work on has over 100 reports in it. Even though we make use of unit tests to ensure they are not broken, the maintenance of the code in the embedded scripts is particularly difficult to manage.</p>
-
-<ul>
-<li>XafReports are <em>.repx</em> files which are usually loaded into the report table during the database update routine. They are a subclass of XtraReports which with some added restrictions.</li>
-<li>Any scripts are stored as a string or serialized to a <em>resources</em> property.</li>
-<li>The report writer is available only in the Windows Forms application. This must be used whenever a change is made to a report. The modified report must be exported as a repx file and then added to the module as an embedded report. The procedure is <a href="http://documentation.devexpress.com/#Xaf/CustomDocument2786">described here</a>.</li>
-</ul>
-
-
-<p>These aspects of XAF reports give rise to several development headaches.</p>
-
-<ul>
-<li>While script syntax can be checked within the report writer at design time (via the Validate button in the scripts tab), the script code is still brittle.</li>
-<li>Errors that result from Script syntax are sometimes only discovered at run time (you can write a unit test to check during build, but we really want to the compiler to tell us).</li>
-<li>Refactoring any classes requires a considerable amount of work with the report writer in order to apply any changes to the code within the scripts.</li>
-<li>There is no Intellisense in the report writer.</li>
-<li>Version control diff comparisons and merging are impossible.</li>
-</ul>
-
-
-<p>The aim of these posts is to provide a two-way conversion process between .repx and C# files. In order to accomplish this we&#8217;ll be relying on Visual Studio&#8217;s excellent T4 templating engine.
-</span></p>
-
-<h2>Installing T4Toolbox</h2>
-
-<p><a href="http://msdn.microsoft.com/en-us/library/vstudio/bb126445.aspx">T4 Text Transformation Toolkit</a> is a template based code generation framework which is included with Visual Studio. On top of this <a href="http://www.olegsych.com/">Oleg Sych</a> provides a Visual Studio extension called <a href="http://visualstudiogallery.msdn.microsoft.com/7f9bd62f-2505-4aa4-9378-ee7830371684">T4 Toolbox</a> which adds some additional features.</p>
-
-<p>Install T4 Toolbox by selecting <strong>Tools/Extensions and Updates</strong> from Visual Studio and searching for it.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/xaf-report-sync-001.png"></p>
-
-<h2>The ReportSync MainDemo</h2>
-
-<p>Next, download the modified MainDemo application from my <a href="https://github.com/ZeroSharp/Xaf_MainDemo_ReportSync">GitHub repository</a> and open it in Visual Studio.</p>
-
-<p>First lets look at the embedded reports which I have modified slightly so that they include scripts. I added these scripts via the MainDemo.Win application.</p>
-
-<p>Let&#8217;s look at the <em>ContactsGroupByPosition.repx</em> file. You will find that there is a section:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">this</span><span class="p">.</span><span class="n">ScriptsSource</span> <span class="p">=</span> <span class="s">&quot;\r\nprivate void xrLabel4_BeforePrint(object sender, System.Drawing.Printing.PrintE&quot;</span> <span class="p">+</span>
-</span><span class='line'>    <span class="s">&quot;ventArgs e) {\r\n\txrLabel4.Text = xrLabel4.Text + \&quot; Test!\&quot;;\r\n}\r\n&quot;</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>In this case, the script has been saved as a string. The other report, which has only slightly more complex script code looks like this:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">private</span> <span class="n">System</span><span class="p">.</span><span class="n">Resources</span><span class="p">.</span><span class="n">ResourceManager</span> <span class="n">resources</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">get</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">_resources</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="kt">string</span> <span class="n">resourceString</span> <span class="p">=</span> <span class="s">@&quot;zsrvvgEAAACRAAAAbFN5c3RlbS5SZXNvdXJjZXMuUmVzb3VyY2VSZWFkZXIsIG1zY29ybGliLCBWZXJzaW9uPT.....5kIFtEdWVEYXRlXSA8PSAnQEN1cnJlbnREYXRlJwABEFRhc2tzU3RhdGVSZXBvcnQ=&quot;</span><span class="p">;</span>
-</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="n">_resources</span> <span class="p">=</span> <span class="k">new</span> <span class="n">DevExpress</span><span class="p">.</span><span class="n">XtraReports</span><span class="p">.</span><span class="n">Serialization</span><span class="p">.</span><span class="n">XRResourceManager</span><span class="p">(</span><span class="n">resourceString</span><span class="p">);</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="n">_resources</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="c1">// ...</span>
-</span><span class='line'><span class="k">this</span><span class="p">.</span><span class="n">ScriptsSource</span> <span class="p">=</span> <span class="n">resources</span><span class="p">.</span><span class="n">GetString</span><span class="p">(</span><span class="s">&quot;$this.ScriptsSource&quot;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Here, the scripts are not even in plain text. They have been serialised to the <em>resources</em> property.</p>
-
-<h2>The MainDemo.Reports assembly</h2>
-
-<p>You will find a new assembly <strong>MainDemo.Reports</strong> which contains a T4 template <em>RepxToCSharp.tt</em>. This is a T4 template which will search for repx files and transform them into much more helpful plain C#.</p>
-
-<p>The template will run every time it is saved. Currently, it depends on code within the MainDemo.Reports assembly, so make sure you have compiled it in Debug mode. Then open the <em>RepxToCSharp.tt</em> and press <code>Ctrl+S</code> to save (and run the T4 transformation).</p>
-
-<h2>The output</h2>
-
-<p>The template will generate two types of output. First, it generates the following report which you should find in <em>RepxToCSharp.txt</em></p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='text'><span class='line'>(This is an automatically generated file which should be excluded from version control)
-</span><span class='line'>
-</span><span class='line'>Summary of repx transformation
-</span><span class='line'>==============================
-</span><span class='line'>Total repx files found                                      :  2
-</span><span class='line'>  Total reports generated                                   :  2
-</span><span class='line'>  Total reports skipped because unchanged                   :  0
-</span><span class='line'>
-</span><span class='line'>Time elapsed: 00:00:02.1762029
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>In addition, each repx will have been transformed into two correpsonding files. All the generated files are highlighted in yellow:</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/xaf-report-sync-002.png"></p>
-
-<p>Now the scripts have been deserialized from the repx and put in a partial class and the remainder of the repx has been transformed into a corresponding <code>XafReport</code> descendant. See for instance, <em>ContactsGroupedByPosition.cs</em> (which stored its scripts as a string) is as follows:</p>
-
-<figure class='code'><figcaption><span>ContactsGroupedByPosition.cs </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">_ContactsGroupedByPosition</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// -- Start of embedded scripts -- </span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">private</span> <span class="k">void</span> <span class="nf">xrLabel4_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="n">xrLabel4</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">xrLabel4</span><span class="p">.</span><span class="n">Text</span> <span class="p">+</span> <span class="s">&quot; Test!&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// -- End of embedded scripts --    </span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And <em>TasksStateReport.cs</em> is now like this</p>
-
-<figure class='code'><figcaption><span>TasksStateReport.cs </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">_TasksStateReport</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// -- Start of embedded scripts -- </span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">private</span> <span class="k">void</span> <span class="nf">xrLabel1_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// This is a test</span>
-</span><span class='line'>        <span class="n">xrLabel1</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="s">&quot;Hello&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">private</span> <span class="k">void</span> <span class="nf">xrLabel2_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">xrLabel2</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">GetLabel2Text</span><span class="p">();</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">public</span> <span class="kt">string</span> <span class="nf">GetLabel2Text</span><span class="p">()</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>      <span class="k">return</span> <span class="s">&quot;Label 2!&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// -- End of embedded scripts --    </span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>A note about performance</h2>
-
-<p>The process of transforming the repx into C# is quite quick (a couple of seconds per <em>repx</em>), but when you have dozens of reports, it can quickly be tiresome. Therefore, there is a performance optimisation which checksums the repx and skips the transformation if it has not changed.</p>
-
-<p>(In a future version, we will also use a similar checksum in the other direction to determine whether the scripts have been modified).</p>
-
-<h2>Already much better</h2>
-
-<p>Now we have much more useful source files. Versions can be compared easily. The compiler will immediately inform us of any problems with the scripts within our reports.</p>
-
-<p>This is work in progress. Next up, I will be adding the &#8216;reverse&#8217;. That is, a new transformation template which looks for scripts which have changed and &#8216;injects&#8217; them back into the original <em>repx</em> file.</p>
 ]]></content>
   </entry>
   

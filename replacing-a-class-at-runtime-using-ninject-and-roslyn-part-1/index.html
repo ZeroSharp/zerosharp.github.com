@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Persisting changes to config files within NuGet packages - ZeroSharp</title>
+  <title>Replacing a class at runtime using Ninject and Roslyn - Part 1: The Goal - ZeroSharp</title>
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Use an MSBuild target to make automatic changes to any xml file.">
+  <meta name="description" content="A powerful and simple plug-in framework for .NET using Ninject and Roslyn. How to replace a class at runtime. Part 1.">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages/">
+  <link rel="canonical" href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -116,7 +116,7 @@
   
   <header>
     
-      <h1 class="entry-title">Persisting Changes to Config Files Within NuGet Packages</h1>
+      <h1 class="entry-title">Replacing a Class at Runtime Using Ninject and Roslyn - Part 1: The Goal</h1>
     
     
       <p class="meta">
@@ -132,7 +132,7 @@
   
 
 
-<time datetime="2014-08-13T06:39:00+01:00" pubdate data-updated="true">Aug 13<span>th</span>, 2014</time>
+<time datetime="2014-09-09T10:47:00+01:00" pubdate data-updated="true">Sep 9<span>th</span>, 2014</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -141,15 +141,15 @@
   </header>
 
 
-<div class="entry-content"><p>Whenever NuGet updates or restores a NuGet package, the config files within it are overwritten. Here&#8217;s a method to make sure the changes are reapplied via a <a href="http://msdn.microsoft.com/en-us/library/dd465326.aspx">config transform</a> whenever the solution is built.</p>
+<div class="entry-content"><h2>The goal</h2>
 
-<p>I&#8217;m using the NUnit.Runners NuGet packages. To get our coverage tool to play nicely, I need to replace <code>&lt;supportedRuntime "v2.0.50727"&gt;</code> with <code>&lt;supportedRuntime "v4.0.30319"&gt;</code> within the <em>NUnit-console-x86.exe.config</em>.</p>
+<p><span class='pullquote-right' data-pullquote='How can we replace a given class&#8217;s code with new code at runtime?'>
+How can we replace a given class&#8217;s code with new code at runtime? In particular, how we can we do this while allowing dependency injection and  sidestepping assembly versioning issues.
+</span></p>
 
-<p>Normally, a config transform is for modifying the <em>web.config</em> or <em>app.config</em> files. Here, we need to modify a config file within the <em>packages</em> subdirectory.</p>
+<p>Let&#8217;s say you have bunch of classes like this:</p>
 
-<p>In my <em>.csproj</em> file, I have added the following:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span>SomeGenerator.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -162,47 +162,67 @@
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;PropertyGroup&gt;</span>
-</span><span class='line'>   <span class="nt">&lt;NUnitRunnerDir&gt;</span>$(SolutionDir)packages\NUnit.Runners.2.6.3\tools\<span class="nt">&lt;/NUnitRunnerDir&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;PropertyGroup&gt;</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">SomeGenerator</span> <span class="p">:</span> <span class="n">IGenerator</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">SomeGenerator</span><span class="p">(</span><span class="n">ISomeDependency</span> <span class="n">dependency</span><span class="p">,</span> <span class="n">IAnotherDependency</span> <span class="n">another</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="p">...</span>
+</span><span class='line'>    <span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="c">&lt;!-- Default NUnit test runner requires a modification to the config file--&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;UsingTask</span>
-</span><span class='line'>    <span class="na">TaskName=</span><span class="s">&quot;TransformXml&quot;</span>
-</span><span class='line'>    <span class="na">AssemblyFile=</span><span class="s">&quot;$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v12.0\Web\Microsoft.Web.Publishing.Tasks.dll&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nt">&lt;Target</span> <span class="na">Name=</span><span class="s">&quot;AfterBuild&quot;</span> <span class="na">Condition=</span><span class="s">&quot;exists(&#39;$(NUnitRunnerDir)NUnit-console-x86.exe.config&#39;)&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;TransformXml</span>
-</span><span class='line'>        <span class="na">Source=</span><span class="s">&quot;$(NUnitRunnerDir)NUnit-console-x86.exe.config&quot;</span>
-</span><span class='line'>        <span class="na">Destination=</span><span class="s">&quot;$(NUnitRunnerDir)NUnit-console-x86.exe.config&quot;</span>
-</span><span class='line'>        <span class="na">Transform=</span><span class="s">&quot;$(SolutionDir)UnitTests\Transforms\NUnit-console-x86.exe.CLR4.config&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/Target&gt;</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">void</span> <span class="nf">Generate</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="p">...</span>
+</span><span class='line'>        <span class="c1">// generate some output</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>And the transform file itself looks like this:</p>
+<p>Now let&#8217;s assume that you need the ability to modify the behaviour of these classes at runtime without upgrading. And change the dependencies. Without restarting the application.</p>
 
-<figure class='code'><figcaption><span>NUnit-console-x86.exe.CLR4.config </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;configuration</span> <span class="na">xmlns:xdt=</span><span class="s">&quot;http://schemas.microsoft.com/XML-Document-Transform&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;startup&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;supportedRuntime</span> <span class="na">version=</span><span class="s">&quot;v4.0.30319&quot;</span> <span class="na">xdt:Transform=</span><span class="s">&quot;Replace&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/startup&gt;</span>
-</span><span class='line'><span class="nt">&lt;/configuration&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<h4>Old school - The MEF approach (and most other plug-in frameworks)</h4>
+
+<p>One approach would be to place each generator in a separate assembly and then you could load them at runtime. (This was my first effort - <em>oh how I struggled</em>).</p>
+
+<p>You can make use of something like <a href="http://msdn.microsoft.com/en-us/library/dd460648.aspx">MEF</a> to help with the grunt work, but can still be very complex.</p>
+
+<p>One difficulty is the dependencies. The dependencies are often defined in other assemblies and you have to be very careful to avoid &#8216;dll hell&#8217;. It is very easy to get message like:</p>
+
+<pre><code>Could not load file or assembly 'SomeAssembly, Version=1.2.9.1, Culture=neutral, PublicKeyToken=ad2d246d2bace800' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference.
+</code></pre>
+
+<p>Or even exceptions like</p>
+
+<pre><code>Object (of type 'SomeGenerator') is not of type 'SomeGenerator'.
+</code></pre>
+
+<p>You either have to write your plug-in code so that it is totally independent (i.e., has no dependencies), or you need to resort to a heap of <code>&lt;bindingRedirect&gt;</code> tags in your web.config.</p>
+
+<p>Also, with one assembly per format, you can end up with a huge proliferation of assemblies. If you have 50 different formats, that would be 50 assemblies.</p>
+
+<h4>New school - The Rosyln approach</h4>
+
+<p>An alternative is to use the compiler-as-a-service features of <a href="http://msdn.microsoft.com/en-gb/vstudio/roslyn.aspx">Roslyn</a>.</p>
+
+<p>Can we upload a modified <em>SomeGenerator.cs</em> and get the it to reference the deployed assemblies and thereby avoid dll hell? With Roslyn we can do this.</p>
+
+<p>If the compilation fails, we can immediately inform the user that the file is not compatible. If it succeeds, we can use it in lieu of the version that was originally deployed.</p>
+
+<p>Also, you do <strong>not</strong> need separate assemblies for the plug-ins. Your production code contains, within it somewhere a class named <code>SomeGenerator</code>. At runtime, we are going to create an in-memory assembly which contains only a single class (still named <code>SomeGenerator</code>), but which can nevertheless reference any other class available to the original implementation. Then we will get our IoC container to &#8216;replace&#8217; the old generator with the new one.</p>
+
+<h2>The plan</h2>
+
+<ul>
+<li>Build an ASP.NET MVC 5 web application. It will use an instance of <code>HelloWorldGenerator</code> to generate some output. (This is the <em>original implementation</em>).</li>
+<li>Allow a replacement for the <code>HelloWorldGenerator</code> class to be uploaded into the application as raw C# code. (This is the <em>plug-in implementation</em>.)</li>
+<li>Store the C# code in a database. If the application is restarted, the plug-in code will be reloaded.</li>
+<li>When the output is next requested, compile the new C# class. Any dependencies will be instantiated by the IoC container. If there are any compilation errors, these will be displayed.</li>
+<li>Show that the plug-in class is now being used and the output has changed. The originally shipped <code>HelloWorldGenerator</code> class has been replaced by our plug-in.</li>
+<li>Delete the plug-in from the table and show the output has reverted to the default (the originally implementation code).</li>
+</ul>
 
 
-<p>By the way, <a href="https://webconfigtransformationtester.apphb.com/">Web.config Transformation Tester</a> is a handy tool!</p>
-
-<p>Now whenever I build the project, the <em>AfterBuild</em> event ensures the supportedRuntime version is set correctly.</p>
+<p>Over next few posts I&#8217;ll guide you through building the application and demonstrate the runtime replacement of the generator class.</p>
 </div>
 
 
@@ -225,12 +245,12 @@
   
 
 
-<time datetime="2014-08-13T06:39:00+01:00" pubdate data-updated="true">Aug 13<span>th</span>, 2014</time>
+<time datetime="2014-09-09T10:47:00+01:00" pubdate data-updated="true">Sep 9<span>th</span>, 2014</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/msbuild/'>msbuild</a>, <a class='category' href='/blog/categories/nuget/'>nuget</a>
+    <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/ninject/'>ninject</a>, <a class='category' href='/blog/categories/plugins/'>plugins</a>, <a class='category' href='/blog/categories/roslyn/'>roslyn</a>
   
 </span>
 
@@ -239,7 +259,7 @@
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -252,10 +272,8 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/pardon-the-interruption/" title="Previous Post: Pardon the interruption">&laquo; Pardon the interruption</a>
+        <a class="basic-alignment left" href="/persisting-changes-to-config-files-within-nuget-packages/" title="Previous Post: Persisting changes to config files within NuGet packages">&laquo; Persisting changes to config files within NuGet packages</a>
       
-      
-        <a class="basic-alignment right" href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/" title="Next Post: Replacing a class at runtime using Ninject and Roslyn - Part 1: The Goal">Replacing a class at runtime using Ninject and Roslyn - Part 1: The Goal &raquo;</a>
       
     </p>
   </footer>
@@ -291,8 +309,8 @@
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages/';
-        var disqus_url = 'http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages/';
+        var disqus_identifier = 'http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/';
+        var disqus_url = 'http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/';
         var disqus_script = 'embed.js';
       
     (function () {
