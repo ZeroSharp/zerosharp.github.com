@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ninject | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/ninject/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2014-09-09T10:56:09+01:00</updated>
+  <updated>2014-09-11T09:08:32+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,60 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 2: The Solution]]></title>
+    <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/"/>
+    <updated>2014-09-11T09:18:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2</id>
+    <content type="html"><![CDATA[<p>Previously: <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/">Part 1: The Goal</a></p>
+
+<h2>The solution</h2>
+
+<p>The code for the example is <a href="https://github.com/ZeroSharp/RoslynPlugins">available on GitHub</a>.</p>
+
+<h4>How it looks</h4>
+
+<p>So here's the Hello World page in production:</p>
+
+<p><img src="/images/blog/roslyn-plugins-001.png">.</p>
+
+<p>We navigate to the plugins view and create a new replacement for the HelloWorldGenerator:</p>
+
+<p><img src="/images/blog/roslyn-plugins-002.png">.</p>
+
+<p>Without restarting, we can return to the HelloWorld page and see that the new class is being used because the output has changed.</p>
+
+<p><img src="/images/blog/roslyn-plugins-003.png">.</p>
+
+<p>If you delete the row from the plugins page, the behaviour reverts to the original implementation (the code that was originally shipped with production).</p>
+
+<h4>Basic project setup</h4>
+
+<p>First, I created a new ASP.NET MVC 5 application. I added a HelloWorldContrroller and a View. I added a <code>Plugin</code> model and corresponding views. To get started I followed the tutorial here (http://www.asp.net/mvc/tutorials/mvc-5/introduction/getting-started). Once I had the basics in place, I added the following NuGet packages.</p>
+
+<p><strong>Stable</strong></p>
+
+<ul>
+<li>EntityFramework</li>
+<li>Ninject</li>
+<li>Ninject.MVC5</li>
+<li>Ninject.Conventions</li>
+</ul>
+
+
+<p><strong>Pre-release</strong></p>
+
+<ul>
+<li>Microsoft.CodeAnalysis.CSharp</li>
+</ul>
+
+
+<p>The <em>Microsoft.CodeAnalysis.CSharp</em> is the 'Roslyn' package. It is still in beta, so you have to switch to the pre-release.</p>
+
+<p>Next we'll look at the dependency injection part in more detail.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 1: The Goal]]></title>
@@ -71,11 +125,11 @@ public void Generate()
 
 <p>An alternative is to use the compiler-as-a-service features of <a href="http://msdn.microsoft.com/en-gb/vstudio/roslyn.aspx">Roslyn</a>.</p>
 
-<p>Can we upload a modified <em>SomeGenerator.cs</em> and get the it to reference the deployed assemblies and thereby avoid dll hell? With Roslyn we can do this.</p>
+<p>Can we upload a modified <em>SomeGenerator.cs</em> and get it to reference the deployed assemblies and thereby avoid dll hell? With Roslyn we can do this.</p>
 
 <p>If the compilation fails, we can immediately inform the user that the file is not compatible. If it succeeds, we can use it in lieu of the version that was originally deployed.</p>
 
-<p>Also, you do <strong>not</strong> need separate assemblies for the plug-ins. Your production code contains, within it somewhere a class named <code>SomeGenerator</code>. At runtime, we are going to create an in-memory assembly which contains only a single class (still named <code>SomeGenerator</code>), but which can nevertheless reference any other class available to the original implementation. Then we will get our IoC container to 'replace' the old generator with the new one.</p>
+<p>Also, you do <strong>not</strong> need separate assemblies for the plug-ins. Your production code contains, within it somewhere a class named <code>SomeGenerator</code>. At runtime, we are going to create an in-memory assembly which contains only a single class (still named <code>SomeGenerator</code>), but which can nevertheless reference any other class available to the original implementation. Then we will get the dependency injection container to 'replace' the old generator with the new one.</p>
 
 <h2>The plan</h2>
 
@@ -90,6 +144,8 @@ public void Generate()
 
 
 <p>Over next few posts I'll guide you through building the application and demonstrate the runtime replacement of the generator class.</p>
+
+<p>See <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/">Part 2</a> for screen shots of the working application and an overview of the basic project set up.</p>
 ]]></content>
   </entry>
   

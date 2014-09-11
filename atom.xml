@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2014-09-09T10:56:09+01:00</updated>
+  <updated>2014-09-11T09:08:32+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,60 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 2: The Solution]]></title>
+    <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/"/>
+    <updated>2014-09-11T09:18:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2</id>
+    <content type="html"><![CDATA[<p>Previously: <a href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/">Part 1: The Goal</a></p>
+
+<h2>The solution</h2>
+
+<p>The code for the example is <a href="https://github.com/ZeroSharp/RoslynPlugins">available on GitHub</a>.</p>
+
+<h4>How it looks</h4>
+
+<p>So here&#8217;s the Hello World page in production:</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/roslyn-plugins-001.png">.</p>
+
+<p>We navigate to the plugins view and create a new replacement for the HelloWorldGenerator:</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/roslyn-plugins-002.png">.</p>
+
+<p>Without restarting, we can return to the HelloWorld page and see that the new class is being used because the output has changed.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/roslyn-plugins-003.png">.</p>
+
+<p>If you delete the row from the plugins page, the behaviour reverts to the original implementation (the code that was originally shipped with production).</p>
+
+<h4>Basic project setup</h4>
+
+<p>First, I created a new ASP.NET MVC 5 application. I added a HelloWorldContrroller and a View. I added a <code>Plugin</code> model and corresponding views. To get started I followed the tutorial here (http://www.asp.net/mvc/tutorials/mvc-5/introduction/getting-started). Once I had the basics in place, I added the following NuGet packages.</p>
+
+<p><strong>Stable</strong></p>
+
+<ul>
+<li>EntityFramework</li>
+<li>Ninject</li>
+<li>Ninject.MVC5</li>
+<li>Ninject.Conventions</li>
+</ul>
+
+
+<p><strong>Pre-release</strong></p>
+
+<ul>
+<li>Microsoft.CodeAnalysis.CSharp</li>
+</ul>
+
+
+<p>The <em>Microsoft.CodeAnalysis.CSharp</em> is the &#8216;Roslyn&#8217; package. It is still in beta, so you have to switch to the pre-release.</p>
+
+<p>Next we&#8217;ll look at the dependency injection part in more detail.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 1: The Goal]]></title>
@@ -81,11 +135,11 @@ How can we replace a given class&#8217;s code with new code at runtime? In parti
 
 <p>An alternative is to use the compiler-as-a-service features of <a href="http://msdn.microsoft.com/en-gb/vstudio/roslyn.aspx">Roslyn</a>.</p>
 
-<p>Can we upload a modified <em>SomeGenerator.cs</em> and get the it to reference the deployed assemblies and thereby avoid dll hell? With Roslyn we can do this.</p>
+<p>Can we upload a modified <em>SomeGenerator.cs</em> and get it to reference the deployed assemblies and thereby avoid dll hell? With Roslyn we can do this.</p>
 
 <p>If the compilation fails, we can immediately inform the user that the file is not compatible. If it succeeds, we can use it in lieu of the version that was originally deployed.</p>
 
-<p>Also, you do <strong>not</strong> need separate assemblies for the plug-ins. Your production code contains, within it somewhere a class named <code>SomeGenerator</code>. At runtime, we are going to create an in-memory assembly which contains only a single class (still named <code>SomeGenerator</code>), but which can nevertheless reference any other class available to the original implementation. Then we will get our IoC container to &#8216;replace&#8217; the old generator with the new one.</p>
+<p>Also, you do <strong>not</strong> need separate assemblies for the plug-ins. Your production code contains, within it somewhere a class named <code>SomeGenerator</code>. At runtime, we are going to create an in-memory assembly which contains only a single class (still named <code>SomeGenerator</code>), but which can nevertheless reference any other class available to the original implementation. Then we will get the dependency injection container to &#8216;replace&#8217; the old generator with the new one.</p>
 
 <h2>The plan</h2>
 
@@ -100,6 +154,8 @@ How can we replace a given class&#8217;s code with new code at runtime? In parti
 
 
 <p>Over next few posts I&#8217;ll guide you through building the application and demonstrate the runtime replacement of the generator class.</p>
+
+<p>See <a href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/">Part 2</a> for screen shots of the working application and an overview of the basic project set up.</p>
 ]]></content>
   </entry>
   
@@ -2338,80 +2394,6 @@ In the past I have always thought of NDepend as a complex tool. I was never sure
 
 
 <p>Then you can toggle the visibility of the feed icon by changing the <code>show_feeds</code> setting in the <code>_config.yml</code> file.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Making XAF reports even better - Part 2]]></title>
-    <link href="http://ZeroSharp.github.com/making-xaf-reports-even-better-part-2/"/>
-    <updated>2013-05-28T11:51:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/making-xaf-reports-even-better-part-2</id>
-    <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='Repx files with embedded scripts are now much more maintainable. You can correct syntax errors, refactor, version control, merge versions easily.'>
-Good news. The conversion is now two-way. Get the source code <a href="https://github.com/ZeroSharp/Xaf_MainDemo_ReportSync">from GitHub</a>. Make sure you have built MainDemo.Reports project.</p>
-
-<p>You will find there are now two T4 transforms in the project. <em>RepxToCSharp.tt</em> is covered in the <a href="http://ZeroSharp.github.com/making-xaf-reports-even-better-part-1">Part 1</a>. It searches for any <em>.repx</em> files in the solution and converts the scripts into compilable C#.</p>
-
-<p>The second transform is new. <em>CSharpToRepx.tt</em> copies any changes to the script part back into the original <em>.repx</em> files. Again, there are performance optimisations via checksums to prevent overwriting unchanged files.</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='text'><span class='line'>(This is an automatically generated file which should be excluded from version control)
-</span><span class='line'>
-</span><span class='line'>Summary of C# transformation
-</span><span class='line'>============================
-</span><span class='line'>Total C# files found                                        :  2
-</span><span class='line'>  Total reports injected                                    :  1
-</span><span class='line'>  Total reports missing                                     :  0
-</span><span class='line'>  Total reports skipped because unchanged                   :  1
-</span><span class='line'>
-</span><span class='line'>Time elapsed: 00:00:02.3483264
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Repx files with embedded scripts are now much more maintainable. You can correct syntax errors, refactor, version control, merge versions easily. You could even write unit tests against the code in the scripts.</p>
-
-<p></span></p>
-
-<p>Currently the easiest way of running these scripts is to open them and save them with <code>Ctrl+S</code>. This is because T4 templates were originally designed as a Visual Studio tool.</p>
-
-<p>In the future I&#8217;m hoping to improve the integration further. There are ways of including the transformations into the build instead, most of which are covered in <a href="http://www.olegsych.com/2010/04/understanding-t4-msbuild-integration">a blog post by Mr T4, Oleg Sych</a>. I like the idea of it being a NuGet package that can be easily added to any XAF project, but there&#8217;s a but I&#8217;ll need some more time to work out how best to achieve this.</p>
-
-<h2>Basic usage summary</h2>
-
-<p>Until then, here are some basic usage instructions.</p>
-
-<ul>
-<li>Add the T4 Toolbox extension to Visual Studio</li>
-<li>Add a copy of the MainDemo.Reports project to your own solution</li>
-<li>Make sure you build it before running the transforms</li>
-<li>Open <em>RepxToCSharp.tt</em> in Visual Studio.</li>
-<li>Save it with <code>Ctrl+S</code> to run the transform. It will search all the folders in your Solution for <em>.repx</em> files and add corresponding C# classes.</li>
-<li>Make any changes you like to the script section (anything outside of <code>// -- Start of embedded scripts --</code> and <code>// -- End of embedded scripts --</code>) will be ignored.</li>
-<li>Open <em>CSharpToRepx.tt</em> and run it with <code>Ctrl+S</code>. The changes will be saved back to the corresponding <em>.repx</em>.</li>
-</ul>
-
-
-<h2>Even more power?</h2>
-
-<p>You may notice that if you reload the MainDemo.Reports project, you can now see <code>View in Designer</code> in the context menu when you right-click on the <em>.repx.cs</em> file.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/xaf-report-sync-003.png"></p>
-
-<p>Let&#8217;s click it and see what happens. It opens directly in Visual Studio (like an <code>XtraReport</code>).</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/xaf-report-sync-004.png"></p>
-
-<p>Now, this is all highly experimental. You can see there are some warnings&#8230; Also, there is no connection with XPO, so the <em>Preview</em> is always empty.</p>
-
-<p>That said, it doesn&#8217;t seem like too much of a stretch to eventually allow far more Visual Studio integration for XAF reports&#8230;</p>
 ]]></content>
   </entry>
   

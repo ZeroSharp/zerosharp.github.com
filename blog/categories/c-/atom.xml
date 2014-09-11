@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c# | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/c-/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2014-09-09T10:56:09+01:00</updated>
+  <updated>2014-09-11T09:08:32+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,60 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 2: The Solution]]></title>
+    <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/"/>
+    <updated>2014-09-11T09:18:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2</id>
+    <content type="html"><![CDATA[<p>Previously: <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/">Part 1: The Goal</a></p>
+
+<h2>The solution</h2>
+
+<p>The code for the example is <a href="https://github.com/ZeroSharp/RoslynPlugins">available on GitHub</a>.</p>
+
+<h4>How it looks</h4>
+
+<p>So here's the Hello World page in production:</p>
+
+<p><img src="/images/blog/roslyn-plugins-001.png">.</p>
+
+<p>We navigate to the plugins view and create a new replacement for the HelloWorldGenerator:</p>
+
+<p><img src="/images/blog/roslyn-plugins-002.png">.</p>
+
+<p>Without restarting, we can return to the HelloWorld page and see that the new class is being used because the output has changed.</p>
+
+<p><img src="/images/blog/roslyn-plugins-003.png">.</p>
+
+<p>If you delete the row from the plugins page, the behaviour reverts to the original implementation (the code that was originally shipped with production).</p>
+
+<h4>Basic project setup</h4>
+
+<p>First, I created a new ASP.NET MVC 5 application. I added a HelloWorldContrroller and a View. I added a <code>Plugin</code> model and corresponding views. To get started I followed the tutorial here (http://www.asp.net/mvc/tutorials/mvc-5/introduction/getting-started). Once I had the basics in place, I added the following NuGet packages.</p>
+
+<p><strong>Stable</strong></p>
+
+<ul>
+<li>EntityFramework</li>
+<li>Ninject</li>
+<li>Ninject.MVC5</li>
+<li>Ninject.Conventions</li>
+</ul>
+
+
+<p><strong>Pre-release</strong></p>
+
+<ul>
+<li>Microsoft.CodeAnalysis.CSharp</li>
+</ul>
+
+
+<p>The <em>Microsoft.CodeAnalysis.CSharp</em> is the 'Roslyn' package. It is still in beta, so you have to switch to the pre-release.</p>
+
+<p>Next we'll look at the dependency injection part in more detail.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 1: The Goal]]></title>
@@ -71,11 +125,11 @@ public void Generate()
 
 <p>An alternative is to use the compiler-as-a-service features of <a href="http://msdn.microsoft.com/en-gb/vstudio/roslyn.aspx">Roslyn</a>.</p>
 
-<p>Can we upload a modified <em>SomeGenerator.cs</em> and get the it to reference the deployed assemblies and thereby avoid dll hell? With Roslyn we can do this.</p>
+<p>Can we upload a modified <em>SomeGenerator.cs</em> and get it to reference the deployed assemblies and thereby avoid dll hell? With Roslyn we can do this.</p>
 
 <p>If the compilation fails, we can immediately inform the user that the file is not compatible. If it succeeds, we can use it in lieu of the version that was originally deployed.</p>
 
-<p>Also, you do <strong>not</strong> need separate assemblies for the plug-ins. Your production code contains, within it somewhere a class named <code>SomeGenerator</code>. At runtime, we are going to create an in-memory assembly which contains only a single class (still named <code>SomeGenerator</code>), but which can nevertheless reference any other class available to the original implementation. Then we will get our IoC container to 'replace' the old generator with the new one.</p>
+<p>Also, you do <strong>not</strong> need separate assemblies for the plug-ins. Your production code contains, within it somewhere a class named <code>SomeGenerator</code>. At runtime, we are going to create an in-memory assembly which contains only a single class (still named <code>SomeGenerator</code>), but which can nevertheless reference any other class available to the original implementation. Then we will get the dependency injection container to 'replace' the old generator with the new one.</p>
 
 <h2>The plan</h2>
 
@@ -90,6 +144,8 @@ public void Generate()
 
 
 <p>Over next few posts I'll guide you through building the application and demonstrate the runtime replacement of the generator class.</p>
+
+<p>See <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/">Part 2</a> for screen shots of the working application and an overview of the basic project set up.</p>
 ]]></content>
   </entry>
   
@@ -332,107 +388,6 @@ As you can see, this is a very valuable glimpse into the server which can be tur
 <h2>MainDemo Sample Project</h2>
 
 <p>I have uploaded a modified XAF MainDemo to this <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Glimpse">GitHub repository</a> with all the above changes. (Don't forget to debug against IIS Express).</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[DevExpress 13.2 Review - Part 2]]></title>
-    <link href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-2/"/>
-    <updated>2013-12-10T16:10:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-2</id>
-    <content type="html"><![CDATA[<p>This is the second part of a review of the new DevExpress 13.2. In <a href="/devexpress-13-dot-2-review-part-1">the last part</a> we looked in-depth at the new <a href="https://community.devexpress.com/blogs/eaf/archive/2013/11/08/easy-large-reports-in-13-2-ctp-of-reportsv2-module.aspx">Reports V2</a>. In this part I'll go over some of the other new features including the support for warnings and confirmations in the validation module.</p>
-
-<h2>Soft Validation Rules</h2>
-
-<p>With 13.2, DevExpress adds support for warning/confirmation messages to the validation engine. Warnings can be used to handle an unusual but valid data entry. An example would be:</p>
-
-<p><blockquote><p>The date of birth results in an age of over 100. Are you sure?</p></blockquote></p>
-
-<p>Here the age of the contact is unusual but not impossible, so instead of prohibiting it entirely, we ask the user for confirmation before saving.</p>
-
-<p>Let's add this rule to the MainDemo. Open the model and navigate to the Validation node. Add a <code>RuleValueComparison</code> and configure it as follows</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-010.png"></p>
-
-<p>Of course you could instead also define the same rule with an attribute on the <code>Birthday</code> property. Something like:</p>
-
-<p>```c#
-[RuleValueComparison("IsOlderThan100_Warning",</p>
-
-<pre><code>DefaultContexts.Save,
-ValueComparisonType.GreaterThan, "AddYears(Now(), -100)",
-"Birthday makes this Contact older than 100. Are you sure?",
-ParametersMode.Expression,
-ResultType = ValidationResultType.Warning)]
-</code></pre>
-
-<p>```</p>
-
-<p>Notice the new <code>ResultType</code> parameter is set to <code>ValidationResultType.Warning</code>.</p>
-
-<p>Another typical use is to provide better handling of duplicates. Consider the following:</p>
-
-<p>```c#
-[RuleCombinationOfPropertiesIsUnique("DuplicateName_Warning",</p>
-
-<pre><code>DefaultContexts.Save, 
-"LastName;FirstName", 
-"There is already a Contact with the name {FullName}. Are you sure?", 
-ResultType = ValidationResultType.Warning)]
-</code></pre>
-
-<p>public class Contact : Person {
-  //etc ...
-```</p>
-
-<p>And then this is what happens if I try to add another John Nilsen.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-011.png"></p>
-
-<p>Another scenario would be to warn the user of something which needs attention. Such as "Warning! You are running out of funds in your current account." Or "Warning! Deleting this record will format your hard drive."</p>
-
-<h3>List Views</h3>
-
-<p>Soft validation also works in the list views, even with multiple selection, but there are a couple of things that don't work very smoothly yet and I would expect the web implementation to evolve over the coming releases.</p>
-
-<p>In order to demonstrate this I need to use a context which allows multiple selection such as deletion. So let's decorate our class with the following simple rule.</p>
-
-<p>```c#</p>
-
-<pre><code>[RuleCriteria("Deletion_Warning", DefaultContexts.Delete, "1=0", "Warning! Are you sure?", ResultType = ValidationResultType.Warning)]
-</code></pre>
-
-<p>```</p>
-
-<p>Then I select all the contacts and press <code>Delete</code>, after the confirmation window, I get this:</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-014.png"></p>
-
-<h3>Web Application</h3>
-
-<p>Soft validation is also available in the web application. This is what a warning looks like.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-015.png"></p>
-
-<p>I would prefer to see a <em>Confirm</em> button rather than the current <em>Ignore</em> checkbox since a button requires a single click to validate.</p>
-
-<p>When there are several warnings and errors at the same time, the current implementation displays them all. I think it would be preferable if warnings were not displayed unless there are no errors. Unless DevExpress provide this as an option soon, I will attempt to extend the controller in this regard in a future post.</p>
-
-<h2>Other new features</h2>
-
-<p>In the 13.2 release, there is now support for runtime extension of the model. DevExpress is calling this feature <em>custom fields</em> and (again) it is marked as beta. This is not a feature I've looked at, but there are a few other non-XAF DevExpress novelties which I'd like to see working within XAF. These include <a href="https://www.devexpress.com/Subscriptions/New-2013-v2-Beta.xml?product=aspnet#ctl00_ctl00_Content_Content_ctl659">new themes</a> and <a href="https://www.devexpress.com/Subscriptions/New-2013-v2-Beta.xml?product=aspnet#ctl00_ctl00_Content_Content_ctl660">support for grid batch editing</a>.</p>
-
-<h2>One warning</h2>
-
-<p><img class="left" src="/images/blog/devexpress-13-2-review-001.png">
-<img class="right" src="/images/blog/devexpress-13-2-review-002.png">
-The default directories for the installation have changed again. I'm sure DevExpress has some good reason for this, but if, like me, you have several different versions installed you end up with a confusing directory tree. Whenever this happens I always end up having to modify build scripts and config files so that all my tools work as expected. For those of you who use Red Gate's <em>.NET Reflector</em>, you can find my config file <a href="https://gist.github.com/shamp00/7748150">in this gist</a>.</p>
-
-<h2>Conclusions</h2>
-
-<p>For the 13.2 release, DevExpress have focused on making the existing functionality work better rather than developing new modules.</p>
-
-<p>Better reports. Better validation. A better framework all round.</p>
 ]]></content>
   </entry>
   

@@ -204,11 +204,11 @@ How can we replace a given class&#8217;s code with new code at runtime? In parti
 
 <p>An alternative is to use the compiler-as-a-service features of <a href="http://msdn.microsoft.com/en-gb/vstudio/roslyn.aspx">Roslyn</a>.</p>
 
-<p>Can we upload a modified <em>SomeGenerator.cs</em> and get the it to reference the deployed assemblies and thereby avoid dll hell? With Roslyn we can do this.</p>
+<p>Can we upload a modified <em>SomeGenerator.cs</em> and get it to reference the deployed assemblies and thereby avoid dll hell? With Roslyn we can do this.</p>
 
 <p>If the compilation fails, we can immediately inform the user that the file is not compatible. If it succeeds, we can use it in lieu of the version that was originally deployed.</p>
 
-<p>Also, you do <strong>not</strong> need separate assemblies for the plug-ins. Your production code contains, within it somewhere a class named <code>SomeGenerator</code>. At runtime, we are going to create an in-memory assembly which contains only a single class (still named <code>SomeGenerator</code>), but which can nevertheless reference any other class available to the original implementation. Then we will get our IoC container to &#8216;replace&#8217; the old generator with the new one.</p>
+<p>Also, you do <strong>not</strong> need separate assemblies for the plug-ins. Your production code contains, within it somewhere a class named <code>SomeGenerator</code>. At runtime, we are going to create an in-memory assembly which contains only a single class (still named <code>SomeGenerator</code>), but which can nevertheless reference any other class available to the original implementation. Then we will get the dependency injection container to &#8216;replace&#8217; the old generator with the new one.</p>
 
 <h2>The plan</h2>
 
@@ -223,6 +223,8 @@ How can we replace a given class&#8217;s code with new code at runtime? In parti
 
 
 <p>Over next few posts I&#8217;ll guide you through building the application and demonstrate the runtime replacement of the generator class.</p>
+
+<p>See <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/">Part 2</a> for screen shots of the working application and an overview of the basic project set up.</p>
 </div>
 
 
@@ -274,6 +276,8 @@ How can we replace a given class&#8217;s code with new code at runtime? In parti
       
         <a class="basic-alignment left" href="/persisting-changes-to-config-files-within-nuget-packages/" title="Previous Post: Persisting changes to config files within NuGet packages">&laquo; Persisting changes to config files within NuGet packages</a>
       
+      
+        <a class="basic-alignment right" href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/" title="Next Post: Replacing a class at runtime using Ninject and Roslyn - Part 2: The Solution">Replacing a class at runtime using Ninject and Roslyn - Part 2: The Solution &raquo;</a>
       
     </p>
   </footer>
