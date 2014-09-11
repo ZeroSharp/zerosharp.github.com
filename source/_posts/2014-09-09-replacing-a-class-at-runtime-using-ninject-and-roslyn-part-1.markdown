@@ -54,11 +54,11 @@ Also, with one assembly per format, you can end up with a huge proliferation of 
 
 An alternative is to use the compiler-as-a-service features of [Roslyn](http://msdn.microsoft.com/en-gb/vstudio/roslyn.aspx).
 
-Can we upload a modified _SomeGenerator.cs_ and get the it to reference the deployed assemblies and thereby avoid dll hell? With Roslyn we can do this.
+Can we upload a modified _SomeGenerator.cs_ and get it to reference the deployed assemblies and thereby avoid dll hell? With Roslyn we can do this.
 
 If the compilation fails, we can immediately inform the user that the file is not compatible. If it succeeds, we can use it in lieu of the version that was originally deployed.
 
-Also, you do __not__ need separate assemblies for the plug-ins. Your production code contains, within it somewhere a class named `SomeGenerator`. At runtime, we are going to create an in-memory assembly which contains only a single class (still named `SomeGenerator`), but which can nevertheless reference any other class available to the original implementation. Then we will get our IoC container to 'replace' the old generator with the new one.
+Also, you do __not__ need separate assemblies for the plug-ins. Your production code contains, within it somewhere a class named `SomeGenerator`. At runtime, we are going to create an in-memory assembly which contains only a single class (still named `SomeGenerator`), but which can nevertheless reference any other class available to the original implementation. Then we will get the dependency injection container to 'replace' the old generator with the new one.
 
 ## The plan ##
 
@@ -70,3 +70,5 @@ Also, you do __not__ need separate assemblies for the plug-ins. Your production 
 * Delete the plug-in from the table and show the output has reverted to the default (the originally implementation code).
 
 Over next few posts I'll guide you through building the application and demonstrate the runtime replacement of the generator class.
+
+See [Part 2](/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/) for screen shots of the working application and an overview of the basic project set up.

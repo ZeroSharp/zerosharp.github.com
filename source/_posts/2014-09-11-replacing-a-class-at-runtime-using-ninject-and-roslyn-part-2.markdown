@@ -5,8 +5,9 @@ date: 2014-09-11 09:18
 comments: true
 categories: [c#, ninject, roslyn, plugins]
 description: A powerful and simple plug-in framework for .NET using Ninject and Roslyn. Part 2.
-published: false
 ---
+Previously: [Part 1: The Goal](/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/)
+
 ## The solution ##
 
 The code for the example is [available on GitHub](https://github.com/ZeroSharp/RoslynPlugins).
@@ -25,7 +26,7 @@ Without restarting, we can return to the HelloWorld page and see that the new cl
 
 {% img /images/blog/roslyn-plugins-003.png %}.
 
-If you delete the row from the plugins page, the behaviour reverts to the default output (that is, the code that was originally shipped with production).
+If you delete the row from the plugins page, the behaviour reverts to the original implementation (the code that was originally shipped with production).
 
 #### Basic project setup ####
 
