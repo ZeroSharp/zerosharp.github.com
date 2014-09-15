@@ -5,8 +5,12 @@ date: 2014-09-15 08:01
 comments: true
 categories: [c#, ninject, roslyn, plugins]
 description: A powerful and simple plug-in framework for .NET using Ninject and Roslyn. Part 3.
-published: false
 ---
+Previously
+
+* [Part 1: The Goal](/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/)
+* [Part 2: The Solution](/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/)
+
 ## Dependency injection ##
 
 The first trick is to use dependency injection to create any instance of the `HelloWorldGenerator` class. Then if we need to add a new dependency to the class, we can just add it to the constructor without breaking anything.
@@ -23,7 +27,7 @@ public class HelloWorldGenerator : IGenerator
     }
 ```
 
-We'll use Ninject here, but you ought to be able to achieve the same with any IoC framework.
+We'll use Ninject here, but you ought to be able to achieve the same with any dependency injection framework.
 
 So normally, we'd have a binding something like:
 
@@ -37,7 +41,7 @@ Instead we'll replace this with a binding to a factory method instead.
 Bind<IGenerator>().ToMethod(context => CreatePluginInstance(context));
 ```
 
-The `CreatePluginInstance(context)` method will try to find an `IGenerator` class within any available plug-ins. If it finds one, it will ask the Ninject framework to create an instance of the plug-in class. Otherwise it falls back to the default type (i.e., the original implementation of the generator). The `PluginLocator` it is responsible for searching any runtime-compiled assemblies for candidate plug-ins. We'll look at it in more detail later.
+The `CreatePluginInstance(context)` method will try to find an `IGenerator` class within any available plug-ins. If it finds one, it will ask the Ninject framework to create an instance of the plug-in class. Otherwise it falls back to the default type (the original implementation of the generator). The `PluginLocator` it is responsible for searching any runtime-compiled assemblies for candidate plug-ins. We'll look at it in more detail later.
 
 ```c# 
 private IGenerator CreatePluginInstance(IContext context)

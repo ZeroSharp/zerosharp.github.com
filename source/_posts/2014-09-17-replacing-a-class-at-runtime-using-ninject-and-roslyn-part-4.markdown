@@ -7,6 +7,12 @@ categories: [c#, ninject, roslyn, plugins]
 description: A powerful and simple plug-in framework for .NET using Ninject and Roslyn. Part 4.
 published: false
 ---
+Previously
+
+* [Part 1: The Goal](/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/)
+* [Part 2: The Solution](/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/)
+* [Part 3: Dependency Injection](/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/)
+
 ## Roslyn ##
 
 I haven't covered every detail of the Roslyn side of things - download the source code to see it all working. Here I'll just cover the main classes.
@@ -108,7 +114,9 @@ public class PluginSnippetCompiler
 }
 ```
 
-The class depends on an `AssemblyReferenceCollector` which is responsible for enumerating the references to add to the runtime generated plugin assembly.
+In this demo, I have not included any user feedback about compilation errors, but they are easily obtainable from the `Errors` and `Warnings` properties. If there is an error, the plug-in will be ignored and the default implementation will be used.
+
+The class above depends on an `AssemblyReferenceCollector` which is responsible for enumerating the references to add to the runtime generated plug-in assembly.
 
 ```c#
 public class AssemblyReferenceCollector : IAssemblyReferenceCollector
@@ -260,12 +268,23 @@ The `PluginAssemblyCache` has the following dependencies:
 ```
 
 So whenever the `SomeGenerator` class is resolved by Ninject, it will now 
-- Check whether there are any new plug-ins and compile them into runtime assemblies and add them to the `PluginAssemblyCache`. Then the `PluginLocator` will search these assemblies for a newer version of `SomeGenerator`. If it finds one, it will be resolved along with any constructor dependencies, otherwise it will use the original `SomeGenerator`.
+
+* Check whether there are any new plug-ins and compile them into runtime assemblies and add them to the `PluginAssemblyCache`. 
+* Then the `PluginLocator` will search these assemblies for a newer version of `SomeGenerator`. 
+* If it finds one, it will be resolved along with any constructor dependencies, otherwise it will use the original `SomeGenerator`.
+
+#### Version numbers ####
+
+The version number of the plug-in is a key part of our solution. Let's say you have version 1.0 in production. Then you fix some bugs in staging (version 1.1). You create a plug-in from this staging code and upload it into production. Then much later, you decide to upgrade production to 1.2. Then, with the query in `GetAssemblies()`, the 1.1 plug-in will automatically be ignored and be superseded by whatever was shipped with 1.2 __since that is newer code__. So we do not have to remember to remove obsolete plug-ins after an upgrade - they will automatically be ignored because of the version number.
+
+#### Security ####
+
+Obviously, security is a chief concern and you may have to secure the plug-ins. In this demo project, I just created a simple view for the `IPlugin` object, but in our production environment we handle the creation of plug-ins differently. We use a combination of role-based security (to control who has permission to upload plugins) and encryption with checksumming. No user can directly enter arbitrary code - instead, we send the user a zip file which contains the code (encrypted), the version number and a checksum and our application verifies the checksum and builds the `IPlugin` object from the contents of the zip. A Powershell script running on our build server is responsible for creating the checksummed plug-in directly from the source code used in our staging environment.
 
 ## Conclusions - the ultimate plug-in framework?##
-
-The sample project is more a proof-of-concept, but I am using the same approach in our production system. Obviously, security is a chief concern and you may have to secure the plug-ins. (We use a combination of role-based security and encryption with checksumming). Also, you could improve the reporting of compilation errors in the plug-ins. 
 
 The strength of this approach is that it is easy to maintain while being extremely versatile. In our case, it provides us with the ability to restrict the number of major releases approximately one per annum while catering for the inevitable little fixes to output formats and reports.
 
 In the example we replaced an existing class, but it would be straightforward to add the concept of _discovery_ and use the same Roslyn features to make any _new_ plug-in classes available to your application. Ninject, makes it easy to instantiate, say, every implementor of `IGenerator`, so you could enumerate all available plug-ins instead of replacing a single one.
+
+So here's a plugin framework which is very flexible and very powerful without many of the versioning headaches of MEF or MAF. It's also easy to maintain, since the plug-in code is identical to the 'normal' code in staging (just packaged, delivered and compiled in a different way to production).
