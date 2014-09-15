@@ -9,7 +9,8 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Previously: Part 1: The Goal The solution The code for the example is available on GitHub. How it looks So here&#8217;s the Hello World page in &hellip;">
+  <meta name="description" content="Previously Part 1: The Goal
+Part 2: The Solution Dependency injection The first trick is to use dependency injection to create any instance of the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +114,204 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/">Replacing a Class at Runtime Using Ninject and Roslyn - Part 3: Dependency Injection</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-09-15T08:01:00+01:00" pubdate data-updated="true">Sep 15<span>th</span>, 2014</time>
+        
+         | <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Previously</p>
+
+<ul>
+<li><a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/">Part 1: The Goal</a></li>
+<li><a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/">Part 2: The Solution</a></li>
+</ul>
+
+
+<h2>Dependency injection</h2>
+
+<p>The first trick is to use dependency injection to create any instance of the <code>HelloWorldGenerator</code> class. Then if we need to add a new dependency to the class, we can just add it to the constructor without breaking anything.</p>
+
+<figure class='code'><figcaption><span>HelloWorldGenerator.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">HelloWorldGenerator</span> <span class="p">:</span> <span class="n">IGenerator</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">HelloWorldGenerator</span><span class="p">(</span>
+</span><span class='line'>        <span class="n">ISomeDependency</span> <span class="n">dependency</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">IAnotherDependency</span> <span class="n">another</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">INewDependency</span> <span class="k">new</span> <span class="c1">// a new dependency!!!)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="p">...</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We&#8217;ll use Ninject here, but you ought to be able to achieve the same with any dependency injection framework.</p>
+
+<p>So normally, we&#8217;d have a binding something like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Bind</span><span class="p">&lt;</span><span class="n">IGenerator</span><span class="p">&gt;().</span><span class="n">To</span><span class="p">&lt;</span><span class="n">HelloWorldGenerator</span><span class="p">&gt;();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Instead we&#8217;ll replace this with a binding to a factory method instead.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Bind</span><span class="p">&lt;</span><span class="n">IGenerator</span><span class="p">&gt;().</span><span class="n">ToMethod</span><span class="p">(</span><span class="n">context</span> <span class="p">=&gt;</span> <span class="n">CreatePluginInstance</span><span class="p">(</span><span class="n">context</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>CreatePluginInstance(context)</code> method will try to find an <code>IGenerator</code> class within any available plug-ins. If it finds one, it will ask the Ninject framework to create an instance of the plug-in class. Otherwise it falls back to the default type (the original implementation of the generator). The <code>PluginLocator</code> it is responsible for searching any runtime-compiled assemblies for candidate plug-ins. We&#8217;ll look at it in more detail later.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">private</span> <span class="n">IGenerator</span> <span class="nf">CreatePluginInstance</span><span class="p">(</span><span class="n">IContext</span> <span class="n">context</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">var</span> <span class="n">pluginLocator</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">Kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">&lt;</span><span class="n">PluginLocator</span><span class="p">&gt;();</span>
+</span><span class='line'>    <span class="n">Type</span> <span class="n">roslynPluginType</span> <span class="p">=</span> <span class="n">pluginLocator</span><span class="p">.</span><span class="n">Locate</span><span class="p">&lt;</span><span class="n">IGenerator</span><span class="p">&gt;();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">/// if we found a plug-in, create an instance of it</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">roslynPluginType</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="n">IGenerator</span><span class="p">)</span><span class="n">context</span><span class="p">.</span><span class="n">Kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">(</span><span class="n">roslynPluginType</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">else</span> <span class="c1">///otherwise create an instance of the original implementation</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">context</span><span class="p">.</span><span class="n">Kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">&lt;</span><span class="n">HelloWorldGenerator</span><span class="p">&gt;();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>By convention</h4>
+
+<p>Of course, you might have dozens of <code>IGenerator</code> descendants, in which case you can use <a href="https://github.com/ninject/ninject.extensions.conventions">Ninject&#8217;s convention-based binding module</a>. (Don&#8217;t forget to add it with NuGet). My version looks something like the following.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">/// If you have a lot of IGenerator subclasses, you can use Ninject&#39;s</span>
+</span><span class='line'><span class="c1">/// convention based module.</span>
+</span><span class='line'><span class="c1">/// </span>
+</span><span class='line'><span class="c1">///   For each Generator, bind to IGenerator. </span>
+</span><span class='line'><span class="c1">///   For example, Bind&lt;IGenerator&gt;.To&lt;SomeGenerator&gt;();</span>
+</span><span class='line'><span class="c1">/// </span>
+</span><span class='line'><span class="n">Kernel</span><span class="p">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">scanner</span> <span class="p">=&gt;</span> <span class="n">scanner</span>
+</span><span class='line'>    <span class="p">.</span><span class="n">FromThisAssembly</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">.</span><span class="n">SelectAllClasses</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">.</span><span class="n">InheritedFrom</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">IGenerator</span><span class="p">))</span>
+</span><span class='line'>    <span class="p">.</span><span class="n">BindToPluginOtherwiseDefaultInterfaces</span><span class="p">());</span> <span class="c1">//This is a custom extension method (see below)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">ConventionSyntaxExtensions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="n">IConfigureSyntax</span> <span class="nf">BindToPluginOtherwiseDefaultInterfaces</span><span class="p">(</span><span class="k">this</span> <span class="n">IJoinFilterWhereExcludeIncludeBindSyntax</span> <span class="n">syntax</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">syntax</span><span class="p">.</span><span class="n">BindWith</span><span class="p">(</span><span class="k">new</span> <span class="n">DefaultInterfacesBindingGenerator</span><span class="p">(</span><span class="k">new</span> <span class="n">BindableTypeSelector</span><span class="p">(),</span> <span class="k">new</span> <span class="n">PluginOtherwiseDefaultBindingCreator</span><span class="p">()));</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">/// &lt;summary&gt;</span>
+</span><span class='line'><span class="c1">/// Returns a Ninject binding to a method which returns the plug-in type if one exists, otherwise returns the default type.</span>
+</span><span class='line'><span class="c1">/// &lt;/summary&gt;</span>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">PluginOtherwiseDefaultBindingCreator</span> <span class="p">:</span> <span class="n">IBindingCreator</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">IBindingWhenInNamedWithOrOnSyntax</span><span class="p">&lt;</span><span class="kt">object</span><span class="p">&gt;&gt;</span> <span class="n">CreateBindings</span><span class="p">(</span><span class="n">IBindingRoot</span> <span class="n">bindingRoot</span><span class="p">,</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">Type</span><span class="p">&gt;</span> <span class="n">serviceTypes</span><span class="p">,</span> <span class="n">Type</span> <span class="n">implementationType</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">bindingRoot</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">throw</span> <span class="k">new</span> <span class="nf">ArgumentNullException</span><span class="p">(</span><span class="s">&quot;bindingRoot&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="p">!</span><span class="n">serviceTypes</span><span class="p">.</span><span class="n">Any</span><span class="p">()</span>
+</span><span class='line'>         <span class="p">?</span> <span class="n">Enumerable</span><span class="p">.</span><span class="n">Empty</span><span class="p">&lt;</span><span class="n">IBindingWhenInNamedWithOrOnSyntax</span><span class="p">&lt;</span><span class="kt">object</span><span class="p">&gt;&gt;()</span>
+</span><span class='line'>         <span class="p">:</span> <span class="k">new</span><span class="p">[]</span> <span class="p">{</span> <span class="n">bindingRoot</span><span class="p">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">serviceTypes</span><span class="p">.</span><span class="n">ToArray</span><span class="p">()).</span><span class="n">ToMethod</span><span class="p">(</span><span class="n">context</span> <span class="p">=&gt;</span> <span class="n">context</span><span class="p">.</span><span class="n">Kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">Kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">&lt;</span><span class="n">PluginLocator</span><span class="p">&gt;().</span><span class="n">Locate</span><span class="p">(</span><span class="n">serviceTypes</span><span class="p">)</span> <span class="p">??</span> <span class="n">implementationType</span><span class="p">))</span> <span class="p">};</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Next we&#8217;ll look at the Roslyn part in more detail.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1163,202 +1362,6 @@ The default directories for the installation have changed again. I&#8217;m sure 
 <p>For the 13.2 release, DevExpress have focused on making the existing functionality work better rather than developing new modules.</p>
 
 <p>Better reports. Better validation. A better framework all round.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/devexpress-13-dot-2-review-part-1/">DevExpress 13.2 Review - Part 1</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-02T16:23:00+00:00" pubdate data-updated="true">Dec 2<span>nd</span>, 2013</time>
-        
-         | <a href="/devexpress-13-dot-2-review-part-1/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>The first version of XAF I ever installed was called <em>eXpressApp-1.0.CTP2.exe</em> in July 2006! It has certainly come a long way since then.</p>
-
-<p>This post is the first part of an overview of the brand new version XAF 13.2 which will be released any day now. This part is an in-depth review of the new report writer features (still in beta).</p>
-
-<h2>Reports V2</h2>
-
-<p>Prior to this version, XAF reports were not source code. They were objects serialized to a file and then loaded into the database during initialisation. This has a lot of shortcomings some of which I have addressed in previous <a href="/making-xaf-reports-even-better-part-1/">blog posts</a>.</p>
-
-<p>But now finally it is now possible to build XAF reports directly from Visual Studio. DevExpress is calling this <a href="https://community.devexpress.com/blogs/eaf/archive/2013/11/08/easy-large-reports-in-13-2-ctp-of-reportsv2-module.aspx">Reports V2</a> and it largely supersedes my previous workarounds. The immediate advantages of Reports V2 are:</p>
-
-<ul>
-<li>Build time syntax checking</li>
-<li>Easily merge/compare report versions</li>
-<li>Painless version control of reports</li>
-<li>Better unit testing possibilities</li>
-</ul>
-
-
-<p>Let&#8217;s have a look at the details. DevExpress have provided us with a new sample project called <em>ReportsV2Demo</em>. The interesting part of the project solution is here:</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-003.png"></p>
-
-<p>Notice that there are two folders containing reports. <em>PredefinedEditableReports</em> contains V1 reports. That is, the report is serialised as a string and loaded into the database during initialisation. If we look at the source for one of these, here is what it looks like:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">namespace</span> <span class="nn">ReportV2Demo.Module.PredefinedEditableReports</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="k">class</span> <span class="nc">OrdinalReportResource</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">public</span> <span class="k">static</span> <span class="kt">string</span> <span class="n">ReportLayout</span> <span class="p">=</span> <span class="s">@&quot;</span>
-</span><span class='line'><span class="s">/// &lt;XRTypeInfo&gt;</span>
-</span><span class='line'><span class="s">///   &lt;AssemblyFullName&gt;DevExpress.XtraReportsVSuffix, Version=dllVersion, Culture=neutral, PublicKeyToken=dllPublicKeyToken&lt;/AssemblyFullName&gt;</span>
-</span><span class='line'><span class="s">///   &lt;AssemblyLocation&gt;C:\Windows\Microsoft.Net\assembly\GAC_MSIL\DevExpress.XtraReportsVSuffix\v4.0_dllVersion__dllPublicKeyToken\DevExpress.XtraReportsVSuffix.dll&lt;/AssemblyLocation&gt;</span>
-</span><span class='line'><span class="s">///   &lt;TypeName&gt;DevExpress.XtraReports.UI.XtraReport&lt;/TypeName&gt;</span>
-</span><span class='line'><span class="s">///   &lt;Localization&gt;en-US&lt;/Localization&gt;</span>
-</span><span class='line'><span class="s">///   &lt;Version&gt;VersionShort&lt;/Version&gt;</span>
-</span><span class='line'><span class="s">///   &lt;References&gt;</span>
-</span><span class='line'><span class="s">///     &lt;Reference Path=&quot;&quot;C:\Windows\Microsoft.Net\assembly\GAC_MSIL\DevExpress.Persistent.BaseVSuffix\v4.0_dllVersion__dllPublicKeyToken\DevExpress.Persistent.BaseVSuffix.dll&quot;&quot; /&gt;</span>
-</span><span class='line'><span class="s">///     &lt;Reference Path=&quot;&quot;C:\Windows\Microsoft.Net\assembly\GAC_MSIL\System\v4.0_4.0.0.0__b77a5c561934e089\System.dll&quot;&quot; /&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">/// etc.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The second folder, <em>PredefinedReadonlyReports</em> contains the V2 reports. With these reports, we can right-click and <strong>View Designer</strong> and up pops the XtraReport designer.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-004.png"></p>
-
-<p>Now I can make changes to my report within Visual Studio. In theory I can preview the report and view the HTML output. However, in the beta (13.2.4) the Preview view prints the report correctly but fails to fetch any data so all the fields are empty (maybe this is by design).</p>
-
-<p>(Actually, I think the names of these folders could be improved. Maybe XafReports vs. XtraReports. Or RuntimeReports vs. DesigntimeReports.)</p>
-
-<p>With respect to event scripts which in the past were particularly arduous to maintain, we now have two options.</p>
-
-<h3>Scripts option 1 - Use serialized scripts</h3>
-
-<p> Firstly, you can continue to use the scripts as before. You can use Visual Studio&#8217;s <em>Properties</em> window to navigate to the script you need and then add the necessary code in the custom editor.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-005.png"></p>
-
-<p>Unfortunately, this is not the best from a maintenance perspective. The Scripts code editor view is not at all comparable to Visual Studio. No Intellisense. No CodeRush. In addition, the script itself gets serialized to a string.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">this</span><span class="p">.</span><span class="n">ScriptsSource</span> <span class="p">=</span> <span class="s">&quot;\r\nprivate void xrLabel2_BeforePrint(object sender,System.Drawing.Printing.PrintE&quot;</span> <span class="p">+</span>
-</span><span class='line'>    <span class="s">&quot;ventArgs e) {\r\n    string something = \&quot;something\&quot;;\r\n}\r\n&quot;</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So unfortunately this approach does not improve things much with regard to compile-time syntax checking or code merging/version control.</p>
-
-<h3>Scripts option 2 - Move the scripts to the C# file</h3>
-
-<p>Now that the report is more like an <code>XtraReport</code>, we can attach an event in code. To test it I&#8217;ll replace the output of the <em>First name</em> with the current time.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">XtraReportOrdinary</span> <span class="p">:</span> <span class="n">DevExpress</span><span class="p">.</span><span class="n">XtraReports</span><span class="p">.</span><span class="n">UI</span><span class="p">.</span><span class="n">XtraReport</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="nf">XtraReportOrdinary</span><span class="p">()</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">InitializeComponent</span><span class="p">();</span>
-</span><span class='line'>        <span class="n">xrLabel2</span><span class="p">.</span><span class="n">BeforePrint</span> <span class="p">+=</span> <span class="n">xrLabel2_BeforePrint</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">private</span> <span class="k">void</span> <span class="nf">xrLabel2_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// Today&#39;s date and time</span>
-</span><span class='line'>        <span class="n">xrLabel2</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span><span class="p">.</span><span class="n">ToString</span><span class="p">(</span><span class="s">&quot;G&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now let&#8217;s see if it works. We start up the web application and run the report.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-006.png"></p>
-
-<p>Excellent! You can see the report has successfully run the event and is displaying the current time instead of the first name. Here are the advantages of handling events this way.</p>
-
-<ul>
-<li>If there&#8217;s a mistake in an event, the project will not compile until it&#8217;s fixed.</li>
-<li>The code is more readable.</li>
-<li>The source code of the events can easily be compared with older versions.</li>
-<li>The source code can be merged much more easily when handling version control conflicts.</li>
-<li>Unit testing of the events becomes feasible.</li>
-</ul>
-
-
-<h3>Runtime tailoring</h3>
-
-<p>Can an end-user still make a copy and tailor the report as they could with the older versions? Yes they can! Let&#8217;s start up the WinForms client and have a look.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-007.png"></p>
-
-<p>Each of the <em>PredefinedReadonlyReports</em> has a new option <em>Copy predefined report</em>. Also, notice that the <em>Show Report Designer</em> is greyed out. Now compare with the copy.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-008.png"></p>
-
-<p>This time it is the <em>Copy predefined report</em> is greyed out and the familiar <em>Show Report Designer</em> has become available. (A little suggestion to the DevExpress crew. It would be better if the new copy got renamed to <em>Copy of Inplace Report</em> like Windows does when copying a file). Now we can open the Report Designer and customise the report further. Fantastic!</p>
-
-<p>Let&#8217;s check what happened to our events?</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-009.png"></p>
-
-<p>Well, the serialized event was copied correctly, but the script that we put in the C# file has not been copied. A bit unfortunate - that event would have to be re-written or copied manually from the C# source file, but in most cases, additional tailoring of reports is a one-off occasional activity. For me at least, the benefits of having more maintainable code outweigh the inconvenience of losing the events when cloning a report.</p>
-
-<h2>Conclusions</h2>
-
-<p>Reports V2 is certainly the most significant improvement to the XAF reporting engine yet. I&#8217;m sure there are a few beta issues to iron out and a few further improvements down the line. In this post, I haven&#8217;t looked at features such as views, sub-reports and custom reporting components, all of which deserve further investigation.</p>
-
-<p>In my <a href="http://www.coprocess.com/">main development project</a>, there are currently 110 different reports and maintaining them takes some effort. Reports V2 will help considerably. Hats off to the DevExpress team.</p>
-
-<h2>Next up</h2>
-
-<p>In my next post I&#8217;ll be taking a look at the new soft validation along with some other 13.2 improvements.</p>
 </div>
   
   

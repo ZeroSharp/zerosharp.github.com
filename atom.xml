@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2014-09-11T09:08:32+01:00</updated>
+  <updated>2014-09-15T09:45:35+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,175 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 3: Dependency Injection]]></title>
+    <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/"/>
+    <updated>2014-09-15T08:01:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3</id>
+    <content type="html"><![CDATA[<p>Previously</p>
+
+<ul>
+<li><a href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/">Part 1: The Goal</a></li>
+<li><a href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/">Part 2: The Solution</a></li>
+</ul>
+
+
+<h2>Dependency injection</h2>
+
+<p>The first trick is to use dependency injection to create any instance of the <code>HelloWorldGenerator</code> class. Then if we need to add a new dependency to the class, we can just add it to the constructor without breaking anything.</p>
+
+<figure class='code'><figcaption><span>HelloWorldGenerator.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">HelloWorldGenerator</span> <span class="p">:</span> <span class="n">IGenerator</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">HelloWorldGenerator</span><span class="p">(</span>
+</span><span class='line'>        <span class="n">ISomeDependency</span> <span class="n">dependency</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">IAnotherDependency</span> <span class="n">another</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">INewDependency</span> <span class="k">new</span> <span class="c1">// a new dependency!!!)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="p">...</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We&#8217;ll use Ninject here, but you ought to be able to achieve the same with any dependency injection framework.</p>
+
+<p>So normally, we&#8217;d have a binding something like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Bind</span><span class="p">&lt;</span><span class="n">IGenerator</span><span class="p">&gt;().</span><span class="n">To</span><span class="p">&lt;</span><span class="n">HelloWorldGenerator</span><span class="p">&gt;();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Instead we&#8217;ll replace this with a binding to a factory method instead.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Bind</span><span class="p">&lt;</span><span class="n">IGenerator</span><span class="p">&gt;().</span><span class="n">ToMethod</span><span class="p">(</span><span class="n">context</span> <span class="p">=&gt;</span> <span class="n">CreatePluginInstance</span><span class="p">(</span><span class="n">context</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>CreatePluginInstance(context)</code> method will try to find an <code>IGenerator</code> class within any available plug-ins. If it finds one, it will ask the Ninject framework to create an instance of the plug-in class. Otherwise it falls back to the default type (the original implementation of the generator). The <code>PluginLocator</code> it is responsible for searching any runtime-compiled assemblies for candidate plug-ins. We&#8217;ll look at it in more detail later.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">private</span> <span class="n">IGenerator</span> <span class="nf">CreatePluginInstance</span><span class="p">(</span><span class="n">IContext</span> <span class="n">context</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">var</span> <span class="n">pluginLocator</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">Kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">&lt;</span><span class="n">PluginLocator</span><span class="p">&gt;();</span>
+</span><span class='line'>    <span class="n">Type</span> <span class="n">roslynPluginType</span> <span class="p">=</span> <span class="n">pluginLocator</span><span class="p">.</span><span class="n">Locate</span><span class="p">&lt;</span><span class="n">IGenerator</span><span class="p">&gt;();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">/// if we found a plug-in, create an instance of it</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">roslynPluginType</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="n">IGenerator</span><span class="p">)</span><span class="n">context</span><span class="p">.</span><span class="n">Kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">(</span><span class="n">roslynPluginType</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">else</span> <span class="c1">///otherwise create an instance of the original implementation</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">context</span><span class="p">.</span><span class="n">Kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">&lt;</span><span class="n">HelloWorldGenerator</span><span class="p">&gt;();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>By convention</h4>
+
+<p>Of course, you might have dozens of <code>IGenerator</code> descendants, in which case you can use <a href="https://github.com/ninject/ninject.extensions.conventions">Ninject&#8217;s convention-based binding module</a>. (Don&#8217;t forget to add it with NuGet). My version looks something like the following.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">/// If you have a lot of IGenerator subclasses, you can use Ninject&#39;s</span>
+</span><span class='line'><span class="c1">/// convention based module.</span>
+</span><span class='line'><span class="c1">/// </span>
+</span><span class='line'><span class="c1">///   For each Generator, bind to IGenerator. </span>
+</span><span class='line'><span class="c1">///   For example, Bind&lt;IGenerator&gt;.To&lt;SomeGenerator&gt;();</span>
+</span><span class='line'><span class="c1">/// </span>
+</span><span class='line'><span class="n">Kernel</span><span class="p">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">scanner</span> <span class="p">=&gt;</span> <span class="n">scanner</span>
+</span><span class='line'>    <span class="p">.</span><span class="n">FromThisAssembly</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">.</span><span class="n">SelectAllClasses</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">.</span><span class="n">InheritedFrom</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">IGenerator</span><span class="p">))</span>
+</span><span class='line'>    <span class="p">.</span><span class="n">BindToPluginOtherwiseDefaultInterfaces</span><span class="p">());</span> <span class="c1">//This is a custom extension method (see below)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">ConventionSyntaxExtensions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="n">IConfigureSyntax</span> <span class="nf">BindToPluginOtherwiseDefaultInterfaces</span><span class="p">(</span><span class="k">this</span> <span class="n">IJoinFilterWhereExcludeIncludeBindSyntax</span> <span class="n">syntax</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">syntax</span><span class="p">.</span><span class="n">BindWith</span><span class="p">(</span><span class="k">new</span> <span class="n">DefaultInterfacesBindingGenerator</span><span class="p">(</span><span class="k">new</span> <span class="n">BindableTypeSelector</span><span class="p">(),</span> <span class="k">new</span> <span class="n">PluginOtherwiseDefaultBindingCreator</span><span class="p">()));</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">/// &lt;summary&gt;</span>
+</span><span class='line'><span class="c1">/// Returns a Ninject binding to a method which returns the plug-in type if one exists, otherwise returns the default type.</span>
+</span><span class='line'><span class="c1">/// &lt;/summary&gt;</span>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">PluginOtherwiseDefaultBindingCreator</span> <span class="p">:</span> <span class="n">IBindingCreator</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">IBindingWhenInNamedWithOrOnSyntax</span><span class="p">&lt;</span><span class="kt">object</span><span class="p">&gt;&gt;</span> <span class="n">CreateBindings</span><span class="p">(</span><span class="n">IBindingRoot</span> <span class="n">bindingRoot</span><span class="p">,</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">Type</span><span class="p">&gt;</span> <span class="n">serviceTypes</span><span class="p">,</span> <span class="n">Type</span> <span class="n">implementationType</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">bindingRoot</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">throw</span> <span class="k">new</span> <span class="nf">ArgumentNullException</span><span class="p">(</span><span class="s">&quot;bindingRoot&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="p">!</span><span class="n">serviceTypes</span><span class="p">.</span><span class="n">Any</span><span class="p">()</span>
+</span><span class='line'>         <span class="p">?</span> <span class="n">Enumerable</span><span class="p">.</span><span class="n">Empty</span><span class="p">&lt;</span><span class="n">IBindingWhenInNamedWithOrOnSyntax</span><span class="p">&lt;</span><span class="kt">object</span><span class="p">&gt;&gt;()</span>
+</span><span class='line'>         <span class="p">:</span> <span class="k">new</span><span class="p">[]</span> <span class="p">{</span> <span class="n">bindingRoot</span><span class="p">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">serviceTypes</span><span class="p">.</span><span class="n">ToArray</span><span class="p">()).</span><span class="n">ToMethod</span><span class="p">(</span><span class="n">context</span> <span class="p">=&gt;</span> <span class="n">context</span><span class="p">.</span><span class="n">Kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">Kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">&lt;</span><span class="n">PluginLocator</span><span class="p">&gt;().</span><span class="n">Locate</span><span class="p">(</span><span class="n">serviceTypes</span><span class="p">)</span> <span class="p">??</span> <span class="n">implementationType</span><span class="p">))</span> <span class="p">};</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Next we&#8217;ll look at the Roslyn part in more detail.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 2: The Solution]]></title>
@@ -2325,75 +2494,6 @@ In the past I have always thought of NDepend as a complex tool. I was never sure
 
 
 <p>In the next post I&#8217;ll show how to put the fluent interface code together.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Removing the RSS subscription icon from Octopress]]></title>
-    <link href="http://ZeroSharp.github.com/removing-the-rss-subscription-icon-from-octopress/"/>
-    <updated>2013-07-09T09:13:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/removing-the-rss-subscription-icon-from-octopress</id>
-    <content type="html"><![CDATA[<p>A <a href="https://twitter.com/tlaynes">fellow Octopress blogger</a> recently asked how I removed the RSS subscription icon from the Octopress navigation bar.</p>
-
-<p>First, create a new site variable <code>show_feeds</code> by adding a line to the <em>_config.yml</em> file which is in the root folder of the Octopress source.</p>
-
-<figure class='code'><figcaption><span>_config.yml  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='diff'><span class='line'>  # RSS / Email (optional) subscription links (change if using something like Feedburner)
-</span><span class='line'><span class="gi">+ show_feeds: false</span>
-</span><span class='line'>  subscribe_rss: http://feeds.feedburner.com/zerosharp
-</span><span class='line'>  subscribe_email:
-</span><span class='line'>  # RSS feeds can list your email address if you like
-</span><span class='line'>  email:
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Then modify the <em>source/_includes/navigation.html</em> as follows</p>
-
-<figure class='code'><figcaption><span>navigation.html  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='diff'><span class='line'><span class="gi">+ {% if site.show_feeds %}</span>
-</span><span class='line'>  &lt;ul class=&quot;subscription&quot; data-subscription=&quot;rss&quot;&gt;
-</span><span class='line'>    &lt;li&gt;&lt;a href=&quot;http://feeds.feedburner.com/zerosharp&quot; rel=&quot;subscribe-rss&quot; title=&quot;subscribe via RSS&quot;&gt;RSS&lt;/a&gt;&lt;/li&gt;
-</span><span class='line'>    {% if site.subscribe_email %}
-</span><span class='line'>      &lt;li&gt;&lt;a href=&quot;&quot; rel=&quot;subscribe-email&quot; title=&quot;subscribe via email&quot;&gt;Email&lt;/a&gt;&lt;/li&gt;
-</span><span class='line'>    {% endif %}
-</span><span class='line'>  &lt;/ul&gt;
-</span><span class='line'><span class="gi">+ {% endif %}</span>
-</span><span class='line'>  {% if site.simple_search %}
-</span><span class='line'>  &lt;form action=&quot;http://google.com/search&quot; method=&quot;get&quot;&gt;
-</span><span class='line'>    &lt;fieldset role=&quot;search&quot;&gt;
-</span><span class='line'>      &lt;input type=&quot;hidden&quot; name=&quot;q&quot; value=&quot;site:ZeroSharp.github.com&quot; /&gt;
-</span><span class='line'>      &lt;input class=&quot;search&quot; type=&quot;text&quot; name=&quot;q&quot; results=&quot;0&quot; placeholder=&quot;Search&quot;/&gt;
-</span><span class='line'>    &lt;/fieldset&gt;
-</span><span class='line'>  &lt;/form&gt;
-</span><span class='line'>  {% endif %}
-</span><span class='line'>  {% include custom/navigation.html %}
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Then you can toggle the visibility of the feed icon by changing the <code>show_feeds</code> setting in the <code>_config.yml</code> file.</p>
 ]]></content>
   </entry>
   

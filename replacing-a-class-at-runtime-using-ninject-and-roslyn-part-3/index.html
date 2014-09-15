@@ -1,0 +1,440 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Replacing a class at runtime using Ninject and Roslyn - Part 3: Dependency Injection - ZeroSharp</title>
+  <meta name="author" content="Robert Anderson">
+
+  
+  <meta name="description" content="A powerful and simple plug-in framework for .NET using Ninject and Roslyn. Part 3.">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="http://feeds.feedburner.com/zerosharp" rel="alternate" title="ZeroSharp" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> 
+
+<!-- <ra+> -->
+<link href="http://fonts.googleapis.com/css?family=Ubuntu:500" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
+
+<link href="/stylesheets/custom/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+<!-- </ra+> -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-30564687-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <!--<h1><a href="/">ZeroSharp</a></h1>-->
+  <a href="http://www.zerosharp.com/"><h1>ZeroSharp</h1></a>
+  
+    <h2>Robert Anderson's ones and zeros</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">  
+
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ZeroSharp.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/license/">License</a></li>  
+</ul>
+<ul class="subscription">
+    <li><a rel="me" href="https://plus.google.com/112685056596124127572?rel=author">
+      <img src="/images/asides/googleplus.png" width="24" height="24" alt="Rob on Google+">
+    </a></li>    
+    <li><a rel="me" href="http://twitter.com/8ctopus">
+      <img src="/images/asides/twitter.png" width="24" height="24" alt="Rob on Twitter" />
+    </a></li>
+    <!--<li><a rel="me" href="http://stackoverflow.com/users/1077279/shamp00">
+      <img src="/images/asides/stackoverflow.png" width="24" height="24" alt="Rob on StackOverflow" />
+    </a></li>
+    <li><a rel="me" href="https://github.com/zerosharp">
+      <img src="/images/asides/github.png" width="24" height="24" alt="Rob on GitHub" />
+    </a></li>
+    <li><a rel="me" href="http://www.linkedin.com/profile/view?id=926740"  class ="googleplus-hidden" >
+      <img src="/images/asides/linkedin.png" width="24" height="24" alt="Rob on LinkedIn" />
+    </a></li>
+    <li><a rel="me" href="http://springpad.com/#!/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/springpad.png" width="24" height="24" alt="Rob on SpringPad" />
+    </a></li>    
+    <li><a rel="me" href="http://pinterest.com/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/pinterest.png" width="24" height="24" alt="Rob on Pinterest" />
+    </a></li>
+    <li><a rel="me" href="http://www.last.fm/user/nosredna"  class ="googleplus-hidden" >
+      <img src="/images/asides/lastfm.png" width="24" height="24" alt="Rob on Last.fm" />
+    </a></li>-->
+    <li><a href="http://feeds.feedburner.com/zerosharp">
+      <img src="/images/asides/rss.png" rel="subscribe-rss" width="24" height="24" alt="RSS Feed" />
+    </a></li>
+</ul>
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Replacing a Class at Runtime Using Ninject and Roslyn - Part 3: Dependency Injection</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-09-15T08:01:00+01:00" pubdate data-updated="true">Sep 15<span>th</span>, 2014</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Previously</p>
+
+<ul>
+<li><a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/">Part 1: The Goal</a></li>
+<li><a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/">Part 2: The Solution</a></li>
+</ul>
+
+
+<h2>Dependency injection</h2>
+
+<p>The first trick is to use dependency injection to create any instance of the <code>HelloWorldGenerator</code> class. Then if we need to add a new dependency to the class, we can just add it to the constructor without breaking anything.</p>
+
+<figure class='code'><figcaption><span>HelloWorldGenerator.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">HelloWorldGenerator</span> <span class="p">:</span> <span class="n">IGenerator</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">HelloWorldGenerator</span><span class="p">(</span>
+</span><span class='line'>        <span class="n">ISomeDependency</span> <span class="n">dependency</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">IAnotherDependency</span> <span class="n">another</span><span class="p">,</span>
+</span><span class='line'>        <span class="n">INewDependency</span> <span class="k">new</span> <span class="c1">// a new dependency!!!)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="p">...</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We&#8217;ll use Ninject here, but you ought to be able to achieve the same with any dependency injection framework.</p>
+
+<p>So normally, we&#8217;d have a binding something like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Bind</span><span class="p">&lt;</span><span class="n">IGenerator</span><span class="p">&gt;().</span><span class="n">To</span><span class="p">&lt;</span><span class="n">HelloWorldGenerator</span><span class="p">&gt;();</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Instead we&#8217;ll replace this with a binding to a factory method instead.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Bind</span><span class="p">&lt;</span><span class="n">IGenerator</span><span class="p">&gt;().</span><span class="n">ToMethod</span><span class="p">(</span><span class="n">context</span> <span class="p">=&gt;</span> <span class="n">CreatePluginInstance</span><span class="p">(</span><span class="n">context</span><span class="p">));</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>CreatePluginInstance(context)</code> method will try to find an <code>IGenerator</code> class within any available plug-ins. If it finds one, it will ask the Ninject framework to create an instance of the plug-in class. Otherwise it falls back to the default type (the original implementation of the generator). The <code>PluginLocator</code> it is responsible for searching any runtime-compiled assemblies for candidate plug-ins. We&#8217;ll look at it in more detail later.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">private</span> <span class="n">IGenerator</span> <span class="nf">CreatePluginInstance</span><span class="p">(</span><span class="n">IContext</span> <span class="n">context</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">var</span> <span class="n">pluginLocator</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">Kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">&lt;</span><span class="n">PluginLocator</span><span class="p">&gt;();</span>
+</span><span class='line'>    <span class="n">Type</span> <span class="n">roslynPluginType</span> <span class="p">=</span> <span class="n">pluginLocator</span><span class="p">.</span><span class="n">Locate</span><span class="p">&lt;</span><span class="n">IGenerator</span><span class="p">&gt;();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">/// if we found a plug-in, create an instance of it</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">roslynPluginType</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="n">IGenerator</span><span class="p">)</span><span class="n">context</span><span class="p">.</span><span class="n">Kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">(</span><span class="n">roslynPluginType</span><span class="p">);</span>
+</span><span class='line'>    <span class="k">else</span> <span class="c1">///otherwise create an instance of the original implementation</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">context</span><span class="p">.</span><span class="n">Kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">&lt;</span><span class="n">HelloWorldGenerator</span><span class="p">&gt;();</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>By convention</h4>
+
+<p>Of course, you might have dozens of <code>IGenerator</code> descendants, in which case you can use <a href="https://github.com/ninject/ninject.extensions.conventions">Ninject&#8217;s convention-based binding module</a>. (Don&#8217;t forget to add it with NuGet). My version looks something like the following.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">/// If you have a lot of IGenerator subclasses, you can use Ninject&#39;s</span>
+</span><span class='line'><span class="c1">/// convention based module.</span>
+</span><span class='line'><span class="c1">/// </span>
+</span><span class='line'><span class="c1">///   For each Generator, bind to IGenerator. </span>
+</span><span class='line'><span class="c1">///   For example, Bind&lt;IGenerator&gt;.To&lt;SomeGenerator&gt;();</span>
+</span><span class='line'><span class="c1">/// </span>
+</span><span class='line'><span class="n">Kernel</span><span class="p">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">scanner</span> <span class="p">=&gt;</span> <span class="n">scanner</span>
+</span><span class='line'>    <span class="p">.</span><span class="n">FromThisAssembly</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">.</span><span class="n">SelectAllClasses</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">.</span><span class="n">InheritedFrom</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">IGenerator</span><span class="p">))</span>
+</span><span class='line'>    <span class="p">.</span><span class="n">BindToPluginOtherwiseDefaultInterfaces</span><span class="p">());</span> <span class="c1">//This is a custom extension method (see below)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">ConventionSyntaxExtensions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="n">IConfigureSyntax</span> <span class="nf">BindToPluginOtherwiseDefaultInterfaces</span><span class="p">(</span><span class="k">this</span> <span class="n">IJoinFilterWhereExcludeIncludeBindSyntax</span> <span class="n">syntax</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">syntax</span><span class="p">.</span><span class="n">BindWith</span><span class="p">(</span><span class="k">new</span> <span class="n">DefaultInterfacesBindingGenerator</span><span class="p">(</span><span class="k">new</span> <span class="n">BindableTypeSelector</span><span class="p">(),</span> <span class="k">new</span> <span class="n">PluginOtherwiseDefaultBindingCreator</span><span class="p">()));</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">/// &lt;summary&gt;</span>
+</span><span class='line'><span class="c1">/// Returns a Ninject binding to a method which returns the plug-in type if one exists, otherwise returns the default type.</span>
+</span><span class='line'><span class="c1">/// &lt;/summary&gt;</span>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">PluginOtherwiseDefaultBindingCreator</span> <span class="p">:</span> <span class="n">IBindingCreator</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">IBindingWhenInNamedWithOrOnSyntax</span><span class="p">&lt;</span><span class="kt">object</span><span class="p">&gt;&gt;</span> <span class="n">CreateBindings</span><span class="p">(</span><span class="n">IBindingRoot</span> <span class="n">bindingRoot</span><span class="p">,</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">Type</span><span class="p">&gt;</span> <span class="n">serviceTypes</span><span class="p">,</span> <span class="n">Type</span> <span class="n">implementationType</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">bindingRoot</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">throw</span> <span class="k">new</span> <span class="nf">ArgumentNullException</span><span class="p">(</span><span class="s">&quot;bindingRoot&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="p">!</span><span class="n">serviceTypes</span><span class="p">.</span><span class="n">Any</span><span class="p">()</span>
+</span><span class='line'>         <span class="p">?</span> <span class="n">Enumerable</span><span class="p">.</span><span class="n">Empty</span><span class="p">&lt;</span><span class="n">IBindingWhenInNamedWithOrOnSyntax</span><span class="p">&lt;</span><span class="kt">object</span><span class="p">&gt;&gt;()</span>
+</span><span class='line'>         <span class="p">:</span> <span class="k">new</span><span class="p">[]</span> <span class="p">{</span> <span class="n">bindingRoot</span><span class="p">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">serviceTypes</span><span class="p">.</span><span class="n">ToArray</span><span class="p">()).</span><span class="n">ToMethod</span><span class="p">(</span><span class="n">context</span> <span class="p">=&gt;</span> <span class="n">context</span><span class="p">.</span><span class="n">Kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">Kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">&lt;</span><span class="n">PluginLocator</span><span class="p">&gt;().</span><span class="n">Locate</span><span class="p">(</span><span class="n">serviceTypes</span><span class="p">)</span> <span class="p">??</span> <span class="n">implementationType</span><span class="p">))</span> <span class="p">};</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Next we&#8217;ll look at the Roslyn part in more detail.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-09-15T08:01:00+01:00" pubdate data-updated="true">Sep 15<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/ninject/'>ninject</a>, <a class='category' href='/blog/categories/plugins/'>plugins</a>, <a class='category' href='/blog/categories/roslyn/'>roslyn</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/" title="Previous Post: Replacing a class at runtime using Ninject and Roslyn - Part 2: The Solution">&laquo; Replacing a class at runtime using Ninject and Roslyn - Part 2: The Solution</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Robert Anderson
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'zerosharp';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/';
+        var disqus_url = 'http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
