@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ninject | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/ninject/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2014-09-15T09:45:35+01:00</updated>
+  <updated>2014-09-17T10:39:41+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -14,11 +14,325 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 4: Roslyn]]></title>
+    <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-4/"/>
+    <updated>2014-09-17T08:08:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-4</id>
+    <content type="html"><![CDATA[<p>This is the fourth and final part of a series about using Roslyn with dependency injection to create a flexible and powerful plug-in framework. Here I review the parts of the solution that deal with the Roslyn runtime compilation of plug-ins. Check out <a href="https://github.com/ZeroSharp/RoslynPlugins">the working example on GitHub</a>.</p>
+
+<p>Previously</p>
+
+<ul>
+<li><a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/">Part 1: The Goal</a></li>
+<li><a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/">Part 2: The Solution</a></li>
+<li><a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/">Part 3: Dependency Injection</a></li>
+</ul>
+
+
+<h2>Roslyn</h2>
+
+<p>Let's look at some of the main classes used to compile plug-in code at runtime.</p>
+
+<p>The <code>PluginSnippetCompiler.Compile()</code> method takes a string (for instance, the contents of an uploaded raw C# file) and converts it into an in-memory assembly with the same assembly references as the main project.</p>
+
+<p>The Roslyn compiler is still in beta, and the Microsoft team have recently removed some syntactic sugar which made the code in the <code>Compile()</code> routine look cleaner. Hopefully they will include something similar soon. The code below works with version 0.7.0.0.</p>
+
+<p>```c#
+public class PluginSnippetCompiler
+{</p>
+
+<pre><code>public PluginSnippetCompiler(IAssemblyReferenceCollector assemblyReferenceCollector)
+{
+    if (assemblyReferenceCollector == null)
+        throw new ArgumentNullException("assemblyReferenceCollector");
+
+    _AssemblyReferenceCollector = assemblyReferenceCollector;
+}
+
+private readonly IAssemblyReferenceCollector _AssemblyReferenceCollector;
+
+private IEnumerable&lt;Diagnostic&gt; _Diagnostics = Enumerable.Empty&lt;Diagnostic&gt;();
+
+public IEnumerable&lt;Diagnostic&gt; Errors
+{
+    get
+    {
+        return _Diagnostics
+            .Where(d =&gt; d.Severity == DiagnosticSeverity.Error);
+    }
+}
+
+public IEnumerable&lt;Diagnostic&gt; Warnings
+{
+    get
+    {
+        return _Diagnostics
+            .Where(d =&gt; d.Severity == DiagnosticSeverity.Warning);
+    }
+}
+
+private string GetOutputAssemblyName(string name)
+{
+    return String.Format("RoslynPlugins.Snippets.{0}", name);
+}
+
+/// &lt;summary&gt;
+/// Compiles source code at runtime into an assembly. The assembly will automatically include all
+/// the same assembly references as the main RoslynPlugins assembly, so you can call any function which is
+/// available from within the deployed RoslynPlugins. Compilation errors and warnings can be obtained from 
+/// the Errors and Warnings properties.
+/// &lt;/summary&gt;
+/// &lt;param name="name"&gt;The name of the class, e.g., HelloWorldGenerator&lt;/param&gt;
+/// &lt;param name="script"&gt;Source code such as the contents of HelloWorldGenerator.cs&lt;/param&gt;
+/// &lt;returns&gt;The compiled assembly in memory. If there were errors, it will return null.&lt;/returns&gt;
+public Assembly Compile(string name, string script)
+{
+    if (name == null)
+        throw new ArgumentNullException("name");
+
+    if (script == null)
+        throw new ArgumentNullException("script");
+
+    string outputAssemblyName = GetOutputAssemblyName(name);
+
+    var defaultImplementationAssembly = typeof(HelloWorldGenerator).Assembly;
+    var assemblyReferences = _AssemblyReferenceCollector.CollectMetadataReferences(defaultImplementationAssembly);
+
+    // Parse the script to a SyntaxTree
+    var syntaxTree = CSharpSyntaxTree.ParseText(script);
+
+    // Compile the SyntaxTree to an in memory assembly
+    var compilation = CSharpCompilation.Create(outputAssemblyName,
+        new[] { syntaxTree },
+        assemblyReferences,
+        new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+    using (var outputStream = new MemoryStream())
+    {
+        using (var pdbStream = new MemoryStream())
+        {
+            // Emit assembly to streams. Throw an exception if there are any compilation errors
+            var result = compilation.Emit(outputStream, pdbStream: pdbStream);
+
+            // Populate the _diagnostics property in order to read Errors and Warnings
+            _Diagnostics = result.Diagnostics;
+
+            if (result.Success)
+            {
+                return Assembly.Load(outputStream.ToArray(), pdbStream.ToArray());
+            }
+            else
+            {
+                return null;
+            }
+        }
+    }
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>In this demo, I have not included any user feedback about compilation errors, but they are easily obtainable from the <code>Errors</code> and <code>Warnings</code> properties. At present, if there is an error, the plug-in will be ignored and the original implementation will be used.</p>
+
+<p>The class above depends on an <code>AssemblyReferenceCollector</code> which is responsible for enumerating the references to add to the runtime-generated plug-in assembly. We want exactly the same assembly references as the assembly which contains the original implementation so that we can reference any dependencies within those references.</p>
+
+<p>```c#
+public class AssemblyReferenceCollector : IAssemblyReferenceCollector
+{</p>
+
+<pre><code>public IEnumerable&lt;MetadataReference&gt; CollectMetadataReferences(Assembly assembly)
+{
+    var referencedAssemblyNames = assembly.GetReferencedAssemblies();
+
+    var references = new List&lt;MetadataReference&gt;();
+    foreach (AssemblyName assemblyName in referencedAssemblyNames)
+    {
+        var loadedAssembly = Assembly.Load(assemblyName);
+        references
+            .Add(new MetadataFileReference(loadedAssembly.Location));
+    }
+
+    references
+        .Add(new MetadataFileReference(assembly.Location)); // add a reference to 'self', i.e., NetMWC
+
+    return references;
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<h4>Connecting the pieces</h4>
+
+<p>We need the <code>PluginLocator</code> class to connect the Ninject resolution root to the runtime-generated assembly (if one exists). It just looks for classes with the correct interface <code>IGenerator</code> within the <code>PluginAssemblyCache</code>.</p>
+
+<p>Here's how it looks:</p>
+
+<p>```c#
+public class PluginLocator
+{</p>
+
+<pre><code>public PluginLocator(PluginAssemblyCache pluginAssemblyCache)
+{
+    if (pluginAssemblyCache == null)
+        throw new ArgumentNullException("pluginAssemblyCache");
+
+    _PluginAssemblyCache = pluginAssemblyCache;
+}
+
+private readonly PluginAssemblyCache _PluginAssemblyCache;
+
+public Type Locate&lt;T&gt;()
+{
+    return Locate(new[] { typeof(T) });
+}
+
+protected Type Locate(IEnumerable&lt;Type&gt; serviceTypes)
+{
+    var implementingClasses = AssemblyExplorer.GetImplementingClasses(_PluginAssemblyCache.GetAssemblies(), serviceTypes);
+
+    if (implementingClasses.Any())
+    {
+        if (implementingClasses.Count() &gt; 1)
+            throw new Exception("More than one plugin class found which implements " + String.Join(" + ", serviceTypes.Select(t =&gt; t.ToString())));
+        else
+            return implementingClasses.Single();
+    }
+    return null;
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>The <code>PluginAssemblyCache</code> avoids having to run the <code>Compile()</code> routine more than once by maintaining a dictionary of previously compiled plug-ins. It has the following dependencies:</p>
+
+<ul>
+<li>an <code>IPluginSnippetProvider</code> which (in this case) reads the existing snippets from the database (not shown here)</li>
+<li>a <code>PluginLoader</code> which uses the above <code>PluginSnippetCompiler</code> to convert a snippet into a runtime assembly.</li>
+</ul>
+
+
+<p>```c#</p>
+
+<pre><code>/// &lt;summary&gt;
+/// This class maintains a list of runtime-compiled in memory assemblies loaded from the plugins
+/// available via the provider. It is a singleton class.
+/// &lt;/summary&gt;
+public class PluginAssemblyCache
+{
+    public PluginAssemblyCache(IPluginSnippetProvider pluginSnippetProvider, PluginLoader pluginLoader)
+    {
+        if (pluginSnippetProvider == null)
+            throw new ArgumentNullException("pluginSnippetProvider");
+        _PluginSnippetProvider = pluginSnippetProvider;
+
+        if (pluginLoader == null)
+            throw new ArgumentNullException("pluginLoader");
+        _PluginLoader = pluginLoader;
+    }
+
+    private class CacheEntry
+    {
+        public string Name { get; set; }
+        public Version Version { get; set; }
+        public Assembly Assembly { get; set; }
+    }
+
+    private readonly IPluginSnippetProvider _PluginSnippetProvider;
+    private readonly PluginLoader _PluginLoader;
+
+    private List&lt;CacheEntry&gt; _Cache = new List&lt;CacheEntry&gt;();
+
+    private void Add(string name, string version, Assembly assembly)
+    {
+        var cacheEntry =
+            new CacheEntry()
+            {
+                Name = name,
+                Version = new Version(version),
+                Assembly = assembly
+            };
+        _Cache.Add(cacheEntry);
+    }
+
+    private void RefreshCache()
+    {
+        var pluginScriptContainers = _PluginSnippetProvider.GetPlugins();
+
+        // Add a new assembly for any new or updated plugin
+        foreach (var pluginScriptContainer in pluginScriptContainers)
+        {
+            var name = pluginScriptContainer.Name;
+            var version = pluginScriptContainer.Version;
+            if (!_Cache.Any(a =&gt; a.Name == name &amp;&amp; a.Version == new Version(version)))
+            {
+                var assembly = _PluginLoader.Load(pluginScriptContainer);
+                Add(name, version, assembly);
+            }
+        }
+
+        // Remove any assemblies which we no longer have a plugin for.
+        _Cache
+            .RemoveAll(cacheEntry =&gt;
+                !pluginScriptContainers
+                    .Select(plugin =&gt; plugin.Name)
+                    .Contains(cacheEntry.Name));
+    }
+
+    public IEnumerable&lt;Assembly&gt; GetAssemblies()
+    {
+        RefreshCache();
+
+        // Return only the assemblies with the highest version numbers
+        return _Cache
+            .GroupBy(d =&gt; d.Name)
+            .Select(g =&gt; g
+                    .OrderByDescending(d =&gt; d.Version)
+                    .First()
+                    .Assembly);
+    }
+}
+</code></pre>
+
+<p>```</p>
+
+<p>So whenever the <code>SomeGenerator</code> class is resolved by Ninject, it will now</p>
+
+<ul>
+<li>Check whether there are any new plug-ins and compile them into runtime assemblies and add them to the <code>PluginAssemblyCache</code>.</li>
+<li>Then the <code>PluginLocator</code> will search these assemblies for a newer version of <code>SomeGenerator</code>.</li>
+<li>If it finds one, it will be resolved along with any constructor dependencies, otherwise it will use the original <code>SomeGenerator</code>.</li>
+</ul>
+
+
+<h4>Version numbers</h4>
+
+<p>The version number of the plug-in is a key part of our solution. Let's say you have version 1.0 in production. Then you fix some bugs in staging (version 1.1). You create a plug-in from this staging code and upload it into production. Then much later, you decide to upgrade production to 1.2. Then, with the query in <code>GetAssemblies()</code>, the 1.1 plug-in will automatically be ignored and be superseded by whatever was shipped with 1.2 <em>since that is newer code</em>. So we do not have to remember to remove obsolete plug-ins after an upgrade - they will automatically be ignored because of the version number.</p>
+
+<h4>Security</h4>
+
+<p>Obviously, security is a chief concern and you may have to secure the plug-ins. In this demo project, I just created a simple view for the <code>IPlugin</code> object, but in our production environment we handle the creation of plug-ins differently. We use a combination of role-based security (to control who has permission to upload plugins) and encryption with checksumming. No user can directly enter arbitrary code - instead, we send the user a zip file which contains the code (encrypted), the version number and a checksum and our application verifies the checksum and builds the <code>IPlugin</code> object from the contents of the zip. A Powershell script running on our build server is responsible for creating the checksummed plug-in directly from the source code used in our staging environment.</p>
+
+<h2>Conclusions - the ultimate plug-in framework?</h2>
+
+<p>The strength of the Roslyn approach is that it is easy to maintain while being extremely versatile. In our case, it provides us with the ability to restrict the number of major releases approximately one per annum while catering for the inevitable little fixes to output formats and reports.</p>
+
+<p>In the example we replaced an existing class, but it would be straightforward to add the concept of <em>discovery</em> and use the same Roslyn features to make any <em>new</em> plug-in classes available to your application. Ninject, makes it easy to instantiate, say, every implementor of <code>IGenerator</code>, so you could enumerate all available plug-ins instead of replacing a single one.</p>
+
+<p>So here's a basic plug-in framework which is very flexible and very powerful without many of the versioning headaches of MEF or MAF. It's also easy to maintain, since the plug-in code is identical to the 'normal' code in staging (just packaged, delivered and compiled in a different way to production).</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 3: Dependency Injection]]></title>
     <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/"/>
     <updated>2014-09-15T08:01:00+01:00</updated>
     <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3</id>
-    <content type="html"><![CDATA[<p>Previously</p>
+    <content type="html"><![CDATA[<p>This is the third part of a series about using Roslyn with dependency injection to create a flexible and powerful plug-in framework. Here I review the parts of the solution that deal with dependency injection. Check out <a href="https://github.com/ZeroSharp/RoslynPlugins">the working example on GitHub</a>.</p>
+
+<p>Previously</p>
 
 <ul>
 <li><a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/">Part 1: The Goal</a></li>
@@ -130,7 +444,7 @@ public class PluginOtherwiseDefaultBindingCreator : IBindingCreator
 
 <p>```</p>
 
-<p>Next we'll look at the Roslyn part in more detail.</p>
+<p>Next we'll look at <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-4/">the Roslyn part</a> in more detail.</p>
 ]]></content>
   </entry>
   
@@ -184,7 +498,7 @@ public class PluginOtherwiseDefaultBindingCreator : IBindingCreator
 
 <p>The <em>Microsoft.CodeAnalysis.CSharp</em> is the 'Roslyn' package. It is still in beta, so you have to switch to the pre-release.</p>
 
-<p>Next we'll look at the dependency injection part in more detail.</p>
+<p>Next we'll look at <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/">the dependency injection part</a> in more detail.</p>
 ]]></content>
   </entry>
   

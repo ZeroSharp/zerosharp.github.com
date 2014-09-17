@@ -1,0 +1,790 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Replacing a class at runtime using Ninject and Roslyn - Part 4: Roslyn - ZeroSharp</title>
+  <meta name="author" content="Robert Anderson">
+
+  
+  <meta name="description" content="A powerful and simple plug-in framework for .NET using Ninject and Roslyn. Part 4.">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-4/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="http://feeds.feedburner.com/zerosharp" rel="alternate" title="ZeroSharp" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> 
+
+<!-- <ra+> -->
+<link href="http://fonts.googleapis.com/css?family=Ubuntu:500" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
+
+<link href="/stylesheets/custom/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+<!-- </ra+> -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-30564687-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <!--<h1><a href="/">ZeroSharp</a></h1>-->
+  <a href="http://www.zerosharp.com/"><h1>ZeroSharp</h1></a>
+  
+    <h2>Robert Anderson's ones and zeros</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">  
+
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ZeroSharp.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/license/">License</a></li>  
+</ul>
+<ul class="subscription">
+    <li><a rel="me" href="https://plus.google.com/112685056596124127572?rel=author">
+      <img src="/images/asides/googleplus.png" width="24" height="24" alt="Rob on Google+">
+    </a></li>    
+    <li><a rel="me" href="http://twitter.com/8ctopus">
+      <img src="/images/asides/twitter.png" width="24" height="24" alt="Rob on Twitter" />
+    </a></li>
+    <!--<li><a rel="me" href="http://stackoverflow.com/users/1077279/shamp00">
+      <img src="/images/asides/stackoverflow.png" width="24" height="24" alt="Rob on StackOverflow" />
+    </a></li>
+    <li><a rel="me" href="https://github.com/zerosharp">
+      <img src="/images/asides/github.png" width="24" height="24" alt="Rob on GitHub" />
+    </a></li>
+    <li><a rel="me" href="http://www.linkedin.com/profile/view?id=926740"  class ="googleplus-hidden" >
+      <img src="/images/asides/linkedin.png" width="24" height="24" alt="Rob on LinkedIn" />
+    </a></li>
+    <li><a rel="me" href="http://springpad.com/#!/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/springpad.png" width="24" height="24" alt="Rob on SpringPad" />
+    </a></li>    
+    <li><a rel="me" href="http://pinterest.com/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/pinterest.png" width="24" height="24" alt="Rob on Pinterest" />
+    </a></li>
+    <li><a rel="me" href="http://www.last.fm/user/nosredna"  class ="googleplus-hidden" >
+      <img src="/images/asides/lastfm.png" width="24" height="24" alt="Rob on Last.fm" />
+    </a></li>-->
+    <li><a href="http://feeds.feedburner.com/zerosharp">
+      <img src="/images/asides/rss.png" rel="subscribe-rss" width="24" height="24" alt="RSS Feed" />
+    </a></li>
+</ul>
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Replacing a Class at Runtime Using Ninject and Roslyn - Part 4: Roslyn</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-09-17T08:08:00+01:00" pubdate data-updated="true">Sep 17<span>th</span>, 2014</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>This is the fourth and final part of a series about using Roslyn with dependency injection to create a flexible and powerful plug-in framework. Here I review the parts of the solution that deal with the Roslyn runtime compilation of plug-ins. Check out <a href="https://github.com/ZeroSharp/RoslynPlugins">the working example on GitHub</a>.</p>
+
+<p>Previously</p>
+
+<ul>
+<li><a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/">Part 1: The Goal</a></li>
+<li><a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/">Part 2: The Solution</a></li>
+<li><a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/">Part 3: Dependency Injection</a></li>
+</ul>
+
+
+<h2>Roslyn</h2>
+
+<p>Let&#8217;s look at some of the main classes used to compile plug-in code at runtime.</p>
+
+<p>The <code>PluginSnippetCompiler.Compile()</code> method takes a string (for instance, the contents of an uploaded raw C# file) and converts it into an in-memory assembly with the same assembly references as the main project.</p>
+
+<p>The Roslyn compiler is still in beta, and the Microsoft team have recently removed some syntactic sugar which made the code in the <code>Compile()</code> routine look cleaner. Hopefully they will include something similar soon. The code below works with version 0.7.0.0.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">PluginSnippetCompiler</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">PluginSnippetCompiler</span><span class="p">(</span><span class="n">IAssemblyReferenceCollector</span> <span class="n">assemblyReferenceCollector</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">assemblyReferenceCollector</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">throw</span> <span class="k">new</span> <span class="nf">ArgumentNullException</span><span class="p">(</span><span class="s">&quot;assemblyReferenceCollector&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">_AssemblyReferenceCollector</span> <span class="p">=</span> <span class="n">assemblyReferenceCollector</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="k">readonly</span> <span class="n">IAssemblyReferenceCollector</span> <span class="n">_AssemblyReferenceCollector</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">Diagnostic</span><span class="p">&gt;</span> <span class="n">_Diagnostics</span> <span class="p">=</span> <span class="n">Enumerable</span><span class="p">.</span><span class="n">Empty</span><span class="p">&lt;</span><span class="n">Diagnostic</span><span class="p">&gt;();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">Diagnostic</span><span class="p">&gt;</span> <span class="n">Errors</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">get</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">_Diagnostics</span>
+</span><span class='line'>                <span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">d</span> <span class="p">=&gt;</span> <span class="n">d</span><span class="p">.</span><span class="n">Severity</span> <span class="p">==</span> <span class="n">DiagnosticSeverity</span><span class="p">.</span><span class="n">Error</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">Diagnostic</span><span class="p">&gt;</span> <span class="n">Warnings</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">get</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">_Diagnostics</span>
+</span><span class='line'>                <span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">d</span> <span class="p">=&gt;</span> <span class="n">d</span><span class="p">.</span><span class="n">Severity</span> <span class="p">==</span> <span class="n">DiagnosticSeverity</span><span class="p">.</span><span class="n">Warning</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="kt">string</span> <span class="nf">GetOutputAssemblyName</span><span class="p">(</span><span class="kt">string</span> <span class="n">name</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">String</span><span class="p">.</span><span class="n">Format</span><span class="p">(</span><span class="s">&quot;RoslynPlugins.Snippets.{0}&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">/// &lt;summary&gt;</span>
+</span><span class='line'>    <span class="c1">/// Compiles source code at runtime into an assembly. The assembly will automatically include all</span>
+</span><span class='line'>    <span class="c1">/// the same assembly references as the main RoslynPlugins assembly, so you can call any function which is</span>
+</span><span class='line'>    <span class="c1">/// available from within the deployed RoslynPlugins. Compilation errors and warnings can be obtained from </span>
+</span><span class='line'>    <span class="c1">/// the Errors and Warnings properties.</span>
+</span><span class='line'>    <span class="c1">/// &lt;/summary&gt;</span>
+</span><span class='line'>    <span class="c1">/// &lt;param name=&quot;name&quot;&gt;The name of the class, e.g., HelloWorldGenerator&lt;/param&gt;</span>
+</span><span class='line'>    <span class="c1">/// &lt;param name=&quot;script&quot;&gt;Source code such as the contents of HelloWorldGenerator.cs&lt;/param&gt;</span>
+</span><span class='line'>    <span class="c1">/// &lt;returns&gt;The compiled assembly in memory. If there were errors, it will return null.&lt;/returns&gt;</span>
+</span><span class='line'>    <span class="k">public</span> <span class="n">Assembly</span> <span class="nf">Compile</span><span class="p">(</span><span class="kt">string</span> <span class="n">name</span><span class="p">,</span> <span class="kt">string</span> <span class="n">script</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">name</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">throw</span> <span class="k">new</span> <span class="nf">ArgumentNullException</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">script</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">throw</span> <span class="k">new</span> <span class="nf">ArgumentNullException</span><span class="p">(</span><span class="s">&quot;script&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kt">string</span> <span class="n">outputAssemblyName</span> <span class="p">=</span> <span class="n">GetOutputAssemblyName</span><span class="p">(</span><span class="n">name</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kt">var</span> <span class="n">defaultImplementationAssembly</span> <span class="p">=</span> <span class="k">typeof</span><span class="p">(</span><span class="n">HelloWorldGenerator</span><span class="p">).</span><span class="n">Assembly</span><span class="p">;</span>
+</span><span class='line'>        <span class="kt">var</span> <span class="n">assemblyReferences</span> <span class="p">=</span> <span class="n">_AssemblyReferenceCollector</span><span class="p">.</span><span class="n">CollectMetadataReferences</span><span class="p">(</span><span class="n">defaultImplementationAssembly</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Parse the script to a SyntaxTree</span>
+</span><span class='line'>        <span class="kt">var</span> <span class="n">syntaxTree</span> <span class="p">=</span> <span class="n">CSharpSyntaxTree</span><span class="p">.</span><span class="n">ParseText</span><span class="p">(</span><span class="n">script</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Compile the SyntaxTree to an in memory assembly</span>
+</span><span class='line'>        <span class="kt">var</span> <span class="n">compilation</span> <span class="p">=</span> <span class="n">CSharpCompilation</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">outputAssemblyName</span><span class="p">,</span>
+</span><span class='line'>            <span class="k">new</span><span class="p">[]</span> <span class="p">{</span> <span class="n">syntaxTree</span> <span class="p">},</span>
+</span><span class='line'>            <span class="n">assemblyReferences</span><span class="p">,</span>
+</span><span class='line'>            <span class="k">new</span> <span class="nf">CSharpCompilationOptions</span><span class="p">(</span><span class="n">OutputKind</span><span class="p">.</span><span class="n">DynamicallyLinkedLibrary</span><span class="p">));</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">outputStream</span> <span class="p">=</span> <span class="k">new</span> <span class="n">MemoryStream</span><span class="p">())</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">using</span> <span class="p">(</span><span class="kt">var</span> <span class="n">pdbStream</span> <span class="p">=</span> <span class="k">new</span> <span class="n">MemoryStream</span><span class="p">())</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="c1">// Emit assembly to streams. Throw an exception if there are any compilation errors</span>
+</span><span class='line'>                <span class="kt">var</span> <span class="n">result</span> <span class="p">=</span> <span class="n">compilation</span><span class="p">.</span><span class="n">Emit</span><span class="p">(</span><span class="n">outputStream</span><span class="p">,</span> <span class="n">pdbStream</span><span class="p">:</span> <span class="n">pdbStream</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="c1">// Populate the _diagnostics property in order to read Errors and Warnings</span>
+</span><span class='line'>                <span class="n">_Diagnostics</span> <span class="p">=</span> <span class="n">result</span><span class="p">.</span><span class="n">Diagnostics</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="k">if</span> <span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">Success</span><span class="p">)</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="k">return</span> <span class="n">Assembly</span><span class="p">.</span><span class="n">Load</span><span class="p">(</span><span class="n">outputStream</span><span class="p">.</span><span class="n">ToArray</span><span class="p">(),</span> <span class="n">pdbStream</span><span class="p">.</span><span class="n">ToArray</span><span class="p">());</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>                <span class="k">else</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="k">return</span> <span class="k">null</span><span class="p">;</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In this demo, I have not included any user feedback about compilation errors, but they are easily obtainable from the <code>Errors</code> and <code>Warnings</code> properties. At present, if there is an error, the plug-in will be ignored and the original implementation will be used.</p>
+
+<p>The class above depends on an <code>AssemblyReferenceCollector</code> which is responsible for enumerating the references to add to the runtime-generated plug-in assembly. We want exactly the same assembly references as the assembly which contains the original implementation so that we can reference any dependencies within those references.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">AssemblyReferenceCollector</span> <span class="p">:</span> <span class="n">IAssemblyReferenceCollector</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">MetadataReference</span><span class="p">&gt;</span> <span class="n">CollectMetadataReferences</span><span class="p">(</span><span class="n">Assembly</span> <span class="n">assembly</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="kt">var</span> <span class="n">referencedAssemblyNames</span> <span class="p">=</span> <span class="n">assembly</span><span class="p">.</span><span class="n">GetReferencedAssemblies</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kt">var</span> <span class="n">references</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">MetadataReference</span><span class="p">&gt;();</span>
+</span><span class='line'>        <span class="k">foreach</span> <span class="p">(</span><span class="n">AssemblyName</span> <span class="n">assemblyName</span> <span class="k">in</span> <span class="n">referencedAssemblyNames</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="kt">var</span> <span class="n">loadedAssembly</span> <span class="p">=</span> <span class="n">Assembly</span><span class="p">.</span><span class="n">Load</span><span class="p">(</span><span class="n">assemblyName</span><span class="p">);</span>
+</span><span class='line'>            <span class="n">references</span>
+</span><span class='line'>                <span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="k">new</span> <span class="n">MetadataFileReference</span><span class="p">(</span><span class="n">loadedAssembly</span><span class="p">.</span><span class="n">Location</span><span class="p">));</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">references</span>
+</span><span class='line'>            <span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="k">new</span> <span class="n">MetadataFileReference</span><span class="p">(</span><span class="n">assembly</span><span class="p">.</span><span class="n">Location</span><span class="p">));</span> <span class="c1">// add a reference to &#39;self&#39;, i.e., NetMWC</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">return</span> <span class="n">references</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Connecting the pieces</h4>
+
+<p>We need the <code>PluginLocator</code> class to connect the Ninject resolution root to the runtime-generated assembly (if one exists). It just looks for classes with the correct interface <code>IGenerator</code> within the <code>PluginAssemblyCache</code>.</p>
+
+<p>Here&#8217;s how it looks:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">PluginLocator</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">PluginLocator</span><span class="p">(</span><span class="n">PluginAssemblyCache</span> <span class="n">pluginAssemblyCache</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">pluginAssemblyCache</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">throw</span> <span class="k">new</span> <span class="nf">ArgumentNullException</span><span class="p">(</span><span class="s">&quot;pluginAssemblyCache&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="n">_PluginAssemblyCache</span> <span class="p">=</span> <span class="n">pluginAssemblyCache</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="k">readonly</span> <span class="n">PluginAssemblyCache</span> <span class="n">_PluginAssemblyCache</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="n">Type</span> <span class="n">Locate</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nf">Locate</span><span class="p">(</span><span class="k">new</span><span class="p">[]</span> <span class="p">{</span> <span class="k">typeof</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="p">});</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">protected</span> <span class="n">Type</span> <span class="nf">Locate</span><span class="p">(</span><span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">Type</span><span class="p">&gt;</span> <span class="n">serviceTypes</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="kt">var</span> <span class="n">implementingClasses</span> <span class="p">=</span> <span class="n">AssemblyExplorer</span><span class="p">.</span><span class="n">GetImplementingClasses</span><span class="p">(</span><span class="n">_PluginAssemblyCache</span><span class="p">.</span><span class="n">GetAssemblies</span><span class="p">(),</span> <span class="n">serviceTypes</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">implementingClasses</span><span class="p">.</span><span class="n">Any</span><span class="p">())</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">implementingClasses</span><span class="p">.</span><span class="n">Count</span><span class="p">()</span> <span class="p">&gt;</span> <span class="m">1</span><span class="p">)</span>
+</span><span class='line'>                <span class="k">throw</span> <span class="k">new</span> <span class="nf">Exception</span><span class="p">(</span><span class="s">&quot;More than one plugin class found which implements &quot;</span> <span class="p">+</span> <span class="n">String</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">&quot; + &quot;</span><span class="p">,</span> <span class="n">serviceTypes</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">t</span> <span class="p">=&gt;</span> <span class="n">t</span><span class="p">.</span><span class="n">ToString</span><span class="p">())));</span>
+</span><span class='line'>            <span class="k">else</span>
+</span><span class='line'>                <span class="k">return</span> <span class="n">implementingClasses</span><span class="p">.</span><span class="n">Single</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">null</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>PluginAssemblyCache</code> avoids having to run the <code>Compile()</code> routine more than once by maintaining a dictionary of previously compiled plug-ins. It has the following dependencies:</p>
+
+<ul>
+<li>an <code>IPluginSnippetProvider</code> which (in this case) reads the existing snippets from the database (not shown here)</li>
+<li>a <code>PluginLoader</code> which uses the above <code>PluginSnippetCompiler</code> to convert a snippet into a runtime assembly.</li>
+</ul>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">/// &lt;summary&gt;</span>
+</span><span class='line'><span class="c1">/// This class maintains a list of runtime-compiled in memory assemblies loaded from the plugins</span>
+</span><span class='line'><span class="c1">/// available via the provider. It is a singleton class.</span>
+</span><span class='line'><span class="c1">/// &lt;/summary&gt;</span>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">PluginAssemblyCache</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">PluginAssemblyCache</span><span class="p">(</span><span class="n">IPluginSnippetProvider</span> <span class="n">pluginSnippetProvider</span><span class="p">,</span> <span class="n">PluginLoader</span> <span class="n">pluginLoader</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">pluginSnippetProvider</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">throw</span> <span class="k">new</span> <span class="nf">ArgumentNullException</span><span class="p">(</span><span class="s">&quot;pluginSnippetProvider&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">_PluginSnippetProvider</span> <span class="p">=</span> <span class="n">pluginSnippetProvider</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">pluginLoader</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="k">throw</span> <span class="k">new</span> <span class="nf">ArgumentNullException</span><span class="p">(</span><span class="s">&quot;pluginLoader&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="n">_PluginLoader</span> <span class="p">=</span> <span class="n">pluginLoader</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="k">class</span> <span class="nc">CacheEntry</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>        <span class="k">public</span> <span class="n">Version</span> <span class="n">Version</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>        <span class="k">public</span> <span class="n">Assembly</span> <span class="n">Assembly</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="k">readonly</span> <span class="n">IPluginSnippetProvider</span> <span class="n">_PluginSnippetProvider</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">private</span> <span class="k">readonly</span> <span class="n">PluginLoader</span> <span class="n">_PluginLoader</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">CacheEntry</span><span class="p">&gt;</span> <span class="n">_Cache</span> <span class="p">=</span> <span class="k">new</span> <span class="n">List</span><span class="p">&lt;</span><span class="n">CacheEntry</span><span class="p">&gt;();</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="k">void</span> <span class="nf">Add</span><span class="p">(</span><span class="kt">string</span> <span class="n">name</span><span class="p">,</span> <span class="kt">string</span> <span class="n">version</span><span class="p">,</span> <span class="n">Assembly</span> <span class="n">assembly</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="kt">var</span> <span class="n">cacheEntry</span> <span class="p">=</span>
+</span><span class='line'>            <span class="k">new</span> <span class="nf">CacheEntry</span><span class="p">()</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="n">Name</span> <span class="p">=</span> <span class="n">name</span><span class="p">,</span>
+</span><span class='line'>                <span class="n">Version</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Version</span><span class="p">(</span><span class="n">version</span><span class="p">),</span>
+</span><span class='line'>                <span class="n">Assembly</span> <span class="p">=</span> <span class="n">assembly</span>
+</span><span class='line'>            <span class="p">};</span>
+</span><span class='line'>        <span class="n">_Cache</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">cacheEntry</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="k">void</span> <span class="nf">RefreshCache</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="kt">var</span> <span class="n">pluginScriptContainers</span> <span class="p">=</span> <span class="n">_PluginSnippetProvider</span><span class="p">.</span><span class="n">GetPlugins</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Add a new assembly for any new or updated plugin</span>
+</span><span class='line'>        <span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">pluginScriptContainer</span> <span class="k">in</span> <span class="n">pluginScriptContainers</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="kt">var</span> <span class="n">name</span> <span class="p">=</span> <span class="n">pluginScriptContainer</span><span class="p">.</span><span class="n">Name</span><span class="p">;</span>
+</span><span class='line'>            <span class="kt">var</span> <span class="n">version</span> <span class="p">=</span> <span class="n">pluginScriptContainer</span><span class="p">.</span><span class="n">Version</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(!</span><span class="n">_Cache</span><span class="p">.</span><span class="n">Any</span><span class="p">(</span><span class="n">a</span> <span class="p">=&gt;</span> <span class="n">a</span><span class="p">.</span><span class="n">Name</span> <span class="p">==</span> <span class="n">name</span> <span class="p">&amp;&amp;</span> <span class="n">a</span><span class="p">.</span><span class="n">Version</span> <span class="p">==</span> <span class="k">new</span> <span class="n">Version</span><span class="p">(</span><span class="n">version</span><span class="p">)))</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="kt">var</span> <span class="n">assembly</span> <span class="p">=</span> <span class="n">_PluginLoader</span><span class="p">.</span><span class="n">Load</span><span class="p">(</span><span class="n">pluginScriptContainer</span><span class="p">);</span>
+</span><span class='line'>                <span class="n">Add</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">assembly</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Remove any assemblies which we no longer have a plugin for.</span>
+</span><span class='line'>        <span class="n">_Cache</span>
+</span><span class='line'>            <span class="p">.</span><span class="n">RemoveAll</span><span class="p">(</span><span class="n">cacheEntry</span> <span class="p">=&gt;</span>
+</span><span class='line'>                <span class="p">!</span><span class="n">pluginScriptContainers</span>
+</span><span class='line'>                    <span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">plugin</span> <span class="p">=&gt;</span> <span class="n">plugin</span><span class="p">.</span><span class="n">Name</span><span class="p">)</span>
+</span><span class='line'>                    <span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="n">cacheEntry</span><span class="p">.</span><span class="n">Name</span><span class="p">));</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">Assembly</span><span class="p">&gt;</span> <span class="n">GetAssemblies</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">RefreshCache</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Return only the assemblies with the highest version numbers</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">_Cache</span>
+</span><span class='line'>            <span class="p">.</span><span class="n">GroupBy</span><span class="p">(</span><span class="n">d</span> <span class="p">=&gt;</span> <span class="n">d</span><span class="p">.</span><span class="n">Name</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">g</span> <span class="p">=&gt;</span> <span class="n">g</span>
+</span><span class='line'>                    <span class="p">.</span><span class="n">OrderByDescending</span><span class="p">(</span><span class="n">d</span> <span class="p">=&gt;</span> <span class="n">d</span><span class="p">.</span><span class="n">Version</span><span class="p">)</span>
+</span><span class='line'>                    <span class="p">.</span><span class="n">First</span><span class="p">()</span>
+</span><span class='line'>                    <span class="p">.</span><span class="n">Assembly</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So whenever the <code>SomeGenerator</code> class is resolved by Ninject, it will now</p>
+
+<ul>
+<li>Check whether there are any new plug-ins and compile them into runtime assemblies and add them to the <code>PluginAssemblyCache</code>.</li>
+<li>Then the <code>PluginLocator</code> will search these assemblies for a newer version of <code>SomeGenerator</code>.</li>
+<li>If it finds one, it will be resolved along with any constructor dependencies, otherwise it will use the original <code>SomeGenerator</code>.</li>
+</ul>
+
+
+<h4>Version numbers</h4>
+
+<p>The version number of the plug-in is a key part of our solution. Let&#8217;s say you have version 1.0 in production. Then you fix some bugs in staging (version 1.1). You create a plug-in from this staging code and upload it into production. Then much later, you decide to upgrade production to 1.2. Then, with the query in <code>GetAssemblies()</code>, the 1.1 plug-in will automatically be ignored and be superseded by whatever was shipped with 1.2 <em>since that is newer code</em>. So we do not have to remember to remove obsolete plug-ins after an upgrade - they will automatically be ignored because of the version number.</p>
+
+<h4>Security</h4>
+
+<p>Obviously, security is a chief concern and you may have to secure the plug-ins. In this demo project, I just created a simple view for the <code>IPlugin</code> object, but in our production environment we handle the creation of plug-ins differently. We use a combination of role-based security (to control who has permission to upload plugins) and encryption with checksumming. No user can directly enter arbitrary code - instead, we send the user a zip file which contains the code (encrypted), the version number and a checksum and our application verifies the checksum and builds the <code>IPlugin</code> object from the contents of the zip. A Powershell script running on our build server is responsible for creating the checksummed plug-in directly from the source code used in our staging environment.</p>
+
+<h2>Conclusions - the ultimate plug-in framework?</h2>
+
+<p>The strength of the Roslyn approach is that it is easy to maintain while being extremely versatile. In our case, it provides us with the ability to restrict the number of major releases approximately one per annum while catering for the inevitable little fixes to output formats and reports.</p>
+
+<p>In the example we replaced an existing class, but it would be straightforward to add the concept of <em>discovery</em> and use the same Roslyn features to make any <em>new</em> plug-in classes available to your application. Ninject, makes it easy to instantiate, say, every implementor of <code>IGenerator</code>, so you could enumerate all available plug-ins instead of replacing a single one.</p>
+
+<p>So here&#8217;s a basic plug-in framework which is very flexible and very powerful without many of the versioning headaches of MEF or MAF. It&#8217;s also easy to maintain, since the plug-in code is identical to the &#8216;normal&#8217; code in staging (just packaged, delivered and compiled in a different way to production).</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-09-17T08:08:00+01:00" pubdate data-updated="true">Sep 17<span>th</span>, 2014</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/ninject/'>ninject</a>, <a class='category' href='/blog/categories/plugins/'>plugins</a>, <a class='category' href='/blog/categories/roslyn/'>roslyn</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-4/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-4/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/" title="Previous Post: Replacing a class at runtime using Ninject and Roslyn - Part 3: Dependency Injection">&laquo; Replacing a class at runtime using Ninject and Roslyn - Part 3: Dependency Injection</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2014 - Robert Anderson
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'zerosharp';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-4/';
+        var disqus_url = 'http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-4/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
