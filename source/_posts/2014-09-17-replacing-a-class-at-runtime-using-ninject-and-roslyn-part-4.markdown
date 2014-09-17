@@ -5,8 +5,9 @@ date: 2014-09-17 08:08
 comments: true
 categories: [c#, ninject, roslyn, plugins]
 description: A powerful and simple plug-in framework for .NET using Ninject and Roslyn. Part 4.
-published: false
 ---
+This is the fourth and final part of a series about using Roslyn with dependency injection to create a flexible and powerful plug-in framework. Here I review the parts of the solution that deal with the Roslyn runtime compilation of plug-ins. Check out [the working example on GitHub](https://github.com/ZeroSharp/RoslynPlugins).
+
 Previously
 
 * [Part 1: The Goal](/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/)
@@ -15,11 +16,11 @@ Previously
 
 ## Roslyn ##
 
-I haven't covered every detail of the Roslyn side of things - download the source code to see it all working. Here I'll just cover the main classes.
+Let's look at some of the main classes used to compile plug-in code at runtime.
 
-The `PluginSnippetCompiler` takes a string (for instance, the contents of an uploaded raw C# file) and converts it into an in-memory assembly with the same assembly references as the main project.
+The `PluginSnippetCompiler.Compile()` method takes a string (for instance, the contents of an uploaded raw C# file) and converts it into an in-memory assembly with the same assembly references as the main project.
 
-The Roslyn compiler is still in beta, and the Microsoft team have recently removed some syntactic sugar which made this task easier to read but the code below works with version 0.7.0.0.
+The Roslyn compiler is still in beta, and the Microsoft team have recently removed some syntactic sugar which made the code in the `Compile()` routine look cleaner. Hopefully they will include something similar soon. The code below works with version 0.7.0.0.
 
 ```c#
 public class PluginSnippetCompiler
@@ -114,9 +115,9 @@ public class PluginSnippetCompiler
 }
 ```
 
-In this demo, I have not included any user feedback about compilation errors, but they are easily obtainable from the `Errors` and `Warnings` properties. If there is an error, the plug-in will be ignored and the default implementation will be used.
+In this demo, I have not included any user feedback about compilation errors, but they are easily obtainable from the `Errors` and `Warnings` properties. At present, if there is an error, the plug-in will be ignored and the original implementation will be used.
 
-The class above depends on an `AssemblyReferenceCollector` which is responsible for enumerating the references to add to the runtime generated plug-in assembly.
+The class above depends on an `AssemblyReferenceCollector` which is responsible for enumerating the references to add to the runtime-generated plug-in assembly. We want exactly the same assembly references as the assembly which contains the original implementation so that we can reference any dependencies within those references.
 
 ```c#
 public class AssemblyReferenceCollector : IAssemblyReferenceCollector
@@ -145,7 +146,7 @@ public class AssemblyReferenceCollector : IAssemblyReferenceCollector
 
 We need the `PluginLocator` class to connect the Ninject resolution root to the runtime-generated assembly (if one exists). It just looks for classes with the correct interface `IGenerator` within the `PluginAssemblyCache`.
 
-Here's out it looks:
+Here's how it looks:
 
 ```c#
 public class PluginLocator
@@ -181,10 +182,10 @@ public class PluginLocator
 }
 ```
 
-The `PluginAssemblyCache` has the following dependencies:
+The `PluginAssemblyCache` avoids having to run the `Compile()` routine more than once by maintaining a dictionary of previously compiled plug-ins. It has the following dependencies:
 
-* an `IPluginSnippetProvider` which (in this case) reads the existing snippets from the database
-* a `PluginLoader` which uses the above `PluginSnippetCompiler` to convert a snippet into a runtime assembly and display any compilation errors on failure.
+* an `IPluginSnippetProvider` which (in this case) reads the existing snippets from the database (not shown here)
+* a `PluginLoader` which uses the above `PluginSnippetCompiler` to convert a snippet into a runtime assembly.
 
 ```c#
     /// <summary>
@@ -275,7 +276,7 @@ So whenever the `SomeGenerator` class is resolved by Ninject, it will now
 
 #### Version numbers ####
 
-The version number of the plug-in is a key part of our solution. Let's say you have version 1.0 in production. Then you fix some bugs in staging (version 1.1). You create a plug-in from this staging code and upload it into production. Then much later, you decide to upgrade production to 1.2. Then, with the query in `GetAssemblies()`, the 1.1 plug-in will automatically be ignored and be superseded by whatever was shipped with 1.2 __since that is newer code__. So we do not have to remember to remove obsolete plug-ins after an upgrade - they will automatically be ignored because of the version number.
+The version number of the plug-in is a key part of our solution. Let's say you have version 1.0 in production. Then you fix some bugs in staging (version 1.1). You create a plug-in from this staging code and upload it into production. Then much later, you decide to upgrade production to 1.2. Then, with the query in `GetAssemblies()`, the 1.1 plug-in will automatically be ignored and be superseded by whatever was shipped with 1.2 _since that is newer code_. So we do not have to remember to remove obsolete plug-ins after an upgrade - they will automatically be ignored because of the version number.
 
 #### Security ####
 
@@ -283,8 +284,8 @@ Obviously, security is a chief concern and you may have to secure the plug-ins. 
 
 ## Conclusions - the ultimate plug-in framework?##
 
-The strength of this approach is that it is easy to maintain while being extremely versatile. In our case, it provides us with the ability to restrict the number of major releases approximately one per annum while catering for the inevitable little fixes to output formats and reports.
+The strength of the Roslyn approach is that it is easy to maintain while being extremely versatile. In our case, it provides us with the ability to restrict the number of major releases approximately one per annum while catering for the inevitable little fixes to output formats and reports.
 
 In the example we replaced an existing class, but it would be straightforward to add the concept of _discovery_ and use the same Roslyn features to make any _new_ plug-in classes available to your application. Ninject, makes it easy to instantiate, say, every implementor of `IGenerator`, so you could enumerate all available plug-ins instead of replacing a single one.
 
-So here's a plugin framework which is very flexible and very powerful without many of the versioning headaches of MEF or MAF. It's also easy to maintain, since the plug-in code is identical to the 'normal' code in staging (just packaged, delivered and compiled in a different way to production).
+So here's a basic plug-in framework which is very flexible and very powerful without many of the versioning headaches of MEF or MAF. It's also easy to maintain, since the plug-in code is identical to the 'normal' code in staging (just packaged, delivered and compiled in a different way to production).

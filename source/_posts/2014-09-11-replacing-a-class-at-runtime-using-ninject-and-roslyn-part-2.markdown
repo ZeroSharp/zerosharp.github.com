@@ -45,4 +45,4 @@ First, I created a new ASP.NET MVC 5 application. I added a HelloWorldContrrolle
 
 The _Microsoft.CodeAnalysis.CSharp_ is the 'Roslyn' package. It is still in beta, so you have to switch to the pre-release.
 
-Next we'll look at the dependency injection part in more detail.
+Next we'll look at [the dependency injection part](/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/) in more detail.

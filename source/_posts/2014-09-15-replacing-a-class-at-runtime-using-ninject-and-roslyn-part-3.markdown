@@ -6,6 +6,8 @@ comments: true
 categories: [c#, ninject, roslyn, plugins]
 description: A powerful and simple plug-in framework for .NET using Ninject and Roslyn. Part 3.
 ---
+This is the third part of a series about using Roslyn with dependency injection to create a flexible and powerful plug-in framework. Here I review the parts of the solution that deal with dependency injection. Check out [the working example on GitHub](https://github.com/ZeroSharp/RoslynPlugins).
+
 Previously
 
 * [Part 1: The Goal](/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/)
@@ -102,4 +104,4 @@ Kernel.Bind(scanner => scanner
     }
 ```
 
-Next we'll look at the Roslyn part in more detail.
+Next we'll look at [the Roslyn part](/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-4/) in more detail.
