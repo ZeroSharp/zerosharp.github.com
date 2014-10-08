@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c# | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/c-/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2014-09-17T10:39:41+01:00</updated>
+  <updated>2014-10-08T16:26:13+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,194 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ELMAH with DevExpress XAF]]></title>
+    <link href="http://ZeroSharp.github.com/elmah-with-devexpress-xaf/"/>
+    <updated>2014-10-08T15:45:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/elmah-with-devexpress-xaf</id>
+    <content type="html"><![CDATA[<p><a href="https://code.google.com/p/elmah/">ELMAH (Error Logging Modules and Handlers)</a> is an open source library for logging unhandled exceptions. This post explains how to get it running with the <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a> main demo.</p>
+
+<p>A couple of amazing facts about ELMAH.</p>
+
+<ul>
+<li>It has been around since 2004!</li>
+<li>It was written by <a href="http://www.raboof.com/">Atif Aziz</a> who happens to be an old school-friend from the International School of Geneva.</li>
+</ul>
+
+
+<p>XAF provides <a href="https://documentation.devexpress.com/#xaf/CustomDocument2704">quite extensive error handling options</a> out of the box, but I have found Elmah better suited to production environments because of the ability to remotely view the full error log.</p>
+
+<h2>Setting up</h2>
+
+<p>First, get the ELMAH package via NuGet into the MainDemo.Web project. ELMAH provides dozens of different methods of persisting the error log. For this example we'll choose one of the simplest. Make sure you select the <em>ELMAH on XML Log</em> package.</p>
+
+<p><img src="/images/blog/xaf-with-elmah-001.png"></p>
+
+<p>NuGet makes several automatic modifications to the <em>web.config</em>. Unfortunately, these are not quite accurate enough for XAF. The changes you need to make are detailed below:</p>
+
+<p>Add a <code>&lt;configSection&gt;</code> for ELMAH as alongside the existing devExpress one.</p>
+
+<p>```xml web.config
+  <configSections></p>
+
+<pre><code>&lt;sectionGroup name="devExpress"&gt;...&lt;/sectionGroup&gt; &lt;!-- this should already exist--&gt;
+&lt;sectionGroup name="elmah"&gt; &lt;!-- this is new--&gt;
+  &lt;section name="security" requirePermission="false" type="Elmah.SecuritySectionHandler, Elmah" /&gt;
+  &lt;section name="errorLog" requirePermission="false" type="Elmah.ErrorLogSectionHandler, Elmah" /&gt;
+  &lt;section name="errorMail" requirePermission="false" type="Elmah.ErrorMailSectionHandler, Elmah" /&gt;
+  &lt;section name="errorFilter" requirePermission="false" type="Elmah.ErrorFilterSectionHandler, Elmah" /&gt;
+ &lt;/sectionGroup&gt;
+</code></pre>
+
+<p>  </configSections>
+```</p>
+
+<p>Your <code>&lt;system.webServer&gt;</code> section should look like this:</p>
+
+<p>```xml web.config
+  &lt;system.webServer></p>
+
+<pre><code>&lt;handlers&gt;...&lt;/handlers&gt; &lt;!-- This is unchanged --&gt;
+&lt;validation validateIntegratedModeConfiguration="false" /&gt;
+&lt;modules&gt;
+  &lt;add name="ASPxHttpHandlerModule" type="DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v14.1, Version=14.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
+  &lt;add name="ErrorLog" type="Elmah.ErrorLogModule, Elmah" preCondition="managedHandler" /&gt;
+  &lt;add name="ErrorMail" type="Elmah.ErrorMailModule, Elmah" preCondition="managedHandler" /&gt;
+  &lt;add name="ErrorFilter" type="Elmah.ErrorFilterModule, Elmah" preCondition="managedHandler" /&gt;
+&lt;/modules&gt;
+</code></pre>
+
+<p>  &lt;/system.webServer>
+```</p>
+
+<p>Add a <code>&lt;location&gt;</code> for the path <em>elmah.axd</em> (alongside the existing <code>&lt;location&gt;</code> tags).</p>
+
+<p>```xml web.config
+  <location path="elmah.axd" inheritInChildApplications="false"></p>
+
+<pre><code>&lt;system.web&gt;
+  &lt;httpHandlers&gt;
+    &lt;add verb="POST,GET,HEAD" path="elmah.axd" type="Elmah.ErrorLogPageFactory, Elmah" /&gt;
+  &lt;/httpHandlers&gt;
+  &lt;!-- 
+    See http://code.google.com/p/elmah/wiki/SecuringErrorLogPages for 
+    more information on using ASP.NET authorization securing ELMAH.
+
+  &lt;authorization&gt;
+    &lt;allow roles="admin" /&gt;
+    &lt;deny users="*" /&gt;  
+  &lt;/authorization&gt;
+  --&gt;  
+&lt;/system.web&gt;
+&lt;system.webServer&gt;
+  &lt;handlers&gt;
+    &lt;add name="ELMAH" verb="POST,GET,HEAD" path="elmah.axd" type="Elmah.ErrorLogPageFactory, Elmah" preCondition="integratedMode" /&gt;
+  &lt;/handlers&gt;
+&lt;/system.webServer&gt;
+</code></pre>
+
+<p>  </location>
+```</p>
+
+<p>Add a new <code>&lt;elmah&gt;</code> section. I put mine just before the final <code>&lt;/configuration&gt;</code> tag.</p>
+
+<p>```xml web.config
+  <elmah></p>
+
+<pre><code>&lt;errorLog type="Elmah.XmlFileErrorLog, Elmah" logPath="~/App_Data/Elmah.Errors" /&gt;
+&lt;!--
+    See http://code.google.com/p/elmah/wiki/SecuringErrorLogPages for 
+    more information on remote access and securing ELMAH.
+--&gt;
+&lt;security allowRemoteAccess="false" /&gt;
+</code></pre>
+
+<p>  </elmah>
+```</p>
+
+<p>Now modify <em>HttpModules.Web.Config</em> to look like this:</p>
+
+<p><code>xml HttpModules.Web.Config
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;httpModules&gt;
+  &lt;add name="ASPxHttpHandlerModule" type="DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v14.1, Version=14.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
+  &lt;add name="ErrorLog" type="Elmah.ErrorLogModule, Elmah" /&gt;
+  &lt;add name="ErrorMail" type="Elmah.ErrorMailModule, Elmah" /&gt;
+  &lt;add name="ErrorFilter" type="Elmah.ErrorFilterModule, Elmah" /&gt;
+&lt;/httpModules&gt;
+</code></p>
+
+<p>Now we need to extend XAF's standard error handling. Create a new class in the web application.</p>
+
+<p>```c#
+public class ElmahErrorHandling : ErrorHandling
+{</p>
+
+<pre><code>protected override void LogException(ErrorInfo errorInfo)
+{
+    base.LogException(errorInfo);
+
+    if (errorInfo.Exception != null)
+        Elmah.ErrorSignal.FromCurrentContext().Raise(errorInfo.Exception);
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>And then modify <em>Global.asax.cs</em> to instantiate the new class</p>
+
+<p>```c#</p>
+
+<pre><code>    protected void Application_Start(object sender, EventArgs e) {
+        ErrorHandling.Instance = new ElmahErrorHandling(); // &lt;---this line is new
+        ASPxWebControl.CallbackError += new EventHandler(Application_Error);
+</code></pre>
+
+<h1>if DEBUG</h1>
+
+<pre><code>        TestScriptsManager.EasyTestEnabled = true;
+</code></pre>
+
+<h1>endif</h1>
+
+<pre><code>    }
+</code></pre>
+
+<p>```</p>
+
+<p>The complete files are available with the <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Elmah">source code</a>.</p>
+
+<p>Now run the application and trigger an unhandled exception. Change the URL to something that does not exist. Or open any detail view and modify the URL so that the Guid in the <em>ShortcutObjectKey</em> is invalid (replace a digit with an 'X'). Then the application error page appears.</p>
+
+<p><img src="/images/blog/xaf-with-elmah-002.png"></p>
+
+<p>Then return to the application and change the URL to <code>Elmah.axd</code>. You are looking at the log of all unhandled exceptions.</p>
+
+<p><img src="/images/blog/xaf-with-elmah-003.png"></p>
+
+<p>And for each exception, you can view the full details of any logged exception including coloured stack trace and full server variables.</p>
+
+<p><img src="/images/blog/xaf-with-elmah-004.png"></p>
+
+<h2>ELMAH options</h2>
+
+<p>By default, ELMAH is configured to disallow remote access to the error logs -  only a local user can get to <em>elmah.axd</em>. If you take care of the security implications it can be very useful to enable remote access and  monitor the logs on your production servers.</p>
+
+<p>We chose to use an XML file for each error but ELMAH is entirely pluggable. There are dozens of alternatives for persisting the error log including Sql Server, an RSS feeds, to Twitter, even to <a href="http://code.google.com/p/elmah/wiki/ProwlingErrors">an iPhone app</a>. There are even third party sites such as <a href="http://elmah.io">elmah.io</a> who will host your error logs for you.</p>
+
+<p>One of the advantages of using XML files is that the files can be copied to another machine. If you look in <em>MainDemo.Web\App_Data\Elmah.Errors</em>, you will find the resulting xml files.</p>
+
+<p><img src="/images/blog/xaf-with-elmah-005.png"></p>
+
+<p>You can just copy these files to another installation's <em>Elmah.Errors</em> folder and the log will show up when you visit <em>Elmah.axd</em>.</p>
+
+<p>One final note. ELMAH was developed for ASP.NET applications and web services, but it is possible to get it to work with other types of applications such as Windows Forms, Windows Service or console applications. Check out <a href="https://stackoverflow.com/questions/841451/using-elmah-in-a-console-application">this StackOverflow question</a>.</p>
+
+<p>The source code for this example is <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Elmah">on GitHub</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 4: Roslyn]]></title>
@@ -581,70 +769,6 @@ public void Generate()
 <p>Over next few posts I'll guide you through building the application and demonstrate the runtime replacement of the generator class.</p>
 
 <p>See <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/">Part 2</a> for screen shots of the working application and an overview of the basic project set up.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Persisting changes to config files within NuGet packages]]></title>
-    <link href="http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages/"/>
-    <updated>2014-08-13T06:39:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages</id>
-    <content type="html"><![CDATA[<p>Whenever NuGet updates or restores a NuGet package, the config files within it are overwritten. Here's a method to make sure the changes are reapplied via a <a href="http://msdn.microsoft.com/en-us/library/dd465326.aspx">config transform</a> whenever the solution is built.</p>
-
-<p>I'm using the NUnit.Runners NuGet packages. To get our coverage tool to play nicely, I need to replace <code>&lt;supportedRuntime "v2.0.50727"&gt;</code> with <code>&lt;supportedRuntime "v4.0.30319"&gt;</code> within the <em>NUnit-console-x86.exe.config</em>.</p>
-
-<p>Normally, a config transform is for modifying the <em>web.config</em> or <em>app.config</em> files. Here, we need to modify a config file within the <em>packages</em> subdirectory.</p>
-
-<p>In my <em>.csproj</em> file, I have added the following:</p>
-
-<p>```xml
-  <PropertyGroup>
-   <NUnitRunnerDir>$(SolutionDir)packages\NUnit.Runners.2.6.3\tools&lt;/NUnitRunnerDir>
-  <PropertyGroup></p>
-
-<p>  <!-- Default NUnit test runner requires a modification to the config file-->
-  &lt;UsingTask</p>
-
-<pre><code>TaskName="TransformXml"
-AssemblyFile="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v12.0\Web\Microsoft.Web.Publishing.Tasks.dll" /&gt;
-</code></pre>
-
-<p>  <Target Name="AfterBuild" Condition="exists('$(NUnitRunnerDir)NUnit-console-x86.exe.config')"></p>
-
-<pre><code>&lt;TransformXml
-    Source="$(NUnitRunnerDir)NUnit-console-x86.exe.config"
-    Destination="$(NUnitRunnerDir)NUnit-console-x86.exe.config"
-    Transform="$(SolutionDir)UnitTests\Transforms\NUnit-console-x86.exe.CLR4.config" /&gt;
-</code></pre>
-
-<p>  </Target>
-```</p>
-
-<p>And the transform file itself looks like this:
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>NUnit-console-x86.exe.CLR4.config </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="ni">&amp;lt;</span>?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-</span><span class='line'><span class="nt">&lt;configuration</span> <span class="na">xmlns:xdt=</span><span class="s">&quot;http://schemas.microsoft.com/XML-Document-Transform&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;startup&gt;&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;pre&gt;&lt;code&gt;</span><span class="ni">&amp;lt;</span>supportedRuntime version=&quot;v4.0.30319&quot; xdt:Transform=&quot;Replace&quot; /<span class="ni">&amp;gt;</span>
-</span><span class='line'><span class="nt">&lt;/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;/startup&gt;</span>
-</span><span class='line'><span class="nt">&lt;/configuration&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<p>By the way, <a href="https://webconfigtransformationtester.apphb.com/">Web.config Transformation Tester</a> is a handy tool!</p>
-
-<p>Now whenever I build the project, the <em>AfterBuild</em> event ensures the supportedRuntime version is set correctly.</p>
 ]]></content>
   </entry>
   

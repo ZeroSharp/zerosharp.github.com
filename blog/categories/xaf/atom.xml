@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2014-09-17T10:39:41+01:00</updated>
+  <updated>2014-10-08T16:26:13+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,194 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ELMAH with DevExpress XAF]]></title>
+    <link href="http://ZeroSharp.github.com/elmah-with-devexpress-xaf/"/>
+    <updated>2014-10-08T15:45:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/elmah-with-devexpress-xaf</id>
+    <content type="html"><![CDATA[<p><a href="https://code.google.com/p/elmah/">ELMAH (Error Logging Modules and Handlers)</a> is an open source library for logging unhandled exceptions. This post explains how to get it running with the <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a> main demo.</p>
+
+<p>A couple of amazing facts about ELMAH.</p>
+
+<ul>
+<li>It has been around since 2004!</li>
+<li>It was written by <a href="http://www.raboof.com/">Atif Aziz</a> who happens to be an old school-friend from the International School of Geneva.</li>
+</ul>
+
+
+<p>XAF provides <a href="https://documentation.devexpress.com/#xaf/CustomDocument2704">quite extensive error handling options</a> out of the box, but I have found Elmah better suited to production environments because of the ability to remotely view the full error log.</p>
+
+<h2>Setting up</h2>
+
+<p>First, get the ELMAH package via NuGet into the MainDemo.Web project. ELMAH provides dozens of different methods of persisting the error log. For this example we'll choose one of the simplest. Make sure you select the <em>ELMAH on XML Log</em> package.</p>
+
+<p><img src="/images/blog/xaf-with-elmah-001.png"></p>
+
+<p>NuGet makes several automatic modifications to the <em>web.config</em>. Unfortunately, these are not quite accurate enough for XAF. The changes you need to make are detailed below:</p>
+
+<p>Add a <code>&lt;configSection&gt;</code> for ELMAH as alongside the existing devExpress one.</p>
+
+<p>```xml web.config
+  <configSections></p>
+
+<pre><code>&lt;sectionGroup name="devExpress"&gt;...&lt;/sectionGroup&gt; &lt;!-- this should already exist--&gt;
+&lt;sectionGroup name="elmah"&gt; &lt;!-- this is new--&gt;
+  &lt;section name="security" requirePermission="false" type="Elmah.SecuritySectionHandler, Elmah" /&gt;
+  &lt;section name="errorLog" requirePermission="false" type="Elmah.ErrorLogSectionHandler, Elmah" /&gt;
+  &lt;section name="errorMail" requirePermission="false" type="Elmah.ErrorMailSectionHandler, Elmah" /&gt;
+  &lt;section name="errorFilter" requirePermission="false" type="Elmah.ErrorFilterSectionHandler, Elmah" /&gt;
+ &lt;/sectionGroup&gt;
+</code></pre>
+
+<p>  </configSections>
+```</p>
+
+<p>Your <code>&lt;system.webServer&gt;</code> section should look like this:</p>
+
+<p>```xml web.config
+  &lt;system.webServer></p>
+
+<pre><code>&lt;handlers&gt;...&lt;/handlers&gt; &lt;!-- This is unchanged --&gt;
+&lt;validation validateIntegratedModeConfiguration="false" /&gt;
+&lt;modules&gt;
+  &lt;add name="ASPxHttpHandlerModule" type="DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v14.1, Version=14.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
+  &lt;add name="ErrorLog" type="Elmah.ErrorLogModule, Elmah" preCondition="managedHandler" /&gt;
+  &lt;add name="ErrorMail" type="Elmah.ErrorMailModule, Elmah" preCondition="managedHandler" /&gt;
+  &lt;add name="ErrorFilter" type="Elmah.ErrorFilterModule, Elmah" preCondition="managedHandler" /&gt;
+&lt;/modules&gt;
+</code></pre>
+
+<p>  &lt;/system.webServer>
+```</p>
+
+<p>Add a <code>&lt;location&gt;</code> for the path <em>elmah.axd</em> (alongside the existing <code>&lt;location&gt;</code> tags).</p>
+
+<p>```xml web.config
+  <location path="elmah.axd" inheritInChildApplications="false"></p>
+
+<pre><code>&lt;system.web&gt;
+  &lt;httpHandlers&gt;
+    &lt;add verb="POST,GET,HEAD" path="elmah.axd" type="Elmah.ErrorLogPageFactory, Elmah" /&gt;
+  &lt;/httpHandlers&gt;
+  &lt;!-- 
+    See http://code.google.com/p/elmah/wiki/SecuringErrorLogPages for 
+    more information on using ASP.NET authorization securing ELMAH.
+
+  &lt;authorization&gt;
+    &lt;allow roles="admin" /&gt;
+    &lt;deny users="*" /&gt;  
+  &lt;/authorization&gt;
+  --&gt;  
+&lt;/system.web&gt;
+&lt;system.webServer&gt;
+  &lt;handlers&gt;
+    &lt;add name="ELMAH" verb="POST,GET,HEAD" path="elmah.axd" type="Elmah.ErrorLogPageFactory, Elmah" preCondition="integratedMode" /&gt;
+  &lt;/handlers&gt;
+&lt;/system.webServer&gt;
+</code></pre>
+
+<p>  </location>
+```</p>
+
+<p>Add a new <code>&lt;elmah&gt;</code> section. I put mine just before the final <code>&lt;/configuration&gt;</code> tag.</p>
+
+<p>```xml web.config
+  <elmah></p>
+
+<pre><code>&lt;errorLog type="Elmah.XmlFileErrorLog, Elmah" logPath="~/App_Data/Elmah.Errors" /&gt;
+&lt;!--
+    See http://code.google.com/p/elmah/wiki/SecuringErrorLogPages for 
+    more information on remote access and securing ELMAH.
+--&gt;
+&lt;security allowRemoteAccess="false" /&gt;
+</code></pre>
+
+<p>  </elmah>
+```</p>
+
+<p>Now modify <em>HttpModules.Web.Config</em> to look like this:</p>
+
+<p><code>xml HttpModules.Web.Config
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;httpModules&gt;
+  &lt;add name="ASPxHttpHandlerModule" type="DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v14.1, Version=14.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
+  &lt;add name="ErrorLog" type="Elmah.ErrorLogModule, Elmah" /&gt;
+  &lt;add name="ErrorMail" type="Elmah.ErrorMailModule, Elmah" /&gt;
+  &lt;add name="ErrorFilter" type="Elmah.ErrorFilterModule, Elmah" /&gt;
+&lt;/httpModules&gt;
+</code></p>
+
+<p>Now we need to extend XAF's standard error handling. Create a new class in the web application.</p>
+
+<p>```c#
+public class ElmahErrorHandling : ErrorHandling
+{</p>
+
+<pre><code>protected override void LogException(ErrorInfo errorInfo)
+{
+    base.LogException(errorInfo);
+
+    if (errorInfo.Exception != null)
+        Elmah.ErrorSignal.FromCurrentContext().Raise(errorInfo.Exception);
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>And then modify <em>Global.asax.cs</em> to instantiate the new class</p>
+
+<p>```c#</p>
+
+<pre><code>    protected void Application_Start(object sender, EventArgs e) {
+        ErrorHandling.Instance = new ElmahErrorHandling(); // &lt;---this line is new
+        ASPxWebControl.CallbackError += new EventHandler(Application_Error);
+</code></pre>
+
+<h1>if DEBUG</h1>
+
+<pre><code>        TestScriptsManager.EasyTestEnabled = true;
+</code></pre>
+
+<h1>endif</h1>
+
+<pre><code>    }
+</code></pre>
+
+<p>```</p>
+
+<p>The complete files are available with the <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Elmah">source code</a>.</p>
+
+<p>Now run the application and trigger an unhandled exception. Change the URL to something that does not exist. Or open any detail view and modify the URL so that the Guid in the <em>ShortcutObjectKey</em> is invalid (replace a digit with an 'X'). Then the application error page appears.</p>
+
+<p><img src="/images/blog/xaf-with-elmah-002.png"></p>
+
+<p>Then return to the application and change the URL to <code>Elmah.axd</code>. You are looking at the log of all unhandled exceptions.</p>
+
+<p><img src="/images/blog/xaf-with-elmah-003.png"></p>
+
+<p>And for each exception, you can view the full details of any logged exception including coloured stack trace and full server variables.</p>
+
+<p><img src="/images/blog/xaf-with-elmah-004.png"></p>
+
+<h2>ELMAH options</h2>
+
+<p>By default, ELMAH is configured to disallow remote access to the error logs -  only a local user can get to <em>elmah.axd</em>. If you take care of the security implications it can be very useful to enable remote access and  monitor the logs on your production servers.</p>
+
+<p>We chose to use an XML file for each error but ELMAH is entirely pluggable. There are dozens of alternatives for persisting the error log including Sql Server, an RSS feeds, to Twitter, even to <a href="http://code.google.com/p/elmah/wiki/ProwlingErrors">an iPhone app</a>. There are even third party sites such as <a href="http://elmah.io">elmah.io</a> who will host your error logs for you.</p>
+
+<p>One of the advantages of using XML files is that the files can be copied to another machine. If you look in <em>MainDemo.Web\App_Data\Elmah.Errors</em>, you will find the resulting xml files.</p>
+
+<p><img src="/images/blog/xaf-with-elmah-005.png"></p>
+
+<p>You can just copy these files to another installation's <em>Elmah.Errors</em> folder and the log will show up when you visit <em>Elmah.axd</em>.</p>
+
+<p>One final note. ELMAH was developed for ASP.NET applications and web services, but it is possible to get it to work with other types of applications such as Windows Forms, Windows Service or console applications. Check out <a href="https://stackoverflow.com/questions/841451/using-elmah-in-a-console-application">this StackOverflow question</a>.</p>
+
+<p>The source code for this example is <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Elmah">on GitHub</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[A web UI performance tip for XAF web applications]]></title>
@@ -452,150 +640,6 @@ The default directories for the installation have changed again. I'm sure DevExp
 <p>For the 13.2 release, DevExpress have focused on making the existing functionality work better rather than developing new modules.</p>
 
 <p>Better reports. Better validation. A better framework all round.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[DevExpress 13.2 Review - Part 1]]></title>
-    <link href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1/"/>
-    <updated>2013-12-02T16:23:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1</id>
-    <content type="html"><![CDATA[<p>The first version of XAF I ever installed was called <em>eXpressApp-1.0.CTP2.exe</em> in July 2006! It has certainly come a long way since then.</p>
-
-<p>This post is the first part of an overview of the brand new version XAF 13.2 which will be released any day now. This part is an in-depth review of the new report writer features (still in beta).</p>
-
-<h2>Reports V2</h2>
-
-<p>Prior to this version, XAF reports were not source code. They were objects serialized to a file and then loaded into the database during initialisation. This has a lot of shortcomings some of which I have addressed in previous <a href="/making-xaf-reports-even-better-part-1/">blog posts</a>.</p>
-
-<p>But now finally it is now possible to build XAF reports directly from Visual Studio. DevExpress is calling this <a href="https://community.devexpress.com/blogs/eaf/archive/2013/11/08/easy-large-reports-in-13-2-ctp-of-reportsv2-module.aspx">Reports V2</a> and it largely supersedes my previous workarounds. The immediate advantages of Reports V2 are:</p>
-
-<ul>
-<li>Build time syntax checking</li>
-<li>Easily merge/compare report versions</li>
-<li>Painless version control of reports</li>
-<li>Better unit testing possibilities</li>
-</ul>
-
-
-<p>Let's have a look at the details. DevExpress have provided us with a new sample project called <em>ReportsV2Demo</em>. The interesting part of the project solution is here:</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-003.png"></p>
-
-<p>Notice that there are two folders containing reports. <em>PredefinedEditableReports</em> contains V1 reports. That is, the report is serialised as a string and loaded into the database during initialisation. If we look at the source for one of these, here is what it looks like:</p>
-
-<p>```c#
-namespace ReportV2Demo.Module.PredefinedEditableReports {</p>
-
-<pre><code>public class OrdinalReportResource {
-    public static string ReportLayout = @"
-</code></pre>
-
-<p>/// <XRTypeInfo>
-///   <AssemblyFullName>DevExpress.XtraReportsVSuffix, Version=dllVersion, Culture=neutral, PublicKeyToken=dllPublicKeyToken</AssemblyFullName>
-///   <AssemblyLocation>C:\Windows\Microsoft.Net\assembly\GAC_MSIL\DevExpress.XtraReportsVSuffix\v4.0_dllVersion__dllPublicKeyToken\DevExpress.XtraReportsVSuffix.dll</AssemblyLocation>
-///   <TypeName>DevExpress.XtraReports.UI.XtraReport</TypeName>
-///   <Localization>en-US</Localization>
-///   <Version>VersionShort</Version>
-///   <References>
-///     <Reference Path=""C:\Windows\Microsoft.Net\assembly\GAC_MSIL\DevExpress.Persistent.BaseVSuffix\v4.0_dllVersion__dllPublicKeyToken\DevExpress.Persistent.BaseVSuffix.dll"" />
-///     <Reference Path=""C:\Windows\Microsoft.Net\assembly\GAC_MSIL\System\v4.0_4.0.0.0__b77a5c561934e089\System.dll"" /></p>
-
-<p>/// etc.
-```
-The second folder, <em>PredefinedReadonlyReports</em> contains the V2 reports. With these reports, we can right-click and <strong>View Designer</strong> and up pops the XtraReport designer.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-004.png"></p>
-
-<p>Now I can make changes to my report within Visual Studio. In theory I can preview the report and view the HTML output. However, in the beta (13.2.4) the Preview view prints the report correctly but fails to fetch any data so all the fields are empty (maybe this is by design).</p>
-
-<p>(Actually, I think the names of these folders could be improved. Maybe XafReports vs. XtraReports. Or RuntimeReports vs. DesigntimeReports.)</p>
-
-<p>With respect to event scripts which in the past were particularly arduous to maintain, we now have two options.</p>
-
-<h3>Scripts option 1 - Use serialized scripts</h3>
-
-<p> Firstly, you can continue to use the scripts as before. You can use Visual Studio's <em>Properties</em> window to navigate to the script you need and then add the necessary code in the custom editor.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-005.png"></p>
-
-<p>Unfortunately, this is not the best from a maintenance perspective. The Scripts code editor view is not at all comparable to Visual Studio. No Intellisense. No CodeRush. In addition, the script itself gets serialized to a string.</p>
-
-<p>```c#
-this.ScriptsSource = "\r\nprivate void xrLabel2_BeforePrint(object sender,System.Drawing.Printing.PrintE" +</p>
-
-<pre><code>"ventArgs e) {\r\n    string something = \"something\";\r\n}\r\n";
-</code></pre>
-
-<p>```
-So unfortunately this approach does not improve things much with regard to compile-time syntax checking or code merging/version control.</p>
-
-<h3>Scripts option 2 - Move the scripts to the C# file</h3>
-
-<p>Now that the report is more like an <code>XtraReport</code>, we can attach an event in code. To test it I'll replace the output of the <em>First name</em> with the current time.</p>
-
-<p>```c#
-public partial class XtraReportOrdinary : DevExpress.XtraReports.UI.XtraReport
-{</p>
-
-<pre><code>public XtraReportOrdinary()
-{
-    InitializeComponent();
-    xrLabel2.BeforePrint += xrLabel2_BeforePrint;
-}
-
-private void xrLabel2_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e)
-{
-    // Today's date and time
-    xrLabel2.Text = DateTime.Now.ToString("G");
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>Now let's see if it works. We start up the web application and run the report.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-006.png"></p>
-
-<p>Excellent! You can see the report has successfully run the event and is displaying the current time instead of the first name. Here are the advantages of handling events this way.</p>
-
-<ul>
-<li>If there's a mistake in an event, the project will not compile until it's fixed.</li>
-<li>The code is more readable.</li>
-<li>The source code of the events can easily be compared with older versions.</li>
-<li>The source code can be merged much more easily when handling version control conflicts.</li>
-<li>Unit testing of the events becomes feasible.</li>
-</ul>
-
-
-<h3>Runtime tailoring</h3>
-
-<p>Can an end-user still make a copy and tailor the report as they could with the older versions? Yes they can! Let's start up the WinForms client and have a look.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-007.png"></p>
-
-<p>Each of the <em>PredefinedReadonlyReports</em> has a new option <em>Copy predefined report</em>. Also, notice that the <em>Show Report Designer</em> is greyed out. Now compare with the copy.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-008.png"></p>
-
-<p>This time it is the <em>Copy predefined report</em> is greyed out and the familiar <em>Show Report Designer</em> has become available. (A little suggestion to the DevExpress crew. It would be better if the new copy got renamed to <em>Copy of Inplace Report</em> like Windows does when copying a file). Now we can open the Report Designer and customise the report further. Fantastic!</p>
-
-<p>Let's check what happened to our events?</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-009.png"></p>
-
-<p>Well, the serialized event was copied correctly, but the script that we put in the C# file has not been copied. A bit unfortunate - that event would have to be re-written or copied manually from the C# source file, but in most cases, additional tailoring of reports is a one-off occasional activity. For me at least, the benefits of having more maintainable code outweigh the inconvenience of losing the events when cloning a report.</p>
-
-<h2>Conclusions</h2>
-
-<p>Reports V2 is certainly the most significant improvement to the XAF reporting engine yet. I'm sure there are a few beta issues to iron out and a few further improvements down the line. In this post, I haven't looked at features such as views, sub-reports and custom reporting components, all of which deserve further investigation.</p>
-
-<p>In my <a href="http://www.coprocess.com/">main development project</a>, there are currently 110 different reports and maintaining them takes some effort. Reports V2 will help considerably. Hats off to the DevExpress team.</p>
-
-<h2>Next up</h2>
-
-<p>In my next post I'll be taking a look at the new soft validation along with some other 13.2 improvements.</p>
 ]]></content>
   </entry>
   

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: devexpress | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/devexpress/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2014-09-17T10:39:41+01:00</updated>
+  <updated>2014-10-08T16:26:13+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,194 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ELMAH with DevExpress XAF]]></title>
+    <link href="http://ZeroSharp.github.com/elmah-with-devexpress-xaf/"/>
+    <updated>2014-10-08T15:45:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/elmah-with-devexpress-xaf</id>
+    <content type="html"><![CDATA[<p><a href="https://code.google.com/p/elmah/">ELMAH (Error Logging Modules and Handlers)</a> is an open source library for logging unhandled exceptions. This post explains how to get it running with the <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a> main demo.</p>
+
+<p>A couple of amazing facts about ELMAH.</p>
+
+<ul>
+<li>It has been around since 2004!</li>
+<li>It was written by <a href="http://www.raboof.com/">Atif Aziz</a> who happens to be an old school-friend from the International School of Geneva.</li>
+</ul>
+
+
+<p>XAF provides <a href="https://documentation.devexpress.com/#xaf/CustomDocument2704">quite extensive error handling options</a> out of the box, but I have found Elmah better suited to production environments because of the ability to remotely view the full error log.</p>
+
+<h2>Setting up</h2>
+
+<p>First, get the ELMAH package via NuGet into the MainDemo.Web project. ELMAH provides dozens of different methods of persisting the error log. For this example we'll choose one of the simplest. Make sure you select the <em>ELMAH on XML Log</em> package.</p>
+
+<p><img src="/images/blog/xaf-with-elmah-001.png"></p>
+
+<p>NuGet makes several automatic modifications to the <em>web.config</em>. Unfortunately, these are not quite accurate enough for XAF. The changes you need to make are detailed below:</p>
+
+<p>Add a <code>&lt;configSection&gt;</code> for ELMAH as alongside the existing devExpress one.</p>
+
+<p>```xml web.config
+  <configSections></p>
+
+<pre><code>&lt;sectionGroup name="devExpress"&gt;...&lt;/sectionGroup&gt; &lt;!-- this should already exist--&gt;
+&lt;sectionGroup name="elmah"&gt; &lt;!-- this is new--&gt;
+  &lt;section name="security" requirePermission="false" type="Elmah.SecuritySectionHandler, Elmah" /&gt;
+  &lt;section name="errorLog" requirePermission="false" type="Elmah.ErrorLogSectionHandler, Elmah" /&gt;
+  &lt;section name="errorMail" requirePermission="false" type="Elmah.ErrorMailSectionHandler, Elmah" /&gt;
+  &lt;section name="errorFilter" requirePermission="false" type="Elmah.ErrorFilterSectionHandler, Elmah" /&gt;
+ &lt;/sectionGroup&gt;
+</code></pre>
+
+<p>  </configSections>
+```</p>
+
+<p>Your <code>&lt;system.webServer&gt;</code> section should look like this:</p>
+
+<p>```xml web.config
+  &lt;system.webServer></p>
+
+<pre><code>&lt;handlers&gt;...&lt;/handlers&gt; &lt;!-- This is unchanged --&gt;
+&lt;validation validateIntegratedModeConfiguration="false" /&gt;
+&lt;modules&gt;
+  &lt;add name="ASPxHttpHandlerModule" type="DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v14.1, Version=14.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
+  &lt;add name="ErrorLog" type="Elmah.ErrorLogModule, Elmah" preCondition="managedHandler" /&gt;
+  &lt;add name="ErrorMail" type="Elmah.ErrorMailModule, Elmah" preCondition="managedHandler" /&gt;
+  &lt;add name="ErrorFilter" type="Elmah.ErrorFilterModule, Elmah" preCondition="managedHandler" /&gt;
+&lt;/modules&gt;
+</code></pre>
+
+<p>  &lt;/system.webServer>
+```</p>
+
+<p>Add a <code>&lt;location&gt;</code> for the path <em>elmah.axd</em> (alongside the existing <code>&lt;location&gt;</code> tags).</p>
+
+<p>```xml web.config
+  <location path="elmah.axd" inheritInChildApplications="false"></p>
+
+<pre><code>&lt;system.web&gt;
+  &lt;httpHandlers&gt;
+    &lt;add verb="POST,GET,HEAD" path="elmah.axd" type="Elmah.ErrorLogPageFactory, Elmah" /&gt;
+  &lt;/httpHandlers&gt;
+  &lt;!-- 
+    See http://code.google.com/p/elmah/wiki/SecuringErrorLogPages for 
+    more information on using ASP.NET authorization securing ELMAH.
+
+  &lt;authorization&gt;
+    &lt;allow roles="admin" /&gt;
+    &lt;deny users="*" /&gt;  
+  &lt;/authorization&gt;
+  --&gt;  
+&lt;/system.web&gt;
+&lt;system.webServer&gt;
+  &lt;handlers&gt;
+    &lt;add name="ELMAH" verb="POST,GET,HEAD" path="elmah.axd" type="Elmah.ErrorLogPageFactory, Elmah" preCondition="integratedMode" /&gt;
+  &lt;/handlers&gt;
+&lt;/system.webServer&gt;
+</code></pre>
+
+<p>  </location>
+```</p>
+
+<p>Add a new <code>&lt;elmah&gt;</code> section. I put mine just before the final <code>&lt;/configuration&gt;</code> tag.</p>
+
+<p>```xml web.config
+  <elmah></p>
+
+<pre><code>&lt;errorLog type="Elmah.XmlFileErrorLog, Elmah" logPath="~/App_Data/Elmah.Errors" /&gt;
+&lt;!--
+    See http://code.google.com/p/elmah/wiki/SecuringErrorLogPages for 
+    more information on remote access and securing ELMAH.
+--&gt;
+&lt;security allowRemoteAccess="false" /&gt;
+</code></pre>
+
+<p>  </elmah>
+```</p>
+
+<p>Now modify <em>HttpModules.Web.Config</em> to look like this:</p>
+
+<p><code>xml HttpModules.Web.Config
+&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;httpModules&gt;
+  &lt;add name="ASPxHttpHandlerModule" type="DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v14.1, Version=14.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
+  &lt;add name="ErrorLog" type="Elmah.ErrorLogModule, Elmah" /&gt;
+  &lt;add name="ErrorMail" type="Elmah.ErrorMailModule, Elmah" /&gt;
+  &lt;add name="ErrorFilter" type="Elmah.ErrorFilterModule, Elmah" /&gt;
+&lt;/httpModules&gt;
+</code></p>
+
+<p>Now we need to extend XAF's standard error handling. Create a new class in the web application.</p>
+
+<p>```c#
+public class ElmahErrorHandling : ErrorHandling
+{</p>
+
+<pre><code>protected override void LogException(ErrorInfo errorInfo)
+{
+    base.LogException(errorInfo);
+
+    if (errorInfo.Exception != null)
+        Elmah.ErrorSignal.FromCurrentContext().Raise(errorInfo.Exception);
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>And then modify <em>Global.asax.cs</em> to instantiate the new class</p>
+
+<p>```c#</p>
+
+<pre><code>    protected void Application_Start(object sender, EventArgs e) {
+        ErrorHandling.Instance = new ElmahErrorHandling(); // &lt;---this line is new
+        ASPxWebControl.CallbackError += new EventHandler(Application_Error);
+</code></pre>
+
+<h1>if DEBUG</h1>
+
+<pre><code>        TestScriptsManager.EasyTestEnabled = true;
+</code></pre>
+
+<h1>endif</h1>
+
+<pre><code>    }
+</code></pre>
+
+<p>```</p>
+
+<p>The complete files are available with the <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Elmah">source code</a>.</p>
+
+<p>Now run the application and trigger an unhandled exception. Change the URL to something that does not exist. Or open any detail view and modify the URL so that the Guid in the <em>ShortcutObjectKey</em> is invalid (replace a digit with an 'X'). Then the application error page appears.</p>
+
+<p><img src="/images/blog/xaf-with-elmah-002.png"></p>
+
+<p>Then return to the application and change the URL to <code>Elmah.axd</code>. You are looking at the log of all unhandled exceptions.</p>
+
+<p><img src="/images/blog/xaf-with-elmah-003.png"></p>
+
+<p>And for each exception, you can view the full details of any logged exception including coloured stack trace and full server variables.</p>
+
+<p><img src="/images/blog/xaf-with-elmah-004.png"></p>
+
+<h2>ELMAH options</h2>
+
+<p>By default, ELMAH is configured to disallow remote access to the error logs -  only a local user can get to <em>elmah.axd</em>. If you take care of the security implications it can be very useful to enable remote access and  monitor the logs on your production servers.</p>
+
+<p>We chose to use an XML file for each error but ELMAH is entirely pluggable. There are dozens of alternatives for persisting the error log including Sql Server, an RSS feeds, to Twitter, even to <a href="http://code.google.com/p/elmah/wiki/ProwlingErrors">an iPhone app</a>. There are even third party sites such as <a href="http://elmah.io">elmah.io</a> who will host your error logs for you.</p>
+
+<p>One of the advantages of using XML files is that the files can be copied to another machine. If you look in <em>MainDemo.Web\App_Data\Elmah.Errors</em>, you will find the resulting xml files.</p>
+
+<p><img src="/images/blog/xaf-with-elmah-005.png"></p>
+
+<p>You can just copy these files to another installation's <em>Elmah.Errors</em> folder and the log will show up when you visit <em>Elmah.axd</em>.</p>
+
+<p>One final note. ELMAH was developed for ASP.NET applications and web services, but it is possible to get it to work with other types of applications such as Windows Forms, Windows Service or console applications. Check out <a href="https://stackoverflow.com/questions/841451/using-elmah-in-a-console-application">this StackOverflow question</a>.</p>
+
+<p>The source code for this example is <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Elmah">on GitHub</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[A web UI performance tip for XAF web applications]]></title>
@@ -433,90 +621,6 @@ private void xrLabel2_BeforePrint(object sender, System.Drawing.Printing.PrintEv
 <h2>Next up</h2>
 
 <p>In my next post I'll be taking a look at the new soft validation along with some other 13.2 improvements.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[How to improve XAF grid layout for Chrome]]></title>
-    <link href="http://ZeroSharp.github.com/how-to-improve-xaf-grid-layout-for-chrome/"/>
-    <updated>2013-11-08T09:55:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/how-to-improve-xaf-grid-layout-for-chrome</id>
-    <content type="html"><![CDATA[<p>This post proposes a workaround for a specific XAF rendering problem related to recent versions of Google Chrome.</p>
-
-<p>Here is an XAF list view as it looks with IE 10 and DevExpress 13.1.8.</p>
-
-<p><img src="/images/blog/chrome-grid-layout-001.png"></p>
-
-<p>This is how the same view looks with Chrome 30. Notice how the column widths are rendered poorly. The minimum space is given to the string field and the date and bool fields are too wide.</p>
-
-<p><img src="/images/blog/chrome-grid-layout-002.png"></p>
-
-<p>What's going on? An update to the Chrome browser occurred in which has caused problems with the rendering of grid views in certain situations. The problem exists in all versions of Chrome great than 25 and also affects the <a href="http://www.google.com/chromeframe">Google Chrome Frame</a> plugin for IE.</p>
-
-<p>DevExpress were able to fix some scenarios in 13.1.4 and 12.2.11 (such as column sorting), but there are other situations which still pose problems (<em>e.g.</em> the fix does not resolve the problem if the <em>Auto Filter Row</em> is enabled, which is the case above.)</p>
-
-<p>Hopefully the Chrome devs will one day fix the root problem. You can keep an eye on <a href="https://code.google.com/p/chromium/issues/detail?id=178369">the issue here</a></p>
-
-<h2>The fix</h2>
-
-<p>Not so much a fix as a workaround. We use a <code>ViewController&lt;ListView&gt;</code> to set the grid layout to <code>UseFixedTableLayout</code>, but only for Chrome browsers. Something like this:</p>
-
-<p>```c#
-/// <summary>
-/// Switches to fixed table layout for the main list view when using Chrome or ChromeFrame.
-/// </summary>
-public class ChromeSpecificListViewController : ViewController<ListView>
-{</p>
-
-<pre><code>protected override void OnViewChanging(View view)
-{
-    base.OnViewChanging(view);
-    Active["IsChrome"] = IsChrome;
-}
-
-private static bool IsChrome
-{
-    get
-    {
-        HttpContext context = HttpContext.Current;
-        return context != null &amp;&amp; context.Request.Browser.Browser == "Chrome";
-    }
-}
-
-protected override void OnViewControlsCreated()
-{
-    base.OnViewControlsCreated();
-
-    ASPxGridListEditor listEditor = View.Editor as ASPxGridListEditor;
-    if (listEditor == null)
-        return;
-
-    ASPxGridView gridView = listEditor.Grid as ASPxGridView;
-    if (gridView == null)
-        return;
-
-    gridView.Settings.UseFixedTableLayout = true;
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>The resulting view in Chrome:</p>
-
-<p><img src="/images/blog/chrome-grid-layout-003.png"></p>
-
-<p>That looks better. You may notice the columns will allways be the same width now, which is not quite as good as the IE rendering. As such, it may not be appropriate for all views. But since it's a <code>ViewController</code> it's easy to deactivate it by adding an <code>Active[]</code> criteria.</p>
-
-<h4>References</h4>
-
-<ul>
-<li><a href="https://code.google.com/p/chromium/issues/detail?id=178369">Chrome issue</a></li>
-<li><a href="http://www.devexpress.com/Support/Center/Question/Details/Q477066">Support Center Q477066</a></li>
-<li><a href="https://www.devexpress.com/Support/Center/Question/Details/B235945">Support Center B235945</a></li>
-<li><a href="https://www.devexpress.com/Support/Center/Question/Details/Q510468">Support Center Q510468</a></li>
-</ul>
-
 ]]></content>
   </entry>
   

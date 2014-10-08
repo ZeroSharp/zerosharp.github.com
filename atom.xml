@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2014-09-17T10:39:41+01:00</updated>
+  <updated>2014-10-08T16:26:13+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,242 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[ELMAH with DevExpress XAF]]></title>
+    <link href="http://ZeroSharp.github.com/elmah-with-devexpress-xaf/"/>
+    <updated>2014-10-08T15:45:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/elmah-with-devexpress-xaf</id>
+    <content type="html"><![CDATA[<p><a href="https://code.google.com/p/elmah/">ELMAH (Error Logging Modules and Handlers)</a> is an open source library for logging unhandled exceptions. This post explains how to get it running with the <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a> main demo.</p>
+
+<p>A couple of amazing facts about ELMAH.</p>
+
+<ul>
+<li>It has been around since 2004!</li>
+<li>It was written by <a href="http://www.raboof.com/">Atif Aziz</a> who happens to be an old school-friend from the International School of Geneva.</li>
+</ul>
+
+
+<p>XAF provides <a href="https://documentation.devexpress.com/#xaf/CustomDocument2704">quite extensive error handling options</a> out of the box, but I have found Elmah better suited to production environments because of the ability to remotely view the full error log.</p>
+
+<h2>Setting up</h2>
+
+<p>First, get the ELMAH package via NuGet into the MainDemo.Web project. ELMAH provides dozens of different methods of persisting the error log. For this example we&#8217;ll choose one of the simplest. Make sure you select the <em>ELMAH on XML Log</em> package.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-elmah-001.png"></p>
+
+<p>NuGet makes several automatic modifications to the <em>web.config</em>. Unfortunately, these are not quite accurate enough for XAF. The changes you need to make are detailed below:</p>
+
+<p>Add a <code>&lt;configSection&gt;</code> for ELMAH as alongside the existing devExpress one.</p>
+
+<figure class='code'><figcaption><span>web.config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;configSections&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;sectionGroup</span> <span class="na">name=</span><span class="s">&quot;devExpress&quot;</span><span class="nt">&gt;</span>...<span class="nt">&lt;/sectionGroup&gt;</span> <span class="c">&lt;!-- this should already exist--&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;sectionGroup</span> <span class="na">name=</span><span class="s">&quot;elmah&quot;</span><span class="nt">&gt;</span> <span class="c">&lt;!-- this is new--&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;section</span> <span class="na">name=</span><span class="s">&quot;security&quot;</span> <span class="na">requirePermission=</span><span class="s">&quot;false&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.SecuritySectionHandler, Elmah&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;section</span> <span class="na">name=</span><span class="s">&quot;errorLog&quot;</span> <span class="na">requirePermission=</span><span class="s">&quot;false&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogSectionHandler, Elmah&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;section</span> <span class="na">name=</span><span class="s">&quot;errorMail&quot;</span> <span class="na">requirePermission=</span><span class="s">&quot;false&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorMailSectionHandler, Elmah&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;section</span> <span class="na">name=</span><span class="s">&quot;errorFilter&quot;</span> <span class="na">requirePermission=</span><span class="s">&quot;false&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorFilterSectionHandler, Elmah&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>     <span class="nt">&lt;/sectionGroup&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/configSections&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Your <code>&lt;system.webServer&gt;</code> section should look like this:</p>
+
+<figure class='code'><figcaption><span>web.config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;system.webServer&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;handlers&gt;</span>...<span class="nt">&lt;/handlers&gt;</span> <span class="c">&lt;!-- This is unchanged --&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;validation</span> <span class="na">validateIntegratedModeConfiguration=</span><span class="s">&quot;false&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;modules&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ASPxHttpHandlerModule&quot;</span> <span class="na">type=</span><span class="s">&quot;DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v14.1, Version=14.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorLog&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogModule, Elmah&quot;</span> <span class="na">preCondition=</span><span class="s">&quot;managedHandler&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorMail&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorMailModule, Elmah&quot;</span> <span class="na">preCondition=</span><span class="s">&quot;managedHandler&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorFilter&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorFilterModule, Elmah&quot;</span> <span class="na">preCondition=</span><span class="s">&quot;managedHandler&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/modules&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/system.webServer&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Add a <code>&lt;location&gt;</code> for the path <em>elmah.axd</em> (alongside the existing <code>&lt;location&gt;</code> tags).</p>
+
+<figure class='code'><figcaption><span>web.config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;location</span> <span class="na">path=</span><span class="s">&quot;elmah.axd&quot;</span> <span class="na">inheritInChildApplications=</span><span class="s">&quot;false&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;system.web&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;httpHandlers&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;add</span> <span class="na">verb=</span><span class="s">&quot;POST,GET,HEAD&quot;</span> <span class="na">path=</span><span class="s">&quot;elmah.axd&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogPageFactory, Elmah&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/httpHandlers&gt;</span>
+</span><span class='line'>      <span class="c">&lt;!-- </span>
+</span><span class='line'><span class="c">        See http://code.google.com/p/elmah/wiki/SecuringErrorLogPages for </span>
+</span><span class='line'><span class="c">        more information on using ASP.NET authorization securing ELMAH.</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">      &lt;authorization&gt;</span>
+</span><span class='line'><span class="c">        &lt;allow roles=&quot;admin&quot; /&gt;</span>
+</span><span class='line'><span class="c">        &lt;deny users=&quot;*&quot; /&gt;  </span>
+</span><span class='line'><span class="c">      &lt;/authorization&gt;</span>
+</span><span class='line'><span class="c">      --&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/system.web&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;system.webServer&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;handlers&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ELMAH&quot;</span> <span class="na">verb=</span><span class="s">&quot;POST,GET,HEAD&quot;</span> <span class="na">path=</span><span class="s">&quot;elmah.axd&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogPageFactory, Elmah&quot;</span> <span class="na">preCondition=</span><span class="s">&quot;integratedMode&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/handlers&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/system.webServer&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/location&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Add a new <code>&lt;elmah&gt;</code> section. I put mine just before the final <code>&lt;/configuration&gt;</code> tag.</p>
+
+<figure class='code'><figcaption><span>web.config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;elmah&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;errorLog</span> <span class="na">type=</span><span class="s">&quot;Elmah.XmlFileErrorLog, Elmah&quot;</span> <span class="na">logPath=</span><span class="s">&quot;~/App_Data/Elmah.Errors&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="c">&lt;!--</span>
+</span><span class='line'><span class="c">        See http://code.google.com/p/elmah/wiki/SecuringErrorLogPages for </span>
+</span><span class='line'><span class="c">        more information on remote access and securing ELMAH.</span>
+</span><span class='line'><span class="c">    --&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;security</span> <span class="na">allowRemoteAccess=</span><span class="s">&quot;false&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/elmah&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now modify <em>HttpModules.Web.Config</em> to look like this:</p>
+
+<figure class='code'><figcaption><span>HttpModules.Web.Config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;httpModules&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ASPxHttpHandlerModule&quot;</span> <span class="na">type=</span><span class="s">&quot;DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v14.1, Version=14.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorLog&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogModule, Elmah&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorMail&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorMailModule, Elmah&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorFilter&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorFilterModule, Elmah&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/httpModules&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we need to extend XAF&#8217;s standard error handling. Create a new class in the web application.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">ElmahErrorHandling</span> <span class="p">:</span> <span class="n">ErrorHandling</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">LogException</span><span class="p">(</span><span class="n">ErrorInfo</span> <span class="n">errorInfo</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">base</span><span class="p">.</span><span class="n">LogException</span><span class="p">(</span><span class="n">errorInfo</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">errorInfo</span><span class="p">.</span><span class="n">Exception</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">Elmah</span><span class="p">.</span><span class="n">ErrorSignal</span><span class="p">.</span><span class="n">FromCurrentContext</span><span class="p">().</span><span class="n">Raise</span><span class="p">(</span><span class="n">errorInfo</span><span class="p">.</span><span class="n">Exception</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And then modify <em>Global.asax.cs</em> to instantiate the new class</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'>    <span class="k">protected</span> <span class="k">void</span> <span class="nf">Application_Start</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">ErrorHandling</span><span class="p">.</span><span class="n">Instance</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ElmahErrorHandling</span><span class="p">();</span> <span class="c1">// &lt;---this line is new</span>
+</span><span class='line'>        <span class="n">ASPxWebControl</span><span class="p">.</span><span class="n">CallbackError</span> <span class="p">+=</span> <span class="k">new</span> <span class="n">EventHandler</span><span class="p">(</span><span class="n">Application_Error</span><span class="p">);</span>
+</span><span class='line'><span class="cp">#if DEBUG</span>
+</span><span class='line'>        <span class="n">TestScriptsManager</span><span class="p">.</span><span class="n">EasyTestEnabled</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The complete files are available with the <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Elmah">source code</a>.</p>
+
+<p>Now run the application and trigger an unhandled exception. Change the URL to something that does not exist. Or open any detail view and modify the URL so that the Guid in the <em>ShortcutObjectKey</em> is invalid (replace a digit with an &#8216;X&#8217;). Then the application error page appears.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-elmah-002.png"></p>
+
+<p>Then return to the application and change the URL to <code>Elmah.axd</code>. You are looking at the log of all unhandled exceptions.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-elmah-003.png"></p>
+
+<p>And for each exception, you can view the full details of any logged exception including coloured stack trace and full server variables.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-elmah-004.png"></p>
+
+<h2>ELMAH options</h2>
+
+<p>By default, ELMAH is configured to disallow remote access to the error logs -  only a local user can get to <em>elmah.axd</em>. If you take care of the security implications it can be very useful to enable remote access and  monitor the logs on your production servers.</p>
+
+<p>We chose to use an XML file for each error but ELMAH is entirely pluggable. There are dozens of alternatives for persisting the error log including Sql Server, an RSS feeds, to Twitter, even to <a href="http://code.google.com/p/elmah/wiki/ProwlingErrors">an iPhone app</a>. There are even third party sites such as <a href="http://elmah.io">elmah.io</a> who will host your error logs for you.</p>
+
+<p>One of the advantages of using XML files is that the files can be copied to another machine. If you look in <em>MainDemo.Web\App_Data\Elmah.Errors</em>, you will find the resulting xml files.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-elmah-005.png"></p>
+
+<p>You can just copy these files to another installation&#8217;s <em>Elmah.Errors</em> folder and the log will show up when you visit <em>Elmah.axd</em>.</p>
+
+<p>One final note. ELMAH was developed for ASP.NET applications and web services, but it is possible to get it to work with other types of applications such as Windows Forms, Windows Service or console applications. Check out <a href="https://stackoverflow.com/questions/841451/using-elmah-in-a-console-application">this StackOverflow question</a>.</p>
+
+<p>The source code for this example is <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Elmah">on GitHub</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 4: Roslyn]]></title>
@@ -2627,303 +2863,6 @@ In the past I have always thought of NDepend as a complex tool. I was never sure
 <p>MiniProfiler is a great tool for providing helpful profiling benchmarks, even in production. It&#8217;s often difficult to measure when a remote user complains to support that the site seems slow. How slow is slow? In a production environment, you can turn on MiniProfiler for the user (by setting a cookie for instance) and then ask them to share their profiling information for some basic operations. This information can be invaluable in determining where the fault lies.</p>
 
 <p>You can play around with <a href="https://github.com/ZeroSharp/Xaf_MainDemo_MiniProfiler">the sample solution</a> up on GitHub.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Fluent queries with DevExpress XPO - Implementation]]></title>
-    <link href="http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-implementation/"/>
-    <updated>2013-08-14T11:03:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-implementation</id>
-    <content type="html"><![CDATA[<p>Continuing from my <a href="http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-intro">last post</a>, I&#8217;ll demonstrate how to create a fluent interface so that you can do:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">var</span> <span class="n">customer</span> <span class="p">=</span> <span class="n">Session</span>
-</span><span class='line'>                 <span class="p">.</span><span class="n">Query</span><span class="p">()</span>
-</span><span class='line'>                 <span class="p">.</span><span class="n">InTransaction</span>
-</span><span class='line'>                    <span class="p">.</span><span class="n">Contacts</span>
-</span><span class='line'>                      <span class="p">.</span><span class="n">ByPosition</span><span class="p">(</span><span class="s">&quot;Developer&quot;</span><span class="p">)</span>
-</span><span class='line'>                        <span class="p">.</span><span class="n">ThatHave</span>
-</span><span class='line'>                          <span class="p">.</span><span class="n">NoPhoto</span><span class="p">()</span>
-</span><span class='line'>                        <span class="p">.</span><span class="n">And</span>
-</span><span class='line'>                          <span class="p">.</span><span class="n">TasksInProgress</span><span class="p">()</span>
-</span><span class='line'>                        <span class="p">.</span><span class="n">And</span>
-</span><span class='line'>                          <span class="p">.</span><span class="n">TasksWith</span><span class="p">(</span><span class="n">Priority</span><span class="p">.</span><span class="n">High</span><span class="p">)</span>
-</span><span class='line'>                 <span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>First, let&#8217;s look at the &#8216;beginning&#8217; of the fluent interface: the <code>Query()</code> extension method.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">QueryExtensions</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="n">IQueries</span> <span class="nf">Query</span><span class="p">(</span><span class="k">this</span> <span class="n">Session</span> <span class="n">session</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nf">Queries</span><span class="p">(</span><span class="n">session</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// If we&#39;re using XAF, do the same for ObjectSpace as well</span>
-</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="n">IQueries</span> <span class="nf">Query</span><span class="p">(</span><span class="k">this</span> <span class="n">IObjectSpace</span> <span class="n">objectSpace</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="kt">var</span> <span class="n">xpObjectSpace</span> <span class="p">=</span> <span class="n">objectSpace</span> <span class="k">as</span> <span class="n">XPObjectSpace</span><span class="p">;</span>
-</span><span class='line'>        <span class="kt">var</span> <span class="n">session</span> <span class="p">=</span> <span class="n">xpObjectSpace</span><span class="p">.</span><span class="n">Session</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">return</span> <span class="k">new</span> <span class="nf">Queries</span><span class="p">(</span><span class="n">session</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>What does the <code>Queries()</code> class look like?</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">interface</span> <span class="n">IQueries</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">IQueries</span> <span class="n">InTransaction</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'>    <span class="n">IContactQueries</span> <span class="n">Contacts</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'>    <span class="c1">// One for each queryable object type, e.g.,</span>
-</span><span class='line'>    <span class="c1">// IDepartmentQueries Departments { get; }       </span>
-</span><span class='line'>    <span class="c1">// ITaskQueries Tasks { get; }</span>
-</span><span class='line'>    <span class="c1">// etc.</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">Queries</span> <span class="p">:</span> <span class="n">IQueries</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="nf">Queries</span><span class="p">(</span><span class="n">Session</span> <span class="n">session</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">_Session</span> <span class="p">=</span> <span class="n">session</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">private</span> <span class="k">readonly</span> <span class="n">Session</span> <span class="n">_Session</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">private</span> <span class="kt">bool</span> <span class="n">_InTransaction</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">public</span> <span class="n">IQueries</span> <span class="n">InTransaction</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">get</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="n">_InTransaction</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
-</span><span class='line'>            <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">private</span> <span class="n">IContactQueries</span> <span class="n">_Contacts</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">public</span> <span class="n">IContactQueries</span> <span class="n">Contacts</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">get</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">_Contacts</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
-</span><span class='line'>                <span class="n">_Contacts</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ContactQueries</span><span class="p">(</span><span class="n">_Session</span><span class="p">,</span> <span class="n">_InTransaction</span><span class="p">);</span>
-</span><span class='line'>            <span class="k">return</span> <span class="n">_Contacts</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>If we ignore the <code>InTransaction</code> property, it is just a container for the <code>IContactQueries</code>. In your application, you would have a similar property for each queryable object type. A new <code>ContactQueries</code> instance is created on demand taking into account the whether the <code>InTransaction</code> property was visited earlier in the syntax.</p>
-
-<p>Now, let&#8217;s look at the base classes.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">interface</span> <span class="n">IQueries</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">:</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;,</span> <span class="n">IFluentInterface</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">Queries</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="p">:</span> <span class="n">IQueries</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="nf">Queries</span><span class="p">(</span><span class="n">Session</span> <span class="n">session</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">inTransaction</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">_Session</span> <span class="p">=</span> <span class="n">session</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">Query</span> <span class="p">=</span> <span class="k">new</span> <span class="n">XPQuery</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;(</span><span class="n">session</span><span class="p">,</span> <span class="n">inTransaction</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">private</span> <span class="k">readonly</span> <span class="n">Session</span> <span class="n">_Session</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">protected</span> <span class="n">IQueryable</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="n">Query</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">public</span> <span class="n">IEnumerator</span><span class="p">&lt;</span><span class="n">T</span><span class="p">&gt;</span> <span class="n">GetEnumerator</span><span class="p">()</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">Query</span><span class="p">.</span><span class="n">GetEnumerator</span><span class="p">();</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">IEnumerator</span> <span class="n">IEnumerable</span><span class="p">.</span><span class="n">GetEnumerator</span><span class="p">()</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">Query</span><span class="p">.</span><span class="n">GetEnumerator</span><span class="p">();</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>So <code>Queries&lt;T&gt;</code> wraps an <code>XPQuery&lt;T&gt;</code>.</p>
-
-<p>Side note: the inclusion of <code>IFluentInterface</code> is a clever trick to improve Intellisense by hiding the <code>System.Object</code> members such as <code>ToString()</code>. See <a href="http://blogs.clariusconsulting.net/kzu/how-to-hide-system-object-members-from-your-interfaces/">Daniel Cazzulino&#8217;s blog post</a>.</p>
-
-<p>And now we can implement the <code>Contact</code> generic as follows:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">interface</span> <span class="n">IContactQueries</span> <span class="p">:</span> <span class="n">IQueries</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">IContactQueries</span> <span class="nf">ByDepartmentTitle</span><span class="p">(</span><span class="kt">string</span> <span class="n">departmentTitle</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">IContactQueries</span> <span class="nf">ByPosition</span><span class="p">(</span><span class="kt">string</span> <span class="n">position</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">Contact</span> <span class="nf">ByEmail</span><span class="p">(</span><span class="kt">string</span> <span class="n">email</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">ContactQueries</span> <span class="p">:</span> <span class="n">Queries</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;,</span> <span class="n">IContactQueries</span><span class="p">,</span> <span class="n">IContactThatHaveQueries</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="nf">ContactQueries</span><span class="p">(</span><span class="n">Session</span> <span class="n">session</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">inTransaction</span><span class="p">)</span>
-</span><span class='line'>        <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">session</span><span class="p">,</span> <span class="n">inTransaction</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">public</span> <span class="n">IContactQueries</span> <span class="nf">ByDepartmentTitle</span><span class="p">(</span><span class="kt">string</span> <span class="n">department</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">Query</span> <span class="p">=</span> <span class="n">Query</span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">Department</span><span class="p">.</span><span class="n">Title</span> <span class="p">==</span> <span class="n">department</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">public</span> <span class="n">IContactQueries</span> <span class="nf">ByPosition</span><span class="p">(</span><span class="kt">string</span> <span class="n">position</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">Query</span> <span class="p">=</span> <span class="n">Query</span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">Position</span><span class="p">.</span><span class="n">Title</span> <span class="p">==</span> <span class="n">position</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">public</span> <span class="n">Contact</span> <span class="nf">ByEmail</span><span class="p">(</span><span class="kt">string</span> <span class="n">email</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">Query</span><span class="p">.</span><span class="n">SingleOrDefault</span><span class="p">(</span><span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">Email</span> <span class="p">==</span> <span class="n">email</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>There we go. Now we can use our fluent interface:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">var</span> <span class="n">contacts</span> <span class="p">=</span> <span class="n">session</span><span class="p">.</span><span class="n">Query</span><span class="p">().</span><span class="n">Contacts</span><span class="p">.</span><span class="n">ByPosition</span><span class="p">(</span><span class="s">&quot;Manager&quot;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Much more readable. Also more maintainable because all queries are in one place and make use of good old LINQ. It&#8217;s also easier to test the queries because they are independent of the calling code.</p>
-
-<p>See <a href="https://github.com/ZeroSharp/Xaf_MainDemo_FluentQueries">a sample implementation</a> built against the DevExpress XAF MainDemo on GitHub.</p>
 ]]></content>
   </entry>
   
