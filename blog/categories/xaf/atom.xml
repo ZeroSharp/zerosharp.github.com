@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-01-20T09:23:22+00:00</updated>
+  <updated>2015-01-20T09:38:20+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -29,7 +29,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
 
 <p><img src="/images/blog/devexpress-14-2-review-001.png"></p>
 
-<p>The designer action is disabled because the selected report is <em>predefined</em>. Predefined reports are a feature of Reports v2 which were introduced in version 13.2 (<a href="/devexpress-13-dot-2-review">see my previous review</a>). So first, we clone the existing predefined report. I renamed the copy (via the edit button) so that we can tell them apart.</p>
+<p>The designer action is disabled because the selected report is <em>predefined</em>. Predefined reports are a feature of Reports v2 which were introduced in version 13.2 (<a href="/devexpress-13-dot-2-review-part-1">see my previous review</a>). So first, we clone the existing predefined report. I renamed the copy (via the edit button) so that we can tell them apart.</p>
 
 <p><img src="/images/blog/devexpress-14-2-review-002.png"></p>
 
@@ -57,7 +57,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
 
 <p>There are some features missing from the web-based report designer compared to the Windows Forms version. Most significant is the ability to attach events and scripts to controls. Here is a <a href="https://documentation.devexpress.com/#XtraReports/CustomDocument14651">full feature comparison table</a>.</p>
 
-<p>I had a quick look for the tools they used to implement it. It looks like it uses <a href="jquery.com">jQuery</a>, <a href="jqueryui.com">jQuery.UI</a> and <a href="knockoutjs.com">knockout.js</a> and you can automatically bundle the required libraries via a new setting in the web.config. There is <a href="https://documentation.devexpress.com/#XtraReports/CustomDocument17558">some more information here</a>.</p>
+<p>I had a quick look for the tools they used to implement it. It looks like it uses <a href="https://jquery.com">jQuery</a>, <a href="https://jqueryui.com">jQuery.UI</a> and <a href="https://knockoutjs.com">knockout.js</a> and you can automatically bundle the required libraries via a new setting in the web.config. There is <a href="https://documentation.devexpress.com/#XtraReports/CustomDocument17558">some more information here</a>.</p>
 
 <p>On the whole I am utterly impressed. Hats off to the DevExpress team!</p>
 
