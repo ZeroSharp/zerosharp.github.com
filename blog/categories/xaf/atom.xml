@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2014-10-08T16:26:13+01:00</updated>
+  <updated>2015-01-20T09:23:22+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,60 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[DevExpress 14.2 review]]></title>
+    <link href="http://ZeroSharp.github.com/devexpress-14-dot-2-review/"/>
+    <updated>2015-01-20T08:35:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/devexpress-14-dot-2-review</id>
+    <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='The truly outstanding new feature is the ASP.NET report writer'>
+This post is an overview of the brand new version XAF 14.2. The truly outstanding new feature is the ASP.NET report writer which is now available in all XAF applications.</p>
+
+<p>A few months ago, we lost a potential sale because the customer wanted the ability to create custom reports from within the browser. We told them it was impossible to provide a fully-fledged report designer within our web application - but the DevExpress guys have done it! And how! </span></p>
+
+<h2>The web-based report designer</h2>
+
+<p>Let's fire up the MainDemo application and navigate to the reports view. The first thing to notice is that there is a new action <em>Show Report Designer</em>.</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-001.png"></p>
+
+<p>The designer action is disabled because the selected report is <em>predefined</em>. Predefined reports are a feature of Reports v2 which were introduced in version 13.2 (<a href="/devexpress-13-dot-2-review">see my previous review</a>). So first, we clone the existing predefined report. I renamed the copy (via the edit button) so that we can tell them apart.</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-002.png"></p>
+
+<p>Now the <em>Show Report Designer</em> action is enabled. Let's click it. <em>Whoa! That's one impressive user interface for a web application!</em></p>
+
+<p><img src="/images/blog/devexpress-14-2-review-003.png"></p>
+
+<p>Let's add a chart and a few controls. I thought (incorrectly) that the link to the domain model might be somewhat lacking because the report designer is not designed specifically for XAF (you can also use it with non-XAF ASP.NET or ASP.NET MVC applications) but navigating the available domain objects to select a property seemed very natural and simple.</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-005.png"></p>
+
+<p>I had a few little mouse issues while trying to resize or move controls, and there were a couple of places where the interface seemed slightly sluggish, but these were very minor issues. In general the designer is slick and easy to use. I also had a little difficulty finding the <em>Save</em> button, but here it is:</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-007.png"></p>
+
+<p>And here's the live output after my modifications.</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-006.png"></p>
+
+<p>You can also start from scratch with a new blank report.</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-004.png"></p>
+
+<p>This report designer is an <strong>extremely impressive achievement</strong>. I played around with it for over an hour and it did not crash once. I managed to implement everything I tried including a chart, a bar code and a new data field.</p>
+
+<p>There are some features missing from the web-based report designer compared to the Windows Forms version. Most significant is the ability to attach events and scripts to controls. Here is a <a href="https://documentation.devexpress.com/#XtraReports/CustomDocument14651">full feature comparison table</a>.</p>
+
+<p>I had a quick look for the tools they used to implement it. It looks like it uses <a href="jquery.com">jQuery</a>, <a href="jqueryui.com">jQuery.UI</a> and <a href="knockoutjs.com">knockout.js</a> and you can automatically bundle the required libraries via a new setting in the web.config. There is <a href="https://documentation.devexpress.com/#XtraReports/CustomDocument17558">some more information here</a>.</p>
+
+<p>On the whole I am utterly impressed. Hats off to the DevExpress team!</p>
+
+<h2>Other new features in XAF 14.2</h2>
+
+<p>The new 14.2 includes several other new features. These include the ability to store user settings in the data store as well as improvements to the speed of the grids. For a full list of the new features and improvements see <a href="https://community.devexpress.com/blogs/eaf/archive/2014/11/18/xaf-brand-new-module-amp-features-for-both-windows-and-the-web-coming-soon-in-v14-2.aspx">here</a> and <a href="https://community.devexpress.com/blogs/eaf/archive/2014/11/20/xaf-enhancements-to-existing-features-amp-performance-tuning-coming-soon-in-v14-2.aspx">here</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ELMAH with DevExpress XAF]]></title>
@@ -539,107 +593,6 @@ As you can see, this is a very valuable glimpse into the server which can be tur
 <h2>MainDemo Sample Project</h2>
 
 <p>I have uploaded a modified XAF MainDemo to this <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Glimpse">GitHub repository</a> with all the above changes. (Don't forget to debug against IIS Express).</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[DevExpress 13.2 Review - Part 2]]></title>
-    <link href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-2/"/>
-    <updated>2013-12-10T16:10:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-2</id>
-    <content type="html"><![CDATA[<p>This is the second part of a review of the new DevExpress 13.2. In <a href="/devexpress-13-dot-2-review-part-1">the last part</a> we looked in-depth at the new <a href="https://community.devexpress.com/blogs/eaf/archive/2013/11/08/easy-large-reports-in-13-2-ctp-of-reportsv2-module.aspx">Reports V2</a>. In this part I'll go over some of the other new features including the support for warnings and confirmations in the validation module.</p>
-
-<h2>Soft Validation Rules</h2>
-
-<p>With 13.2, DevExpress adds support for warning/confirmation messages to the validation engine. Warnings can be used to handle an unusual but valid data entry. An example would be:</p>
-
-<p><blockquote><p>The date of birth results in an age of over 100. Are you sure?</p></blockquote></p>
-
-<p>Here the age of the contact is unusual but not impossible, so instead of prohibiting it entirely, we ask the user for confirmation before saving.</p>
-
-<p>Let's add this rule to the MainDemo. Open the model and navigate to the Validation node. Add a <code>RuleValueComparison</code> and configure it as follows</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-010.png"></p>
-
-<p>Of course you could instead also define the same rule with an attribute on the <code>Birthday</code> property. Something like:</p>
-
-<p>```c#
-[RuleValueComparison("IsOlderThan100_Warning",</p>
-
-<pre><code>DefaultContexts.Save,
-ValueComparisonType.GreaterThan, "AddYears(Now(), -100)",
-"Birthday makes this Contact older than 100. Are you sure?",
-ParametersMode.Expression,
-ResultType = ValidationResultType.Warning)]
-</code></pre>
-
-<p>```</p>
-
-<p>Notice the new <code>ResultType</code> parameter is set to <code>ValidationResultType.Warning</code>.</p>
-
-<p>Another typical use is to provide better handling of duplicates. Consider the following:</p>
-
-<p>```c#
-[RuleCombinationOfPropertiesIsUnique("DuplicateName_Warning",</p>
-
-<pre><code>DefaultContexts.Save, 
-"LastName;FirstName", 
-"There is already a Contact with the name {FullName}. Are you sure?", 
-ResultType = ValidationResultType.Warning)]
-</code></pre>
-
-<p>public class Contact : Person {
-  //etc ...
-```</p>
-
-<p>And then this is what happens if I try to add another John Nilsen.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-011.png"></p>
-
-<p>Another scenario would be to warn the user of something which needs attention. Such as "Warning! You are running out of funds in your current account." Or "Warning! Deleting this record will format your hard drive."</p>
-
-<h3>List Views</h3>
-
-<p>Soft validation also works in the list views, even with multiple selection, but there are a couple of things that don't work very smoothly yet and I would expect the web implementation to evolve over the coming releases.</p>
-
-<p>In order to demonstrate this I need to use a context which allows multiple selection such as deletion. So let's decorate our class with the following simple rule.</p>
-
-<p>```c#</p>
-
-<pre><code>[RuleCriteria("Deletion_Warning", DefaultContexts.Delete, "1=0", "Warning! Are you sure?", ResultType = ValidationResultType.Warning)]
-</code></pre>
-
-<p>```</p>
-
-<p>Then I select all the contacts and press <code>Delete</code>, after the confirmation window, I get this:</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-014.png"></p>
-
-<h3>Web Application</h3>
-
-<p>Soft validation is also available in the web application. This is what a warning looks like.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-015.png"></p>
-
-<p>I would prefer to see a <em>Confirm</em> button rather than the current <em>Ignore</em> checkbox since a button requires a single click to validate.</p>
-
-<p>When there are several warnings and errors at the same time, the current implementation displays them all. I think it would be preferable if warnings were not displayed unless there are no errors. Unless DevExpress provide this as an option soon, I will attempt to extend the controller in this regard in a future post.</p>
-
-<h2>Other new features</h2>
-
-<p>In the 13.2 release, there is now support for runtime extension of the model. DevExpress is calling this feature <em>custom fields</em> and (again) it is marked as beta. This is not a feature I've looked at, but there are a few other non-XAF DevExpress novelties which I'd like to see working within XAF. These include <a href="https://www.devexpress.com/Subscriptions/New-2013-v2-Beta.xml?product=aspnet#ctl00_ctl00_Content_Content_ctl659">new themes</a> and <a href="https://www.devexpress.com/Subscriptions/New-2013-v2-Beta.xml?product=aspnet#ctl00_ctl00_Content_Content_ctl660">support for grid batch editing</a>.</p>
-
-<h2>One warning</h2>
-
-<p><img class="left" src="/images/blog/devexpress-13-2-review-001.png">
-<img class="right" src="/images/blog/devexpress-13-2-review-002.png">
-The default directories for the installation have changed again. I'm sure DevExpress has some good reason for this, but if, like me, you have several different versions installed you end up with a confusing directory tree. Whenever this happens I always end up having to modify build scripts and config files so that all my tools work as expected. For those of you who use Red Gate's <em>.NET Reflector</em>, you can find my config file <a href="https://gist.github.com/shamp00/7748150">in this gist</a>.</p>
-
-<h2>Conclusions</h2>
-
-<p>For the 13.2 release, DevExpress have focused on making the existing functionality work better rather than developing new modules.</p>
-
-<p>Better reports. Better validation. A better framework all round.</p>
 ]]></content>
   </entry>
   

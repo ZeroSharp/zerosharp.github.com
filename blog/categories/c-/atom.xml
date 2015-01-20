@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c# | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/c-/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2014-10-08T16:26:13+01:00</updated>
+  <updated>2015-01-20T09:23:22+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,60 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[DevExpress 14.2 review]]></title>
+    <link href="http://ZeroSharp.github.com/devexpress-14-dot-2-review/"/>
+    <updated>2015-01-20T08:35:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/devexpress-14-dot-2-review</id>
+    <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='The truly outstanding new feature is the ASP.NET report writer'>
+This post is an overview of the brand new version XAF 14.2. The truly outstanding new feature is the ASP.NET report writer which is now available in all XAF applications.</p>
+
+<p>A few months ago, we lost a potential sale because the customer wanted the ability to create custom reports from within the browser. We told them it was impossible to provide a fully-fledged report designer within our web application - but the DevExpress guys have done it! And how! </span></p>
+
+<h2>The web-based report designer</h2>
+
+<p>Let's fire up the MainDemo application and navigate to the reports view. The first thing to notice is that there is a new action <em>Show Report Designer</em>.</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-001.png"></p>
+
+<p>The designer action is disabled because the selected report is <em>predefined</em>. Predefined reports are a feature of Reports v2 which were introduced in version 13.2 (<a href="/devexpress-13-dot-2-review">see my previous review</a>). So first, we clone the existing predefined report. I renamed the copy (via the edit button) so that we can tell them apart.</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-002.png"></p>
+
+<p>Now the <em>Show Report Designer</em> action is enabled. Let's click it. <em>Whoa! That's one impressive user interface for a web application!</em></p>
+
+<p><img src="/images/blog/devexpress-14-2-review-003.png"></p>
+
+<p>Let's add a chart and a few controls. I thought (incorrectly) that the link to the domain model might be somewhat lacking because the report designer is not designed specifically for XAF (you can also use it with non-XAF ASP.NET or ASP.NET MVC applications) but navigating the available domain objects to select a property seemed very natural and simple.</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-005.png"></p>
+
+<p>I had a few little mouse issues while trying to resize or move controls, and there were a couple of places where the interface seemed slightly sluggish, but these were very minor issues. In general the designer is slick and easy to use. I also had a little difficulty finding the <em>Save</em> button, but here it is:</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-007.png"></p>
+
+<p>And here's the live output after my modifications.</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-006.png"></p>
+
+<p>You can also start from scratch with a new blank report.</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-004.png"></p>
+
+<p>This report designer is an <strong>extremely impressive achievement</strong>. I played around with it for over an hour and it did not crash once. I managed to implement everything I tried including a chart, a bar code and a new data field.</p>
+
+<p>There are some features missing from the web-based report designer compared to the Windows Forms version. Most significant is the ability to attach events and scripts to controls. Here is a <a href="https://documentation.devexpress.com/#XtraReports/CustomDocument14651">full feature comparison table</a>.</p>
+
+<p>I had a quick look for the tools they used to implement it. It looks like it uses <a href="jquery.com">jQuery</a>, <a href="jqueryui.com">jQuery.UI</a> and <a href="knockoutjs.com">knockout.js</a> and you can automatically bundle the required libraries via a new setting in the web.config. There is <a href="https://documentation.devexpress.com/#XtraReports/CustomDocument17558">some more information here</a>.</p>
+
+<p>On the whole I am utterly impressed. Hats off to the DevExpress team!</p>
+
+<h2>Other new features in XAF 14.2</h2>
+
+<p>The new 14.2 includes several other new features. These include the ability to store user settings in the data store as well as improvements to the speed of the grids. For a full list of the new features and improvements see <a href="https://community.devexpress.com/blogs/eaf/archive/2014/11/18/xaf-brand-new-module-amp-features-for-both-windows-and-the-web-coming-soon-in-v14-2.aspx">here</a> and <a href="https://community.devexpress.com/blogs/eaf/archive/2014/11/20/xaf-enhancements-to-existing-features-amp-performance-tuning-coming-soon-in-v14-2.aspx">here</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ELMAH with DevExpress XAF]]></title>
@@ -687,88 +741,6 @@ public class PluginOtherwiseDefaultBindingCreator : IBindingCreator
 <p>The <em>Microsoft.CodeAnalysis.CSharp</em> is the 'Roslyn' package. It is still in beta, so you have to switch to the pre-release.</p>
 
 <p>Next we'll look at <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/">the dependency injection part</a> in more detail.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 1: The Goal]]></title>
-    <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/"/>
-    <updated>2014-09-09T10:47:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1</id>
-    <content type="html"><![CDATA[<h2>The goal</h2>
-
-<p><span class='pullquote-right' data-pullquote='How can we replace a given class&#8217;s code with new code at runtime?'>
-How can we replace a given class's code with new code at runtime? In particular, how we can we do this while allowing dependency injection and  sidestepping assembly versioning issues.
-</span></p>
-
-<p>Let's say you have bunch of classes like this:</p>
-
-<p>```c# SomeGenerator.cs
-public class SomeGenerator : IGenerator
-{</p>
-
-<pre><code>public SomeGenerator(ISomeDependency dependency, IAnotherDependency another)
-{
-    ...
-}
-
-public void Generate()
-{
-    ...
-    // generate some output
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>Now let's assume that you need the ability to modify the behaviour of these classes at runtime without upgrading. And change the dependencies. Without restarting the application.</p>
-
-<h4>Old school - The MEF approach (and most other plug-in frameworks)</h4>
-
-<p>One approach would be to place each generator in a separate assembly and then you could load them at runtime. (This was my first effort - <em>oh how I struggled</em>).</p>
-
-<p>You can make use of something like <a href="http://msdn.microsoft.com/en-us/library/dd460648.aspx">MEF</a> to help with the grunt work, but can still be very complex.</p>
-
-<p>One difficulty is the dependencies. The dependencies are often defined in other assemblies and you have to be very careful to avoid 'dll hell'. It is very easy to get message like:</p>
-
-<pre><code>Could not load file or assembly 'SomeAssembly, Version=1.2.9.1, Culture=neutral, PublicKeyToken=ad2d246d2bace800' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference.
-</code></pre>
-
-<p>Or even exceptions like</p>
-
-<pre><code>Object (of type 'SomeGenerator') is not of type 'SomeGenerator'.
-</code></pre>
-
-<p>You either have to write your plug-in code so that it is totally independent (i.e., has no dependencies), or you need to resort to a heap of <code>&lt;bindingRedirect&gt;</code> tags in your web.config.</p>
-
-<p>Also, with one assembly per format, you can end up with a huge proliferation of assemblies. If you have 50 different formats, that would be 50 assemblies.</p>
-
-<h4>New school - The Rosyln approach</h4>
-
-<p>An alternative is to use the compiler-as-a-service features of <a href="http://msdn.microsoft.com/en-gb/vstudio/roslyn.aspx">Roslyn</a>.</p>
-
-<p>Can we upload a modified <em>SomeGenerator.cs</em> and get it to reference the deployed assemblies and thereby avoid dll hell? With Roslyn we can do this.</p>
-
-<p>If the compilation fails, we can immediately inform the user that the file is not compatible. If it succeeds, we can use it in lieu of the version that was originally deployed.</p>
-
-<p>Also, you do <strong>not</strong> need separate assemblies for the plug-ins. Your production code contains, within it somewhere a class named <code>SomeGenerator</code>. At runtime, we are going to create an in-memory assembly which contains only a single class (still named <code>SomeGenerator</code>), but which can nevertheless reference any other class available to the original implementation. Then we will get the dependency injection container to 'replace' the old generator with the new one.</p>
-
-<h2>The plan</h2>
-
-<ul>
-<li>Build an ASP.NET MVC 5 web application. It will use an instance of <code>HelloWorldGenerator</code> to generate some output. (This is the <em>original implementation</em>).</li>
-<li>Allow a replacement for the <code>HelloWorldGenerator</code> class to be uploaded into the application as raw C# code. (This is the <em>plug-in implementation</em>.)</li>
-<li>Store the C# code in a database. If the application is restarted, the plug-in code will be reloaded.</li>
-<li>When the output is next requested, compile the new C# class. Any dependencies will be instantiated by the IoC container. If there are any compilation errors, these will be displayed.</li>
-<li>Show that the plug-in class is now being used and the output has changed. The originally shipped <code>HelloWorldGenerator</code> class has been replaced by our plug-in.</li>
-<li>Delete the plug-in from the table and show the output has reverted to the default (the originally implementation code).</li>
-</ul>
-
-
-<p>Over next few posts I'll guide you through building the application and demonstrate the runtime replacement of the generator class.</p>
-
-<p>See <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/">Part 2</a> for screen shots of the working application and an overview of the basic project set up.</p>
 ]]></content>
   </entry>
   

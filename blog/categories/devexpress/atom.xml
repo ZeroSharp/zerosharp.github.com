@@ -4,7 +4,7 @@
   <title><![CDATA[Category: devexpress | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/devexpress/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2014-10-08T16:26:13+01:00</updated>
+  <updated>2015-01-20T09:23:22+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,60 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[DevExpress 14.2 review]]></title>
+    <link href="http://ZeroSharp.github.com/devexpress-14-dot-2-review/"/>
+    <updated>2015-01-20T08:35:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/devexpress-14-dot-2-review</id>
+    <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='The truly outstanding new feature is the ASP.NET report writer'>
+This post is an overview of the brand new version XAF 14.2. The truly outstanding new feature is the ASP.NET report writer which is now available in all XAF applications.</p>
+
+<p>A few months ago, we lost a potential sale because the customer wanted the ability to create custom reports from within the browser. We told them it was impossible to provide a fully-fledged report designer within our web application - but the DevExpress guys have done it! And how! </span></p>
+
+<h2>The web-based report designer</h2>
+
+<p>Let's fire up the MainDemo application and navigate to the reports view. The first thing to notice is that there is a new action <em>Show Report Designer</em>.</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-001.png"></p>
+
+<p>The designer action is disabled because the selected report is <em>predefined</em>. Predefined reports are a feature of Reports v2 which were introduced in version 13.2 (<a href="/devexpress-13-dot-2-review">see my previous review</a>). So first, we clone the existing predefined report. I renamed the copy (via the edit button) so that we can tell them apart.</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-002.png"></p>
+
+<p>Now the <em>Show Report Designer</em> action is enabled. Let's click it. <em>Whoa! That's one impressive user interface for a web application!</em></p>
+
+<p><img src="/images/blog/devexpress-14-2-review-003.png"></p>
+
+<p>Let's add a chart and a few controls. I thought (incorrectly) that the link to the domain model might be somewhat lacking because the report designer is not designed specifically for XAF (you can also use it with non-XAF ASP.NET or ASP.NET MVC applications) but navigating the available domain objects to select a property seemed very natural and simple.</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-005.png"></p>
+
+<p>I had a few little mouse issues while trying to resize or move controls, and there were a couple of places where the interface seemed slightly sluggish, but these were very minor issues. In general the designer is slick and easy to use. I also had a little difficulty finding the <em>Save</em> button, but here it is:</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-007.png"></p>
+
+<p>And here's the live output after my modifications.</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-006.png"></p>
+
+<p>You can also start from scratch with a new blank report.</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-004.png"></p>
+
+<p>This report designer is an <strong>extremely impressive achievement</strong>. I played around with it for over an hour and it did not crash once. I managed to implement everything I tried including a chart, a bar code and a new data field.</p>
+
+<p>There are some features missing from the web-based report designer compared to the Windows Forms version. Most significant is the ability to attach events and scripts to controls. Here is a <a href="https://documentation.devexpress.com/#XtraReports/CustomDocument14651">full feature comparison table</a>.</p>
+
+<p>I had a quick look for the tools they used to implement it. It looks like it uses <a href="jquery.com">jQuery</a>, <a href="jqueryui.com">jQuery.UI</a> and <a href="knockoutjs.com">knockout.js</a> and you can automatically bundle the required libraries via a new setting in the web.config. There is <a href="https://documentation.devexpress.com/#XtraReports/CustomDocument17558">some more information here</a>.</p>
+
+<p>On the whole I am utterly impressed. Hats off to the DevExpress team!</p>
+
+<h2>Other new features in XAF 14.2</h2>
+
+<p>The new 14.2 includes several other new features. These include the ability to store user settings in the data store as well as improvements to the speed of the grids. For a full list of the new features and improvements see <a href="https://community.devexpress.com/blogs/eaf/archive/2014/11/18/xaf-brand-new-module-amp-features-for-both-windows-and-the-web-coming-soon-in-v14-2.aspx">here</a> and <a href="https://community.devexpress.com/blogs/eaf/archive/2014/11/20/xaf-enhancements-to-existing-features-amp-performance-tuning-coming-soon-in-v14-2.aspx">here</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[ELMAH with DevExpress XAF]]></title>
@@ -477,150 +531,6 @@ The default directories for the installation have changed again. I'm sure DevExp
 <p>For the 13.2 release, DevExpress have focused on making the existing functionality work better rather than developing new modules.</p>
 
 <p>Better reports. Better validation. A better framework all round.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[DevExpress 13.2 Review - Part 1]]></title>
-    <link href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1/"/>
-    <updated>2013-12-02T16:23:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1</id>
-    <content type="html"><![CDATA[<p>The first version of XAF I ever installed was called <em>eXpressApp-1.0.CTP2.exe</em> in July 2006! It has certainly come a long way since then.</p>
-
-<p>This post is the first part of an overview of the brand new version XAF 13.2 which will be released any day now. This part is an in-depth review of the new report writer features (still in beta).</p>
-
-<h2>Reports V2</h2>
-
-<p>Prior to this version, XAF reports were not source code. They were objects serialized to a file and then loaded into the database during initialisation. This has a lot of shortcomings some of which I have addressed in previous <a href="/making-xaf-reports-even-better-part-1/">blog posts</a>.</p>
-
-<p>But now finally it is now possible to build XAF reports directly from Visual Studio. DevExpress is calling this <a href="https://community.devexpress.com/blogs/eaf/archive/2013/11/08/easy-large-reports-in-13-2-ctp-of-reportsv2-module.aspx">Reports V2</a> and it largely supersedes my previous workarounds. The immediate advantages of Reports V2 are:</p>
-
-<ul>
-<li>Build time syntax checking</li>
-<li>Easily merge/compare report versions</li>
-<li>Painless version control of reports</li>
-<li>Better unit testing possibilities</li>
-</ul>
-
-
-<p>Let's have a look at the details. DevExpress have provided us with a new sample project called <em>ReportsV2Demo</em>. The interesting part of the project solution is here:</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-003.png"></p>
-
-<p>Notice that there are two folders containing reports. <em>PredefinedEditableReports</em> contains V1 reports. That is, the report is serialised as a string and loaded into the database during initialisation. If we look at the source for one of these, here is what it looks like:</p>
-
-<p>```c#
-namespace ReportV2Demo.Module.PredefinedEditableReports {</p>
-
-<pre><code>public class OrdinalReportResource {
-    public static string ReportLayout = @"
-</code></pre>
-
-<p>/// <XRTypeInfo>
-///   <AssemblyFullName>DevExpress.XtraReportsVSuffix, Version=dllVersion, Culture=neutral, PublicKeyToken=dllPublicKeyToken</AssemblyFullName>
-///   <AssemblyLocation>C:\Windows\Microsoft.Net\assembly\GAC_MSIL\DevExpress.XtraReportsVSuffix\v4.0_dllVersion__dllPublicKeyToken\DevExpress.XtraReportsVSuffix.dll</AssemblyLocation>
-///   <TypeName>DevExpress.XtraReports.UI.XtraReport</TypeName>
-///   <Localization>en-US</Localization>
-///   <Version>VersionShort</Version>
-///   <References>
-///     <Reference Path=""C:\Windows\Microsoft.Net\assembly\GAC_MSIL\DevExpress.Persistent.BaseVSuffix\v4.0_dllVersion__dllPublicKeyToken\DevExpress.Persistent.BaseVSuffix.dll"" />
-///     <Reference Path=""C:\Windows\Microsoft.Net\assembly\GAC_MSIL\System\v4.0_4.0.0.0__b77a5c561934e089\System.dll"" /></p>
-
-<p>/// etc.
-```
-The second folder, <em>PredefinedReadonlyReports</em> contains the V2 reports. With these reports, we can right-click and <strong>View Designer</strong> and up pops the XtraReport designer.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-004.png"></p>
-
-<p>Now I can make changes to my report within Visual Studio. In theory I can preview the report and view the HTML output. However, in the beta (13.2.4) the Preview view prints the report correctly but fails to fetch any data so all the fields are empty (maybe this is by design).</p>
-
-<p>(Actually, I think the names of these folders could be improved. Maybe XafReports vs. XtraReports. Or RuntimeReports vs. DesigntimeReports.)</p>
-
-<p>With respect to event scripts which in the past were particularly arduous to maintain, we now have two options.</p>
-
-<h3>Scripts option 1 - Use serialized scripts</h3>
-
-<p> Firstly, you can continue to use the scripts as before. You can use Visual Studio's <em>Properties</em> window to navigate to the script you need and then add the necessary code in the custom editor.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-005.png"></p>
-
-<p>Unfortunately, this is not the best from a maintenance perspective. The Scripts code editor view is not at all comparable to Visual Studio. No Intellisense. No CodeRush. In addition, the script itself gets serialized to a string.</p>
-
-<p>```c#
-this.ScriptsSource = "\r\nprivate void xrLabel2_BeforePrint(object sender,System.Drawing.Printing.PrintE" +</p>
-
-<pre><code>"ventArgs e) {\r\n    string something = \"something\";\r\n}\r\n";
-</code></pre>
-
-<p>```
-So unfortunately this approach does not improve things much with regard to compile-time syntax checking or code merging/version control.</p>
-
-<h3>Scripts option 2 - Move the scripts to the C# file</h3>
-
-<p>Now that the report is more like an <code>XtraReport</code>, we can attach an event in code. To test it I'll replace the output of the <em>First name</em> with the current time.</p>
-
-<p>```c#
-public partial class XtraReportOrdinary : DevExpress.XtraReports.UI.XtraReport
-{</p>
-
-<pre><code>public XtraReportOrdinary()
-{
-    InitializeComponent();
-    xrLabel2.BeforePrint += xrLabel2_BeforePrint;
-}
-
-private void xrLabel2_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e)
-{
-    // Today's date and time
-    xrLabel2.Text = DateTime.Now.ToString("G");
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>Now let's see if it works. We start up the web application and run the report.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-006.png"></p>
-
-<p>Excellent! You can see the report has successfully run the event and is displaying the current time instead of the first name. Here are the advantages of handling events this way.</p>
-
-<ul>
-<li>If there's a mistake in an event, the project will not compile until it's fixed.</li>
-<li>The code is more readable.</li>
-<li>The source code of the events can easily be compared with older versions.</li>
-<li>The source code can be merged much more easily when handling version control conflicts.</li>
-<li>Unit testing of the events becomes feasible.</li>
-</ul>
-
-
-<h3>Runtime tailoring</h3>
-
-<p>Can an end-user still make a copy and tailor the report as they could with the older versions? Yes they can! Let's start up the WinForms client and have a look.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-007.png"></p>
-
-<p>Each of the <em>PredefinedReadonlyReports</em> has a new option <em>Copy predefined report</em>. Also, notice that the <em>Show Report Designer</em> is greyed out. Now compare with the copy.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-008.png"></p>
-
-<p>This time it is the <em>Copy predefined report</em> is greyed out and the familiar <em>Show Report Designer</em> has become available. (A little suggestion to the DevExpress crew. It would be better if the new copy got renamed to <em>Copy of Inplace Report</em> like Windows does when copying a file). Now we can open the Report Designer and customise the report further. Fantastic!</p>
-
-<p>Let's check what happened to our events?</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-009.png"></p>
-
-<p>Well, the serialized event was copied correctly, but the script that we put in the C# file has not been copied. A bit unfortunate - that event would have to be re-written or copied manually from the C# source file, but in most cases, additional tailoring of reports is a one-off occasional activity. For me at least, the benefits of having more maintainable code outweigh the inconvenience of losing the events when cloning a report.</p>
-
-<h2>Conclusions</h2>
-
-<p>Reports V2 is certainly the most significant improvement to the XAF reporting engine yet. I'm sure there are a few beta issues to iron out and a few further improvements down the line. In this post, I haven't looked at features such as views, sub-reports and custom reporting components, all of which deserve further investigation.</p>
-
-<p>In my <a href="http://www.coprocess.com/">main development project</a>, there are currently 110 different reports and maintaining them takes some effort. Reports V2 will help considerably. Hats off to the DevExpress team.</p>
-
-<h2>Next up</h2>
-
-<p>In my next post I'll be taking a look at the new soft validation along with some other 13.2 improvements.</p>
 ]]></content>
   </entry>
   

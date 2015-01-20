@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="ELMAH (Error Logging Modules and Handlers) is an open source library for logging unhandled exceptions. This post explains how to get it running with &hellip;">
+  <meta name="description" content="This post is an overview of the brand new version XAF 14.2. The truly outstanding new feature is the ASP.NET report writer which is now available in &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,89 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/devexpress-14-dot-2-review/">DevExpress 14.2 Review</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-01-20T08:35:00+00:00" pubdate data-updated="true">Jan 20<span>th</span>, 2015</time>
+        
+         | <a href="/devexpress-14-dot-2-review/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><span class='pullquote-right' data-pullquote='The truly outstanding new feature is the ASP.NET report writer'>
+This post is an overview of the brand new version XAF 14.2. The truly outstanding new feature is the ASP.NET report writer which is now available in all XAF applications.</p>
+
+<p>A few months ago, we lost a potential sale because the customer wanted the ability to create custom reports from within the browser. We told them it was impossible to provide a fully-fledged report designer within our web application - but the DevExpress guys have done it! And how! </span></p>
+
+<h2>The web-based report designer</h2>
+
+<p>Let&#8217;s fire up the MainDemo application and navigate to the reports view. The first thing to notice is that there is a new action <em>Show Report Designer</em>.</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-001.png"></p>
+
+<p>The designer action is disabled because the selected report is <em>predefined</em>. Predefined reports are a feature of Reports v2 which were introduced in version 13.2 (<a href="/devexpress-13-dot-2-review">see my previous review</a>). So first, we clone the existing predefined report. I renamed the copy (via the edit button) so that we can tell them apart.</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-002.png"></p>
+
+<p>Now the <em>Show Report Designer</em> action is enabled. Let&#8217;s click it. <em>Whoa! That&#8217;s one impressive user interface for a web application!</em></p>
+
+<p><img src="/images/blog/devexpress-14-2-review-003.png"></p>
+
+<p>Let&#8217;s add a chart and a few controls. I thought (incorrectly) that the link to the domain model might be somewhat lacking because the report designer is not designed specifically for XAF (you can also use it with non-XAF ASP.NET or ASP.NET MVC applications) but navigating the available domain objects to select a property seemed very natural and simple.</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-005.png"></p>
+
+<p>I had a few little mouse issues while trying to resize or move controls, and there were a couple of places where the interface seemed slightly sluggish, but these were very minor issues. In general the designer is slick and easy to use. I also had a little difficulty finding the <em>Save</em> button, but here it is:</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-007.png"></p>
+
+<p>And here&#8217;s the live output after my modifications.</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-006.png"></p>
+
+<p>You can also start from scratch with a new blank report.</p>
+
+<p><img src="/images/blog/devexpress-14-2-review-004.png"></p>
+
+<p>This report designer is an <strong>extremely impressive achievement</strong>. I played around with it for over an hour and it did not crash once. I managed to implement everything I tried including a chart, a bar code and a new data field.</p>
+
+<p>There are some features missing from the web-based report designer compared to the Windows Forms version. Most significant is the ability to attach events and scripts to controls. Here is a <a href="https://documentation.devexpress.com/#XtraReports/CustomDocument14651">full feature comparison table</a>.</p>
+
+<p>I had a quick look for the tools they used to implement it. It looks like it uses <a href="jquery.com">jQuery</a>, <a href="jqueryui.com">jQuery.UI</a> and <a href="knockoutjs.com">knockout.js</a> and you can automatically bundle the required libraries via a new setting in the web.config. There is <a href="https://documentation.devexpress.com/#XtraReports/CustomDocument17558">some more information here</a>.</p>
+
+<p>On the whole I am utterly impressed. Hats off to the DevExpress team!</p>
+
+<h2>Other new features in XAF 14.2</h2>
+
+<p>The new 14.2 includes several other new features. These include the ability to store user settings in the data store as well as improvements to the speed of the grids. For a full list of the new features and improvements see <a href="https://community.devexpress.com/blogs/eaf/archive/2014/11/18/xaf-brand-new-module-amp-features-for-both-windows-and-the-web-coming-soon-in-v14-2.aspx">here</a> and <a href="https://community.devexpress.com/blogs/eaf/archive/2014/11/20/xaf-enhancements-to-existing-features-amp-performance-tuning-coming-soon-in-v14-2.aspx">here</a>.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1783,60 +1866,6 @@ The biggest XAF project I work with has one very complex business object. The la
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/cruisecontrol-notifications-on-your-iphone/">CruiseControl Notifications on Your iPhone</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-02-07T11:32:00+00:00" pubdate data-updated="true">Feb 7<span>th</span>, 2014</time>
-        
-         | <a href="/cruisecontrol-notifications-on-your-iphone/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><img class="right" src="/images/blog/ccwatcher-002.jpg" width="200"></p>
-
-<p><a href="http://sixafter.com/portfolio/continuous-integration-monitoring-for-ios/">CCWatcher</a> is a great iPhone app for any developer who is using CruiseControl.NET, Jenkins or Hudson for their continuous integration.</p>
-
-<p>We have used <a href="http://www.cruisecontrolnet.org/">CruiseControl.NET</a> for several years to automate all builds. The build kicks off automatically whenever we push changes and this frequently happens a few times a day. We aim to have everything <em>green</em> at the end of every day.</p>
-
-<p>A full build with unit tests and functional tests takes about an hour, so often, I will leave the office while the build is still running. But then I wouldn&#8217;t know if I&#8217;d broken the build.</p>
-
-<p>For a long while I was looking for a better way of being informed of build failures on my phone.</p>
-
-<p><img class="left" src="/images/blog/ccwatcher-001.png" width="300"></p>
-
-<p>Enter <strong>CCWatcher</strong>. It&#8217;s a simple application which allows you to enter the address of your build server and it will tell you the status of the projects you&#8217;ve configured.</p>
-
-<p>Whenever I need to check whether I&#8217;ve broken the build, I can just <em>pull to refresh</em>.</p>
-
-<p>When I first discovered the application it had a problem with CruiseControl.NET&#8217;s <a href="http://cruisecontrolnet.org/projects/ccnet/wiki/RemoteServices">remote services</a> (which we needed because the actual build server is on a network machine not visible from the internet). I contacted <em>SixAfter</em> and was very impressed with the helpful response from Michael Primeaux. Within a couple of weeks there was a new version of the app with support for the remote services configuration. Hats off.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1854,7 +1883,7 @@ The biggest XAF project I work with has one very complex business object. The la
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2014 - Robert Anderson
+  Copyright &copy; 2015 - Robert Anderson
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
