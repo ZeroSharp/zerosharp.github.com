@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: csv | ZeroSharp]]></title>
+  <link href="http://ZeroSharp.github.com/blog/categories/csv/atom.xml" rel="self"/>
+  <link href="http://ZeroSharp.github.com/"/>
+  <updated>2015-05-08T12:14:42+01:00</updated>
+  <id>http://ZeroSharp.github.com/</id>
+  <author>
+    <name><![CDATA[Robert Anderson]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Top tip for viewing CSV files in Excel]]></title>
+    <link href="http://ZeroSharp.github.com/top-tip-for-viewing-csv-files-in-excel/"/>
+    <updated>2015-05-08T11:32:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/top-tip-for-viewing-csv-files-in-excel</id>
+    <content type="html"><![CDATA[<p>Here's a quick hack when your CSV file has a different separator than Excel is expecting.</p>
+
+<p>Add this on the first line of the CSV file:</p>
+
+<pre><code>sep=;
+</code></pre>
+
+<p>or</p>
+
+<pre><code>sep=,
+</code></pre>
+
+<p>This will override system setting for list separator character and Excel will open the file correctly.</p>
+
+<p><sup>Note: Excel expects the separator to match the one defined in the <em>Control Panel/Region/Formats/Additional settings/List Separator</em>. On a French system, it expects a semi-colon.</sup></p>
+]]></content>
+  </entry>
+  
+</feed>
