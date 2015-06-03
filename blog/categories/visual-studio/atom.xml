@@ -4,7 +4,7 @@
   <title><![CDATA[Category: visual studio | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/visual-studio/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-05-08T12:14:42+01:00</updated>
+  <updated>2015-06-03T21:59:22+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,28 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Fixing slow debugging of ASP.NET applications]]></title>
+    <link href="http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications/"/>
+    <updated>2015-06-03T21:31:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications</id>
+    <content type="html"><![CDATA[<p>For a while I've noticed an annoying slowness when debugging ASP.NET applications from Visual Studio. Just after every page load it takes about a second before the buttons become clickable. I noticed mostly when debugging XAF applications, perhaps because the pages are quite complex.</p>
+
+<p>Turns out the culprit is something called <a href="http://www.asp.net/visual-studio/overview/2013/using-browser-link">Browser Link</a> which was introduced in Visual Studio 2013. It's enabled by default.</p>
+
+<p>To turn it off you can turn it off from the menu:</p>
+
+<p><img src="images/blog/browserlink-001.png"></p>
+
+<p>Or you can add the following to your web.config file.
+<code>xml
+&lt;appSettings&gt;
+  &lt;add key="vs:EnableBrowserLink" value="false"/&gt;
+&lt;/appSettings&gt;
+</code></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Provisioning a new development machine with BoxStarter]]></title>

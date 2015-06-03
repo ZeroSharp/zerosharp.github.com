@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Here&#8217;s a quick hack when your CSV file has a different separator than Excel is expecting. Add this on the first line of the CSV file: sep=; or &hellip;">
+  <meta name="description" content="For a while I&#8217;ve noticed an annoying slowness when debugging ASP.NET applications from Visual Studio. Just after every page load it takes about &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,61 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/fixing-slow-debugging-of-asp-dot-net-applications/">Fixing Slow Debugging of ASP.NET Applications</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-06-03T21:31:00+01:00" pubdate data-updated="true">Jun 3<span>rd</span>, 2015</time>
+        
+         | <a href="/fixing-slow-debugging-of-asp-dot-net-applications/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>For a while I&#8217;ve noticed an annoying slowness when debugging ASP.NET applications from Visual Studio. Just after every page load it takes about a second before the buttons become clickable. I noticed mostly when debugging XAF applications, perhaps because the pages are quite complex.</p>
+
+<p>Turns out the culprit is something called <a href="http://www.asp.net/visual-studio/overview/2013/using-browser-link">Browser Link</a> which was introduced in Visual Studio 2013. It&#8217;s enabled by default.</p>
+
+<p>To turn it off you can turn it off from the menu:</p>
+
+<p><img src="images/blog/browserlink-001.png"></p>
+
+<p>Or you can add the following to your web.config file.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;appSettings&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">key=</span><span class="s">&quot;vs:EnableBrowserLink&quot;</span> <span class="na">value=</span><span class="s">&quot;false&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/appSettings&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1596,66 +1651,6 @@ How can we replace a given class&#8217;s code with new code at runtime? In parti
 
 
   <div class="entry-content"><p>I left my laptop on a train a couple of months ago. Good thing I remembered my brain. I&#8217;m back now. This blog still lives.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/a-web-ui-performance-tip-for-xaf-web-applications/">A Web UI Performance Tip for XAF Web Applications</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-31T10:16:00+01:00" pubdate data-updated="true">Mar 31<span>st</span>, 2014</time>
-        
-         | <a href="/a-web-ui-performance-tip-for-xaf-web-applications/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>The purpose of this post is to raise your awareness of a toggle which exists in the <a href="http://www.devexpress.com/xaf/">DevExpress XAF framework</a> which can significantly improve UI performance in the web application.</p>
-
-<p><span class='pullquote-right' data-pullquote='In fact the general responsiveness of the entire web-application seems much better.'>
-The biggest XAF project I work with has one very complex business object. The layout for this screen includes about 100 properties, several nested tabs, some custom editors, several collection properties and a whole lot of <a href="https://documentation.devexpress.com/#Xaf/CustomDocument3286">Conditional Appearance</a> rules. It was very sluggish to navigate - it was taking several seconds to load the detail view and then it was very slow switching between tabs. Switching to edit mode was also slow.</p>
-
-<p>Last week, I almost accidentally changed the value of <code>DelayedViewItemsInitialization</code> to <code>false</code> and noticed that the UI speed was much much better. In fact the general responsiveness of the entire web-application seems much better.</p>
-
-<p>In order to give it a whirl, navigate to the WebApplication.cs file (normally in the ApplicationCode subfolder of your web project) and modify the constructor as follows:</p>
-
-<p></span></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="nf">MainDemoWebApplication</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">InitializeComponent</span><span class="p">();</span>
-</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="n">DelayedViewItemsInitialization</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Certainly this is not without consequences, and I would urge a careful reading of the <a href="https://documentation.devexpress.com/#xaf/DevExpressExpressAppXafApplication_DelayedViewItemsInitializationtopic">relevant documentation</a>. To be honest, I still don&#8217;t really understand why my detail view is so much slower without this change. I have tried to isolate the cause without much success and I will update this post if I find anything new. But if some of your detail views seem overly slow, certainly try it out.</p>
 </div>
   
   

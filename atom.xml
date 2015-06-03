@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-05-08T12:14:42+01:00</updated>
+  <updated>2015-06-03T21:59:22+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,32 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Fixing slow debugging of ASP.NET applications]]></title>
+    <link href="http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications/"/>
+    <updated>2015-06-03T21:31:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications</id>
+    <content type="html"><![CDATA[<p>For a while I&#8217;ve noticed an annoying slowness when debugging ASP.NET applications from Visual Studio. Just after every page load it takes about a second before the buttons become clickable. I noticed mostly when debugging XAF applications, perhaps because the pages are quite complex.</p>
+
+<p>Turns out the culprit is something called <a href="http://www.asp.net/visual-studio/overview/2013/using-browser-link">Browser Link</a> which was introduced in Visual Studio 2013. It&#8217;s enabled by default.</p>
+
+<p>To turn it off you can turn it off from the menu:</p>
+
+<p><img src="images/blog/browserlink-001.png"></p>
+
+<p>Or you can add the following to your web.config file.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;appSettings&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">key=</span><span class="s">&quot;vs:EnableBrowserLink&quot;</span> <span class="na">value=</span><span class="s">&quot;false&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/appSettings&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Top tip for viewing CSV files in Excel]]></title>
@@ -2585,73 +2611,6 @@ In the past I have always thought of NDepend as a complex tool. I was never sure
 <p>In this quick review, I&#8217;m not going deep enough to say anything about whether the DevExpress MainDemo is good code or not - it&#8217;s just a sample project I happen to be quite familiar with. It might be interesting to unleash NDepend on the full DevExpress source code and maybe one day I&#8217;ll get around to writing a future post about that.</p>
 
 <p>With regard to my own projects, I feel I&#8217;m so familiar with them that I ought to be aware of most of the recommendations NDepend is likely to make, but I&#8217;ll give it a spin and see what comes out&#8230;</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Always run Visual Studio as an Administrator]]></title>
-    <link href="http://ZeroSharp.github.com/always-run-visual-studio-as-an-administrator/"/>
-    <updated>2013-09-09T07:49:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/always-run-visual-studio-as-an-administrator</id>
-    <content type="html"><![CDATA[<p>I always run Visual Studio as an administrator. There are various reasons why this is necessary including:</p>
-
-<ul>
-<li>using IIS with a web application</li>
-<li>running web UI tests</li>
-<li>profiling</li>
-</ul>
-
-
-<p>In fact there&#8217;s a list <a href="http://msdn.microsoft.com/en-us/library/vstudio/jj662724.aspx">on MSDN</a> of all the actions you require administrator permissions.</p>
-
-<p>Here is a way to make sure Visual Studio always opens with elevated privileges, even if you double click on a <em>.sln</em> file. (I&#8217;m running Windows 8.)</p>
-
-<ul>
-<li>Right-click <em>devenv.exe</em></li>
-<li>Select <em>Troubleshoot program</em></li>
-<li>Check <em>The program requires additional permissions</em></li>
-<li>Click <em>Next</em></li>
-<li>Click <em>Test the program&#8230;</em></li>
-<li>Wait for the program to launch</li>
-<li>Click <em>Next</em></li>
-<li>Select <em>Yes, save these settings for this program</em></li>
-<li>Click <em>Close</em></li>
-</ul>
-
-
-<p>If you have multiple versions of Visual Studio installed, you should repeat the operation for all of the following.</p>
-
-<table>
-<thead>
-<tr>
-<th>Program </th>
-<th> &nbsp;Default location</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>&nbsp;Visual Studio 2008&nbsp; </td>
-<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE\devenv.exe</em> &nbsp;</td>
-</tr>
-<tr>
-<td>&nbsp;Visual Studio 2010&nbsp; </td>
-<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe</em> &nbsp; </td>
-</tr>
-<tr>
-<td>&nbsp;Visual Studio 2012&nbsp; </td>
-<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\devenv.exe</em> &nbsp;</td>
-</tr>
-<tr>
-<td>&nbsp;VSLauncher.exe&nbsp; </td>
-<td> &nbsp;<em>C:\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\VSLauncher.exe</em> &nbsp;</td>
-</tr>
-</tbody>
-</table>
-
-
-<p>&nbsp;</p>
-
-<p>That&#8217;s it. Now Visual Studio always opens with administrator privileges.</p>
 ]]></content>
   </entry>
   

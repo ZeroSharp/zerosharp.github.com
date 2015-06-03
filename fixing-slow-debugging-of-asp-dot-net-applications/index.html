@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: visual studio - ZeroSharp</title>
+  <title>Fixing slow debugging of ASP.NET applications - ZeroSharp</title>
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Category: visual studio">
+  <meta name="description" content="Disabling Visual Studio's Browser Link feature improves the debugging experience.">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ZeroSharp.github.comblog/categories/visual-studio/">
+  <link rel="canonical" href="http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -112,53 +112,114 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Visual Studio</h1>
+    
+      <h1 class="entry-title">Fixing Slow Debugging of ASP.NET Applications</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-06-03T21:31:00+01:00" pubdate data-updated="true">Jun 3<span>rd</span>, 2015</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>For a while I&#8217;ve noticed an annoying slowness when debugging ASP.NET applications from Visual Studio. Just after every page load it takes about a second before the buttons become clickable. I noticed mostly when debugging XAF applications, perhaps because the pages are quite complex.</p>
 
-  
-  <h2>2015</h2>
+<p>Turns out the culprit is something called <a href="http://www.asp.net/visual-studio/overview/2013/using-browser-link">Browser Link</a> which was introduced in Visual Studio 2013. It&#8217;s enabled by default.</p>
 
-<article>
-  
-<h1><a href="/fixing-slow-debugging-of-asp-dot-net-applications/">Fixing slow debugging of ASP.NET applications</a></h1>
-<time datetime="2015-06-03T21:31:00+01:00" pubdate><span class='month'>Jun</span> <span class='day'>03</span> <span class='year'>2015</span></time>
+<p>To turn it off you can turn it off from the menu:</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/visual-studio/'>visual studio</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
+<p><img src="images/blog/browserlink-001.png"></p>
 
+<p>Or you can add the following to your web.config file.</p>
 
-</article>
-
-
-
-  
-  <h2>2014</h2>
-
-<article>
-  
-<h1><a href="/provisioning-a-new-development-machine-with-boxstarter/">Provisioning a new development machine with BoxStarter</a></h1>
-<time datetime="2014-02-25T15:29:00+00:00" pubdate><span class='month'>Feb</span> <span class='day'>25</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/visual-studio/'>visual studio</a>, <a class='category' href='/blog/categories/windows/'>windows</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
-
-
-</article>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;appSettings&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">key=</span><span class="s">&quot;vs:EnableBrowserLink&quot;</span> <span class="na">value=</span><span class="s">&quot;false&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/appSettings&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
 
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-06-03T21:31:00+01:00" pubdate data-updated="true">Jun 3<span>rd</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/visual-studio/'>visual studio</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/top-tip-for-viewing-csv-files-in-excel/" title="Previous Post: Top tip for viewing CSV files in Excel">&laquo; Top tip for viewing CSV files in Excel</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -183,7 +244,10 @@
       var disqus_shortname = 'zerosharp';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications/';
+        var disqus_url = 'http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

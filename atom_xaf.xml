@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-05-08T12:14:42+01:00</updated>
+  <updated>2015-06-03T21:59:22+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,32 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Fixing slow debugging of ASP.NET applications]]></title>
+    <link href="http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications/"/>
+    <updated>2015-06-03T21:31:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications</id>
+    <content type="html"><![CDATA[<p>For a while I&#8217;ve noticed an annoying slowness when debugging ASP.NET applications from Visual Studio. Just after every page load it takes about a second before the buttons become clickable. I noticed mostly when debugging XAF applications, perhaps because the pages are quite complex.</p>
+
+<p>Turns out the culprit is something called <a href="http://www.asp.net/visual-studio/overview/2013/using-browser-link">Browser Link</a> which was introduced in Visual Studio 2013. It&#8217;s enabled by default.</p>
+
+<p>To turn it off you can turn it off from the menu:</p>
+
+<p><img src="images/blog/browserlink-001.png"></p>
+
+<p>Or you can add the following to your web.config file.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;appSettings&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">key=</span><span class="s">&quot;vs:EnableBrowserLink&quot;</span> <span class="na">value=</span><span class="s">&quot;false&quot;</span><span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/appSettings&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[DevExpress 14.2 review]]></title>
@@ -2931,40 +2957,6 @@ The ability to create reports using a report writer is a very powerful feature o
 <p>When you click <code>Launch</code>, Neustar takes 7 or 8 minutes to provision the Amazon machines and stage the test, after which you will get realtime detail information about response times, bandwidth and errors.</p>
 
 <p>In the next post we&#8217;ll analyse the results of this test.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Load Testing XAF: Part 3 - Uploading and Validating the Virtual User Script]]></title>
-    <link href="http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/"/>
-    <updated>2013-04-03T16:39:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script</id>
-    <content type="html"><![CDATA[<p>This is another post in a series about load testing XAF applications.  Previously in the series:</p>
-
-<ul>
-<li><a href="http://ZeroSharp.github.com/load-testing-xaf-overview/">Load Testing XAF: Overview</a></li>
-<li><a href="http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/">Part 1: Deploying the target webserver</a></li>
-<li><a href="http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/">Part 2: Selenium</a></li>
-</ul>
-
-
-<p>In this part, we will load test the application we set up in <a href="http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/">Part 1</a>, using the Selenium load test we created in <a href="http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/">Part 2</a>.</p>
-
-<h2>Neustar Web Performance Management</h2>
-
-<p>NeuStar (formerly BrowserMob) are a company specialised in web application performance monitoring. We are interested in their <a href="https://home.wpm.neustar.biz/">web performance module</a>. It is free to create an account. To run a test with less than 25 virtual users costs only $0.15 per virtual user. Tests with more than 25 users (up to 5000) require an additional paid plan.</p>
-
-<h2>Create a script</h2>
-
-<p>In order to run a load test, we first need to create the script and validate it. Go to the <a href="https://script.wpm.neustar.biz/">scripting</a> page and select &#8216;Create a new script&#8217;. Then cut and paste the <a href="https://gist.github.com/shamp00/5302223">Selenium code for <code>MainDemo_CycleThroughTabs.js</code></a> from the <a href="http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/">previous post</a>.</p>
-
-<p>Now change the <code>targetHost</code> variable near the top of the file to point to the location of your MainDemo installation. You can then validate the script. This will actually run through the Selenium test on a newly provisioned Amazon instance to ensure that it passes.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/load-testing/load-testing-004.png"></p>
-
-<p>If you get a green icon, you can proceed with setting up a load test, otherwise you can see what went wrong in a video of the user session.</p>
-
-<p>In the next post we will configure and launch the load test.</p>
 ]]></content>
   </entry>
   

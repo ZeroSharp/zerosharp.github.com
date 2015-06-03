@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-05-08T12:14:42+01:00</updated>
+  <updated>2015-06-03T21:59:22+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,28 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Fixing slow debugging of ASP.NET applications]]></title>
+    <link href="http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications/"/>
+    <updated>2015-06-03T21:31:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications</id>
+    <content type="html"><![CDATA[<p>For a while I've noticed an annoying slowness when debugging ASP.NET applications from Visual Studio. Just after every page load it takes about a second before the buttons become clickable. I noticed mostly when debugging XAF applications, perhaps because the pages are quite complex.</p>
+
+<p>Turns out the culprit is something called <a href="http://www.asp.net/visual-studio/overview/2013/using-browser-link">Browser Link</a> which was introduced in Visual Studio 2013. It's enabled by default.</p>
+
+<p>To turn it off you can turn it off from the menu:</p>
+
+<p><img src="images/blog/browserlink-001.png"></p>
+
+<p>Or you can add the following to your web.config file.
+<code>xml
+&lt;appSettings&gt;
+  &lt;add key="vs:EnableBrowserLink" value="false"/&gt;
+&lt;/appSettings&gt;
+</code></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[DevExpress 14.2 review]]></title>
@@ -445,154 +467,6 @@ $pathToDevExpressComponentsSetup = "\somewhere\DevExpressCodeRush-13.2.7.exe"</p
 <h2>One Last Hiccup</h2>
 
 <p>While I was testing my BoxStarter script I used the Windows 8.1 image from <a href="http://www.modern.ie/">http://www.modern.ie/</a>. Much later in the process I realised that Modern.IE only supplies 32-bit images and the chocolatey installer for Visual Studio extensions currently works only with 64-bit Windows.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Glimpse with DevExpress XAF]]></title>
-    <link href="http://ZeroSharp.github.com/glimpse-with-devexpress-xaf/"/>
-    <updated>2013-12-17T12:41:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/glimpse-with-devexpress-xaf</id>
-    <content type="html"><![CDATA[<p>I have finally got around to getting Glimpse working with XAF. Glimpse is an amazing extensible ASP.NET plug-in which gives you valuable information about what is going on within your server in production. It's also very pretty.</p>
-
-<p>Let's jump right in and have a look at what XAF looks like with Glimpse running.</p>
-
-<p><img src="/images/blog/xaf-with-glimpse-016.png"></p>
-
-<p>That banner along the bottom of the screen is the Glimpse heads up display (HUD). Hovering over various sections of it pops up more information:</p>
-
-<p><img src="/images/blog/xaf-with-glimpse-019.png"></p>
-
-<p><img src="/images/blog/xaf-with-glimpse-018.png"></p>
-
-<p><img src="/images/blog/xaf-with-glimpse-017.png"></p>
-
-<p>If you click on the Glimpse icon in the bottom right, you get even more goodies. Here's the <em>Timeline</em> view.</p>
-
-<p><img src="/images/blog/xaf-with-glimpse-011.png"></p>
-
-<p>And there are many other tabs available. The <em>Configuration</em> tab shows the contents of the <em>web.config</em> file.
-<img src="/images/blog/xaf-with-glimpse-009.png">
-Here's the <em>Control Tree</em> tab:
-<img src="/images/blog/xaf-with-glimpse-010.png">
-The <em>Page Life Cycle</em> tab:
-<img src="/images/blog/xaf-with-glimpse-005.png">
-The <em>Request</em> tab:
-<img src="/images/blog/xaf-with-glimpse-004.png">
-The <em>Session</em> tab:
-<img src="/images/blog/xaf-with-glimpse-003.png">
-And the <em>Trace</em> tab including the DevExpress log items that were added to the trace during this page load:
-<img src="/images/blog/xaf-with-glimpse-002.png">
-As you can see, this is a very valuable glimpse into the server which can be turned on as needed in production.</p>
-
-<h2>Adding Glimpse to an XAF application</h2>
-
-<p>First install the Glimpse Nuget package into the project.</p>
-
-<p><img src="/images/blog/xaf-with-glimpse-001.png"></p>
-
-<p>The Nuget installation will make various incorrect changes to the web.config. The corrected sections are below:</p>
-
-<p>First, add Glimpse to the <code>&lt;configSections&gt;</code>.
-```diff web.config
-  <configSections></p>
-
-<pre><code>&lt;sectionGroup name="devExpress"&gt;
-  &lt;section name="compression" requirePermission="false" type="DevExpress.Web.ASPxClasses.CompressionConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-  &lt;section name="themes" type="DevExpress.Web.ASPxClasses.ThemesConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-  &lt;section name="settings" type="DevExpress.Web.ASPxClasses.SettingsConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-&lt;/sectionGroup&gt;
-</code></pre>
-
-<ul>
-<li><section name="glimpse" type="Glimpse.Core.Configuration.Section, Glimpse.Core" />
-</configSections>
-```</li>
-</ul>
-
-
-<p>Next, <code>&lt;system.webserver&gt;</code> should look like this:
-```diff
-  &lt;system.webServer></p>
-
-<pre><code>&lt;handlers&gt;
-  &lt;add name="TestControls.axd_*" path="TestControls.axd" verb="*" type="DevExpress.ExpressApp.Web.TestScripts.TestScriptsManager, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a" preCondition="integratedMode" /&gt;
-  &lt;add name="ImageResource.axd_*" path="ImageResource.axd" verb="*" type="DevExpress.ExpressApp.Web.ImageResourceHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a" preCondition="integratedMode" /&gt;
-  &lt;add name="SessionKeepAliveReconnectHttpHandler" verb="*" path="SessionKeepAliveReconnect.aspx*" type="DevExpress.ExpressApp.Web.SessionKeepAliveReconnectHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a" preCondition="integratedMode" /&gt;
-  &lt;add name="WebWindowTemplateHttpHandler" verb="*" path="*.aspx" type="DevExpress.ExpressApp.Web.WebWindowTemplateHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a" preCondition="integratedMode" /&gt;
-  &lt;add name="ASPxUploadProgressHandler" verb="GET,POST" path="ASPxUploadProgressHandlerPage.ashx" type="DevExpress.Web.ASPxUploadControl.ASPxUploadProgressHttpHandler, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" preCondition="integratedMode" /&gt;
-  &lt;add name="ReportExportResource.axd_*" preCondition="integratedMode" verb="*" path="ReportExportResource.axd" type="DevExpress.ExpressApp.Reports.Web.ReportExportHttpHandler, DevExpress.ExpressApp.Reports.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-</code></pre>
-
-<ul>
-<li>  <add name="Glimpse" path="glimpse.axd" verb="GET" type="Glimpse.AspNet.HttpHandler, Glimpse.AspNet" preCondition="integratedMode" />
-</handlers>
-<validation validateIntegratedModeConfiguration="false" />
-<modules>
-  <add name="ASPxHttpHandlerModule" type="DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /></li>
-<li>  <add name="Glimpse" type="Glimpse.AspNet.HttpModule, Glimpse.AspNet" preCondition="integratedMode" />
-</modules>
-&lt;/system.webServer>
-```</li>
-</ul>
-
-
-<p>NuGet added some incorrect definitions to <code>system.web</code>. Make sure to restore this section to the DevExpress default:</p>
-
-<p>```xml
-  &lt;system.web></p>
-
-<pre><code>&lt;httpRuntime requestValidationMode="2.0" /&gt;
-&lt;sessionState mode="InProc" timeout="2" /&gt;
-&lt;httpHandlers configSource="HttpHandlers.Web.Config" /&gt;
-&lt;httpModules configSource="HttpModules.Web.Config" /&gt;
-</code></pre>
-
-<p>```</p>
-
-<p>And now we'll add the corrected changes to <code>HttpHandlers.Web.Config</code> and <code>HttpModule.Web.Config</code></p>
-
-<p><code>diff HttpHandlers.Web.Config
-&lt;?xml version="1.0" encoding="utf-8"?&gt;
-&lt;httpHandlers&gt;
-+ &lt;add verb="GET" path="glimpse.axd" type="Glimpse.AspNet.HttpHandler, Glimpse.AspNet" /&gt;
-  &lt;add verb="*" path="TestControls.axd" type="DevExpress.ExpressApp.Web.TestScripts.TestScriptsManager, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-  &lt;add verb="*" path="ImageResource.axd" type="DevExpress.ExpressApp.Web.ImageResourceHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-  &lt;add verb="*" path="SessionKeepAliveReconnect.aspx*" type="DevExpress.ExpressApp.Web.SessionKeepAliveReconnectHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-  &lt;add verb="*" path="*.aspx" type="DevExpress.ExpressApp.Web.WebWindowTemplateHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-  &lt;add verb="GET,POST" path="ASPxUploadProgressHandlerPage.ashx" validate="false" type="DevExpress.Web.ASPxUploadControl.ASPxUploadProgressHttpHandler, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-  &lt;add verb="*" path="ReportExportResource.axd" type="DevExpress.ExpressApp.Reports.Web.ReportExportHttpHandler, DevExpress.ExpressApp.Reports.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-&lt;/httpHandlers&gt;
-</code></p>
-
-<p><code>xml HttpModules.Web.Config
-&lt;?xml version="1.0" encoding="utf-8"?&gt;
-&lt;httpModules&gt;
-+ &lt;add name="Glimpse" type="Glimpse.AspNet.HttpModule, Glimpse.AspNet" /&gt;
-  &lt;add name="ASPxHttpHandlerModule" type="DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-&lt;/httpModules&gt;
-</code></p>
-
-<p>Next, there is <a href="https://github.com/Glimpse/Glimpse/issues/632">an outstanding problem</a> with the current release version of the Glimpse ASP.NET NuGet package (1.6.0) which prevents it from working with the development webserver. (Apparently it's fixed in 1.7.0 which should be released soon). If you try to run MainDemo.Web you will get the following error:</p>
-
-<pre><code>Type 'System.Web.HttpContextWrapper' in assembly 'System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' is not marked as serializable.
-</code></pre>
-
-<p>However it works fine against IIS Express (or full IIS). Go to the MainDemo.Web and change the debug properties as follows:</p>
-
-<p><img src="/images/blog/xaf-with-glimpse-015.png"></p>
-
-<p>Then run the web application. Glimpse is off by default. In order to turn it on, you need to set a cookie, which you can do by navigating to <code>Glimpse.axd</code>. This is the Glimpse configuration screen.</p>
-
-<p><img src="/images/blog/xaf-with-glimpse-014.png"></p>
-
-<h2>Additional Glimpse extensions</h2>
-
-<p>Glimpse is extensible and there are <a href="http://getglimpse.com/Packages">many additional plugins</a> available. Many of these take the form of additional tabs with details about a particular aspect of your application: SQL Queries, Elmah errors, ASP.NET caching, logging, dependency injection, <em>etc.</em></p>
-
-<h2>MainDemo Sample Project</h2>
-
-<p>I have uploaded a modified XAF MainDemo to this <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Glimpse">GitHub repository</a> with all the above changes. (Don't forget to debug against IIS Express).</p>
 ]]></content>
   </entry>
   
