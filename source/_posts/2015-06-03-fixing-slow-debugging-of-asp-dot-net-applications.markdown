@@ -12,7 +12,7 @@ Turns out the culprit is something called [Browser Link](http://www.asp.net/visu
 
 To turn it off you can turn it off from the menu:
 
-{% img images/blog/browserlink-001.png %}
+{% img /images/blog/browserlink-001.png %}
 
 Or you can add the following to your web.config file.
 ```xml
