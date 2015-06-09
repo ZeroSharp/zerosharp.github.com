@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-06-03T21:59:22+01:00</updated>
+  <updated>2015-06-09T12:44:02+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -24,7 +24,7 @@
 
 <p>To turn it off you can turn it off from the menu:</p>
 
-<p><img src="images/blog/browserlink-001.png"></p>
+<p><img src="/images/blog/browserlink-001.png"></p>
 
 <p>Or you can add the following to your web.config file.
 <code>xml
