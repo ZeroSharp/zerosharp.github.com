@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c# | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/c-/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-06-09T12:44:02+01:00</updated>
+  <updated>2015-08-03T16:08:58+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,22 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[A strange error message from Visual Studio 2015]]></title>
+    <link href="http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015/"/>
+    <updated>2015-08-03T15:35:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015</id>
+    <content type="html"><![CDATA[<p>When I recently upgraded to Visual Studio 2015, everything seemed to go very smoothly except that whenever I debugged my main application I got a dialog window with the following strange error:</p>
+
+<pre><code>The procedure entry point could not be located in the dynamic link library C:\...\bin\Debug\netutils.dll.
+</code></pre>
+
+<p>After pressing <code>OK</code> everything seemed to work as normal.</p>
+
+<p>After a considerable number of dead ends, I finally worked out that changing the name of the <em>NetUtils.dll</em> assembly fixes the problem. It seems that Visual Studio 2015 gets confused with a Windows system assembly with the same name. I don't know why it was never a problem with Visual Studio 2013, but I renamed the assembly and now everything is working fine.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Fixing slow debugging of ASP.NET applications]]></title>
@@ -586,129 +602,6 @@ public class PluginAssemblyCache
 <p>In the example we replaced an existing class, but it would be straightforward to add the concept of <em>discovery</em> and use the same Roslyn features to make any <em>new</em> plug-in classes available to your application. Ninject, makes it easy to instantiate, say, every implementor of <code>IGenerator</code>, so you could enumerate all available plug-ins instead of replacing a single one.</p>
 
 <p>So here's a basic plug-in framework which is very flexible and very powerful without many of the versioning headaches of MEF or MAF. It's also easy to maintain, since the plug-in code is identical to the 'normal' code in staging (just packaged, delivered and compiled in a different way to production).</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 3: Dependency Injection]]></title>
-    <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/"/>
-    <updated>2014-09-15T08:01:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3</id>
-    <content type="html"><![CDATA[<p>This is the third part of a series about using Roslyn with dependency injection to create a flexible and powerful plug-in framework. Here I review the parts of the solution that deal with dependency injection. Check out <a href="https://github.com/ZeroSharp/RoslynPlugins">the working example on GitHub</a>.</p>
-
-<p>Previously</p>
-
-<ul>
-<li><a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/">Part 1: The Goal</a></li>
-<li><a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/">Part 2: The Solution</a></li>
-</ul>
-
-
-<h2>Dependency injection</h2>
-
-<p>The first trick is to use dependency injection to create any instance of the <code>HelloWorldGenerator</code> class. Then if we need to add a new dependency to the class, we can just add it to the constructor without breaking anything.</p>
-
-<p>```c# HelloWorldGenerator.cs
-public class HelloWorldGenerator : IGenerator
-{</p>
-
-<pre><code>public HelloWorldGenerator(
-    ISomeDependency dependency, 
-    IAnotherDependency another, 
-    INewDependency new // a new dependency!!!)
-{
-    ...
-}
-</code></pre>
-
-<p>```</p>
-
-<p>We'll use Ninject here, but you ought to be able to achieve the same with any dependency injection framework.</p>
-
-<p>So normally, we'd have a binding something like:</p>
-
-<p><code>c#
-Bind&lt;IGenerator&gt;().To&lt;HelloWorldGenerator&gt;();
-</code></p>
-
-<p>Instead we'll replace this with a binding to a factory method instead.</p>
-
-<p><code>c#
-Bind&lt;IGenerator&gt;().ToMethod(context =&gt; CreatePluginInstance(context));
-</code></p>
-
-<p>The <code>CreatePluginInstance(context)</code> method will try to find an <code>IGenerator</code> class within any available plug-ins. If it finds one, it will ask the Ninject framework to create an instance of the plug-in class. Otherwise it falls back to the default type (the original implementation of the generator). The <code>PluginLocator</code> it is responsible for searching any runtime-compiled assemblies for candidate plug-ins. We'll look at it in more detail later.</p>
-
-<p>```c#
-private IGenerator CreatePluginInstance(IContext context)
-{</p>
-
-<pre><code>var pluginLocator = context.Kernel.Get&lt;PluginLocator&gt;();
-Type roslynPluginType = pluginLocator.Locate&lt;IGenerator&gt;();
-
-/// if we found a plug-in, create an instance of it
-if (roslynPluginType != null)
-    return (IGenerator)context.Kernel.Get(roslynPluginType);
-else ///otherwise create an instance of the original implementation
-    return context.Kernel.Get&lt;HelloWorldGenerator&gt;();
-</code></pre>
-
-<p>}
-```</p>
-
-<h4>By convention</h4>
-
-<p>Of course, you might have dozens of <code>IGenerator</code> descendants, in which case you can use <a href="https://github.com/ninject/ninject.extensions.conventions">Ninject's convention-based binding module</a>. (Don't forget to add it with NuGet). My version looks something like the following.</p>
-
-<p>```c#
-/// If you have a lot of IGenerator subclasses, you can use Ninject's
-/// convention based module.
-///
-///   For each Generator, bind to IGenerator.
-///   For example, Bind<IGenerator>.To<SomeGenerator>();
-///
-Kernel.Bind(scanner => scanner</p>
-
-<pre><code>.FromThisAssembly()
-.SelectAllClasses()
-.InheritedFrom(typeof(IGenerator))
-.BindToPluginOtherwiseDefaultInterfaces()); //This is a custom extension method (see below)
-</code></pre>
-
-<p>```</p>
-
-<p>```c#</p>
-
-<pre><code>public static class ConventionSyntaxExtensions
-{
-    public static IConfigureSyntax BindToPluginOtherwiseDefaultInterfaces(this IJoinFilterWhereExcludeIncludeBindSyntax syntax)
-    {
-        return syntax.BindWith(new DefaultInterfacesBindingGenerator(new BindableTypeSelector(), new PluginOtherwiseDefaultBindingCreator()));
-    }
-}
-
-/// &lt;summary&gt;
-/// Returns a Ninject binding to a method which returns the plug-in type if one exists, otherwise returns the default type.
-/// &lt;/summary&gt;
-public class PluginOtherwiseDefaultBindingCreator : IBindingCreator
-{
-    public IEnumerable&lt;IBindingWhenInNamedWithOrOnSyntax&lt;object&gt;&gt; CreateBindings(IBindingRoot bindingRoot, IEnumerable&lt;Type&gt; serviceTypes, Type implementationType)
-    {
-        if (bindingRoot == null)
-        {
-            throw new ArgumentNullException("bindingRoot");
-        }
-
-        return !serviceTypes.Any()
-         ? Enumerable.Empty&lt;IBindingWhenInNamedWithOrOnSyntax&lt;object&gt;&gt;()
-         : new[] { bindingRoot.Bind(serviceTypes.ToArray()).ToMethod(context =&gt; context.Kernel.Get(context.Kernel.Get&lt;PluginLocator&gt;().Locate(serviceTypes) ?? implementationType)) };
-    }
-}
-</code></pre>
-
-<p>```</p>
-
-<p>Next we'll look at <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-4/">the Roslyn part</a> in more detail.</p>
 ]]></content>
   </entry>
   

@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: visual studio - ZeroSharp</title>
+  <title>A strange error message from Visual Studio 2015 - ZeroSharp</title>
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Category: visual studio">
+  <meta name="description" content="A 'procedure entry point could not be located' because of the naming of an assembly when debugging with VS 2015.">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ZeroSharp.github.comblog/categories/visual-studio/">
+  <link rel="canonical" href="http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -112,67 +112,104 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Visual Studio</h1>
+    
+      <h1 class="entry-title">A Strange Error Message From Visual Studio 2015</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-08-03T15:35:00+01:00" pubdate data-updated="true">Aug 3<span>rd</span>, 2015</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>When I recently upgraded to Visual Studio 2015, everything seemed to go very smoothly except that whenever I debugged my main application I got a dialog window with the following strange error:</p>
 
-  
-  <h2>2015</h2>
+<pre><code>The procedure entry point could not be located in the dynamic link library C:\...\bin\Debug\netutils.dll.
+</code></pre>
 
-<article>
-  
-<h1><a href="/a-strange-error-message-from-visual-studio-2015/">A strange error message from Visual Studio 2015</a></h1>
-<time datetime="2015-08-03T15:35:00+01:00" pubdate><span class='month'>Aug</span> <span class='day'>03</span> <span class='year'>2015</span></time>
+<p>After pressing <code>OK</code> everything seemed to work as normal.</p>
 
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/visual-studio/'>visual studio</a></span>
-</footer>
-
-
-</article>
-
-
-
-<article>
-  
-<h1><a href="/fixing-slow-debugging-of-asp-dot-net-applications/">Fixing slow debugging of ASP.NET applications</a></h1>
-<time datetime="2015-06-03T21:31:00+01:00" pubdate><span class='month'>Jun</span> <span class='day'>03</span> <span class='year'>2015</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/visual-studio/'>visual studio</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
-
-
-</article>
-
-
-
-  
-  <h2>2014</h2>
-
-<article>
-  
-<h1><a href="/provisioning-a-new-development-machine-with-boxstarter/">Provisioning a new development machine with BoxStarter</a></h1>
-<time datetime="2014-02-25T15:29:00+00:00" pubdate><span class='month'>Feb</span> <span class='day'>25</span> <span class='year'>2014</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/visual-studio/'>visual studio</a>, <a class='category' href='/blog/categories/windows/'>windows</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
-
-
-</article>
-
+<p>After a considerable number of dead ends, I finally worked out that changing the name of the <em>NetUtils.dll</em> assembly fixes the problem. It seems that Visual Studio 2015 gets confused with a Windows system assembly with the same name. I don&#8217;t know why it was never a problem with Visual Studio 2013, but I renamed the assembly and now everything is working fine.</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-08-03T15:35:00+01:00" pubdate data-updated="true">Aug 3<span>rd</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/visual-studio/'>visual studio</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/fixing-slow-debugging-of-asp-dot-net-applications/" title="Previous Post: Fixing slow debugging of ASP.NET applications">&laquo; Fixing slow debugging of ASP.NET applications</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -197,7 +234,10 @@
       var disqus_shortname = 'zerosharp';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015/';
+        var disqus_url = 'http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

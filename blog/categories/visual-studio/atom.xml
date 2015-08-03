@@ -4,7 +4,7 @@
   <title><![CDATA[Category: visual studio | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/visual-studio/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-06-09T12:44:02+01:00</updated>
+  <updated>2015-08-03T16:08:58+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,22 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[A strange error message from Visual Studio 2015]]></title>
+    <link href="http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015/"/>
+    <updated>2015-08-03T15:35:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015</id>
+    <content type="html"><![CDATA[<p>When I recently upgraded to Visual Studio 2015, everything seemed to go very smoothly except that whenever I debugged my main application I got a dialog window with the following strange error:</p>
+
+<pre><code>The procedure entry point could not be located in the dynamic link library C:\...\bin\Debug\netutils.dll.
+</code></pre>
+
+<p>After pressing <code>OK</code> everything seemed to work as normal.</p>
+
+<p>After a considerable number of dead ends, I finally worked out that changing the name of the <em>NetUtils.dll</em> assembly fixes the problem. It seems that Visual Studio 2015 gets confused with a Windows system assembly with the same name. I don't know why it was never a problem with Visual Studio 2013, but I renamed the assembly and now everything is working fine.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Fixing slow debugging of ASP.NET applications]]></title>
