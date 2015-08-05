@@ -4,7 +4,7 @@
   <title><![CDATA[Category: devexpress | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/devexpress/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-08-03T16:08:58+01:00</updated>
+  <updated>2015-08-05T12:11:02+02:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -14,9 +14,86 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Force a complete garbage collection in an ASP.NET application.]]></title>
+    <link href="http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application/"/>
+    <updated>2015-08-05T09:26:00+02:00</updated>
+    <id>http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application</id>
+    <content type="html"><![CDATA[<p>How can I force a full garbage collection easily within an ASP.NET application? The method here is for XAF web applications but the same approach should work with any ASP.NET app.</p>
+
+<p><span class='pullquote-right' data-pullquote='First up: Never mess with the .NET garbage collector.'>
+First up: Never mess with the .NET garbage collector.</p>
+
+<p>I sometimes mess with the garbage collector in .NET when I'm trying to pin down some memory problem. Also, after <a href="/load-testing-xaf-part-1-deploying/">a load test</a>, I prefer to force the garbage collector to collect everything it can so that I can check that the memory drops as expected.
+</span></p>
+
+<p>Garbage collection in .NET is complex and it is hard to be sure you've done it correctly. <a href="///%20See%20http://blogs.msdn.com/b/tess/archive/2006/02/02/net-memory-my-object-is-not-rooted-why-wasn-t-it-garbage-collected.aspx">This ancient article by Tess Ferrandez</a> pointed me in the following direction.</p>
+
+<p>```c#
+void ForceGarbageCollection()
+{</p>
+
+<pre><code>/// This will garbage collect all generations (including large object), 
+GC.Collect(3);
+/// then execute any finalizers
+GC.WaitForPendingFinalizers();
+/// and then garbage collect again to take care of all the objects that had finalizers.            
+GC.Collect(3);
+</code></pre>
+
+<p>}
+```</p>
+
+<p>How can we easily trigger this routine in an XAF web application? First, add the following to the <em>Global.asax.cs</em> file:</p>
+
+<p>```c# Global.asax.cs
+protected void Application_BeginRequest(object sender, EventArgs e) {</p>
+
+<pre><code>var shouldForceGarbageCollection = Request.QueryString["ForceGC"] != null;
+if (shouldForceGarbageCollection)
+{
+    ForceGarbageCollection();
+    Response.Write("&lt;H1&gt;Forced garbage collection OK!&lt;/H1&gt;");
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Then whenever you want to trigger a garbage collection, visit the following URL:</p>
+
+<pre><code>http://.../Login.aspx?ForceGC=1
+</code></pre>
+
+<p>You should see the text <strong>'Forced garbage collection OK'</strong> in the top left of the browser window.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Fixing slow debugging of ASP.NET applications]]></title>
+    <link href="http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications/"/>
+    <updated>2015-06-03T21:31:00+02:00</updated>
+    <id>http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications</id>
+    <content type="html"><![CDATA[<p>For a while I've noticed an annoying slowness when debugging ASP.NET applications from Visual Studio. Just after every page load it takes about a second before the buttons become clickable. I noticed mostly when debugging XAF applications, perhaps because the pages are quite complex.</p>
+
+<p>Turns out the culprit is something called <a href="http://www.asp.net/visual-studio/overview/2013/using-browser-link">Browser Link</a> which was introduced in Visual Studio 2013. It's enabled by default.</p>
+
+<p>To turn it off you can turn it off from the menu:</p>
+
+<p><img src="/images/blog/browserlink-001.png"></p>
+
+<p>Or you can add the following to your web.config file.
+<code>xml
+&lt;appSettings&gt;
+  &lt;add key="vs:EnableBrowserLink" value="false"/&gt;
+&lt;/appSettings&gt;
+</code></p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[DevExpress 14.2 review]]></title>
     <link href="http://ZeroSharp.github.com/devexpress-14-dot-2-review/"/>
-    <updated>2015-01-20T08:35:00+00:00</updated>
+    <updated>2015-01-20T08:35:00+01:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-14-dot-2-review</id>
     <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='The truly outstanding new feature is the ASP.NET report writer'>
 This post is an overview of the brand new version XAF 14.2. The truly outstanding new feature is the ASP.NET report writer which is now available in all XAF applications.</p>
@@ -70,7 +147,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
   <entry>
     <title type="html"><![CDATA[ELMAH with DevExpress XAF]]></title>
     <link href="http://ZeroSharp.github.com/elmah-with-devexpress-xaf/"/>
-    <updated>2014-10-08T15:45:00+01:00</updated>
+    <updated>2014-10-08T15:45:00+02:00</updated>
     <id>http://ZeroSharp.github.com/elmah-with-devexpress-xaf</id>
     <content type="html"><![CDATA[<p><a href="https://code.google.com/p/elmah/">ELMAH (Error Logging Modules and Handlers)</a> is an open source library for logging unhandled exceptions. This post explains how to get it running with the <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a> main demo.</p>
 
@@ -258,7 +335,7 @@ public class ElmahErrorHandling : ErrorHandling
   <entry>
     <title type="html"><![CDATA[A web UI performance tip for XAF web applications]]></title>
     <link href="http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications/"/>
-    <updated>2014-03-31T10:16:00+01:00</updated>
+    <updated>2014-03-31T10:16:00+02:00</updated>
     <id>http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications</id>
     <content type="html"><![CDATA[<p>The purpose of this post is to raise your awareness of a toggle which exists in the <a href="http://www.devexpress.com/xaf/">DevExpress XAF framework</a> which can significantly improve UI performance in the web application.</p>
 
@@ -282,255 +359,6 @@ this.DelayedViewItemsInitialization = false;
 ```</p>
 
 <p>Certainly this is not without consequences, and I would urge a careful reading of the <a href="https://documentation.devexpress.com/#xaf/DevExpressExpressAppXafApplication_DelayedViewItemsInitializationtopic">relevant documentation</a>. To be honest, I still don't really understand why my detail view is so much slower without this change. I have tried to isolate the cause without much success and I will update this post if I find anything new. But if some of your detail views seem overly slow, certainly try it out.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Glimpse with DevExpress XAF]]></title>
-    <link href="http://ZeroSharp.github.com/glimpse-with-devexpress-xaf/"/>
-    <updated>2013-12-17T12:41:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/glimpse-with-devexpress-xaf</id>
-    <content type="html"><![CDATA[<p>I have finally got around to getting Glimpse working with XAF. Glimpse is an amazing extensible ASP.NET plug-in which gives you valuable information about what is going on within your server in production. It's also very pretty.</p>
-
-<p>Let's jump right in and have a look at what XAF looks like with Glimpse running.</p>
-
-<p><img src="/images/blog/xaf-with-glimpse-016.png"></p>
-
-<p>That banner along the bottom of the screen is the Glimpse heads up display (HUD). Hovering over various sections of it pops up more information:</p>
-
-<p><img src="/images/blog/xaf-with-glimpse-019.png"></p>
-
-<p><img src="/images/blog/xaf-with-glimpse-018.png"></p>
-
-<p><img src="/images/blog/xaf-with-glimpse-017.png"></p>
-
-<p>If you click on the Glimpse icon in the bottom right, you get even more goodies. Here's the <em>Timeline</em> view.</p>
-
-<p><img src="/images/blog/xaf-with-glimpse-011.png"></p>
-
-<p>And there are many other tabs available. The <em>Configuration</em> tab shows the contents of the <em>web.config</em> file.
-<img src="/images/blog/xaf-with-glimpse-009.png">
-Here's the <em>Control Tree</em> tab:
-<img src="/images/blog/xaf-with-glimpse-010.png">
-The <em>Page Life Cycle</em> tab:
-<img src="/images/blog/xaf-with-glimpse-005.png">
-The <em>Request</em> tab:
-<img src="/images/blog/xaf-with-glimpse-004.png">
-The <em>Session</em> tab:
-<img src="/images/blog/xaf-with-glimpse-003.png">
-And the <em>Trace</em> tab including the DevExpress log items that were added to the trace during this page load:
-<img src="/images/blog/xaf-with-glimpse-002.png">
-As you can see, this is a very valuable glimpse into the server which can be turned on as needed in production.</p>
-
-<h2>Adding Glimpse to an XAF application</h2>
-
-<p>First install the Glimpse Nuget package into the project.</p>
-
-<p><img src="/images/blog/xaf-with-glimpse-001.png"></p>
-
-<p>The Nuget installation will make various incorrect changes to the web.config. The corrected sections are below:</p>
-
-<p>First, add Glimpse to the <code>&lt;configSections&gt;</code>.
-```diff web.config
-  <configSections></p>
-
-<pre><code>&lt;sectionGroup name="devExpress"&gt;
-  &lt;section name="compression" requirePermission="false" type="DevExpress.Web.ASPxClasses.CompressionConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-  &lt;section name="themes" type="DevExpress.Web.ASPxClasses.ThemesConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-  &lt;section name="settings" type="DevExpress.Web.ASPxClasses.SettingsConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-&lt;/sectionGroup&gt;
-</code></pre>
-
-<ul>
-<li><section name="glimpse" type="Glimpse.Core.Configuration.Section, Glimpse.Core" />
-</configSections>
-```</li>
-</ul>
-
-
-<p>Next, <code>&lt;system.webserver&gt;</code> should look like this:
-```diff
-  &lt;system.webServer></p>
-
-<pre><code>&lt;handlers&gt;
-  &lt;add name="TestControls.axd_*" path="TestControls.axd" verb="*" type="DevExpress.ExpressApp.Web.TestScripts.TestScriptsManager, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a" preCondition="integratedMode" /&gt;
-  &lt;add name="ImageResource.axd_*" path="ImageResource.axd" verb="*" type="DevExpress.ExpressApp.Web.ImageResourceHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a" preCondition="integratedMode" /&gt;
-  &lt;add name="SessionKeepAliveReconnectHttpHandler" verb="*" path="SessionKeepAliveReconnect.aspx*" type="DevExpress.ExpressApp.Web.SessionKeepAliveReconnectHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a" preCondition="integratedMode" /&gt;
-  &lt;add name="WebWindowTemplateHttpHandler" verb="*" path="*.aspx" type="DevExpress.ExpressApp.Web.WebWindowTemplateHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a" preCondition="integratedMode" /&gt;
-  &lt;add name="ASPxUploadProgressHandler" verb="GET,POST" path="ASPxUploadProgressHandlerPage.ashx" type="DevExpress.Web.ASPxUploadControl.ASPxUploadProgressHttpHandler, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" preCondition="integratedMode" /&gt;
-  &lt;add name="ReportExportResource.axd_*" preCondition="integratedMode" verb="*" path="ReportExportResource.axd" type="DevExpress.ExpressApp.Reports.Web.ReportExportHttpHandler, DevExpress.ExpressApp.Reports.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-</code></pre>
-
-<ul>
-<li>  <add name="Glimpse" path="glimpse.axd" verb="GET" type="Glimpse.AspNet.HttpHandler, Glimpse.AspNet" preCondition="integratedMode" />
-</handlers>
-<validation validateIntegratedModeConfiguration="false" />
-<modules>
-  <add name="ASPxHttpHandlerModule" type="DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /></li>
-<li>  <add name="Glimpse" type="Glimpse.AspNet.HttpModule, Glimpse.AspNet" preCondition="integratedMode" />
-</modules>
-&lt;/system.webServer>
-```</li>
-</ul>
-
-
-<p>NuGet added some incorrect definitions to <code>system.web</code>. Make sure to restore this section to the DevExpress default:</p>
-
-<p>```xml
-  &lt;system.web></p>
-
-<pre><code>&lt;httpRuntime requestValidationMode="2.0" /&gt;
-&lt;sessionState mode="InProc" timeout="2" /&gt;
-&lt;httpHandlers configSource="HttpHandlers.Web.Config" /&gt;
-&lt;httpModules configSource="HttpModules.Web.Config" /&gt;
-</code></pre>
-
-<p>```</p>
-
-<p>And now we'll add the corrected changes to <code>HttpHandlers.Web.Config</code> and <code>HttpModule.Web.Config</code></p>
-
-<p><code>diff HttpHandlers.Web.Config
-&lt;?xml version="1.0" encoding="utf-8"?&gt;
-&lt;httpHandlers&gt;
-+ &lt;add verb="GET" path="glimpse.axd" type="Glimpse.AspNet.HttpHandler, Glimpse.AspNet" /&gt;
-  &lt;add verb="*" path="TestControls.axd" type="DevExpress.ExpressApp.Web.TestScripts.TestScriptsManager, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-  &lt;add verb="*" path="ImageResource.axd" type="DevExpress.ExpressApp.Web.ImageResourceHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-  &lt;add verb="*" path="SessionKeepAliveReconnect.aspx*" type="DevExpress.ExpressApp.Web.SessionKeepAliveReconnectHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-  &lt;add verb="*" path="*.aspx" type="DevExpress.ExpressApp.Web.WebWindowTemplateHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-  &lt;add verb="GET,POST" path="ASPxUploadProgressHandlerPage.ashx" validate="false" type="DevExpress.Web.ASPxUploadControl.ASPxUploadProgressHttpHandler, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-  &lt;add verb="*" path="ReportExportResource.axd" type="DevExpress.ExpressApp.Reports.Web.ReportExportHttpHandler, DevExpress.ExpressApp.Reports.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-&lt;/httpHandlers&gt;
-</code></p>
-
-<p><code>xml HttpModules.Web.Config
-&lt;?xml version="1.0" encoding="utf-8"?&gt;
-&lt;httpModules&gt;
-+ &lt;add name="Glimpse" type="Glimpse.AspNet.HttpModule, Glimpse.AspNet" /&gt;
-  &lt;add name="ASPxHttpHandlerModule" type="DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-&lt;/httpModules&gt;
-</code></p>
-
-<p>Next, there is <a href="https://github.com/Glimpse/Glimpse/issues/632">an outstanding problem</a> with the current release version of the Glimpse ASP.NET NuGet package (1.6.0) which prevents it from working with the development webserver. (Apparently it's fixed in 1.7.0 which should be released soon). If you try to run MainDemo.Web you will get the following error:</p>
-
-<pre><code>Type 'System.Web.HttpContextWrapper' in assembly 'System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' is not marked as serializable.
-</code></pre>
-
-<p>However it works fine against IIS Express (or full IIS). Go to the MainDemo.Web and change the debug properties as follows:</p>
-
-<p><img src="/images/blog/xaf-with-glimpse-015.png"></p>
-
-<p>Then run the web application. Glimpse is off by default. In order to turn it on, you need to set a cookie, which you can do by navigating to <code>Glimpse.axd</code>. This is the Glimpse configuration screen.</p>
-
-<p><img src="/images/blog/xaf-with-glimpse-014.png"></p>
-
-<h2>Additional Glimpse extensions</h2>
-
-<p>Glimpse is extensible and there are <a href="http://getglimpse.com/Packages">many additional plugins</a> available. Many of these take the form of additional tabs with details about a particular aspect of your application: SQL Queries, Elmah errors, ASP.NET caching, logging, dependency injection, <em>etc.</em></p>
-
-<h2>MainDemo Sample Project</h2>
-
-<p>I have uploaded a modified XAF MainDemo to this <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Glimpse">GitHub repository</a> with all the above changes. (Don't forget to debug against IIS Express).</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[DevExpress 13.2 Review - Part 2]]></title>
-    <link href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-2/"/>
-    <updated>2013-12-10T16:10:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-2</id>
-    <content type="html"><![CDATA[<p>This is the second part of a review of the new DevExpress 13.2. In <a href="/devexpress-13-dot-2-review-part-1">the last part</a> we looked in-depth at the new <a href="https://community.devexpress.com/blogs/eaf/archive/2013/11/08/easy-large-reports-in-13-2-ctp-of-reportsv2-module.aspx">Reports V2</a>. In this part I'll go over some of the other new features including the support for warnings and confirmations in the validation module.</p>
-
-<h2>Soft Validation Rules</h2>
-
-<p>With 13.2, DevExpress adds support for warning/confirmation messages to the validation engine. Warnings can be used to handle an unusual but valid data entry. An example would be:</p>
-
-<p><blockquote><p>The date of birth results in an age of over 100. Are you sure?</p></blockquote></p>
-
-<p>Here the age of the contact is unusual but not impossible, so instead of prohibiting it entirely, we ask the user for confirmation before saving.</p>
-
-<p>Let's add this rule to the MainDemo. Open the model and navigate to the Validation node. Add a <code>RuleValueComparison</code> and configure it as follows</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-010.png"></p>
-
-<p>Of course you could instead also define the same rule with an attribute on the <code>Birthday</code> property. Something like:</p>
-
-<p>```c#
-[RuleValueComparison("IsOlderThan100_Warning",</p>
-
-<pre><code>DefaultContexts.Save,
-ValueComparisonType.GreaterThan, "AddYears(Now(), -100)",
-"Birthday makes this Contact older than 100. Are you sure?",
-ParametersMode.Expression,
-ResultType = ValidationResultType.Warning)]
-</code></pre>
-
-<p>```</p>
-
-<p>Notice the new <code>ResultType</code> parameter is set to <code>ValidationResultType.Warning</code>.</p>
-
-<p>Another typical use is to provide better handling of duplicates. Consider the following:</p>
-
-<p>```c#
-[RuleCombinationOfPropertiesIsUnique("DuplicateName_Warning",</p>
-
-<pre><code>DefaultContexts.Save, 
-"LastName;FirstName", 
-"There is already a Contact with the name {FullName}. Are you sure?", 
-ResultType = ValidationResultType.Warning)]
-</code></pre>
-
-<p>public class Contact : Person {
-  //etc ...
-```</p>
-
-<p>And then this is what happens if I try to add another John Nilsen.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-011.png"></p>
-
-<p>Another scenario would be to warn the user of something which needs attention. Such as "Warning! You are running out of funds in your current account." Or "Warning! Deleting this record will format your hard drive."</p>
-
-<h3>List Views</h3>
-
-<p>Soft validation also works in the list views, even with multiple selection, but there are a couple of things that don't work very smoothly yet and I would expect the web implementation to evolve over the coming releases.</p>
-
-<p>In order to demonstrate this I need to use a context which allows multiple selection such as deletion. So let's decorate our class with the following simple rule.</p>
-
-<p>```c#</p>
-
-<pre><code>[RuleCriteria("Deletion_Warning", DefaultContexts.Delete, "1=0", "Warning! Are you sure?", ResultType = ValidationResultType.Warning)]
-</code></pre>
-
-<p>```</p>
-
-<p>Then I select all the contacts and press <code>Delete</code>, after the confirmation window, I get this:</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-014.png"></p>
-
-<h3>Web Application</h3>
-
-<p>Soft validation is also available in the web application. This is what a warning looks like.</p>
-
-<p><img src="/images/blog/devexpress-13-2-review-015.png"></p>
-
-<p>I would prefer to see a <em>Confirm</em> button rather than the current <em>Ignore</em> checkbox since a button requires a single click to validate.</p>
-
-<p>When there are several warnings and errors at the same time, the current implementation displays them all. I think it would be preferable if warnings were not displayed unless there are no errors. Unless DevExpress provide this as an option soon, I will attempt to extend the controller in this regard in a future post.</p>
-
-<h2>Other new features</h2>
-
-<p>In the 13.2 release, there is now support for runtime extension of the model. DevExpress is calling this feature <em>custom fields</em> and (again) it is marked as beta. This is not a feature I've looked at, but there are a few other non-XAF DevExpress novelties which I'd like to see working within XAF. These include <a href="https://www.devexpress.com/Subscriptions/New-2013-v2-Beta.xml?product=aspnet#ctl00_ctl00_Content_Content_ctl659">new themes</a> and <a href="https://www.devexpress.com/Subscriptions/New-2013-v2-Beta.xml?product=aspnet#ctl00_ctl00_Content_Content_ctl660">support for grid batch editing</a>.</p>
-
-<h2>One warning</h2>
-
-<p><img class="left" src="/images/blog/devexpress-13-2-review-001.png">
-<img class="right" src="/images/blog/devexpress-13-2-review-002.png">
-The default directories for the installation have changed again. I'm sure DevExpress has some good reason for this, but if, like me, you have several different versions installed you end up with a confusing directory tree. Whenever this happens I always end up having to modify build scripts and config files so that all my tools work as expected. For those of you who use Red Gate's <em>.NET Reflector</em>, you can find my config file <a href="https://gist.github.com/shamp00/7748150">in this gist</a>.</p>
-
-<h2>Conclusions</h2>
-
-<p>For the 13.2 release, DevExpress have focused on making the existing functionality work better rather than developing new modules.</p>
-
-<p>Better reports. Better validation. A better framework all round.</p>
 ]]></content>
   </entry>
   

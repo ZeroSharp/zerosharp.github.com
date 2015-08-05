@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-08-03T16:08:58+01:00</updated>
+  <updated>2015-08-05T12:11:02+02:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -14,9 +14,75 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Force a complete garbage collection in an ASP.NET application.]]></title>
+    <link href="http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application/"/>
+    <updated>2015-08-05T09:26:00+02:00</updated>
+    <id>http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application</id>
+    <content type="html"><![CDATA[<p>How can I force a full garbage collection easily within an ASP.NET application? The method here is for XAF web applications but the same approach should work with any ASP.NET app.</p>
+
+<p><span class='pullquote-right' data-pullquote='First up: Never mess with the .NET garbage collector.'>
+First up: Never mess with the .NET garbage collector.</p>
+
+<p>I sometimes mess with the garbage collector in .NET when I&#8217;m trying to pin down some memory problem. Also, after <a href="http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/">a load test</a>, I prefer to force the garbage collector to collect everything it can so that I can check that the memory drops as expected.
+</span></p>
+
+<p>Garbage collection in .NET is complex and it is hard to be sure you&#8217;ve done it correctly. <a href="http://ZeroSharp.github.com///%20See%20http://blogs.msdn.com/b/tess/archive/2006/02/02/net-memory-my-object-is-not-rooted-why-wasn-t-it-garbage-collected.aspx">This ancient article by Tess Ferrandez</a> pointed me in the following direction.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">void</span> <span class="nf">ForceGarbageCollection</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">/// This will garbage collect all generations (including large object), </span>
+</span><span class='line'>    <span class="n">GC</span><span class="p">.</span><span class="n">Collect</span><span class="p">(</span><span class="m">3</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">/// then execute any finalizers</span>
+</span><span class='line'>    <span class="n">GC</span><span class="p">.</span><span class="n">WaitForPendingFinalizers</span><span class="p">();</span>
+</span><span class='line'>    <span class="c1">/// and then garbage collect again to take care of all the objects that had finalizers.            </span>
+</span><span class='line'>    <span class="n">GC</span><span class="p">.</span><span class="n">Collect</span><span class="p">(</span><span class="m">3</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>How can we easily trigger this routine in an XAF web application? First, add the following to the <em>Global.asax.cs</em> file:</p>
+
+<figure class='code'><figcaption><span>Global.asax.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">protected</span> <span class="k">void</span> <span class="nf">Application_BeginRequest</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">var</span> <span class="n">shouldForceGarbageCollection</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">QueryString</span><span class="p">[</span><span class="s">&quot;ForceGC&quot;</span><span class="p">]</span> <span class="p">!=</span> <span class="k">null</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">shouldForceGarbageCollection</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">ForceGarbageCollection</span><span class="p">();</span>
+</span><span class='line'>        <span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&quot;&lt;H1&gt;Forced garbage collection OK!&lt;/H1&gt;&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then whenever you want to trigger a garbage collection, visit the following URL:</p>
+
+<pre><code>http://.../Login.aspx?ForceGC=1
+</code></pre>
+
+<p>You should see the text <strong>&#8216;Forced garbage collection OK&#8217;</strong> in the top left of the browser window.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[A strange error message from Visual Studio 2015]]></title>
     <link href="http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015/"/>
-    <updated>2015-08-03T15:35:00+01:00</updated>
+    <updated>2015-08-03T15:35:00+02:00</updated>
     <id>http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015</id>
     <content type="html"><![CDATA[<p>When I recently upgraded to Visual Studio 2015, everything seemed to go very smoothly except that whenever I debugged my main application I got a dialog window with the following strange error:</p>
 
@@ -32,7 +98,7 @@
   <entry>
     <title type="html"><![CDATA[Fixing slow debugging of ASP.NET applications]]></title>
     <link href="http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications/"/>
-    <updated>2015-06-03T21:31:00+01:00</updated>
+    <updated>2015-06-03T21:31:00+02:00</updated>
     <id>http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications</id>
     <content type="html"><![CDATA[<p>For a while I&#8217;ve noticed an annoying slowness when debugging ASP.NET applications from Visual Studio. Just after every page load it takes about a second before the buttons become clickable. I noticed mostly when debugging XAF applications, perhaps because the pages are quite complex.</p>
 
@@ -58,7 +124,7 @@
   <entry>
     <title type="html"><![CDATA[Top tip for viewing CSV files in Excel]]></title>
     <link href="http://ZeroSharp.github.com/top-tip-for-viewing-csv-files-in-excel/"/>
-    <updated>2015-05-08T11:32:00+01:00</updated>
+    <updated>2015-05-08T11:32:00+02:00</updated>
     <id>http://ZeroSharp.github.com/top-tip-for-viewing-csv-files-in-excel</id>
     <content type="html"><![CDATA[<p>Here&#8217;s a quick hack when your CSV file has a different separator than Excel is expecting.</p>
 
@@ -81,7 +147,7 @@
   <entry>
     <title type="html"><![CDATA[DevExpress 14.2 review]]></title>
     <link href="http://ZeroSharp.github.com/devexpress-14-dot-2-review/"/>
-    <updated>2015-01-20T08:35:00+00:00</updated>
+    <updated>2015-01-20T08:35:00+01:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-14-dot-2-review</id>
     <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='The truly outstanding new feature is the ASP.NET report writer'>
 This post is an overview of the brand new version XAF 14.2. The truly outstanding new feature is the ASP.NET report writer which is now available in all XAF applications.</p>
@@ -135,7 +201,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
   <entry>
     <title type="html"><![CDATA[ELMAH with DevExpress XAF]]></title>
     <link href="http://ZeroSharp.github.com/elmah-with-devexpress-xaf/"/>
-    <updated>2014-10-08T15:45:00+01:00</updated>
+    <updated>2014-10-08T15:45:00+02:00</updated>
     <id>http://ZeroSharp.github.com/elmah-with-devexpress-xaf</id>
     <content type="html"><![CDATA[<p><a href="https://code.google.com/p/elmah/">ELMAH (Error Logging Modules and Handlers)</a> is an open source library for logging unhandled exceptions. This post explains how to get it running with the <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a> main demo.</p>
 
@@ -371,7 +437,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 4: Roslyn]]></title>
     <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-4/"/>
-    <updated>2014-09-17T08:08:00+01:00</updated>
+    <updated>2014-09-17T08:08:00+02:00</updated>
     <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-4</id>
     <content type="html"><![CDATA[<p>This is the fourth and final part of a series about using Roslyn with dependency injection to create a flexible and powerful plug-in framework. Here I review the parts of the solution that deal with the Roslyn runtime compilation of plug-ins. Check out <a href="https://github.com/ZeroSharp/RoslynPlugins">the working example on GitHub</a>.</p>
 
@@ -890,7 +956,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 3: Dependency Injection]]></title>
     <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/"/>
-    <updated>2014-09-15T08:01:00+01:00</updated>
+    <updated>2014-09-15T08:01:00+02:00</updated>
     <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3</id>
     <content type="html"><![CDATA[<p>This is the third part of a series about using Roslyn with dependency injection to create a flexible and powerful plug-in framework. Here I review the parts of the solution that deal with dependency injection. Check out <a href="https://github.com/ZeroSharp/RoslynPlugins">the working example on GitHub</a>.</p>
 
@@ -1061,7 +1127,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 2: The Solution]]></title>
     <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/"/>
-    <updated>2014-09-11T09:18:00+01:00</updated>
+    <updated>2014-09-11T09:18:00+02:00</updated>
     <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2</id>
     <content type="html"><![CDATA[<p>Previously: <a href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/">Part 1: The Goal</a></p>
 
@@ -1115,7 +1181,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 1: The Goal]]></title>
     <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/"/>
-    <updated>2014-09-09T10:47:00+01:00</updated>
+    <updated>2014-09-09T10:47:00+02:00</updated>
     <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1</id>
     <content type="html"><![CDATA[<h2>The goal</h2>
 
@@ -1207,7 +1273,7 @@ How can we replace a given class&#8217;s code with new code at runtime? In parti
   <entry>
     <title type="html"><![CDATA[Persisting changes to config files within NuGet packages]]></title>
     <link href="http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages/"/>
-    <updated>2014-08-13T06:39:00+01:00</updated>
+    <updated>2014-08-13T06:39:00+02:00</updated>
     <id>http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages</id>
     <content type="html"><![CDATA[<p>Whenever NuGet updates or restores a NuGet package, the config files within it are overwritten. Here&#8217;s a method to make sure the changes are reapplied via a <a href="http://msdn.microsoft.com/en-us/library/dd465326.aspx">config transform</a> whenever the solution is built.</p>
 
@@ -1277,7 +1343,7 @@ How can we replace a given class&#8217;s code with new code at runtime? In parti
   <entry>
     <title type="html"><![CDATA[Pardon the interruption]]></title>
     <link href="http://ZeroSharp.github.com/pardon-the-interruption/"/>
-    <updated>2014-08-11T10:33:00+01:00</updated>
+    <updated>2014-08-11T10:33:00+02:00</updated>
     <id>http://ZeroSharp.github.com/pardon-the-interruption</id>
     <content type="html"><![CDATA[<p>I left my laptop on a train a couple of months ago. Good thing I remembered my brain. I&#8217;m back now. This blog still lives.</p>
 ]]></content>
@@ -1286,7 +1352,7 @@ How can we replace a given class&#8217;s code with new code at runtime? In parti
   <entry>
     <title type="html"><![CDATA[A web UI performance tip for XAF web applications]]></title>
     <link href="http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications/"/>
-    <updated>2014-03-31T10:16:00+01:00</updated>
+    <updated>2014-03-31T10:16:00+02:00</updated>
     <id>http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications</id>
     <content type="html"><![CDATA[<p>The purpose of this post is to raise your awareness of a toggle which exists in the <a href="http://www.devexpress.com/xaf/">DevExpress XAF framework</a> which can significantly improve UI performance in the web application.</p>
 
@@ -1317,7 +1383,7 @@ The biggest XAF project I work with has one very complex business object. The la
   <entry>
     <title type="html"><![CDATA[Provisioning a new development machine with BoxStarter]]></title>
     <link href="http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter/"/>
-    <updated>2014-02-25T15:29:00+00:00</updated>
+    <updated>2014-02-25T15:29:00+01:00</updated>
     <id>http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter</id>
     <content type="html"><![CDATA[<p>I&#8217;ve been playing around with <a href="http://boxstarter.org/">Boxstarter</a> to configure my entire development environment with hardly any user intervention.</p>
 
@@ -1543,7 +1609,7 @@ The biggest XAF project I work with has one very complex business object. The la
   <entry>
     <title type="html"><![CDATA[CruiseControl Notifications on your iPhone]]></title>
     <link href="http://ZeroSharp.github.com/cruisecontrol-notifications-on-your-iphone/"/>
-    <updated>2014-02-07T11:32:00+00:00</updated>
+    <updated>2014-02-07T11:32:00+01:00</updated>
     <id>http://ZeroSharp.github.com/cruisecontrol-notifications-on-your-iphone</id>
     <content type="html"><![CDATA[<p><img class="right" src="http://ZeroSharp.github.com/images/blog/ccwatcher-002.jpg" width="200"></p>
 
@@ -1568,7 +1634,7 @@ The biggest XAF project I work with has one very complex business object. The la
   <entry>
     <title type="html"><![CDATA[Glimpse with DevExpress XAF]]></title>
     <link href="http://ZeroSharp.github.com/glimpse-with-devexpress-xaf/"/>
-    <updated>2013-12-17T12:41:00+00:00</updated>
+    <updated>2013-12-17T12:41:00+01:00</updated>
     <id>http://ZeroSharp.github.com/glimpse-with-devexpress-xaf</id>
     <content type="html"><![CDATA[<p>I have finally got around to getting Glimpse working with XAF. Glimpse is an amazing extensible ASP.NET plug-in which gives you valuable information about what is going on within your server in production. It&#8217;s also very pretty.</p>
 
@@ -1749,7 +1815,7 @@ As you can see, this is a very valuable glimpse into the server which can be tur
   <entry>
     <title type="html"><![CDATA[DevExpress 13.2 Review - Part 2]]></title>
     <link href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-2/"/>
-    <updated>2013-12-10T16:10:00+00:00</updated>
+    <updated>2013-12-10T16:10:00+01:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-2</id>
     <content type="html"><![CDATA[<p>This is the second part of a review of the new DevExpress 13.2. In <a href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1">the last part</a> we looked in-depth at the new <a href="https://community.devexpress.com/blogs/eaf/archive/2013/11/08/easy-large-reports-in-13-2-ctp-of-reportsv2-module.aspx">Reports V2</a>. In this part I&#8217;ll go over some of the other new features including the support for warnings and confirmations in the validation module.</p>
 
@@ -1856,7 +1922,7 @@ The default directories for the installation have changed again. I&#8217;m sure 
   <entry>
     <title type="html"><![CDATA[DevExpress 13.2 Review - Part 1]]></title>
     <link href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1/"/>
-    <updated>2013-12-02T16:23:00+00:00</updated>
+    <updated>2013-12-02T16:23:00+01:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1</id>
     <content type="html"><![CDATA[<p>The first version of XAF I ever installed was called <em>eXpressApp-1.0.CTP2.exe</em> in July 2006! It has certainly come a long way since then.</p>
 
@@ -2023,7 +2089,7 @@ The default directories for the installation have changed again. I&#8217;m sure 
   <entry>
     <title type="html"><![CDATA[How to improve XAF grid layout for Chrome]]></title>
     <link href="http://ZeroSharp.github.com/how-to-improve-xaf-grid-layout-for-chrome/"/>
-    <updated>2013-11-08T09:55:00+00:00</updated>
+    <updated>2013-11-08T09:55:00+01:00</updated>
     <id>http://ZeroSharp.github.com/how-to-improve-xaf-grid-layout-for-chrome</id>
     <content type="html"><![CDATA[<p>This post proposes a workaround for a specific XAF rendering problem related to recent versions of Google Chrome.</p>
 
@@ -2141,7 +2207,7 @@ The default directories for the installation have changed again. I&#8217;m sure 
   <entry>
     <title type="html"><![CDATA[Three ways to store a list of currency codes in XAF]]></title>
     <link href="http://ZeroSharp.github.com/three-ways-to-store-a-list-of-currency-codes-in-xaf/"/>
-    <updated>2013-10-22T18:15:00+01:00</updated>
+    <updated>2013-10-22T18:15:00+02:00</updated>
     <id>http://ZeroSharp.github.com/three-ways-to-store-a-list-of-currency-codes-in-xaf</id>
     <content type="html"><![CDATA[<p>In the <a href="http://ZeroSharp.github.com/the-ugly-the-heavy-and-the-good">last post</a> we looked at three solutions to a relatively simple XAF requirement. In this post I&#8217;ll discuss another XAF challenge, explain the options and provide a versatile and maintainable solution.</p>
 
@@ -2338,209 +2404,6 @@ The default directories for the installation have changed again. I&#8217;m sure 
 <p>It is easy to provide a similar editor for any object type - just create a new subclass of <code>SerializedListPropertyEditor&lt;T&gt;</code> where <code>T</code> is your persistent type.</p>
 
 <p>You can download <a href="https://github.com/ZeroSharp/Xaf_CurrencyListPropertyEditor">a working sample project on GitHub</a>.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[The Ugly, the Heavy and the Good: 3 solutions to an XAF layout problem]]></title>
-    <link href="http://ZeroSharp.github.com/the-ugly-the-heavy-and-the-good/"/>
-    <updated>2013-10-14T09:51:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/the-ugly-the-heavy-and-the-good</id>
-    <content type="html"><![CDATA[<p>This post aims to look at various solutions to a seemingly simple layout change.</p>
-
-<p>With <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a>, a lot of the difficult things are easy: authentication, authorisation, ORM, reporting, complex form layouts, themes, etc., are all made easy by XAF. On the other hand, some of the easy things are hard. It can be frustratingly difficult to make a small modification to the basic layout. We will look at an example of such a change and evaluate the recommended DevExpress approaches.</p>
-
-<h2>The problem</h2>
-
-<p>Whenever my XAF web application asks me to change my password, I get a screen like this:</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/narrow-dialog-001.png"></p>
-
-<p>Well that&#8217;s a bit annoying - those edit boxes are far too wide. Wouldn&#8217;t it look much better if it were narrower and centered? If we weren&#8217;t using XAF, we&#8217;d probably have a separate <em>aspx</em> file for this view and we could just modify the html. With XAF there are several different recommended ways of modifying the output.</p>
-
-<h2>Option 1: Use the model</h2>
-
-<p>Well, one approach would be to use the layout designer to add some <em>EmptySpaceItems</em> to the default layout for the <code>ChangePasswordOnLogon</code>. Add something like this to <em>MainDemo.Web/Model.xafml</em>:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;Views&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;DetailView</span> <span class="na">Id=</span><span class="s">&quot;ChangePasswordOnLogonParameters_DetailView&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;Layout&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;Main&quot;</span> <span class="na">Removed=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;Narrow&quot;</span> <span class="na">RelativeSize=</span><span class="s">&quot;50&quot;</span> <span class="na">HorizontalAlign=</span><span class="s">&quot;Center&quot;</span> <span class="na">Direction=</span><span class="s">&quot;Horizontal&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;EmptySpaceItem1&quot;</span> <span class="na">Index=</span><span class="s">&quot;0&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;&quot;</span> <span class="na">RelativeSize=</span><span class="s">&quot;25&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;Main&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">Index=</span><span class="s">&quot;1&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;Static&quot;</span> <span class="na">Index=</span><span class="s">&quot;0&quot;</span> <span class="na">Direction=</span><span class="s">&quot;Horizontal&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;ChangePasswordImage&quot;</span> <span class="na">Index=</span><span class="s">&quot;0&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">RelativeSize=</span><span class="s">&quot;1&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;ChangePasswordImage&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;ChangePasswordText&quot;</span> <span class="na">Index=</span><span class="s">&quot;1&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">RelativeSize=</span><span class="s">&quot;99&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;ChangePasswordText&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/LayoutGroup&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;SimpleEditors&quot;</span> <span class="na">Index=</span><span class="s">&quot;1&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;LayoutGroup</span> <span class="na">Id=</span><span class="s">&quot;ChangePasswordOnLogonParameters&quot;</span> <span class="na">ShowCaption=</span><span class="s">&quot;False&quot;</span> <span class="na">Index=</span><span class="s">&quot;0&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;NewPassword&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;NewPassword&quot;</span> <span class="na">Index=</span><span class="s">&quot;0&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>                <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;ConfirmPassword&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;ConfirmPassword&quot;</span> <span class="na">Index=</span><span class="s">&quot;1&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>              <span class="nt">&lt;/LayoutGroup&gt;</span>
-</span><span class='line'>            <span class="nt">&lt;/LayoutGroup&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;/LayoutGroup&gt;</span>
-</span><span class='line'>          <span class="nt">&lt;LayoutItem</span> <span class="na">Id=</span><span class="s">&quot;EmptySpaceItem2&quot;</span> <span class="na">Index=</span><span class="s">&quot;2&quot;</span> <span class="na">ViewItem=</span><span class="s">&quot;&quot;</span> <span class="na">RelativeSize=</span><span class="s">&quot;25&quot;</span> <span class="na">IsNewNode=</span><span class="s">&quot;True&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;/LayoutGroup&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/Layout&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/DetailView&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/Views&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Ugh. What a lot of work for such a small change. Another approach would be to make an equivalent model modification in code by subclassing <code>ModelNodesGeneratorUpdater&lt;ModelViewsNodesGenerator&gt;</code> but it would be even more effort.</p>
-
-<p>Is it easy to maintain? Not especially. If we make any changes to the parameters object, we would have to update the layout again. It is quite likely we&#8217;d have to make revisions when upgrading the framework.</p>
-
-<p>And does it work?</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/narrow-dialog-003.png"></p>
-
-<p>No!. It&#8217;s a little better but it still looks ugly because the OK and Cancel buttons are still out wide.</p>
-
-<blockquote><p>Verdict: too ugly</p></blockquote>
-
-
-<p><em>When</em> <strong>should</strong> <em>you use this approach?</em>:</p>
-
-<ul>
-<li>When the layout changes are within the main view area.</li>
-</ul>
-
-
-<p>Let&#8217;s look at another option.</p>
-
-<h2>Option 2: Customise the ASP.NET template</h2>
-
-<p>If we were to <a href="http://documentation.devexpress.com/#Xaf/CustomDocument3460">follow the instructions here</a> we can modify the HTML exactly as we want. Unfortunately, this is even more work. We would need to:</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/narrow-dialog-004.jpg"></p>
-
-<ul>
-<li>Create a new MyNarrowTemplateDialogContent.ascx</li>
-<li>Modify the HTML within it to add a width to <code>Form1</code></li>
-<li>Find some way of applying this template to only the detail view for <em>Change Password</em>. This is <a href="http://www.devexpress.com/Support/Center/Question/Details/Q207853">currently not easy</a> but there is an example project at the end of <a href="http://www.devexpress.com/Support/Center/Question/Details/Q204692">this issue</a>.</li>
-</ul>
-
-
-<p>We&#8217;d end up with quite a few new files to maintain for just one little layout fix&#8230;</p>
-
-<p>Also, another problem with this approach is that it needs reviewing whenever a new version of the framework is released, because the default templates may have changed. Too much maintenance work for such a little change.</p>
-
-<blockquote><p>Verdict: too heavy</p></blockquote>
-
-
-<p><em>When</em> <strong>should</strong> <em>you use this approach?</em>:</p>
-
-<ul>
-<li>When the same layout changes are to be applied to the views of all or many different object types.</li>
-<li>When the changes you are making are significant enough that they are hard to achieve by the solution below.</li>
-</ul>
-
-
-<h2>Option 3: Use a ViewController</h2>
-
-<p>The <code>ViewController</code> and <code>WindowController</code> are well-suited to this sort of task.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">NarrowDialogViewController</span> <span class="p">:</span> <span class="n">ViewController</span><span class="p">&lt;</span><span class="n">DetailView</span><span class="p">&gt;</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnActivated</span><span class="p">()</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">base</span><span class="p">.</span><span class="n">OnActivated</span><span class="p">();</span>
-</span><span class='line'>        <span class="n">Active</span><span class="p">[</span><span class="s">&quot;ShouldUseNarrowForm&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="n">View</span><span class="p">.</span><span class="n">ObjectTypeInfo</span><span class="p">.</span><span class="n">Type</span> <span class="p">==</span> <span class="k">typeof</span><span class="p">(</span><span class="n">ChangePasswordOnLogonParameters</span><span class="p">);</span> <span class="c1">// see side-note below</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnViewControlsCreated</span><span class="p">()</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">base</span><span class="p">.</span><span class="n">OnViewControlsCreated</span><span class="p">();</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">WebWindow</span><span class="p">.</span><span class="n">CurrentRequestPage</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="kt">var</span> <span class="n">htmlForm</span> <span class="p">=</span> <span class="n">WebWindow</span><span class="p">.</span><span class="n">CurrentRequestPage</span><span class="p">.</span><span class="n">FindControl</span><span class="p">(</span><span class="s">&quot;Form2&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">HtmlForm</span><span class="p">;</span> <span class="c1">// see note below</span>
-</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">htmlForm</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
-</span><span class='line'>            <span class="p">{</span>
-</span><span class='line'>                <span class="c1">// make the form narrow</span>
-</span><span class='line'>                <span class="n">htmlForm</span><span class="p">.</span><span class="n">Attributes</span><span class="p">.</span><span class="n">CssStyle</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;width&quot;</span><span class="p">,</span> <span class="n">Unit</span><span class="p">.</span><span class="n">Percentage</span><span class="p">(</span><span class="m">40</span><span class="p">).</span><span class="n">ToString</span><span class="p">());</span>
-</span><span class='line'>                <span class="c1">// center the form</span>
-</span><span class='line'>                <span class="n">htmlForm</span><span class="p">.</span><span class="n">Attributes</span><span class="p">.</span><span class="n">CssStyle</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;margin-left&quot;</span><span class="p">,</span> <span class="s">&quot;auto&quot;</span><span class="p">);</span>
-</span><span class='line'>                <span class="n">htmlForm</span><span class="p">.</span><span class="n">Attributes</span><span class="p">.</span><span class="n">CssStyle</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;margin-right&quot;</span><span class="p">,</span> <span class="s">&quot;auto&quot;</span><span class="p">);</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>A side note: do not use <code>TargetObjectType == typeof(ChangePasswordOnLogonParameters)</code> instead of the <code>OnActivated()</code> override. This is because <code>ChangePasswordParameters</code> which is used when the user clicks on <code>Change My Password</code> is a subclass of <code>ChangePasswordOnLogonParameters</code> and we do <em>not</em> want that view to be narrowed because it appears in a popup window instead of the main window.</p>
-
-<p>This solution is quite maintainable. We can delimit the views for which the modification applies making the controller is active. And the modification itself is relatively simple. It is also reasonably robust with regard to DevExpress upgrades. (They did just change the name of the main dialog Form <code>Form1</code> in 12.1 to <code>Form2</code> in 12.2, but it was the first time in years and it was simple to fix. Alternatively, you could use <code>FindControl</code> instead of using the hard-wired name).</p>
-
-<p>Here&#8217;s the resulting output, horizontally centered in the browser window:</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/narrow-dialog-002.png"></p>
-
-<blockquote><p>Verdict: good</p></blockquote>
-
-
-<p><em>When</em> <strong>should</strong> <em>you use this approach?</em>:</p>
-
-<ul>
-<li>When a layout change is easy to apply by modifying styles. When a change pertains only to one or few specific object types.</li>
-</ul>
-
-
-<h2>Conclusions</h2>
-
-<p>In this case, using a <code>ViewController</code> leads to relatively simple code and ease of maintenance. Other situations may well be better served by the other approaches.</p>
-
-<p>DevExpress XAF is a powerful mature product. As such, it can be daunting to new users because of all the different approaches for applying changes. It is always possible to find an elegant maintainable solution, but sometimes it is not obvious, even when the required change is small.</p>
 ]]></content>
   </entry>
   

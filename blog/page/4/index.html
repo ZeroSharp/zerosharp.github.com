@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="In my recent series on load testing XAF, I used a Selenium javascript test to run the client browser instances. This is a good and cheap method of &hellip;">
+  <meta name="description" content="This post is the result of a recent bug hunt in which I came across a tricky bug, found a debugging switch I&#8217;d completely forgotten existed and &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -119,6 +119,128 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/fixing-an-unmanaged-code-appcrash/">Fixing an Unmanaged Code AppCrash</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-29T16:21:00+02:00" pubdate data-updated="true">Apr 29<span>th</span>, 2013</time>
+        
+         | <a href="/fixing-an-unmanaged-code-appcrash/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This post is the result of a recent bug hunt in which I came across a tricky bug, found a debugging switch I&#8217;d completely forgotten existed and learned a little about calling <code>extern</code> string functions from C#.</p>
+
+<p>I love bug hunting. It&#8217;s like a murder mystery: you&#8217;ve got your suspects and you try to eliminate them one at a time until, as a famous bug hunter said:</p>
+
+<blockquote><p>&#8230; when you have eliminated the impossible, whatever remains, however improbable, must be the truth.</p><footer><strong>Sherlock Holmes</strong> <cite>The Sign of Four</cite></footer></blockquote>
+
+
+<p>Between about 1995 and 2006, I used a data library called Apollo almost every day. It was a bunch of C++ drivers for dBase files with some more advanced options for encryption and indexing and was a popular option for <a href="http://en.wikipedia.org/wiki/Clipper_(programming_language">Clipper</a>) programmers. I joined a software project which was based on Clipper and Apollo in 1995. Apollo went through many different incarnations SuccessWare, Luxent, Vista, ApolloDB. All of these companies were essentially providing wrappers for different languages (Delphi, .NET) but the core C++ drivers always remained more or less the same <a href="http://www.apollodb.com/products.asp">and it&#8217;s still going</a>.</p>
+
+<p>Fast forward to 2013 and we have a legacy console utility for migrating data from the old format, which traverses the Apollo tables and converts the data to our model (DevExpress XPO objects). This code hardly ever changes, but when I converted all our core libraries to .NET 4.5., I found I had to jump in and fix it one last time.</p>
+
+<p>When I tried to run the upgraded .NET 4.5 library I got a mysterious app crash.</p>
+
+<p><img src="/images/blog/appcrash/app-crash-001.png"></p>
+
+<p>The application would then close without any error message or stack trace. Nothing I did was allowing me catch any exception. None of the signatures, e.g., the <code>c0000374</code> exception code show up on Google. It shows up in the Windows event log, but apparently EventID 1000 is a very generic error message.</p>
+
+<p><img src="/images/blog/appcrash/app-crash-002.png"></p>
+
+<p>I had a suspicion the problem was something to do with the Apollo assembly and I also knew that Apollo was not all managed code. I stumbled over the <em>Enable native code debugging</em> in the project settings. I&#8217;ve never used this setting. (My next approach would have been to use tracing to try to pinpoint the location of the crash.)</p>
+
+<p><img src="/images/blog/appcrash/app-crash-003.png"></p>
+
+<p>Visual Studio really impresses with its debugging capabilities. When we run again, we get a stack trace and an error message.</p>
+
+<p><img src="/images/blog/appcrash/app-crash-004.png"></p>
+
+<p>Well Google didn&#8217;t seem to have much to say about <em>&#8216;This may be due to a corruption of the heap&#8217;</em>. But the problem seems to do with <code>apolloTable.FieldName(i)</code>. With a decompiler I had a look at its definition.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="kt">string</span> <span class="nf">FieldName</span><span class="p">(</span><span class="kt">short</span> <span class="n">fieldNum</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="c1">//...</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">ApolloAPI</span><span class="p">.</span><span class="n">sx_FieldName</span><span class="p">(</span><span class="n">fieldNum</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">//...</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Let&#8217;s find <code>ApolloAPI.sx_FieldName(fieldNum);</code></p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="na">[DllImport(&quot;SDE7.dll&quot;, CharSet=CharSet.Ansi, ExactSpelling=true)]</span>
+</span><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">extern</span> <span class="kt">string</span> <span class="nf">sx_FieldName</span><span class="p">(</span><span class="kt">short</span> <span class="n">uiFieldNum</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now, knowing that SDE7.dll is written in C++, I guessed it might be having trouble with the return value being a <code>string</code>. The C++ memory management of the returned string might be getting in the way. <a href="http://stackoverflow.com/a/8242828/1077279">A bit of StackOverflow</a> gave me this trick: declare the return type as <code>IntPtr</code> and use <code>Marshal.PtrToStringAnsi()</code> to get a C# <code>string</code> from the pointer. (It seems that .NET 4.5 is stricter about marshalling than earlier frameworks. Perhaps someone can enlighten me why the error did not occur with .NET 4.0?) I wrote a new extension method for <code>ApolloTable</code> and changed the code to use <code>apolloTable.SafeFieldName(i)</code> instead.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">TApolloTableExtensions</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'><span class="na">        [DllImport(&quot;SDE7.dll&quot;, CharSet = CharSet.Ansi, ExactSpelling = true)]</span>
+</span><span class='line'>        <span class="k">public</span> <span class="k">static</span> <span class="k">extern</span> <span class="n">IntPtr</span> <span class="nf">sx_FieldName</span><span class="p">(</span><span class="kt">short</span> <span class="n">uiFieldNum</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">public</span> <span class="k">static</span> <span class="kt">string</span> <span class="nf">SafeFieldName</span><span class="p">(</span><span class="k">this</span> <span class="n">ApolloTable</span> <span class="n">apolloTable</span><span class="p">,</span> <span class="kt">short</span> <span class="n">fieldNum</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>          <span class="c1">//...</span>
+</span><span class='line'>            <span class="n">IntPtr</span> <span class="n">strPtr</span> <span class="p">=</span> <span class="n">sx_FieldName</span><span class="p">(</span><span class="n">fieldNum</span><span class="p">);</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">Marshal</span><span class="p">.</span><span class="n">PtrToStringAnsi</span><span class="p">(</span><span class="n">strPtr</span><span class="p">);</span>
+</span><span class='line'>            <span class="c1">//...</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And bingo! The application now runs without error.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/load-testing-xaf-bonus-simultaneous-easytests/">Load Testing XAF: Bonus - Simultaneous EasyTests</a></h1>
     
     
@@ -135,7 +257,7 @@
   
 
 
-<time datetime="2013-04-22T16:31:00+01:00" pubdate data-updated="true">Apr 22<span>nd</span>, 2013</time>
+<time datetime="2013-04-22T16:31:00+02:00" pubdate data-updated="true">Apr 22<span>nd</span>, 2013</time>
         
          | <a href="/load-testing-xaf-bonus-simultaneous-easytests/#disqus_thread">Comments</a>
         
@@ -426,7 +548,7 @@
   
 
 
-<time datetime="2013-04-14T07:37:00+01:00" pubdate data-updated="true">Apr 14<span>th</span>, 2013</time>
+<time datetime="2013-04-14T07:37:00+02:00" pubdate data-updated="true">Apr 14<span>th</span>, 2013</time>
         
          | <a href="/load-testing-xaf-part-5-analysis/#disqus_thread">Comments</a>
         
@@ -556,7 +678,7 @@
   
 
 
-<time datetime="2013-04-08T11:19:00+01:00" pubdate data-updated="true">Apr 8<span>th</span>, 2013</time>
+<time datetime="2013-04-08T11:19:00+02:00" pubdate data-updated="true">Apr 8<span>th</span>, 2013</time>
         
          | <a href="/load-testing-xaf-part-4-launching-the-load-test/#disqus_thread">Comments</a>
         
@@ -616,7 +738,7 @@
   
 
 
-<time datetime="2013-04-03T16:39:00+01:00" pubdate data-updated="true">Apr 3<span>rd</span>, 2013</time>
+<time datetime="2013-04-03T16:39:00+02:00" pubdate data-updated="true">Apr 3<span>rd</span>, 2013</time>
         
          | <a href="/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/#disqus_thread">Comments</a>
         
@@ -679,7 +801,7 @@
   
 
 
-<time datetime="2013-03-28T16:56:00+00:00" pubdate data-updated="true">Mar 28<span>th</span>, 2013</time>
+<time datetime="2013-03-28T16:56:00+01:00" pubdate data-updated="true">Mar 28<span>th</span>, 2013</time>
         
          | <a href="/load-testing-xaf-part-2-selenium/#disqus_thread">Comments</a>
         
@@ -1074,7 +1196,7 @@
   
 
 
-<time datetime="2013-03-22T11:21:00+00:00" pubdate data-updated="true">Mar 22<span>nd</span>, 2013</time>
+<time datetime="2013-03-22T11:21:00+01:00" pubdate data-updated="true">Mar 22<span>nd</span>, 2013</time>
         
          | <a href="/load-testing-xaf-part-1-deploying/#disqus_thread">Comments</a>
         
@@ -1140,7 +1262,7 @@
   
 
 
-<time datetime="2013-03-12T18:20:00+00:00" pubdate data-updated="true">Mar 12<span>th</span>, 2013</time>
+<time datetime="2013-03-12T18:20:00+01:00" pubdate data-updated="true">Mar 12<span>th</span>, 2013</time>
         
          | <a href="/load-testing-xaf-overview/#disqus_thread">Comments</a>
         
@@ -1213,7 +1335,7 @@
   
 
 
-<time datetime="2013-02-28T17:40:00+00:00" pubdate data-updated="true">Feb 28<span>th</span>, 2013</time>
+<time datetime="2013-02-28T17:40:00+01:00" pubdate data-updated="true">Feb 28<span>th</span>, 2013</time>
         
          | <a href="/how-to-recursively-change-file-ownership/#disqus_thread">Comments</a>
         
@@ -1275,7 +1397,7 @@
   
 
 
-<time datetime="2013-02-14T05:10:00+00:00" pubdate data-updated="true">Feb 14<span>th</span>, 2013</time>
+<time datetime="2013-02-14T05:10:00+01:00" pubdate data-updated="true">Feb 14<span>th</span>, 2013</time>
         
          | <a href="/colourful-git-command-line/#disqus_thread">Comments</a>
         
@@ -1288,147 +1410,6 @@
 
 <pre><code>git config --global color.ui true
 </code></pre>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/a-c-number-developers-adventures-in-ios-integrating-git-and-monodevelop/">A C# Developer&#8217;s Adventures in iOS - Integrating Git and MonoDevelop</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-02-08T14:52:00+00:00" pubdate data-updated="true">Feb 8<span>th</span>, 2013</time>
-        
-         | <a href="/a-c-number-developers-adventures-in-ios-integrating-git-and-monodevelop/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>This is the second post in a series about iOS development from the perspective of a C# developer.</p>
-
-<p>In the <a href="/a-c-number-developers-adventures-in-ios-getting-started/">previous post in the series</a> we got started with MonoTouch and installed MonoDevelop and XCode. In this post, we&#8217;ll look at how to set up version control for an existing MonoTouch solution.</p>
-
-<h2>Version Control</h2>
-
-<p>I didn&#8217;t have enough time <a href="/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend/">at the hackathon</a> to learn how to set up version control for MonoDevelop on a Mac. So let&#8217;s fix that straight away.</p>
-
-<h3>Git</h3>
-
-<p>I&#8217;m much more familiar with Mercurial, and while it&#8217;s possible to get TortoiseHg to run on a Mac, it seems that the Mac world prefers Git. MonoDevelop has Git integrated which I like very much so I&#8217;ll go with Git for now. I can always switch later.</p>
-
-<h3>Ignore files</h3>
-
-<p>Open a terminal and navigate to the root of your existing source code folder.</p>
-
-<pre><code>$ cd Projects/Babingo # replace with /path/to/your/repo
-</code></pre>
-
-<p>You need a .gitignore file to avoid version controlling compiled sources and user settings unnecessarily.</p>
-
-<p>Create a new file .gitignore as follows. You can type <code>nano .gitignore</code> if you don&#8217;t have a favourite text editor.</p>
-
-<figure class='code'><figcaption><span>.gitignore </span></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'># OSX specific
-</span><span class='line'>.DS_Store
-</span><span class='line'>*.lock
-</span><span class='line'>*.swp
-</span><span class='line'>*.lock
-</span><span class='line'>
-</span><span class='line'># Build folders
-</span><span class='line'>[Bb]in/
-</span><span class='line'>[Oo]bj/
-</span><span class='line'>
-</span><span class='line'># User specific
-</span><span class='line'>*.userprefs
-</span><span class='line'>*.usertasks
-</span><span class='line'>
-</span><span class='line'># Mono project files
-</span><span class='line'>*~
-</span><span class='line'>*.pidb
-</span><span class='line'>*.resources
-</span><span class='line'>test-results/</span></code></pre></td></tr></table></div></figure>
-
-
-<h3>Initial commit</h3>
-
-<p>Now initialise a repository for your existing source code and commit it.</p>
-
-<pre><code>$ git init
-$ git add .
-$ git commit -m "Initial commit."
-</code></pre>
-
-<h3>BitBucket</h3>
-
-<p>Next create a private repository on BitBucket.</p>
-
-<p><img src="/images/blog/adventures-in-ios-bitbucket-001.png"></p>
-
-<p>You will need the address for your repository from the BitBucket page circled in red below.</p>
-
-<p><img src="/images/blog/adventures-in-ios-bitbucket-003.png"></p>
-
-<p>Then, from the terminal, push the code to BitBucket. Replace the Url below with the address of your your own repository.</p>
-
-<pre><code>$ git remote add origin https://shamp00@bitbucket.org/shamp00/babingo.git     
-$ git push -u origin --all
-</code></pre>
-
-<h3>Integration with MonoDevelop</h3>
-
-<p>Open your solution in MonoDevelop and select the <code>Checkout...</code> option from the <code>Version Control</code> menu.</p>
-
-<p><img src="/images/blog/adventures-in-ios-bitbucket-002.png"></p>
-
-<p>Select <code>Git</code> as the type of repository and put the address to your git repository in the <code>Url</code> field. The rest of the fields are populated automatically. You need to set the <code>Target Directory</code> to the location of your local repository including the trailing slash.</p>
-
-<p>When you click Ok, you will be prompted for your BitBucket credentials.</p>
-
-<p><img class="right" src="/images/blog/adventures-in-ios-bitbucket-004.png" width="379" height="92"></p>
-
-<p>That&#8217;s it. Now Git is integrated into your MonoDevelop environment. For instance, you can right-click in the editor to view the diff or the log of the current file, push changes, commit messages locally, etc.</p>
-
-<p>Note that instead of BitBucket, it would have been just as straightforward to host the repository on GitHub instead.</p>
 </div>
   
   

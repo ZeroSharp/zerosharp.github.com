@@ -4,7 +4,7 @@
   <title><![CDATA[Category: performance | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/performance/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-08-03T16:08:58+01:00</updated>
+  <updated>2015-08-05T12:11:02+02:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[MiniProfiler with DevExpress XAF]]></title>
     <link href="http://ZeroSharp.github.com/miniprofiler-with-devexpress-xaf/"/>
-    <updated>2013-08-27T09:14:00+01:00</updated>
+    <updated>2013-08-27T09:14:00+02:00</updated>
     <id>http://ZeroSharp.github.com/miniprofiler-with-devexpress-xaf</id>
     <content type="html"><![CDATA[<p>In this post I will demonstrate how to add <a href="http://miniprofiler.com/">MiniProfiler</a> to the XAF MainDemo web application.</p>
 
@@ -191,7 +191,7 @@ private void FindBySubjectAction_Execute(object sender, ParametrizedActionExecut
   <entry>
     <title type="html"><![CDATA[A look at the DevExpress MainDemo with Google Page Speed]]></title>
     <link href="http://ZeroSharp.github.com/a-look-at-the-devexpress-maindemo-with-google-page-speed/"/>
-    <updated>2012-09-12T17:22:00+01:00</updated>
+    <updated>2012-09-12T17:22:00+02:00</updated>
     <id>http://ZeroSharp.github.com/a-look-at-the-devexpress-maindemo-with-google-page-speed</id>
     <content type="html"><![CDATA[<p>In this post I'll demonstrate how to use the <a href="https://developers.google.com/speed/pagespeed/">Google Page Speed</a> tools to analyse the performance of the DevExpress XAF MainDemo.</p>
 
@@ -275,7 +275,7 @@ private void FindBySubjectAction_Execute(object sender, ParametrizedActionExecut
   <entry>
     <title type="html"><![CDATA[XpoBatch source code available]]></title>
     <link href="http://ZeroSharp.github.com/xpobatch-source-code-available/"/>
-    <updated>2012-07-25T16:24:00+01:00</updated>
+    <updated>2012-07-25T16:24:00+02:00</updated>
     <id>http://ZeroSharp.github.com/xpobatch-source-code-available</id>
     <content type="html"><![CDATA[<p>The source code for the fast batch operations with DevExpress XPO <a href="https://github.com/ZeroSharp/XpoBatch">is now available on on GitHub</a>.</p>
 
@@ -294,7 +294,7 @@ private void FindBySubjectAction_Execute(object sender, ParametrizedActionExecut
   <entry>
     <title type="html"><![CDATA[Fast batch modifications with DevExpress XPO]]></title>
     <link href="http://ZeroSharp.github.com/fast-batch-modifications-with-devexpress-xpo/"/>
-    <updated>2012-07-24T14:02:00+01:00</updated>
+    <updated>2012-07-24T14:02:00+02:00</updated>
     <id>http://ZeroSharp.github.com/fast-batch-modifications-with-devexpress-xpo</id>
     <content type="html"><![CDATA[<p>Last week I wrote about <a href="/fast-batch-deletions-with-devexpress-xpo/">fast batch deletions</a>. In this post I'll show how to do the same for modifications.</p>
 
@@ -591,7 +591,7 @@ private void FindBySubjectAction_Execute(object sender, ParametrizedActionExecut
   <entry>
     <title type="html"><![CDATA[Fast batch deletions with DevExpress XPO]]></title>
     <link href="http://ZeroSharp.github.com/fast-batch-deletions-with-devexpress-xpo/"/>
-    <updated>2012-07-12T17:00:00+01:00</updated>
+    <updated>2012-07-12T17:00:00+02:00</updated>
     <id>http://ZeroSharp.github.com/fast-batch-deletions-with-devexpress-xpo</id>
     <content type="html"><![CDATA[<p>When deleting a collection of objects, DevExpress recommends using <a href="http://documentation.devexpress.com/#XPO/DevExpressXpoSession_Deletetopic116"><code>Session.Delete(ICollection objects)</code></a>. This has the same effect as calling the <code>Delete()</code> method for every object in the collection so that the business logic is applied correctly. The business logic in this context refers to code such as that in the <code>OnDeleting()</code>, <code>OnDeleted()</code> methods, but it also includes the clearing of references to the object by other objects. This approach is slow, but ensures the integrity of the data.</p>
 

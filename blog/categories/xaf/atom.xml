@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-08-03T16:08:58+01:00</updated>
+  <updated>2015-08-05T12:11:02+02:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -14,9 +14,64 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Force a complete garbage collection in an ASP.NET application.]]></title>
+    <link href="http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application/"/>
+    <updated>2015-08-05T09:26:00+02:00</updated>
+    <id>http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application</id>
+    <content type="html"><![CDATA[<p>How can I force a full garbage collection easily within an ASP.NET application? The method here is for XAF web applications but the same approach should work with any ASP.NET app.</p>
+
+<p><span class='pullquote-right' data-pullquote='First up: Never mess with the .NET garbage collector.'>
+First up: Never mess with the .NET garbage collector.</p>
+
+<p>I sometimes mess with the garbage collector in .NET when I'm trying to pin down some memory problem. Also, after <a href="/load-testing-xaf-part-1-deploying/">a load test</a>, I prefer to force the garbage collector to collect everything it can so that I can check that the memory drops as expected.
+</span></p>
+
+<p>Garbage collection in .NET is complex and it is hard to be sure you've done it correctly. <a href="///%20See%20http://blogs.msdn.com/b/tess/archive/2006/02/02/net-memory-my-object-is-not-rooted-why-wasn-t-it-garbage-collected.aspx">This ancient article by Tess Ferrandez</a> pointed me in the following direction.</p>
+
+<p>```c#
+void ForceGarbageCollection()
+{</p>
+
+<pre><code>/// This will garbage collect all generations (including large object), 
+GC.Collect(3);
+/// then execute any finalizers
+GC.WaitForPendingFinalizers();
+/// and then garbage collect again to take care of all the objects that had finalizers.            
+GC.Collect(3);
+</code></pre>
+
+<p>}
+```</p>
+
+<p>How can we easily trigger this routine in an XAF web application? First, add the following to the <em>Global.asax.cs</em> file:</p>
+
+<p>```c# Global.asax.cs
+protected void Application_BeginRequest(object sender, EventArgs e) {</p>
+
+<pre><code>var shouldForceGarbageCollection = Request.QueryString["ForceGC"] != null;
+if (shouldForceGarbageCollection)
+{
+    ForceGarbageCollection();
+    Response.Write("&lt;H1&gt;Forced garbage collection OK!&lt;/H1&gt;");
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Then whenever you want to trigger a garbage collection, visit the following URL:</p>
+
+<pre><code>http://.../Login.aspx?ForceGC=1
+</code></pre>
+
+<p>You should see the text <strong>'Forced garbage collection OK'</strong> in the top left of the browser window.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Fixing slow debugging of ASP.NET applications]]></title>
     <link href="http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications/"/>
-    <updated>2015-06-03T21:31:00+01:00</updated>
+    <updated>2015-06-03T21:31:00+02:00</updated>
     <id>http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications</id>
     <content type="html"><![CDATA[<p>For a while I've noticed an annoying slowness when debugging ASP.NET applications from Visual Studio. Just after every page load it takes about a second before the buttons become clickable. I noticed mostly when debugging XAF applications, perhaps because the pages are quite complex.</p>
 
@@ -38,7 +93,7 @@
   <entry>
     <title type="html"><![CDATA[DevExpress 14.2 review]]></title>
     <link href="http://ZeroSharp.github.com/devexpress-14-dot-2-review/"/>
-    <updated>2015-01-20T08:35:00+00:00</updated>
+    <updated>2015-01-20T08:35:00+01:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-14-dot-2-review</id>
     <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='The truly outstanding new feature is the ASP.NET report writer'>
 This post is an overview of the brand new version XAF 14.2. The truly outstanding new feature is the ASP.NET report writer which is now available in all XAF applications.</p>
@@ -92,7 +147,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
   <entry>
     <title type="html"><![CDATA[ELMAH with DevExpress XAF]]></title>
     <link href="http://ZeroSharp.github.com/elmah-with-devexpress-xaf/"/>
-    <updated>2014-10-08T15:45:00+01:00</updated>
+    <updated>2014-10-08T15:45:00+02:00</updated>
     <id>http://ZeroSharp.github.com/elmah-with-devexpress-xaf</id>
     <content type="html"><![CDATA[<p><a href="https://code.google.com/p/elmah/">ELMAH (Error Logging Modules and Handlers)</a> is an open source library for logging unhandled exceptions. This post explains how to get it running with the <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a> main demo.</p>
 
@@ -280,7 +335,7 @@ public class ElmahErrorHandling : ErrorHandling
   <entry>
     <title type="html"><![CDATA[A web UI performance tip for XAF web applications]]></title>
     <link href="http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications/"/>
-    <updated>2014-03-31T10:16:00+01:00</updated>
+    <updated>2014-03-31T10:16:00+02:00</updated>
     <id>http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications</id>
     <content type="html"><![CDATA[<p>The purpose of this post is to raise your awareness of a toggle which exists in the <a href="http://www.devexpress.com/xaf/">DevExpress XAF framework</a> which can significantly improve UI performance in the web application.</p>
 
@@ -304,169 +359,6 @@ this.DelayedViewItemsInitialization = false;
 ```</p>
 
 <p>Certainly this is not without consequences, and I would urge a careful reading of the <a href="https://documentation.devexpress.com/#xaf/DevExpressExpressAppXafApplication_DelayedViewItemsInitializationtopic">relevant documentation</a>. To be honest, I still don't really understand why my detail view is so much slower without this change. I have tried to isolate the cause without much success and I will update this post if I find anything new. But if some of your detail views seem overly slow, certainly try it out.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Provisioning a new development machine with BoxStarter]]></title>
-    <link href="http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter/"/>
-    <updated>2014-02-25T15:29:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter</id>
-    <content type="html"><![CDATA[<p>I've been playing around with <a href="http://boxstarter.org/">Boxstarter</a> to configure my entire development environment with hardly any user intervention.</p>
-
-<p><img class="right" src="/images/blog/boxstarter-001.png" width="300"></p>
-
-<p>Here are the steps:</p>
-
-<ol>
-<li>Install Windows 8.1 on a new machine.</li>
-<li>Login.</li>
-<li>Open a command prompt and enter the following.
-<code>
-START http://boxstarter.org/package/nr/url?http://bit.ly/1kapDXI
-</code></li>
-</ol>
-
-
-<p>That's it!</p>
-
-<p>Boxstarter will self-install via ClickOnce, asking for various confirmations and ultimately it will prompt you for your login password. (This gets saved and encrypted to allow for unattended reboots and re-logins during the installation). Then the real magic begins. Boxstarter downloads and installs all your tools and configures your environment, rebooting as necessary. An hour later your full development setup is installed, including Visual Studio 2013, any VS extensions, any other programs and tools, all the browsers you need, all critical Windows updates, etc. You just saved yourself a couple of days of work and a lot of hassle.</p>
-
-<p>How does Boxstarter know what to install? There's a Powershell script located at that bitly address. Let's take a look at the script.</p>
-
-<p>```powershell</p>
-
-<h1>Boxstarter options</h1>
-
-<p>$Boxstarter.RebootOk=$true # Allow reboots?
-$Boxstarter.NoPassword=$false # Is this a machine with no login password?
-$Boxstarter.AutoLogin=$true # Save my password securely and auto-login after a reboot</p>
-
-<h1>Basic setup</h1>
-
-<p>Update-ExecutionPolicy Unrestricted
-Set-ExplorerOptions -showHidenFilesFoldersDrives -showProtectedOSFiles -showFileExtensions
-Enable-RemoteDesktop
-Disable-InternetExplorerESC
-Disable-UAC
-Set-TaskbarSmall</p>
-
-<p>if (Test-PendingReboot) { Invoke-Reboot }</p>
-
-<h1>Update Windows and reboot if necessary</h1>
-
-<p>Install-WindowsUpdate -AcceptEula
-if (Test-PendingReboot) { Invoke-Reboot }</p>
-
-<h1>Install Visual Studio 2013 Professional</h1>
-
-<p>cinstm VisualStudio2013Professional -InstallArguments WebTools
-if (Test-PendingReboot) { Invoke-Reboot }</p>
-
-<h1>Visual Studio SDK required for PoshTools extension</h1>
-
-<p>cinstm VS2013SDK
-if (Test-PendingReboot) { Invoke-Reboot }</p>
-
-<p>cinstm DotNet3.5 # Not automatically installed with VS 2013. Includes .NET 2.0. Uses Windows Features to install.
-if (Test-PendingReboot) { Invoke-Reboot }</p>
-
-<h1>VS extensions</h1>
-
-<p>Install-ChocolateyVsixPackage PowerShellTools http://visualstudiogallery.msdn.microsoft.com/c9eb3ba8-0c59-4944-9a62-6eee37294597/file/112013/6/PowerShellTools.vsix
-Install-ChocolateyVsixPackage WebEssentials2013 http://visualstudiogallery.msdn.microsoft.com/56633663-6799-41d7-9df7-0f2a504ca361/file/105627/31/WebEssentials2013.vsix
-Install-ChocolateyVsixPackage T4Toolbox http://visualstudiogallery.msdn.microsoft.com/791817a4-eb9a-4000-9c85-972cc60fd5aa/file/116854/1/T4Toolbox.12.vsix
-Install-ChocolateyVsixPackage StopOnFirstBuildError http://visualstudiogallery.msdn.microsoft.com/91aaa139-5d3c-43a7-b39f-369196a84fa5/file/44205/3/StopOnFirstBuildError.vsix</p>
-
-<h1>AWS Toolkit is now an MSI available here http://sdk-for-net.amazonwebservices.com/latest/AWSToolsAndSDKForNet.msi (no chocolatey package as of FEB 2014)</h1>
-
-<h1>Install-ChocolateyVsixPackage AwsToolkit http://visualstudiogallery.msdn.microsoft.com/175787af-a563-4306-957b-686b4ee9b497</h1>
-
-<h1>Other dev tools</h1>
-
-<p>cinstm fiddler4
-cinstm beyondcompare
-cinstm ProcExp #cinstm sysinternals
-cinstm NugetPackageExplorer
-cinstm windbg
-cinstm Devbox-Clink
-cinstm TortoiseHg</p>
-
-<h1>cinstm VisualHG # Chocolatey package is corrupt as of Feb 2014</h1>
-
-<p>cinstm linqpad4
-cinstm TestDriven.Net
-cinstm ncrunch2.vs2013</p>
-
-<h1>Browsers</h1>
-
-<p>cinstm googlechrome
-cinstm firefox</p>
-
-<h1>Other essential tools</h1>
-
-<p>cinstm 7zip
-cinstm adobereader
-cinstm javaruntime</p>
-
-<h1>cinst Microsoft-Hyper-V-All -source windowsFeatures</h1>
-
-<p>cinst IIS-WebServerRole -source windowsfeatures
-cinst IIS-HttpCompressionDynamic -source windowsfeatures
-cinst IIS-ManagementScriptingTools -source windowsfeatures
-cinst IIS-WindowsAuthentication -source windowsfeatures</p>
-
-<p>Install-ChocolateyPinnedTaskBarItem "$($Boxstarter.programFiles86)\Google\Chrome\Application\chrome.exe"
-Install-ChocolateyPinnedTaskBarItem "$($Boxstarter.programFiles86)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.exe"
-```</p>
-
-<p>Boxstarter works with <a href="http://chocolatey.org/">Chocolatey</a> and you can install anything with a Chocolatey package very easily. As you can see, most of the lines begin with <code>cinstm</code> which is a shortcut for <em>install with Chocolatey if missing</em>. You will notice there are also commands for configuring Windows and IIS options. There is plenty of additional information on the <a href="http://boxstarter.org/WhyBoxstarter">Boxstarter</a> documentation.</p>
-
-<h2>What about DevExpress?</h2>
-
-<p>Want to install your registered CodeRush and DexExpress components? Easy. Since the installation packages are not available on chocolatey, you will have to put them on a network share accessible from the newly provisioned machine.</p>
-
-<p>Then add the following to your boxstarter script:</p>
-
-<p>```powershell</p>
-
-<h1>Set the following to the network location of the DevExpress installers</h1>
-
-<p>$pathToDevExpressComponentsSetup = "\somewhere\DevExpressComponents-13.2.7.exe"
-$pathToDevExpressComponentsSetup = "\somewhere\DevExpressCodeRush-13.2.7.exe"</p>
-
-<h1>Command line options for unattended installation</h1>
-
-<h1>(/EULA is not required for versions earlier than 10.2.10)</h1>
-
-<p>$silentArgs = "/Q /EMAIL:myaddress@company.com /CUSTOMERID:A1111 /PASSWORD:MYPASSWORD /DEBUG /EULA:accept"</p>
-
-<h1>Install .NET Components</h1>
-
-<p>Install-ChocolateyInstallPackage "DevExpressComponents_13.2" "EXE" $silentArgs $pathToDevExpressComponentsSetup</p>
-
-<h1>Install CodeRush</h1>
-
-<p>Install-ChocolateyInstallPackage "DevExpressCodeRush_13.2" "EXE" $silentArgs $pathToDevExpressCodeRushSetup
-```</p>
-
-<p><strong>Warning! don't put your DevExpress passwords on a public website.</strong></p>
-
-<p>There are plenty of other ways of <em>launching</em> Boxstarter. You can <a href="https://chocolatey.org/packages/boxstarter">install Boxstarter via Chocolatey</a>. You can <a href="http://boxstarter.org/InstallingPackages">run Boxstarter remotely</a>. If you are putting passwords in the installation script, you should choose one of the other options.</p>
-
-<h2>Advantages</h2>
-
-<ul>
-<li>I save time!</li>
-<li>I can now version control the exact development environment along with the source code!</li>
-<li>Onboarding new and junior developers is much quicker.</li>
-<li>In a pinch, I can use this method to quickly provision a development machine with Azure or Amazon Web Services</li>
-</ul>
-
-
-<h2>One Last Hiccup</h2>
-
-<p>While I was testing my BoxStarter script I used the Windows 8.1 image from <a href="http://www.modern.ie/">http://www.modern.ie/</a>. Much later in the process I realised that Modern.IE only supplies 32-bit images and the chocolatey installer for Visual Studio extensions currently works only with 64-bit Windows.</p>
 ]]></content>
   </entry>
   

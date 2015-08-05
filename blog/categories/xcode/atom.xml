@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xcode | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xcode/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-08-03T16:08:58+01:00</updated>
+  <updated>2015-08-05T12:11:02+02:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[A C# Developer's Adventures in iOS - Integrating Git and MonoDevelop]]></title>
     <link href="http://ZeroSharp.github.com/a-c-number-developers-adventures-in-ios-integrating-git-and-monodevelop/"/>
-    <updated>2013-02-08T14:52:00+00:00</updated>
+    <updated>2013-02-08T14:52:00+01:00</updated>
     <id>http://ZeroSharp.github.com/a-c-number-developers-adventures-in-ios-integrating-git-and-monodevelop</id>
     <content type="html"><![CDATA[<p>This is the second post in a series about iOS development from the perspective of a C# developer.</p>
 
@@ -139,7 +139,7 @@ $ git push -u origin --all
   <entry>
     <title type="html"><![CDATA[A C# Developer's Adventures in iOS - Getting Started]]></title>
     <link href="http://ZeroSharp.github.com/a-c-number-developers-adventures-in-ios-getting-started/"/>
-    <updated>2013-01-30T11:18:00+00:00</updated>
+    <updated>2013-01-30T11:18:00+01:00</updated>
     <id>http://ZeroSharp.github.com/a-c-number-developers-adventures-in-ios-getting-started</id>
     <content type="html"><![CDATA[<h2>First steps in iPhone development</h2>
 

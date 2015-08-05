@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>A web UI performance tip for XAF web applications - ZeroSharp</title>
+  <title>Force a complete garbage collection in an ASP.NET application. - ZeroSharp</title>
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="A description of the DelayedViewItemsInitialization toggle in the DevExpress expressAppFramework.">
+  <meta name="description" content="How to force a full garbage collection within an XAF ASP.NET application.">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications/">
+  <link rel="canonical" href="http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -116,7 +116,7 @@
   
   <header>
     
-      <h1 class="entry-title">A Web UI Performance Tip for XAF Web Applications</h1>
+      <h1 class="entry-title">Force a Complete Garbage Collection in an ASP.NET Application.</h1>
     
     
       <p class="meta">
@@ -132,7 +132,7 @@
   
 
 
-<time datetime="2014-03-31T10:16:00+02:00" pubdate data-updated="true">Mar 31<span>st</span>, 2014</time>
+<time datetime="2015-08-05T09:26:00+02:00" pubdate data-updated="true">Aug 5<span>th</span>, 2015</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -141,29 +141,64 @@
   </header>
 
 
-<div class="entry-content"><p>The purpose of this post is to raise your awareness of a toggle which exists in the <a href="http://www.devexpress.com/xaf/">DevExpress XAF framework</a> which can significantly improve UI performance in the web application.</p>
+<div class="entry-content"><p>How can I force a full garbage collection easily within an ASP.NET application? The method here is for XAF web applications but the same approach should work with any ASP.NET app.</p>
 
-<p><span class='pullquote-right' data-pullquote='In fact the general responsiveness of the entire web-application seems much better.'>
-The biggest XAF project I work with has one very complex business object. The layout for this screen includes about 100 properties, several nested tabs, some custom editors, several collection properties and a whole lot of <a href="https://documentation.devexpress.com/#Xaf/CustomDocument3286">Conditional Appearance</a> rules. It was very sluggish to navigate - it was taking several seconds to load the detail view and then it was very slow switching between tabs. Switching to edit mode was also slow.</p>
+<p><span class='pullquote-right' data-pullquote='First up: Never mess with the .NET garbage collector.'>
+First up: Never mess with the .NET garbage collector.</p>
 
-<p>Last week, I almost accidentally changed the value of <code>DelayedViewItemsInitialization</code> to <code>false</code> and noticed that the UI speed was much much better. In fact the general responsiveness of the entire web-application seems much better.</p>
+<p>I sometimes mess with the garbage collector in .NET when I&#8217;m trying to pin down some memory problem. Also, after <a href="/load-testing-xaf-part-1-deploying/">a load test</a>, I prefer to force the garbage collector to collect everything it can so that I can check that the memory drops as expected.
+</span></p>
 
-<p>In order to give it a whirl, navigate to the WebApplication.cs file (normally in the ApplicationCode subfolder of your web project) and modify the constructor as follows:</p>
-
-<p></span></p>
+<p>Garbage collection in .NET is complex and it is hard to be sure you&#8217;ve done it correctly. <a href="///%20See%20http://blogs.msdn.com/b/tess/archive/2006/02/02/net-memory-my-object-is-not-rooted-why-wasn-t-it-garbage-collected.aspx">This ancient article by Tess Ferrandez</a> pointed me in the following direction.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="nf">MainDemoWebApplication</span><span class="p">()</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">InitializeComponent</span><span class="p">();</span>
-</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="n">DelayedViewItemsInitialization</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">void</span> <span class="nf">ForceGarbageCollection</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">/// This will garbage collect all generations (including large object), </span>
+</span><span class='line'>    <span class="n">GC</span><span class="p">.</span><span class="n">Collect</span><span class="p">(</span><span class="m">3</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">/// then execute any finalizers</span>
+</span><span class='line'>    <span class="n">GC</span><span class="p">.</span><span class="n">WaitForPendingFinalizers</span><span class="p">();</span>
+</span><span class='line'>    <span class="c1">/// and then garbage collect again to take care of all the objects that had finalizers.            </span>
+</span><span class='line'>    <span class="n">GC</span><span class="p">.</span><span class="n">Collect</span><span class="p">(</span><span class="m">3</span><span class="p">);</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Certainly this is not without consequences, and I would urge a careful reading of the <a href="https://documentation.devexpress.com/#xaf/DevExpressExpressAppXafApplication_DelayedViewItemsInitializationtopic">relevant documentation</a>. To be honest, I still don&#8217;t really understand why my detail view is so much slower without this change. I have tried to isolate the cause without much success and I will update this post if I find anything new. But if some of your detail views seem overly slow, certainly try it out.</p>
+<p>How can we easily trigger this routine in an XAF web application? First, add the following to the <em>Global.asax.cs</em> file:</p>
+
+<figure class='code'><figcaption><span>Global.asax.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">protected</span> <span class="k">void</span> <span class="nf">Application_BeginRequest</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">var</span> <span class="n">shouldForceGarbageCollection</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">QueryString</span><span class="p">[</span><span class="s">&quot;ForceGC&quot;</span><span class="p">]</span> <span class="p">!=</span> <span class="k">null</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">shouldForceGarbageCollection</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">ForceGarbageCollection</span><span class="p">();</span>
+</span><span class='line'>        <span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&quot;&lt;H1&gt;Forced garbage collection OK!&lt;/H1&gt;&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then whenever you want to trigger a garbage collection, visit the following URL:</p>
+
+<pre><code>http://.../Login.aspx?ForceGC=1
+</code></pre>
+
+<p>You should see the text <strong>&#8216;Forced garbage collection OK&#8217;</strong> in the top left of the browser window.</p>
 </div>
 
 
@@ -186,12 +221,12 @@ The biggest XAF project I work with has one very complex business object. The la
   
 
 
-<time datetime="2014-03-31T10:16:00+02:00" pubdate data-updated="true">Mar 31<span>st</span>, 2014</time>
+<time datetime="2015-08-05T09:26:00+02:00" pubdate data-updated="true">Aug 5<span>th</span>, 2015</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a>
+    <a class='category' href='/blog/categories/asp-net/'>asp.net</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a>
   
 </span>
 
@@ -200,7 +235,7 @@ The biggest XAF project I work with has one very complex business object. The la
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -213,10 +248,8 @@ The biggest XAF project I work with has one very complex business object. The la
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/provisioning-a-new-development-machine-with-boxstarter/" title="Previous Post: Provisioning a new development machine with BoxStarter">&laquo; Provisioning a new development machine with BoxStarter</a>
+        <a class="basic-alignment left" href="/a-strange-error-message-from-visual-studio-2015/" title="Previous Post: A strange error message from Visual Studio 2015">&laquo; A strange error message from Visual Studio 2015</a>
       
-      
-        <a class="basic-alignment right" href="/pardon-the-interruption/" title="Next Post: Pardon the interruption">Pardon the interruption &raquo;</a>
       
     </p>
   </footer>
@@ -252,8 +285,8 @@ The biggest XAF project I work with has one very complex business object. The la
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications/';
-        var disqus_url = 'http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications/';
+        var disqus_identifier = 'http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application/';
+        var disqus_url = 'http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application/';
         var disqus_script = 'embed.js';
       
     (function () {
