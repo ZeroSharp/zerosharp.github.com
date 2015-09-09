@@ -4,7 +4,7 @@
   <title><![CDATA[Category: bug | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/bug/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-08-05T12:11:02+02:00</updated>
+  <updated>2015-09-09T22:55:55+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Fixing an unmanaged code AppCrash]]></title>
     <link href="http://ZeroSharp.github.com/fixing-an-unmanaged-code-appcrash/"/>
-    <updated>2013-04-29T16:21:00+02:00</updated>
+    <updated>2013-04-29T16:21:00+01:00</updated>
     <id>http://ZeroSharp.github.com/fixing-an-unmanaged-code-appcrash</id>
     <content type="html"><![CDATA[<p>This post is the result of a recent bug hunt in which I came across a tricky bug, found a debugging switch I'd completely forgotten existed and learned a little about calling <code>extern</code> string functions from C#.</p>
 

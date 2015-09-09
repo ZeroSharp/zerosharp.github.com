@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c# | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/c-/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-08-05T12:11:02+02:00</updated>
+  <updated>2015-09-09T22:55:55+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Force a complete garbage collection in an ASP.NET application.]]></title>
     <link href="http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application/"/>
-    <updated>2015-08-05T09:26:00+02:00</updated>
+    <updated>2015-08-05T09:26:00+01:00</updated>
     <id>http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application</id>
     <content type="html"><![CDATA[<p>How can I force a full garbage collection easily within an ASP.NET application? The method here is for XAF web applications but the same approach should work with any ASP.NET app.</p>
 
@@ -71,7 +71,7 @@ if (shouldForceGarbageCollection)
   <entry>
     <title type="html"><![CDATA[A strange error message from Visual Studio 2015]]></title>
     <link href="http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015/"/>
-    <updated>2015-08-03T15:35:00+02:00</updated>
+    <updated>2015-08-03T15:35:00+01:00</updated>
     <id>http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015</id>
     <content type="html"><![CDATA[<p>When I recently upgraded to Visual Studio 2015, everything seemed to go very smoothly except that whenever I debugged my main application I got a dialog window with the following strange error:</p>
 
@@ -87,7 +87,7 @@ if (shouldForceGarbageCollection)
   <entry>
     <title type="html"><![CDATA[Fixing slow debugging of ASP.NET applications]]></title>
     <link href="http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications/"/>
-    <updated>2015-06-03T21:31:00+02:00</updated>
+    <updated>2015-06-03T21:31:00+01:00</updated>
     <id>http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications</id>
     <content type="html"><![CDATA[<p>For a while I've noticed an annoying slowness when debugging ASP.NET applications from Visual Studio. Just after every page load it takes about a second before the buttons become clickable. I noticed mostly when debugging XAF applications, perhaps because the pages are quite complex.</p>
 
@@ -109,7 +109,7 @@ if (shouldForceGarbageCollection)
   <entry>
     <title type="html"><![CDATA[DevExpress 14.2 review]]></title>
     <link href="http://ZeroSharp.github.com/devexpress-14-dot-2-review/"/>
-    <updated>2015-01-20T08:35:00+01:00</updated>
+    <updated>2015-01-20T08:35:00+00:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-14-dot-2-review</id>
     <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='The truly outstanding new feature is the ASP.NET report writer'>
 This post is an overview of the brand new version XAF 14.2. The truly outstanding new feature is the ASP.NET report writer which is now available in all XAF applications.</p>
@@ -163,7 +163,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
   <entry>
     <title type="html"><![CDATA[ELMAH with DevExpress XAF]]></title>
     <link href="http://ZeroSharp.github.com/elmah-with-devexpress-xaf/"/>
-    <updated>2014-10-08T15:45:00+02:00</updated>
+    <updated>2014-10-08T15:45:00+01:00</updated>
     <id>http://ZeroSharp.github.com/elmah-with-devexpress-xaf</id>
     <content type="html"><![CDATA[<p><a href="https://code.google.com/p/elmah/">ELMAH (Error Logging Modules and Handlers)</a> is an open source library for logging unhandled exceptions. This post explains how to get it running with the <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a> main demo.</p>
 

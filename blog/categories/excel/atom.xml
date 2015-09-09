@@ -4,7 +4,7 @@
   <title><![CDATA[Category: excel | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/excel/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-08-05T12:11:02+02:00</updated>
+  <updated>2015-09-09T22:55:55+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Top tip for viewing CSV files in Excel]]></title>
     <link href="http://ZeroSharp.github.com/top-tip-for-viewing-csv-files-in-excel/"/>
-    <updated>2015-05-08T11:32:00+02:00</updated>
+    <updated>2015-05-08T11:32:00+01:00</updated>
     <id>http://ZeroSharp.github.com/top-tip-for-viewing-csv-files-in-excel</id>
     <content type="html"><![CDATA[<p>Here's a quick hack when your CSV file has a different separator than Excel is expecting.</p>
 

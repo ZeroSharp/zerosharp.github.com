@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-08-05T12:11:02+02:00</updated>
+  <updated>2015-09-09T22:55:55+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Force a complete garbage collection in an ASP.NET application.]]></title>
     <link href="http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application/"/>
-    <updated>2015-08-05T09:26:00+02:00</updated>
+    <updated>2015-08-05T09:26:00+01:00</updated>
     <id>http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application</id>
     <content type="html"><![CDATA[<p>How can I force a full garbage collection easily within an ASP.NET application? The method here is for XAF web applications but the same approach should work with any ASP.NET app.</p>
 
@@ -82,7 +82,7 @@ First up: Never mess with the .NET garbage collector.</p>
   <entry>
     <title type="html"><![CDATA[A strange error message from Visual Studio 2015]]></title>
     <link href="http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015/"/>
-    <updated>2015-08-03T15:35:00+02:00</updated>
+    <updated>2015-08-03T15:35:00+01:00</updated>
     <id>http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015</id>
     <content type="html"><![CDATA[<p>When I recently upgraded to Visual Studio 2015, everything seemed to go very smoothly except that whenever I debugged my main application I got a dialog window with the following strange error:</p>
 
@@ -98,7 +98,7 @@ First up: Never mess with the .NET garbage collector.</p>
   <entry>
     <title type="html"><![CDATA[Fixing slow debugging of ASP.NET applications]]></title>
     <link href="http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications/"/>
-    <updated>2015-06-03T21:31:00+02:00</updated>
+    <updated>2015-06-03T21:31:00+01:00</updated>
     <id>http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications</id>
     <content type="html"><![CDATA[<p>For a while I&#8217;ve noticed an annoying slowness when debugging ASP.NET applications from Visual Studio. Just after every page load it takes about a second before the buttons become clickable. I noticed mostly when debugging XAF applications, perhaps because the pages are quite complex.</p>
 
@@ -124,7 +124,7 @@ First up: Never mess with the .NET garbage collector.</p>
   <entry>
     <title type="html"><![CDATA[Top tip for viewing CSV files in Excel]]></title>
     <link href="http://ZeroSharp.github.com/top-tip-for-viewing-csv-files-in-excel/"/>
-    <updated>2015-05-08T11:32:00+02:00</updated>
+    <updated>2015-05-08T11:32:00+01:00</updated>
     <id>http://ZeroSharp.github.com/top-tip-for-viewing-csv-files-in-excel</id>
     <content type="html"><![CDATA[<p>Here&#8217;s a quick hack when your CSV file has a different separator than Excel is expecting.</p>
 
@@ -147,7 +147,7 @@ First up: Never mess with the .NET garbage collector.</p>
   <entry>
     <title type="html"><![CDATA[DevExpress 14.2 review]]></title>
     <link href="http://ZeroSharp.github.com/devexpress-14-dot-2-review/"/>
-    <updated>2015-01-20T08:35:00+01:00</updated>
+    <updated>2015-01-20T08:35:00+00:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-14-dot-2-review</id>
     <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='The truly outstanding new feature is the ASP.NET report writer'>
 This post is an overview of the brand new version XAF 14.2. The truly outstanding new feature is the ASP.NET report writer which is now available in all XAF applications.</p>
@@ -201,7 +201,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
   <entry>
     <title type="html"><![CDATA[ELMAH with DevExpress XAF]]></title>
     <link href="http://ZeroSharp.github.com/elmah-with-devexpress-xaf/"/>
-    <updated>2014-10-08T15:45:00+02:00</updated>
+    <updated>2014-10-08T15:45:00+01:00</updated>
     <id>http://ZeroSharp.github.com/elmah-with-devexpress-xaf</id>
     <content type="html"><![CDATA[<p><a href="https://code.google.com/p/elmah/">ELMAH (Error Logging Modules and Handlers)</a> is an open source library for logging unhandled exceptions. This post explains how to get it running with the <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a> main demo.</p>
 
@@ -437,7 +437,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 4: Roslyn]]></title>
     <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-4/"/>
-    <updated>2014-09-17T08:08:00+02:00</updated>
+    <updated>2014-09-17T08:08:00+01:00</updated>
     <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-4</id>
     <content type="html"><![CDATA[<p>This is the fourth and final part of a series about using Roslyn with dependency injection to create a flexible and powerful plug-in framework. Here I review the parts of the solution that deal with the Roslyn runtime compilation of plug-ins. Check out <a href="https://github.com/ZeroSharp/RoslynPlugins">the working example on GitHub</a>.</p>
 
@@ -956,7 +956,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 3: Dependency Injection]]></title>
     <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/"/>
-    <updated>2014-09-15T08:01:00+02:00</updated>
+    <updated>2014-09-15T08:01:00+01:00</updated>
     <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3</id>
     <content type="html"><![CDATA[<p>This is the third part of a series about using Roslyn with dependency injection to create a flexible and powerful plug-in framework. Here I review the parts of the solution that deal with dependency injection. Check out <a href="https://github.com/ZeroSharp/RoslynPlugins">the working example on GitHub</a>.</p>
 
@@ -1127,7 +1127,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 2: The Solution]]></title>
     <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/"/>
-    <updated>2014-09-11T09:18:00+02:00</updated>
+    <updated>2014-09-11T09:18:00+01:00</updated>
     <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2</id>
     <content type="html"><![CDATA[<p>Previously: <a href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/">Part 1: The Goal</a></p>
 
@@ -1181,7 +1181,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 1: The Goal]]></title>
     <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/"/>
-    <updated>2014-09-09T10:47:00+02:00</updated>
+    <updated>2014-09-09T10:47:00+01:00</updated>
     <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1</id>
     <content type="html"><![CDATA[<h2>The goal</h2>
 
@@ -1273,7 +1273,7 @@ How can we replace a given class&#8217;s code with new code at runtime? In parti
   <entry>
     <title type="html"><![CDATA[Persisting changes to config files within NuGet packages]]></title>
     <link href="http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages/"/>
-    <updated>2014-08-13T06:39:00+02:00</updated>
+    <updated>2014-08-13T06:39:00+01:00</updated>
     <id>http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages</id>
     <content type="html"><![CDATA[<p>Whenever NuGet updates or restores a NuGet package, the config files within it are overwritten. Here&#8217;s a method to make sure the changes are reapplied via a <a href="http://msdn.microsoft.com/en-us/library/dd465326.aspx">config transform</a> whenever the solution is built.</p>
 
@@ -1343,7 +1343,7 @@ How can we replace a given class&#8217;s code with new code at runtime? In parti
   <entry>
     <title type="html"><![CDATA[Pardon the interruption]]></title>
     <link href="http://ZeroSharp.github.com/pardon-the-interruption/"/>
-    <updated>2014-08-11T10:33:00+02:00</updated>
+    <updated>2014-08-11T10:33:00+01:00</updated>
     <id>http://ZeroSharp.github.com/pardon-the-interruption</id>
     <content type="html"><![CDATA[<p>I left my laptop on a train a couple of months ago. Good thing I remembered my brain. I&#8217;m back now. This blog still lives.</p>
 ]]></content>
@@ -1352,7 +1352,7 @@ How can we replace a given class&#8217;s code with new code at runtime? In parti
   <entry>
     <title type="html"><![CDATA[A web UI performance tip for XAF web applications]]></title>
     <link href="http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications/"/>
-    <updated>2014-03-31T10:16:00+02:00</updated>
+    <updated>2014-03-31T10:16:00+01:00</updated>
     <id>http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications</id>
     <content type="html"><![CDATA[<p>The purpose of this post is to raise your awareness of a toggle which exists in the <a href="http://www.devexpress.com/xaf/">DevExpress XAF framework</a> which can significantly improve UI performance in the web application.</p>
 
@@ -1383,7 +1383,7 @@ The biggest XAF project I work with has one very complex business object. The la
   <entry>
     <title type="html"><![CDATA[Provisioning a new development machine with BoxStarter]]></title>
     <link href="http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter/"/>
-    <updated>2014-02-25T15:29:00+01:00</updated>
+    <updated>2014-02-25T15:29:00+00:00</updated>
     <id>http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter</id>
     <content type="html"><![CDATA[<p>I&#8217;ve been playing around with <a href="http://boxstarter.org/">Boxstarter</a> to configure my entire development environment with hardly any user intervention.</p>
 
@@ -1609,7 +1609,7 @@ The biggest XAF project I work with has one very complex business object. The la
   <entry>
     <title type="html"><![CDATA[CruiseControl Notifications on your iPhone]]></title>
     <link href="http://ZeroSharp.github.com/cruisecontrol-notifications-on-your-iphone/"/>
-    <updated>2014-02-07T11:32:00+01:00</updated>
+    <updated>2014-02-07T11:32:00+00:00</updated>
     <id>http://ZeroSharp.github.com/cruisecontrol-notifications-on-your-iphone</id>
     <content type="html"><![CDATA[<p><img class="right" src="http://ZeroSharp.github.com/images/blog/ccwatcher-002.jpg" width="200"></p>
 
@@ -1634,7 +1634,7 @@ The biggest XAF project I work with has one very complex business object. The la
   <entry>
     <title type="html"><![CDATA[Glimpse with DevExpress XAF]]></title>
     <link href="http://ZeroSharp.github.com/glimpse-with-devexpress-xaf/"/>
-    <updated>2013-12-17T12:41:00+01:00</updated>
+    <updated>2013-12-17T12:41:00+00:00</updated>
     <id>http://ZeroSharp.github.com/glimpse-with-devexpress-xaf</id>
     <content type="html"><![CDATA[<p>I have finally got around to getting Glimpse working with XAF. Glimpse is an amazing extensible ASP.NET plug-in which gives you valuable information about what is going on within your server in production. It&#8217;s also very pretty.</p>
 
@@ -1815,7 +1815,7 @@ As you can see, this is a very valuable glimpse into the server which can be tur
   <entry>
     <title type="html"><![CDATA[DevExpress 13.2 Review - Part 2]]></title>
     <link href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-2/"/>
-    <updated>2013-12-10T16:10:00+01:00</updated>
+    <updated>2013-12-10T16:10:00+00:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-2</id>
     <content type="html"><![CDATA[<p>This is the second part of a review of the new DevExpress 13.2. In <a href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1">the last part</a> we looked in-depth at the new <a href="https://community.devexpress.com/blogs/eaf/archive/2013/11/08/easy-large-reports-in-13-2-ctp-of-reportsv2-module.aspx">Reports V2</a>. In this part I&#8217;ll go over some of the other new features including the support for warnings and confirmations in the validation module.</p>
 
@@ -1922,7 +1922,7 @@ The default directories for the installation have changed again. I&#8217;m sure 
   <entry>
     <title type="html"><![CDATA[DevExpress 13.2 Review - Part 1]]></title>
     <link href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1/"/>
-    <updated>2013-12-02T16:23:00+01:00</updated>
+    <updated>2013-12-02T16:23:00+00:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1</id>
     <content type="html"><![CDATA[<p>The first version of XAF I ever installed was called <em>eXpressApp-1.0.CTP2.exe</em> in July 2006! It has certainly come a long way since then.</p>
 
@@ -2089,7 +2089,7 @@ The default directories for the installation have changed again. I&#8217;m sure 
   <entry>
     <title type="html"><![CDATA[How to improve XAF grid layout for Chrome]]></title>
     <link href="http://ZeroSharp.github.com/how-to-improve-xaf-grid-layout-for-chrome/"/>
-    <updated>2013-11-08T09:55:00+01:00</updated>
+    <updated>2013-11-08T09:55:00+00:00</updated>
     <id>http://ZeroSharp.github.com/how-to-improve-xaf-grid-layout-for-chrome</id>
     <content type="html"><![CDATA[<p>This post proposes a workaround for a specific XAF rendering problem related to recent versions of Google Chrome.</p>
 
@@ -2207,7 +2207,7 @@ The default directories for the installation have changed again. I&#8217;m sure 
   <entry>
     <title type="html"><![CDATA[Three ways to store a list of currency codes in XAF]]></title>
     <link href="http://ZeroSharp.github.com/three-ways-to-store-a-list-of-currency-codes-in-xaf/"/>
-    <updated>2013-10-22T18:15:00+02:00</updated>
+    <updated>2013-10-22T18:15:00+01:00</updated>
     <id>http://ZeroSharp.github.com/three-ways-to-store-a-list-of-currency-codes-in-xaf</id>
     <content type="html"><![CDATA[<p>In the <a href="http://ZeroSharp.github.com/the-ugly-the-heavy-and-the-good">last post</a> we looked at three solutions to a relatively simple XAF requirement. In this post I&#8217;ll discuss another XAF challenge, explain the options and provide a versatile and maintainable solution.</p>
 

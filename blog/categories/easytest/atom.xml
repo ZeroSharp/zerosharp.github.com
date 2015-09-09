@@ -4,7 +4,7 @@
   <title><![CDATA[Category: easytest | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/easytest/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-08-05T12:11:02+02:00</updated>
+  <updated>2015-09-09T22:55:55+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Load Testing XAF: Bonus - Simultaneous EasyTests]]></title>
     <link href="http://ZeroSharp.github.com/load-testing-xaf-bonus-simultaneous-easytests/"/>
-    <updated>2013-04-22T16:31:00+02:00</updated>
+    <updated>2013-04-22T16:31:00+01:00</updated>
     <id>http://ZeroSharp.github.com/load-testing-xaf-bonus-simultaneous-easytests</id>
     <content type="html"><![CDATA[<p>In <a href="/load-testing-xaf-overview">my recent series on load testing XAF</a>, I used a Selenium javascript test to run the client browser instances. This is a good and cheap method of validating the performance of XAF applications under production load.</p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: github | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/github/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-08-05T12:11:02+02:00</updated>
+  <updated>2015-09-09T22:55:55+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Setting up Octopress on Windows Again]]></title>
     <link href="http://ZeroSharp.github.com/setting-up-octopress-on-windows-again/"/>
-    <updated>2013-01-17T11:20:00+01:00</updated>
+    <updated>2013-01-17T11:20:00+00:00</updated>
     <id>http://ZeroSharp.github.com/setting-up-octopress-on-windows-again</id>
     <content type="html"><![CDATA[<p>My <a href="/setting-up-octopress-on-windows/">very first blog post</a> was about setting up Octopress. The following is an updated version of those instructions for setting up Octopress with Windows, ruby 1.9.3, python 2.7.3.</p>
 
@@ -160,7 +160,7 @@ bundle install
   <entry>
     <title type="html"><![CDATA[Octopress on Windows and GitHub]]></title>
     <link href="http://ZeroSharp.github.com/setting-up-octopress-on-windows/"/>
-    <updated>2012-04-06T17:11:00+02:00</updated>
+    <updated>2012-04-06T17:11:00+01:00</updated>
     <id>http://ZeroSharp.github.com/setting-up-octopress-on-windows</id>
     <content type="html"><![CDATA[<p><blockquote><p></p></p><p><div STYLE="color:red">There is a more recent version of this post which covers ruby 1.9.3, python 2.7.3.</div></p><p><br/><p></p><footer><strong>January 2013 update:</strong> <cite><a href='http://blog.zerosharp.com/setting-up-octopress-on-windows-again'>Setting Up Octopress on Windows Again</a></cite></footer></blockquote></p>
 

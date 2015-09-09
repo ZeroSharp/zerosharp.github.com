@@ -4,7 +4,7 @@
   <title><![CDATA[Category: reports | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/reports/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-08-05T12:11:02+02:00</updated>
+  <updated>2015-09-09T22:55:55+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Making XAF reports even better - Part 2]]></title>
     <link href="http://ZeroSharp.github.com/making-xaf-reports-even-better-part-2/"/>
-    <updated>2013-05-28T11:51:00+02:00</updated>
+    <updated>2013-05-28T11:51:00+01:00</updated>
     <id>http://ZeroSharp.github.com/making-xaf-reports-even-better-part-2</id>
     <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='Repx files with embedded scripts are now much more maintainable. You can correct syntax errors, refactor, version control, merge versions easily.'>
 Good news. The conversion is now two-way. Get the source code <a href="https://github.com/ZeroSharp/Xaf_MainDemo_ReportSync">from GitHub</a>. Make sure you have built MainDemo.Reports project.</p>
@@ -89,7 +89,7 @@ Good news. The conversion is now two-way. Get the source code <a href="https://g
   <entry>
     <title type="html"><![CDATA[Making XAF reports even better - Part 1]]></title>
     <link href="http://ZeroSharp.github.com/making-xaf-reports-even-better-part-1/"/>
-    <updated>2013-05-21T14:38:00+02:00</updated>
+    <updated>2013-05-21T14:38:00+01:00</updated>
     <id>http://ZeroSharp.github.com/making-xaf-reports-even-better-part-1</id>
     <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='The aim of these posts is to provide a two-way conversion process between .repx and C# files.'>
 The ability to create reports using a report writer is a very powerful feature of <a href="http://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a>, but there are some limitations which are particularly cumbersome to deal with in complex project.</p>

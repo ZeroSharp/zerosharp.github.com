@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-08-05T12:11:02+02:00</updated>
+  <updated>2015-09-09T22:55:55+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Load Testing XAF: Part 5 - Analysis]]></title>
     <link href="http://ZeroSharp.github.com/load-testing-xaf-part-5-analysis/"/>
-    <updated>2013-04-14T07:37:00+02:00</updated>
+    <updated>2013-04-14T07:37:00+01:00</updated>
     <id>http://ZeroSharp.github.com/load-testing-xaf-part-5-analysis</id>
     <content type="html"><![CDATA[<p>This is the final post in a series about load testing XAF applications.  Previously in the series:</p>
 
@@ -117,7 +117,7 @@
   <entry>
     <title type="html"><![CDATA[Load Testing XAF: Part 4 - Launching the load test]]></title>
     <link href="http://ZeroSharp.github.com/load-testing-xaf-part-4-launching-the-load-test/"/>
-    <updated>2013-04-08T11:19:00+02:00</updated>
+    <updated>2013-04-08T11:19:00+01:00</updated>
     <id>http://ZeroSharp.github.com/load-testing-xaf-part-4-launching-the-load-test</id>
     <content type="html"><![CDATA[<p>This is another post in a series about load testing XAF applications.  Previously in the series:</p>
 
@@ -148,7 +148,7 @@
   <entry>
     <title type="html"><![CDATA[Load Testing XAF: Part 3 - Uploading and Validating the Virtual User Script]]></title>
     <link href="http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/"/>
-    <updated>2013-04-03T16:39:00+02:00</updated>
+    <updated>2013-04-03T16:39:00+01:00</updated>
     <id>http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script</id>
     <content type="html"><![CDATA[<p>This is another post in a series about load testing XAF applications.  Previously in the series:</p>
 
@@ -182,7 +182,7 @@
   <entry>
     <title type="html"><![CDATA[Load Testing XAF: Part 2 - Selenium]]></title>
     <link href="http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/"/>
-    <updated>2013-03-28T16:56:00+01:00</updated>
+    <updated>2013-03-28T16:56:00+00:00</updated>
     <id>http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium</id>
     <content type="html"><![CDATA[<h1>Writing a Selenium User Test against MainDemo</h1>
 
@@ -598,7 +598,7 @@ ttp://localhost:58404/Default.aspx' (CycleThroughTabs.js#50)
   <entry>
     <title type="html"><![CDATA[Load Testing XAF: Part 1 - Deploying]]></title>
     <link href="http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/"/>
-    <updated>2013-03-22T11:21:00+01:00</updated>
+    <updated>2013-03-22T11:21:00+00:00</updated>
     <id>http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying</id>
     <content type="html"><![CDATA[<p>This is the first part of a tutorial about load testing XAF applications. See the <a href="/load-testing-xaf-overview/">overview</a> for a bit of background. In this post we set up the target webserver.</p>
 

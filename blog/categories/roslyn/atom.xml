@@ -4,7 +4,7 @@
   <title><![CDATA[Category: roslyn | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/roslyn/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-08-05T12:11:02+02:00</updated>
+  <updated>2015-09-09T22:55:55+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 4: Roslyn]]></title>
     <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-4/"/>
-    <updated>2014-09-17T08:08:00+02:00</updated>
+    <updated>2014-09-17T08:08:00+01:00</updated>
     <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-4</id>
     <content type="html"><![CDATA[<p>This is the fourth and final part of a series about using Roslyn with dependency injection to create a flexible and powerful plug-in framework. Here I review the parts of the solution that deal with the Roslyn runtime compilation of plug-ins. Check out <a href="https://github.com/ZeroSharp/RoslynPlugins">the working example on GitHub</a>.</p>
 
@@ -328,7 +328,7 @@ public class PluginAssemblyCache
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 3: Dependency Injection]]></title>
     <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/"/>
-    <updated>2014-09-15T08:01:00+02:00</updated>
+    <updated>2014-09-15T08:01:00+01:00</updated>
     <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3</id>
     <content type="html"><![CDATA[<p>This is the third part of a series about using Roslyn with dependency injection to create a flexible and powerful plug-in framework. Here I review the parts of the solution that deal with dependency injection. Check out <a href="https://github.com/ZeroSharp/RoslynPlugins">the working example on GitHub</a>.</p>
 
@@ -451,7 +451,7 @@ public class PluginOtherwiseDefaultBindingCreator : IBindingCreator
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 2: The Solution]]></title>
     <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/"/>
-    <updated>2014-09-11T09:18:00+02:00</updated>
+    <updated>2014-09-11T09:18:00+01:00</updated>
     <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2</id>
     <content type="html"><![CDATA[<p>Previously: <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/">Part 1: The Goal</a></p>
 
@@ -505,7 +505,7 @@ public class PluginOtherwiseDefaultBindingCreator : IBindingCreator
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 1: The Goal]]></title>
     <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/"/>
-    <updated>2014-09-09T10:47:00+02:00</updated>
+    <updated>2014-09-09T10:47:00+01:00</updated>
     <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1</id>
     <content type="html"><![CDATA[<h2>The goal</h2>
 

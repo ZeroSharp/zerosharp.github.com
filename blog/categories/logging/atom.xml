@@ -4,7 +4,7 @@
   <title><![CDATA[Category: logging | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/logging/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-08-05T12:11:02+02:00</updated>
+  <updated>2015-09-09T22:55:55+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[ELMAH with DevExpress XAF]]></title>
     <link href="http://ZeroSharp.github.com/elmah-with-devexpress-xaf/"/>
-    <updated>2014-10-08T15:45:00+02:00</updated>
+    <updated>2014-10-08T15:45:00+01:00</updated>
     <id>http://ZeroSharp.github.com/elmah-with-devexpress-xaf</id>
     <content type="html"><![CDATA[<p><a href="https://code.google.com/p/elmah/">ELMAH (Error Logging Modules and Handlers)</a> is an open source library for logging unhandled exceptions. This post explains how to get it running with the <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a> main demo.</p>
 

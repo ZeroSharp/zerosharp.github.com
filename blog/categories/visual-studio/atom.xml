@@ -4,7 +4,7 @@
   <title><![CDATA[Category: visual studio | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/visual-studio/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-08-05T12:11:02+02:00</updated>
+  <updated>2015-09-09T22:55:55+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[A strange error message from Visual Studio 2015]]></title>
     <link href="http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015/"/>
-    <updated>2015-08-03T15:35:00+02:00</updated>
+    <updated>2015-08-03T15:35:00+01:00</updated>
     <id>http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015</id>
     <content type="html"><![CDATA[<p>When I recently upgraded to Visual Studio 2015, everything seemed to go very smoothly except that whenever I debugged my main application I got a dialog window with the following strange error:</p>
 
@@ -32,7 +32,7 @@
   <entry>
     <title type="html"><![CDATA[Fixing slow debugging of ASP.NET applications]]></title>
     <link href="http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications/"/>
-    <updated>2015-06-03T21:31:00+02:00</updated>
+    <updated>2015-06-03T21:31:00+01:00</updated>
     <id>http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications</id>
     <content type="html"><![CDATA[<p>For a while I've noticed an annoying slowness when debugging ASP.NET applications from Visual Studio. Just after every page load it takes about a second before the buttons become clickable. I noticed mostly when debugging XAF applications, perhaps because the pages are quite complex.</p>
 
@@ -54,7 +54,7 @@
   <entry>
     <title type="html"><![CDATA[Provisioning a new development machine with BoxStarter]]></title>
     <link href="http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter/"/>
-    <updated>2014-02-25T15:29:00+01:00</updated>
+    <updated>2014-02-25T15:29:00+00:00</updated>
     <id>http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter</id>
     <content type="html"><![CDATA[<p>I've been playing around with <a href="http://boxstarter.org/">Boxstarter</a> to configure my entire development environment with hardly any user intervention.</p>
 

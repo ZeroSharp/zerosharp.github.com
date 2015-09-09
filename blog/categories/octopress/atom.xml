@@ -4,7 +4,7 @@
   <title><![CDATA[Category: octopress | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/octopress/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-08-05T12:11:02+02:00</updated>
+  <updated>2015-09-09T22:55:55+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Removing the RSS subscription icon from Octopress]]></title>
     <link href="http://ZeroSharp.github.com/removing-the-rss-subscription-icon-from-octopress/"/>
-    <updated>2013-07-09T09:13:00+02:00</updated>
+    <updated>2013-07-09T09:13:00+01:00</updated>
     <id>http://ZeroSharp.github.com/removing-the-rss-subscription-icon-from-octopress</id>
     <content type="html"><![CDATA[<p>A <a href="https://twitter.com/tlaynes">fellow Octopress blogger</a> recently asked how I removed the RSS subscription icon from the Octopress navigation bar.</p>
 
@@ -95,7 +95,7 @@
   <entry>
     <title type="html"><![CDATA[Clone your Octopress to blog from two places]]></title>
     <link href="http://ZeroSharp.github.com/clone-your-octopress-to-blog-from-two-places/"/>
-    <updated>2013-02-01T11:59:00+01:00</updated>
+    <updated>2013-02-01T11:59:00+00:00</updated>
     <id>http://ZeroSharp.github.com/clone-your-octopress-to-blog-from-two-places</id>
     <content type="html"><![CDATA[<p><img class="right" src="/images/blog/clone-your-octopress-001.png"></p>
 
@@ -166,7 +166,7 @@ $ git pull origin master  # update the local master branch
   <entry>
     <title type="html"><![CDATA[Installing Ruby with Homebrew and rbenv on Mac OS X Mountain Lion]]></title>
     <link href="http://ZeroSharp.github.com/installing-ruby-with-homebrew-and-rbenv-on-mac-os-x-mountain-lion/"/>
-    <updated>2013-01-31T17:38:00+01:00</updated>
+    <updated>2013-01-31T17:38:00+00:00</updated>
     <id>http://ZeroSharp.github.com/installing-ruby-with-homebrew-and-rbenv-on-mac-os-x-mountain-lion</id>
     <content type="html"><![CDATA[<h2>Install Ruby with rbenv</h2>
 
@@ -316,7 +316,7 @@ ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-darwin12.2.1]
   <entry>
     <title type="html"><![CDATA[My amateur git skills have lead to an RSS deluge]]></title>
     <link href="http://ZeroSharp.github.com/my-amateur-git-skills-have-lead-to-an-rss-deluge/"/>
-    <updated>2013-01-29T11:31:00+01:00</updated>
+    <updated>2013-01-29T11:31:00+00:00</updated>
     <id>http://ZeroSharp.github.com/my-amateur-git-skills-have-lead-to-an-rss-deluge</id>
     <content type="html"><![CDATA[<p>I was trying to upgrade to the latest Octopress version but it seems I did something with the atom.xml file and some of you got every single post as 'new' in your RSS readers. Not sure what I did, but sorry for any extra mouse clicks. All working now.</p>
 ]]></content>
@@ -325,7 +325,7 @@ ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-darwin12.2.1]
   <entry>
     <title type="html"><![CDATA[Image captions for Octopress]]></title>
     <link href="http://ZeroSharp.github.com/image-captions-for-octopress/"/>
-    <updated>2013-01-23T11:56:00+01:00</updated>
+    <updated>2013-01-23T11:56:00+00:00</updated>
     <id>http://ZeroSharp.github.com/image-captions-for-octopress</id>
     <content type="html"><![CDATA[<p>I wanted to add captions to some of my images and came across <a href="https://github.com/imathis/octopress/issues/124">this forum thread</a>, from which I was able to piece together <a href="http://tedkulp.com/">Ted Kulp</a>'s slick solution.</p>
 
