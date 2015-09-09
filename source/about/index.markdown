@@ -11,8 +11,8 @@ I'm Robert Anderson.  I'm a software developer based in London (via Paris and Ge
 
 I am the founder and director of [ZeroSharp](http://www.zerosharp.com/).
 
-I have been the lead developer at [Coprocess](http://www.coprocess.com/) for 20 years building enterprise software for corporate treasuries.
+I am the principal software architect at [Coprocess](http://www.coprocess.com/) which supplies enterprise software to corporate treasuries.
 
-I have won prizes at hackathons in both Buenos Aires and London.
+I have won prizes at hackathons in both Buenos Aires and London. I'm a [DevExpress](https://www.devexpress.com/Home/Community/mvp.xml) MVP.
 
-I also like robots, artifical intelligence, mathematics, chess, Rubik's cubes, classical guitar, skiing, squash, bicycle holidays, learning Slovenian...
+I also like robots, artificial intelligence, mathematics, chess, old movies, Rubik's cubes, classical guitar, skiing, squash, bicycle holidays, learning Slovenian...
