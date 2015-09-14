@@ -337,6 +337,24 @@
         <lastmod>2015-08-04T17:47:03+01:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1/
+        </loc>
+        <lastmod>2015-09-14T10:42:36+01:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2/
+        </loc>
+        <lastmod>2015-09-14T10:42:35+01:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3/
+        </loc>
+        <lastmod>2015-09-14T10:42:32+01:00</lastmod>
+    </url>
+    <url>
         <loc>http://ZeroSharp.github.com/about/</loc>
         <lastmod>2015-09-09T22:51:57+01:00</lastmod>
     </url>
@@ -350,11 +368,11 @@
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/blog/archives/</loc>
-        <lastmod>2015-08-04T17:47:03+01:00</lastmod>
+        <lastmod>2015-09-14T10:42:36+01:00</lastmod>
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/</loc>
-        <lastmod>2015-08-04T17:47:03+01:00</lastmod>
+        <lastmod>2015-09-14T10:42:36+01:00</lastmod>
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/license/</loc>

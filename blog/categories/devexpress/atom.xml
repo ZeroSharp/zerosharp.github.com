@@ -4,7 +4,7 @@
   <title><![CDATA[Category: devexpress | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/devexpress/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-09-09T22:55:55+01:00</updated>
+  <updated>2015-09-14T10:42:42+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,88 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 3]]></title>
+    <link href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3/"/>
+    <updated>2015-09-16T09:39:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3</id>
+    <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='I&#8217;m happy to report there is a considerable improvement under load in version 15.1.'>
+This is the third part of a <a href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2">series</a> about migrating a large application from XAF 12.1 to XAF 15.1. In this part I will compare the results of a simple stress test between the versions.</p>
+
+<p>I have described in previous posts how to <a href="/load-testing-xaf-overview/">stress test XAF applications</a>. One of our most basic tests is to simulate 25 users cycling through all the navigation tabs for an hour. I'm happy to report there is a considerable improvement under load in version 15.1.</p>
+
+<p>(Note that we purposefully stress test against a single web application so that we can compare apples with apples. In production we have multiple instances load-balanced.)</p>
+
+<p>Here is an interactive summary of the 15.1 results:
+</span></p>
+
+<p>Here is version 15.1. There were zero errors and 382 completed scripts.</p>
+
+<p>By comparison, the same test against DevExpress 12.1 yielded only 258 completions. So 15.1 shows a 48% performance improvement over 12.1.</p>
+
+<p><iframe class="cmd" src="https://load.wpm.neustar.biz/load/test/share/e4c5e109f8f04ceebd72cdb5c93eb1c2" width="1024" height="512"></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 2]]></title>
+    <link href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2/"/>
+    <updated>2015-09-15T10:37:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2</id>
+    <content type="html"><![CDATA[<p>This is the second part of a <a href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1">series</a> about migrating a large application from XAF 12.1 to XAF 15.1.</p>
+
+<p>In the 13.1 release, DevExpress made a change to the way XAF <code>Validator</code> class is used. It now requires an <code>IObjectSpace</code> parameter corresponding to the object. It is needed to correctly evaluate any rules which are descendants of the <code>RuleSearchObjectProperties</code>. These include:</p>
+
+<ul>
+<li><code>RuleCombinationOfPropertiesIsUnique</code></li>
+<li><code>RuleIsReferenced</code></li>
+<li><code>RuleObjectExists</code></li>
+<li><code>RuleUniqueValue</code></li>
+</ul>
+
+
+<p>A lot of our code has been around for years now and the older parts rely heavily on <code>Session</code> and <code>UnitOfWork</code> instead of <code>IObjectSpace</code> For the most part our application used <code>IObjectSpace</code> only within <code>ViewControllers</code>.</p>
+
+<p>But there were several situations where we need the validator where we don't have an <code>IObjectSpace</code>. For instance we sometimes need to validate from within <a href="https://documentation.devexpress.com/#eXpressAppFramework/clsDevExpressPersistentBaseActionAttributetopic">method actions</a> (decorated with the <code>ActionAttribute</code>). For performance reasons, we pass criteria to our middleware and it uses a <code>UnitOfWork</code> to run the method on each object. So in this case, there was no <code>IObjectSpace</code> to pass to the XAF <code>Validator</code>.</p>
+
+<p><span class='pullquote-right' data-pullquote='When writing code I often find myself having to decide between the &#8216;quick&#8217; fix and the &#8216;right&#8217; fix.'>
+Here I had a refactoring dilemma to solve. Either I need to rewrite all of the affected rules so that they no longer make use of the <code>IObjectSpace</code>. For instance, I could use <code>RuleFromBoolProperty</code> instead. In our application, this would mean rewriting about 50 rules. Or alternatively, I could go through the entire code base looking for <code>new UnitOfWork()</code> and <code>new Session()</code> and try to use an <code>IObjectSpace</code> instead. When writing code I often find myself having to decide between the 'quick' fix and the 'right' fix. Here, moving to <code>IObjectSpace</code> throughout is clearly the right fix and although it would take more time to implement, the system will be more in-line with best XAF practices throughout.
+</span></p>
+
+<p> Eventually, the refactoring was complete and all unit tests are passing. I was eager to run a multi-user load stress test against the 15.1 version to compare performance under load. I have described in previous posts how to <a href="/load-testing-xaf-overview/">stress test XAF applications</a>. I'll be sharing the results in the next post.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 1]]></title>
+    <link href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1/"/>
+    <updated>2015-09-14T10:01:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1</id>
+    <content type="html"><![CDATA[<p>I am the principal software architect for a treasury application in use by over 100 large multinational corporates. Upgrades are generally met with reluctance in the enterprise world and so we've been somewhat stuck on an old version of the expressAppFramework.</p>
+
+<p>Recently I've been pushing to move to the newer version and I have spent about three weeks migrating the substantial code base to XAF 15.1 and .NET 4.6.</p>
+
+<p>The steps are:</p>
+
+<ul>
+<li>Run the project converter tool.</li>
+<li>Try to compile. Identify the errors which are easily fixable (check with the 'breaking changes' documents from DevExpress.)</li>
+<li>When in doubt, compare the libraries with a decompiler like .NET Reflector.</li>
+<li>Refactor where necessary (ensure you have unit tests for the behaviour you are changing).</li>
+</ul>
+
+
+<p>On this last point, my whole approach to refactoring has been shaped by Michael C. Feather's book <a href="http://amzn.com/0131177052"><em>Working Effectively with Legacy Code</em></a>. Highly recommended for anyone maintaining complex applications regardless of whether the code is legacy or not...</p>
+
+<p>I was pleasantly surprised that I was very quickly able to get everything to compile and even run. The layout was not correct, but a lot of things worked straight away.</p>
+
+<p>I then had to spend some time restoring the customisations we'd made to the default ASP.NET layout. In XAF 12.1 these were applied directly to <em>default.aspx.cs</em> and <em>dialog.aspx.cs</em>, but in 15.1 these no longer exist. Instead, you can customise layout by providing your own alternate templates. I was expecting this to be much harder, but by <a href="https://documentation.devexpress.com/#eXpressAppFramework/CustomDocument112696">following the instructions in the documentation</a> I managed to restore our layout quite easily.</p>
+
+<p>I still had a lot of failing unit tests. One seemingly minor change to XAF validation proved to be a lot of work to fix in our code.
+Since 13.1, the XAF <code>Validator</code> class now requires an <code>IObjectSpace</code> parameter in the constructor. This was by far the biggest problem to fix and is the subject of the next blog post.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Force a complete garbage collection in an ASP.NET application.]]></title>
@@ -87,278 +169,6 @@ if (shouldForceGarbageCollection)
   &lt;add key="vs:EnableBrowserLink" value="false"/&gt;
 &lt;/appSettings&gt;
 </code></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[DevExpress 14.2 review]]></title>
-    <link href="http://ZeroSharp.github.com/devexpress-14-dot-2-review/"/>
-    <updated>2015-01-20T08:35:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/devexpress-14-dot-2-review</id>
-    <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='The truly outstanding new feature is the ASP.NET report writer'>
-This post is an overview of the brand new version XAF 14.2. The truly outstanding new feature is the ASP.NET report writer which is now available in all XAF applications.</p>
-
-<p>A few months ago, we lost a potential sale because the customer wanted the ability to create custom reports from within the browser. We told them it was impossible to provide a fully-fledged report designer within our web application - but the DevExpress guys have done it! And how! </span></p>
-
-<h2>The web-based report designer</h2>
-
-<p>Let's fire up the MainDemo application and navigate to the reports view. The first thing to notice is that there is a new action <em>Show Report Designer</em>.</p>
-
-<p><img src="/images/blog/devexpress-14-2-review-001.png"></p>
-
-<p>The designer action is disabled because the selected report is <em>predefined</em>. Predefined reports are a feature of Reports v2 which were introduced in version 13.2 (<a href="/devexpress-13-dot-2-review-part-1">see my previous review</a>). So first, we clone the existing predefined report. I renamed the copy (via the edit button) so that we can tell them apart.</p>
-
-<p><img src="/images/blog/devexpress-14-2-review-002.png"></p>
-
-<p>Now the <em>Show Report Designer</em> action is enabled. Let's click it. <em>Whoa! That's one impressive user interface for a web application!</em></p>
-
-<p><img src="/images/blog/devexpress-14-2-review-003.png"></p>
-
-<p>Let's add a chart and a few controls. I thought (incorrectly) that the link to the domain model might be somewhat lacking because the report designer is not designed specifically for XAF (you can also use it with non-XAF ASP.NET or ASP.NET MVC applications) but navigating the available domain objects to select a property seemed very natural and simple.</p>
-
-<p><img src="/images/blog/devexpress-14-2-review-005.png"></p>
-
-<p>I had a few little mouse issues while trying to resize or move controls, and there were a couple of places where the interface seemed slightly sluggish, but these were very minor issues. In general the designer is slick and easy to use. I also had a little difficulty finding the <em>Save</em> button, but here it is:</p>
-
-<p><img src="/images/blog/devexpress-14-2-review-007.png"></p>
-
-<p>And here's the live output after my modifications.</p>
-
-<p><img src="/images/blog/devexpress-14-2-review-006.png"></p>
-
-<p>You can also start from scratch with a new blank report.</p>
-
-<p><img src="/images/blog/devexpress-14-2-review-004.png"></p>
-
-<p>This report designer is an <strong>extremely impressive achievement</strong>. I played around with it for over an hour and it did not crash once. I managed to implement everything I tried including a chart, a bar code and a new data field.</p>
-
-<p>There are some features missing from the web-based report designer compared to the Windows Forms version. Most significant is the ability to attach events and scripts to controls. Here is a <a href="https://documentation.devexpress.com/#XtraReports/CustomDocument14651">full feature comparison table</a>.</p>
-
-<p>I had a quick look for the tools they used to implement it. It looks like it uses <a href="https://jquery.com">jQuery</a>, <a href="https://jqueryui.com">jQuery.UI</a> and <a href="https://knockoutjs.com">knockout.js</a> and you can automatically bundle the required libraries via a new setting in the web.config. There is <a href="https://documentation.devexpress.com/#XtraReports/CustomDocument17558">some more information here</a>.</p>
-
-<p>On the whole I am utterly impressed. Hats off to the DevExpress team!</p>
-
-<h2>Other new features in XAF 14.2</h2>
-
-<p>The new 14.2 includes several other new features. These include the ability to store user settings in the data store as well as improvements to the speed of the grids. For a full list of the new features and improvements see <a href="https://community.devexpress.com/blogs/eaf/archive/2014/11/18/xaf-brand-new-module-amp-features-for-both-windows-and-the-web-coming-soon-in-v14-2.aspx">here</a> and <a href="https://community.devexpress.com/blogs/eaf/archive/2014/11/20/xaf-enhancements-to-existing-features-amp-performance-tuning-coming-soon-in-v14-2.aspx">here</a>.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ELMAH with DevExpress XAF]]></title>
-    <link href="http://ZeroSharp.github.com/elmah-with-devexpress-xaf/"/>
-    <updated>2014-10-08T15:45:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/elmah-with-devexpress-xaf</id>
-    <content type="html"><![CDATA[<p><a href="https://code.google.com/p/elmah/">ELMAH (Error Logging Modules and Handlers)</a> is an open source library for logging unhandled exceptions. This post explains how to get it running with the <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a> main demo.</p>
-
-<p>A couple of amazing facts about ELMAH.</p>
-
-<ul>
-<li>It has been around since 2004!</li>
-<li>It was written by <a href="http://www.raboof.com/">Atif Aziz</a> who happens to be an old school-friend from the International School of Geneva.</li>
-</ul>
-
-
-<p>XAF provides <a href="https://documentation.devexpress.com/#xaf/CustomDocument2704">quite extensive error handling options</a> out of the box, but I have found Elmah better suited to production environments because of the ability to remotely view the full error log.</p>
-
-<h2>Setting up</h2>
-
-<p>First, get the ELMAH package via NuGet into the MainDemo.Web project. ELMAH provides dozens of different methods of persisting the error log. For this example we'll choose one of the simplest. Make sure you select the <em>ELMAH on XML Log</em> package.</p>
-
-<p><img src="/images/blog/xaf-with-elmah-001.png"></p>
-
-<p>NuGet makes several automatic modifications to the <em>web.config</em>. Unfortunately, these are not quite accurate enough for XAF. The changes you need to make are detailed below:</p>
-
-<p>Add a <code>&lt;configSection&gt;</code> for ELMAH as alongside the existing devExpress one.</p>
-
-<p>```xml web.config
-  <configSections></p>
-
-<pre><code>&lt;sectionGroup name="devExpress"&gt;...&lt;/sectionGroup&gt; &lt;!-- this should already exist--&gt;
-&lt;sectionGroup name="elmah"&gt; &lt;!-- this is new--&gt;
-  &lt;section name="security" requirePermission="false" type="Elmah.SecuritySectionHandler, Elmah" /&gt;
-  &lt;section name="errorLog" requirePermission="false" type="Elmah.ErrorLogSectionHandler, Elmah" /&gt;
-  &lt;section name="errorMail" requirePermission="false" type="Elmah.ErrorMailSectionHandler, Elmah" /&gt;
-  &lt;section name="errorFilter" requirePermission="false" type="Elmah.ErrorFilterSectionHandler, Elmah" /&gt;
- &lt;/sectionGroup&gt;
-</code></pre>
-
-<p>  </configSections>
-```</p>
-
-<p>Your <code>&lt;system.webServer&gt;</code> section should look like this:</p>
-
-<p>```xml web.config
-  &lt;system.webServer></p>
-
-<pre><code>&lt;handlers&gt;...&lt;/handlers&gt; &lt;!-- This is unchanged --&gt;
-&lt;validation validateIntegratedModeConfiguration="false" /&gt;
-&lt;modules&gt;
-  &lt;add name="ASPxHttpHandlerModule" type="DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v14.1, Version=14.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-  &lt;add name="ErrorLog" type="Elmah.ErrorLogModule, Elmah" preCondition="managedHandler" /&gt;
-  &lt;add name="ErrorMail" type="Elmah.ErrorMailModule, Elmah" preCondition="managedHandler" /&gt;
-  &lt;add name="ErrorFilter" type="Elmah.ErrorFilterModule, Elmah" preCondition="managedHandler" /&gt;
-&lt;/modules&gt;
-</code></pre>
-
-<p>  &lt;/system.webServer>
-```</p>
-
-<p>Add a <code>&lt;location&gt;</code> for the path <em>elmah.axd</em> (alongside the existing <code>&lt;location&gt;</code> tags).</p>
-
-<p>```xml web.config
-  <location path="elmah.axd" inheritInChildApplications="false"></p>
-
-<pre><code>&lt;system.web&gt;
-  &lt;httpHandlers&gt;
-    &lt;add verb="POST,GET,HEAD" path="elmah.axd" type="Elmah.ErrorLogPageFactory, Elmah" /&gt;
-  &lt;/httpHandlers&gt;
-  &lt;!-- 
-    See http://code.google.com/p/elmah/wiki/SecuringErrorLogPages for 
-    more information on using ASP.NET authorization securing ELMAH.
-
-  &lt;authorization&gt;
-    &lt;allow roles="admin" /&gt;
-    &lt;deny users="*" /&gt;  
-  &lt;/authorization&gt;
-  --&gt;  
-&lt;/system.web&gt;
-&lt;system.webServer&gt;
-  &lt;handlers&gt;
-    &lt;add name="ELMAH" verb="POST,GET,HEAD" path="elmah.axd" type="Elmah.ErrorLogPageFactory, Elmah" preCondition="integratedMode" /&gt;
-  &lt;/handlers&gt;
-&lt;/system.webServer&gt;
-</code></pre>
-
-<p>  </location>
-```</p>
-
-<p>Add a new <code>&lt;elmah&gt;</code> section. I put mine just before the final <code>&lt;/configuration&gt;</code> tag.</p>
-
-<p>```xml web.config
-  <elmah></p>
-
-<pre><code>&lt;errorLog type="Elmah.XmlFileErrorLog, Elmah" logPath="~/App_Data/Elmah.Errors" /&gt;
-&lt;!--
-    See http://code.google.com/p/elmah/wiki/SecuringErrorLogPages for 
-    more information on remote access and securing ELMAH.
---&gt;
-&lt;security allowRemoteAccess="false" /&gt;
-</code></pre>
-
-<p>  </elmah>
-```</p>
-
-<p>Now modify <em>HttpModules.Web.Config</em> to look like this:</p>
-
-<p><code>xml HttpModules.Web.Config
-&lt;?xml version="1.0" encoding="utf-8"?&gt;
-&lt;httpModules&gt;
-  &lt;add name="ASPxHttpHandlerModule" type="DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v14.1, Version=14.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a" /&gt;
-  &lt;add name="ErrorLog" type="Elmah.ErrorLogModule, Elmah" /&gt;
-  &lt;add name="ErrorMail" type="Elmah.ErrorMailModule, Elmah" /&gt;
-  &lt;add name="ErrorFilter" type="Elmah.ErrorFilterModule, Elmah" /&gt;
-&lt;/httpModules&gt;
-</code></p>
-
-<p>Now we need to extend XAF's standard error handling. Create a new class in the web application.</p>
-
-<p>```c#
-public class ElmahErrorHandling : ErrorHandling
-{</p>
-
-<pre><code>protected override void LogException(ErrorInfo errorInfo)
-{
-    base.LogException(errorInfo);
-
-    if (errorInfo.Exception != null)
-        Elmah.ErrorSignal.FromCurrentContext().Raise(errorInfo.Exception);
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>And then modify <em>Global.asax.cs</em> to instantiate the new class</p>
-
-<p>```c#</p>
-
-<pre><code>    protected void Application_Start(object sender, EventArgs e) {
-        ErrorHandling.Instance = new ElmahErrorHandling(); // &lt;---this line is new
-        ASPxWebControl.CallbackError += new EventHandler(Application_Error);
-</code></pre>
-
-<h1>if DEBUG</h1>
-
-<pre><code>        TestScriptsManager.EasyTestEnabled = true;
-</code></pre>
-
-<h1>endif</h1>
-
-<pre><code>    }
-</code></pre>
-
-<p>```</p>
-
-<p>The complete files are available with the <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Elmah">source code</a>.</p>
-
-<p>Now run the application and trigger an unhandled exception. Change the URL to something that does not exist. Or open any detail view and modify the URL so that the Guid in the <em>ShortcutObjectKey</em> is invalid (replace a digit with an 'X'). Then the application error page appears.</p>
-
-<p><img src="/images/blog/xaf-with-elmah-002.png"></p>
-
-<p>Then return to the application and change the URL to <code>Elmah.axd</code>. You are looking at the log of all unhandled exceptions.</p>
-
-<p><img src="/images/blog/xaf-with-elmah-003.png"></p>
-
-<p>And for each exception, you can view the full details of any logged exception including coloured stack trace and full server variables.</p>
-
-<p><img src="/images/blog/xaf-with-elmah-004.png"></p>
-
-<h2>ELMAH options</h2>
-
-<p>By default, ELMAH is configured to disallow remote access to the error logs -  only a local user can get to <em>elmah.axd</em>. If you take care of the security implications it can be very useful to enable remote access and  monitor the logs on your production servers.</p>
-
-<p>We chose to use an XML file for each error but ELMAH is entirely pluggable. There are dozens of alternatives for persisting the error log including Sql Server, an RSS feeds, to Twitter, even to <a href="http://code.google.com/p/elmah/wiki/ProwlingErrors">an iPhone app</a>. There are even third party sites such as <a href="http://elmah.io">elmah.io</a> who will host your error logs for you.</p>
-
-<p>One of the advantages of using XML files is that the files can be copied to another machine. If you look in <em>MainDemo.Web\App_Data\Elmah.Errors</em>, you will find the resulting xml files.</p>
-
-<p><img src="/images/blog/xaf-with-elmah-005.png"></p>
-
-<p>You can just copy these files to another installation's <em>Elmah.Errors</em> folder and the log will show up when you visit <em>Elmah.axd</em>.</p>
-
-<p>One final note. ELMAH was developed for ASP.NET applications and web services, but it is possible to get it to work with other types of applications such as Windows Forms, Windows Service or console applications. Check out <a href="https://stackoverflow.com/questions/841451/using-elmah-in-a-console-application">this StackOverflow question</a>.</p>
-
-<p>The source code for this example is <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Elmah">on GitHub</a>.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[A web UI performance tip for XAF web applications]]></title>
-    <link href="http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications/"/>
-    <updated>2014-03-31T10:16:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications</id>
-    <content type="html"><![CDATA[<p>The purpose of this post is to raise your awareness of a toggle which exists in the <a href="http://www.devexpress.com/xaf/">DevExpress XAF framework</a> which can significantly improve UI performance in the web application.</p>
-
-<p><span class='pullquote-right' data-pullquote='In fact the general responsiveness of the entire web-application seems much better.'>
-The biggest XAF project I work with has one very complex business object. The layout for this screen includes about 100 properties, several nested tabs, some custom editors, several collection properties and a whole lot of <a href="https://documentation.devexpress.com/#Xaf/CustomDocument3286">Conditional Appearance</a> rules. It was very sluggish to navigate - it was taking several seconds to load the detail view and then it was very slow switching between tabs. Switching to edit mode was also slow.</p>
-
-<p>Last week, I almost accidentally changed the value of <code>DelayedViewItemsInitialization</code> to <code>false</code> and noticed that the UI speed was much much better. In fact the general responsiveness of the entire web-application seems much better.</p>
-
-<p>In order to give it a whirl, navigate to the WebApplication.cs file (normally in the ApplicationCode subfolder of your web project) and modify the constructor as follows:</p>
-
-<p></span></p>
-
-<p>```c#
-public MainDemoWebApplication() {</p>
-
-<pre><code>InitializeComponent();
-this.DelayedViewItemsInitialization = false;
-</code></pre>
-
-<p>}
-```</p>
-
-<p>Certainly this is not without consequences, and I would urge a careful reading of the <a href="https://documentation.devexpress.com/#xaf/DevExpressExpressAppXafApplication_DelayedViewItemsInitializationtopic">relevant documentation</a>. To be honest, I still don't really understand why my detail view is so much slower without this change. I have tried to isolate the cause without much success and I will update this post if I find anything new. But if some of your detail views seem overly slow, certainly try it out.</p>
 ]]></content>
   </entry>
   

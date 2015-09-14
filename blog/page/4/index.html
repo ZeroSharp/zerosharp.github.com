@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="This post is the result of a recent bug hunt in which I came across a tricky bug, found a debugging switch I&#8217;d completely forgotten existed and &hellip;">
+  <meta name="description" content="A fellow Octopress blogger recently asked how I removed the RSS subscription icon from the Octopress navigation bar. First, create a new site &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,440 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/removing-the-rss-subscription-icon-from-octopress/">Removing the RSS Subscription Icon From Octopress</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-09T09:13:00+01:00" pubdate data-updated="true">Jul 9<span>th</span>, 2013</time>
+        
+         | <a href="/removing-the-rss-subscription-icon-from-octopress/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>A <a href="https://twitter.com/tlaynes">fellow Octopress blogger</a> recently asked how I removed the RSS subscription icon from the Octopress navigation bar.</p>
+
+<p>First, create a new site variable <code>show_feeds</code> by adding a line to the <em>_config.yml</em> file which is in the root folder of the Octopress source.</p>
+
+<figure class='code'><figcaption><span>_config.yml  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>  # RSS / Email (optional) subscription links (change if using something like Feedburner)
+</span><span class='line'><span class="gi">+ show_feeds: false</span>
+</span><span class='line'>  subscribe_rss: http://feeds.feedburner.com/zerosharp
+</span><span class='line'>  subscribe_email:
+</span><span class='line'>  # RSS feeds can list your email address if you like
+</span><span class='line'>  email:
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then modify the <em>source/_includes/navigation.html</em> as follows</p>
+
+<figure class='code'><figcaption><span>navigation.html  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'><span class="gi">+ {% if site.show_feeds %}</span>
+</span><span class='line'>  &lt;ul class=&quot;subscription&quot; data-subscription=&quot;rss&quot;&gt;
+</span><span class='line'>    &lt;li&gt;&lt;a href=&quot;http://feeds.feedburner.com/zerosharp&quot; rel=&quot;subscribe-rss&quot; title=&quot;subscribe via RSS&quot;&gt;RSS&lt;/a&gt;&lt;/li&gt;
+</span><span class='line'>    {% if site.subscribe_email %}
+</span><span class='line'>      &lt;li&gt;&lt;a href=&quot;&quot; rel=&quot;subscribe-email&quot; title=&quot;subscribe via email&quot;&gt;Email&lt;/a&gt;&lt;/li&gt;
+</span><span class='line'>    {% endif %}
+</span><span class='line'>  &lt;/ul&gt;
+</span><span class='line'><span class="gi">+ {% endif %}</span>
+</span><span class='line'>  {% if site.simple_search %}
+</span><span class='line'>  &lt;form action=&quot;http://google.com/search&quot; method=&quot;get&quot;&gt;
+</span><span class='line'>    &lt;fieldset role=&quot;search&quot;&gt;
+</span><span class='line'>      &lt;input type=&quot;hidden&quot; name=&quot;q&quot; value=&quot;site:ZeroSharp.github.com&quot; /&gt;
+</span><span class='line'>      &lt;input class=&quot;search&quot; type=&quot;text&quot; name=&quot;q&quot; results=&quot;0&quot; placeholder=&quot;Search&quot;/&gt;
+</span><span class='line'>    &lt;/fieldset&gt;
+</span><span class='line'>  &lt;/form&gt;
+</span><span class='line'>  {% endif %}
+</span><span class='line'>  {% include custom/navigation.html %}
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then you can toggle the visibility of the feed icon by changing the <code>show_feeds</code> setting in the <code>_config.yml</code> file.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/making-xaf-reports-even-better-part-2/">Making XAF Reports Even Better - Part 2</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-28T11:51:00+01:00" pubdate data-updated="true">May 28<span>th</span>, 2013</time>
+        
+         | <a href="/making-xaf-reports-even-better-part-2/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><span class='pullquote-right' data-pullquote='Repx files with embedded scripts are now much more maintainable. You can correct syntax errors, refactor, version control, merge versions easily.'>
+Good news. The conversion is now two-way. Get the source code <a href="https://github.com/ZeroSharp/Xaf_MainDemo_ReportSync">from GitHub</a>. Make sure you have built MainDemo.Reports project.</p>
+
+<p>You will find there are now two T4 transforms in the project. <em>RepxToCSharp.tt</em> is covered in the <a href="/making-xaf-reports-even-better-part-1">Part 1</a>. It searches for any <em>.repx</em> files in the solution and converts the scripts into compilable C#.</p>
+
+<p>The second transform is new. <em>CSharpToRepx.tt</em> copies any changes to the script part back into the original <em>.repx</em> files. Again, there are performance optimisations via checksums to prevent overwriting unchanged files.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>(This is an automatically generated file which should be excluded from version control)
+</span><span class='line'>
+</span><span class='line'>Summary of C# transformation
+</span><span class='line'>============================
+</span><span class='line'>Total C# files found                                        :  2
+</span><span class='line'>  Total reports injected                                    :  1
+</span><span class='line'>  Total reports missing                                     :  0
+</span><span class='line'>  Total reports skipped because unchanged                   :  1
+</span><span class='line'>
+</span><span class='line'>Time elapsed: 00:00:02.3483264
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Repx files with embedded scripts are now much more maintainable. You can correct syntax errors, refactor, version control, merge versions easily. You could even write unit tests against the code in the scripts.</p>
+
+<p></span></p>
+
+<p>Currently the easiest way of running these scripts is to open them and save them with <code>Ctrl+S</code>. This is because T4 templates were originally designed as a Visual Studio tool.</p>
+
+<p>In the future I&#8217;m hoping to improve the integration further. There are ways of including the transformations into the build instead, most of which are covered in <a href="http://www.olegsych.com/2010/04/understanding-t4-msbuild-integration">a blog post by Mr T4, Oleg Sych</a>. I like the idea of it being a NuGet package that can be easily added to any XAF project, but there&#8217;s a but I&#8217;ll need some more time to work out how best to achieve this.</p>
+
+<h2>Basic usage summary</h2>
+
+<p>Until then, here are some basic usage instructions.</p>
+
+<ul>
+<li>Add the T4 Toolbox extension to Visual Studio</li>
+<li>Add a copy of the MainDemo.Reports project to your own solution</li>
+<li>Make sure you build it before running the transforms</li>
+<li>Open <em>RepxToCSharp.tt</em> in Visual Studio.</li>
+<li>Save it with <code>Ctrl+S</code> to run the transform. It will search all the folders in your Solution for <em>.repx</em> files and add corresponding C# classes.</li>
+<li>Make any changes you like to the script section (anything outside of <code>// -- Start of embedded scripts --</code> and <code>// -- End of embedded scripts --</code>) will be ignored.</li>
+<li>Open <em>CSharpToRepx.tt</em> and run it with <code>Ctrl+S</code>. The changes will be saved back to the corresponding <em>.repx</em>.</li>
+</ul>
+
+
+<h2>Even more power?</h2>
+
+<p>You may notice that if you reload the MainDemo.Reports project, you can now see <code>View in Designer</code> in the context menu when you right-click on the <em>.repx.cs</em> file.</p>
+
+<p><img src="/images/blog/xaf-report-sync-003.png"></p>
+
+<p>Let&#8217;s click it and see what happens. It opens directly in Visual Studio (like an <code>XtraReport</code>).</p>
+
+<p><img src="/images/blog/xaf-report-sync-004.png"></p>
+
+<p>Now, this is all highly experimental. You can see there are some warnings&#8230; Also, there is no connection with XPO, so the <em>Preview</em> is always empty.</p>
+
+<p>That said, it doesn&#8217;t seem like too much of a stretch to eventually allow far more Visual Studio integration for XAF reports&#8230;</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/making-xaf-reports-even-better-part-1/">Making XAF Reports Even Better - Part 1</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-05-21T14:38:00+01:00" pubdate data-updated="true">May 21<span>st</span>, 2013</time>
+        
+         | <a href="/making-xaf-reports-even-better-part-1/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><span class='pullquote-right' data-pullquote='The aim of these posts is to provide a two-way conversion process between .repx and C# files.'>
+The ability to create reports using a report writer is a very powerful feature of <a href="http://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a>, but there are some limitations which are particularly cumbersome to deal with in complex project.</p>
+
+<p>One of the projects I work on has over 100 reports in it. Even though we make use of unit tests to ensure they are not broken, the maintenance of the code in the embedded scripts is particularly difficult to manage.</p>
+
+<ul>
+<li>XafReports are <em>.repx</em> files which are usually loaded into the report table during the database update routine. They are a subclass of XtraReports which with some added restrictions.</li>
+<li>Any scripts are stored as a string or serialized to a <em>resources</em> property.</li>
+<li>The report writer is available only in the Windows Forms application. This must be used whenever a change is made to a report. The modified report must be exported as a repx file and then added to the module as an embedded report. The procedure is <a href="http://documentation.devexpress.com/#Xaf/CustomDocument2786">described here</a>.</li>
+</ul>
+
+
+<p>These aspects of XAF reports give rise to several development headaches.</p>
+
+<ul>
+<li>While script syntax can be checked within the report writer at design time (via the Validate button in the scripts tab), the script code is still brittle.</li>
+<li>Errors that result from Script syntax are sometimes only discovered at run time (you can write a unit test to check during build, but we really want to the compiler to tell us).</li>
+<li>Refactoring any classes requires a considerable amount of work with the report writer in order to apply any changes to the code within the scripts.</li>
+<li>There is no Intellisense in the report writer.</li>
+<li>Version control diff comparisons and merging are impossible.</li>
+</ul>
+
+
+<p>The aim of these posts is to provide a two-way conversion process between .repx and C# files. In order to accomplish this we&#8217;ll be relying on Visual Studio&#8217;s excellent T4 templating engine.
+</span></p>
+
+<h2>Installing T4Toolbox</h2>
+
+<p><a href="http://msdn.microsoft.com/en-us/library/vstudio/bb126445.aspx">T4 Text Transformation Toolkit</a> is a template based code generation framework which is included with Visual Studio. On top of this <a href="http://www.olegsych.com/">Oleg Sych</a> provides a Visual Studio extension called <a href="http://visualstudiogallery.msdn.microsoft.com/7f9bd62f-2505-4aa4-9378-ee7830371684">T4 Toolbox</a> which adds some additional features.</p>
+
+<p>Install T4 Toolbox by selecting <strong>Tools/Extensions and Updates</strong> from Visual Studio and searching for it.</p>
+
+<p><img src="/images/blog/xaf-report-sync-001.png"></p>
+
+<h2>The ReportSync MainDemo</h2>
+
+<p>Next, download the modified MainDemo application from my <a href="https://github.com/ZeroSharp/Xaf_MainDemo_ReportSync">GitHub repository</a> and open it in Visual Studio.</p>
+
+<p>First lets look at the embedded reports which I have modified slightly so that they include scripts. I added these scripts via the MainDemo.Win application.</p>
+
+<p>Let&#8217;s look at the <em>ContactsGroupByPosition.repx</em> file. You will find that there is a section:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">this</span><span class="p">.</span><span class="n">ScriptsSource</span> <span class="p">=</span> <span class="s">&quot;\r\nprivate void xrLabel4_BeforePrint(object sender, System.Drawing.Printing.PrintE&quot;</span> <span class="p">+</span>
+</span><span class='line'>    <span class="s">&quot;ventArgs e) {\r\n\txrLabel4.Text = xrLabel4.Text + \&quot; Test!\&quot;;\r\n}\r\n&quot;</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In this case, the script has been saved as a string. The other report, which has only slightly more complex script code looks like this:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">private</span> <span class="n">System</span><span class="p">.</span><span class="n">Resources</span><span class="p">.</span><span class="n">ResourceManager</span> <span class="n">resources</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">get</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">_resources</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="kt">string</span> <span class="n">resourceString</span> <span class="p">=</span> <span class="s">@&quot;zsrvvgEAAACRAAAAbFN5c3RlbS5SZXNvdXJjZXMuUmVzb3VyY2VSZWFkZXIsIG1zY29ybGliLCBWZXJzaW9uPT.....5kIFtEdWVEYXRlXSA8PSAnQEN1cnJlbnREYXRlJwABEFRhc2tzU3RhdGVSZXBvcnQ=&quot;</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="n">_resources</span> <span class="p">=</span> <span class="k">new</span> <span class="n">DevExpress</span><span class="p">.</span><span class="n">XtraReports</span><span class="p">.</span><span class="n">Serialization</span><span class="p">.</span><span class="n">XRResourceManager</span><span class="p">(</span><span class="n">resourceString</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="n">_resources</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="c1">// ...</span>
+</span><span class='line'><span class="k">this</span><span class="p">.</span><span class="n">ScriptsSource</span> <span class="p">=</span> <span class="n">resources</span><span class="p">.</span><span class="n">GetString</span><span class="p">(</span><span class="s">&quot;$this.ScriptsSource&quot;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here, the scripts are not even in plain text. They have been serialised to the <em>resources</em> property.</p>
+
+<h2>The MainDemo.Reports assembly</h2>
+
+<p>You will find a new assembly <strong>MainDemo.Reports</strong> which contains a T4 template <em>RepxToCSharp.tt</em>. This is a T4 template which will search for repx files and transform them into much more helpful plain C#.</p>
+
+<p>The template will run every time it is saved. Currently, it depends on code within the MainDemo.Reports assembly, so make sure you have compiled it in Debug mode. Then open the <em>RepxToCSharp.tt</em> and press <code>Ctrl+S</code> to save (and run the T4 transformation).</p>
+
+<h2>The output</h2>
+
+<p>The template will generate two types of output. First, it generates the following report which you should find in <em>RepxToCSharp.txt</em></p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>(This is an automatically generated file which should be excluded from version control)
+</span><span class='line'>
+</span><span class='line'>Summary of repx transformation
+</span><span class='line'>==============================
+</span><span class='line'>Total repx files found                                      :  2
+</span><span class='line'>  Total reports generated                                   :  2
+</span><span class='line'>  Total reports skipped because unchanged                   :  0
+</span><span class='line'>
+</span><span class='line'>Time elapsed: 00:00:02.1762029
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In addition, each repx will have been transformed into two correpsonding files. All the generated files are highlighted in yellow:</p>
+
+<p><img src="/images/blog/xaf-report-sync-002.png"></p>
+
+<p>Now the scripts have been deserialized from the repx and put in a partial class and the remainder of the repx has been transformed into a corresponding <code>XafReport</code> descendant. See for instance, <em>ContactsGroupedByPosition.cs</em> (which stored its scripts as a string) is as follows:</p>
+
+<figure class='code'><figcaption><span>ContactsGroupedByPosition.cs </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">_ContactsGroupedByPosition</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// -- Start of embedded scripts -- </span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="k">void</span> <span class="nf">xrLabel4_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">xrLabel4</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">xrLabel4</span><span class="p">.</span><span class="n">Text</span> <span class="p">+</span> <span class="s">&quot; Test!&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// -- End of embedded scripts --    </span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And <em>TasksStateReport.cs</em> is now like this</p>
+
+<figure class='code'><figcaption><span>TasksStateReport.cs </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">_TasksStateReport</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// -- Start of embedded scripts -- </span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="k">void</span> <span class="nf">xrLabel1_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// This is a test</span>
+</span><span class='line'>        <span class="n">xrLabel1</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="s">&quot;Hello&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="k">void</span> <span class="nf">xrLabel2_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">xrLabel2</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">GetLabel2Text</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">string</span> <span class="nf">GetLabel2Text</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="s">&quot;Label 2!&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">// -- End of embedded scripts --    </span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>A note about performance</h2>
+
+<p>The process of transforming the repx into C# is quite quick (a couple of seconds per <em>repx</em>), but when you have dozens of reports, it can quickly be tiresome. Therefore, there is a performance optimisation which checksums the repx and skips the transformation if it has not changed.</p>
+
+<p>(In a future version, we will also use a similar checksum in the other direction to determine whether the scripts have been modified).</p>
+
+<h2>Already much better</h2>
+
+<p>Now we have much more useful source files. Versions can be compared easily. The compiler will immediately inform us of any problems with the scripts within our reports.</p>
+
+<p>This is work in progress. Next up, I will be adding the &#8216;reverse&#8217;. That is, a new transformation template which looks for scripts which have changed and &#8216;injects&#8217; them back into the original <em>repx</em> file.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1234,182 +1668,6 @@
 <p>The reason for this is that we are trying to determine the breaking point of our application. If the elastic load balancer detects that a system is struggling, it might automatically flag it as unhealthy and replace it with a newly launched instance. While this behaviour might be desirable for a production system, it doesn&#8217;t make sense for a load test.</p>
 
 <p>Make sure you can connect to your installation from a web browser before continuing. I chose to deploy to a Windows 2012 instance running IIS 8.0 (which was not available when I wrote my previous XAF AWS tutorial) and I had a little trouble with the URL. If I navigate to the application&#8217;s base URL (<em>http://zerosharp-maindemo.elasticbeanstalk.com/</em> in my case), then I get forwarding problems after logging in. Instead, I navigate to the full address <em>http://zerosharp-maindemo.elasticbeanstalk.com/MainDemo.Web_deploy/Default.aspx</em> and everything works. I&#8217;ll try to look into it later, but it&#8217;s not important for the load testing.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/load-testing-xaf-overview/">Load Testing XAF: Overview</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-12T18:20:00+00:00" pubdate data-updated="true">Mar 12<span>th</span>, 2013</time>
-        
-         | <a href="/load-testing-xaf-overview/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Over the next few posts, I will demonstrate how to load test XAF web applications.</p>
-
-<h2>History</h2>
-
-<p>Performance testing has traditionally been difficult and expensive. A few years ago, to do it well required a powerful piece of dedicated load testing software such as HP LoadRunner (typical cost back in 2007: USD 50,000-100,000 or more per year!). This software was capable of simulating multiple virtual users via the use of recorded scripts and providing detailed performance statistics. Usually the cost was increased further increased by the need for powerful hardware to be able to run the application.</p>
-
-<p>In 2007 we were required by a big customer (a global bank) to provide load testing statistics for our expressApp Framework application. We could not afford anything as sophisticated as LoadRunner so we went with a cheaper alternative (NeoLoad, which was still several thousand per year). It was extremely painstaking work to produce a test. The approach was to record the http requests (as a stream of text values) and write a script to check the http response. Since there was no real browser involved, it was very difficult to determine if our test was really representative. Several machines in the office had to be dedicated to simulating virtual users. Nobody was allowed to use the internet for fear of skewing the results during a test. If an error occurred, it was almost impossible to determine what went wrong. We wrestled with it and managed to fulfill our requirements, but it was all a lot of effort for no real return.</p>
-
-<p>Part of the problem was certainly that XAF is complex to test. The user interface is rich and makes use of complex controls. Most of these load testing tools work better when targetting a simple <code>&lt;INPUT type="button"&gt;</code> rather than an image of a button that sometimes is not even clickable until the mouse has hovered over it. DevExpress have made it easy to run tests via their EasyTests, but no load testing tool supports them yet. (They have informed me it&#8217;s in their plans&#8230;)</p>
-
-<h2>Enter the cloud</h2>
-
-<p><span class='pullquote-right' data-pullquote='The increased availability of cheap cloud-based virtualised machines has revolutionised load testing.'></p>
-
-<p>The basic idea is this: instead of simulating users with specialised software, why not fire up a virtual machine and test with a real browser instance which is &#8216;remote controlled&#8217; via a script.</p>
-
-<p>The increased availability of cheap cloud-based virtualised machines has revolutionised load testing. The rental of the virtualised machines is not free, but it is very cheap.  In about 2008, I started using the Amazon cloud to perform load tests. Our basic test costs us about USD 10.00 per run. We probably run this a dozen times a year, so our total cost is about USD 120.00 per year.
-</span></p>
-
-<p>We get better statistics than we ever got out of NeoLoad. We are confident that the test is realistic and we can compare with the actual performance of our production environments. We have been able to find and solve memory leak problems and various tricky multi-user problems with these tests.</p>
-
-<p>Load testing is still a complex business. There are a lot of pieces to put together, but with the cloud, each piece is relatively simple and cheap.</p>
-
-<h2>The solution</h2>
-
-<ul>
-<li>In <a href="/load-testing-xaf-part-1-deploying/">Part 1</a>, we install the DevExpress MainDemo on an Amazon EC2 instance.</li>
-<li>In <a href="/load-testing-xaf-part-2-selenium/">Part 2</a>, we use Selenium to write a script which will run on the client machines to control a real browser instance.</li>
-<li>In <a href="/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Part 3</a>, we create a NeuStar Web Performance test and validate the script.</li>
-<li>In <a href="/load-testing-xaf-part-4-launching-the-load-test/">Part 4</a>, we launch a performance test and monitor the server.</li>
-<li>In <a href="/load-testing-xaf-part-5-analysis/">Part 5</a>, we analyse the results of the clients.</li>
-<li>In <a href="/load-testing-xaf-bonus-simultaneous-easytests/">a bonus part</a>, we learn how to run multiple simultaneous EasyTests as an alternative method of isolating performance and concurrency problems.</li>
-</ul>
-
-
-<p>If you follow all the steps, expect to pay a handful of dollars in Amazon EC2 costs and a few more in Neustar costs. You could alternatively skip step 1 and target one of your own development machines instead.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/how-to-recursively-change-file-ownership/">How to Recursively Change File Ownership</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-02-28T17:40:00+00:00" pubdate data-updated="true">Feb 28<span>th</span>, 2013</time>
-        
-         | <a href="/how-to-recursively-change-file-ownership/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I recently ran into some file ownership trouble after cloning a bitbucket repository.</p>
-
-<p>The following script saved my bacon.</p>
-
-<figure class='code'><figcaption><span>FixOwnership.ps1 </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='powershell'><span class='line'><span class="c"># This script recursively fixes the ownership on the files in the </span>
-</span><span class='line'><span class="c"># current and subdirectories.</span>
-</span><span class='line'>
-</span><span class='line'><span class="nv">$acct1</span> <span class="p">=</span> <span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="n">Security</span><span class="p">.</span><span class="n">Principal</span><span class="p">.</span><span class="n">NTAccount</span><span class="p">(</span><span class="s1">&#39;Administrators&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="nv">$profilefolder</span> <span class="p">=</span> <span class="nb">Get-Item</span> <span class="p">.</span>
-</span><span class='line'><span class="nv">$acl1</span> <span class="p">=</span> <span class="nv">$profilefolder</span><span class="p">.</span><span class="n">GetAccessControl</span><span class="p">()</span>
-</span><span class='line'><span class="nv">$acl1</span><span class="p">.</span><span class="n">SetOwner</span><span class="p">(</span><span class="nv">$acct1</span><span class="p">)</span>
-</span><span class='line'><span class="n">dir</span> <span class="n">-r</span> <span class="p">.</span> <span class="p">|</span> <span class="nb">set-acl</span> <span class="n">-aclobject</span> <span class="nv">$acl1</span>
-</span><span class='line'><span class="n">pause</span>
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/colourful-git-command-line/">Colourful Git Command Line</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-02-14T05:10:00+00:00" pubdate data-updated="true">Feb 14<span>th</span>, 2013</time>
-        
-         | <a href="/colourful-git-command-line/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>For Valentine&#8217;s Day, why not make your git command line a little more colourful.</p>
-
-<pre><code>git config --global color.ui true
-</code></pre>
 </div>
   
   

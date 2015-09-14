@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Force a complete garbage collection in an ASP.NET application. - ZeroSharp</title>
+  <title>Migrating a large web application from XAF 12.1 to 15.1 - Part 1 - ZeroSharp</title>
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="How to force a full garbage collection within an XAF ASP.NET application.">
+  <meta name="description" content="Describing some of the challenges encountered in upgrading to the latest DevExpress expressAppFramework. In this part I describe the general approach &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application/">
+  <link rel="canonical" href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -116,7 +116,7 @@
   
   <header>
     
-      <h1 class="entry-title">Force a Complete Garbage Collection in an ASP.NET Application.</h1>
+      <h1 class="entry-title">Migrating a Large Web Application From XAF 12.1 to 15.1 - Part 1</h1>
     
     
       <p class="meta">
@@ -132,7 +132,7 @@
   
 
 
-<time datetime="2015-08-05T09:26:00+01:00" pubdate data-updated="true">Aug 5<span>th</span>, 2015</time>
+<time datetime="2015-09-14T10:01:00+01:00" pubdate data-updated="true">Sep 14<span>th</span>, 2015</time>
         
          | <a href="#disqus_thread">Comments</a>
         
@@ -141,64 +141,28 @@
   </header>
 
 
-<div class="entry-content"><p>How can I force a full garbage collection easily within an ASP.NET application? The method here is for XAF web applications but the same approach should work with any ASP.NET app.</p>
+<div class="entry-content"><p>I am the principal software architect for a treasury application in use by over 100 large multinational corporates. Upgrades are generally met with reluctance in the enterprise world and so we&#8217;ve been somewhat stuck on an old version of the expressAppFramework.</p>
 
-<p><span class='pullquote-right' data-pullquote='First up: Never mess with the .NET garbage collector.'>
-First up: Never mess with the .NET garbage collector.</p>
+<p>Recently I&#8217;ve been pushing to move to the newer version and I have spent about three weeks migrating the substantial code base to XAF 15.1 and .NET 4.6.</p>
 
-<p>I sometimes mess with the garbage collector in .NET when I&#8217;m trying to pin down some memory problem. Also, after <a href="/load-testing-xaf-part-1-deploying/">a load test</a>, I prefer to force the garbage collector to collect everything it can so that I can check that the memory drops as expected.
-</span></p>
+<p>The steps are:</p>
 
-<p>Garbage collection in .NET is complex and it is hard to be sure you&#8217;ve done it correctly. <a href="///%20See%20http://blogs.msdn.com/b/tess/archive/2006/02/02/net-memory-my-object-is-not-rooted-why-wasn-t-it-garbage-collected.aspx">This ancient article by Tess Ferrandez</a> pointed me in the following direction.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">void</span> <span class="nf">ForceGarbageCollection</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">/// This will garbage collect all generations (including large object), </span>
-</span><span class='line'>    <span class="n">GC</span><span class="p">.</span><span class="n">Collect</span><span class="p">(</span><span class="m">3</span><span class="p">);</span>
-</span><span class='line'>    <span class="c1">/// then execute any finalizers</span>
-</span><span class='line'>    <span class="n">GC</span><span class="p">.</span><span class="n">WaitForPendingFinalizers</span><span class="p">();</span>
-</span><span class='line'>    <span class="c1">/// and then garbage collect again to take care of all the objects that had finalizers.            </span>
-</span><span class='line'>    <span class="n">GC</span><span class="p">.</span><span class="n">Collect</span><span class="p">(</span><span class="m">3</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<ul>
+<li>Run the project converter tool.</li>
+<li>Try to compile. Identify the errors which are easily fixable (check with the &#8216;breaking changes&#8217; documents from DevExpress.)</li>
+<li>When in doubt, compare the libraries with a decompiler like .NET Reflector.</li>
+<li>Refactor where necessary (ensure you have unit tests for the behaviour you are changing).</li>
+</ul>
 
 
-<p>How can we easily trigger this routine in an XAF web application? First, add the following to the <em>Global.asax.cs</em> file:</p>
+<p>On this last point, my whole approach to refactoring has been shaped by Michael C. Feather&#8217;s book <a href="http://amzn.com/0131177052"><em>Working Effectively with Legacy Code</em></a>. Highly recommended for anyone maintaining complex applications regardless of whether the code is legacy or not&#8230;</p>
 
-<figure class='code'><figcaption><span>Global.asax.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">protected</span> <span class="k">void</span> <span class="nf">Application_BeginRequest</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kt">var</span> <span class="n">shouldForceGarbageCollection</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">QueryString</span><span class="p">[</span><span class="s">&quot;ForceGC&quot;</span><span class="p">]</span> <span class="p">!=</span> <span class="k">null</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">shouldForceGarbageCollection</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">ForceGarbageCollection</span><span class="p">();</span>
-</span><span class='line'>        <span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&quot;&lt;H1&gt;Forced garbage collection OK!&lt;/H1&gt;&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>I was pleasantly surprised that I was very quickly able to get everything to compile and even run. The layout was not correct, but a lot of things worked straight away.</p>
 
+<p>I then had to spend some time restoring the customisations we&#8217;d made to the default ASP.NET layout. In XAF 12.1 these were applied directly to <em>default.aspx.cs</em> and <em>dialog.aspx.cs</em>, but in 15.1 these no longer exist. Instead, you can customise layout by providing your own alternate templates. I was expecting this to be much harder, but by <a href="https://documentation.devexpress.com/#eXpressAppFramework/CustomDocument112696">following the instructions in the documentation</a> I managed to restore our layout quite easily.</p>
 
-<p>Then whenever you want to trigger a garbage collection, visit the following URL:</p>
-
-<pre><code>http://.../Login.aspx?ForceGC=1
-</code></pre>
-
-<p>You should see the text <strong>&#8216;Forced garbage collection OK&#8217;</strong> in the top left of the browser window.</p>
+<p>I still had a lot of failing unit tests. One seemingly minor change to XAF validation proved to be a lot of work to fix in our code.
+Since 13.1, the XAF <code>Validator</code> class now requires an <code>IObjectSpace</code> parameter in the constructor. This was by far the biggest problem to fix and is the subject of the next blog post.</p>
 </div>
 
 
@@ -221,12 +185,12 @@ First up: Never mess with the .NET garbage collector.</p>
   
 
 
-<time datetime="2015-08-05T09:26:00+01:00" pubdate data-updated="true">Aug 5<span>th</span>, 2015</time>
+<time datetime="2015-09-14T10:01:00+01:00" pubdate data-updated="true">Sep 14<span>th</span>, 2015</time>
       
 
 <span class="categories">
   
-    <a class='category' href='/blog/categories/asp-net/'>asp.net</a>, <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a>
+    <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a>
   
 </span>
 
@@ -235,7 +199,7 @@ First up: Never mess with the .NET garbage collector.</p>
     
       <div class="sharing">
   
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1/" >Tweet</a>
   
   
   <div class="g-plusone" data-size="medium"></div>
@@ -248,10 +212,10 @@ First up: Never mess with the .NET garbage collector.</p>
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/a-strange-error-message-from-visual-studio-2015/" title="Previous Post: A strange error message from Visual Studio 2015">&laquo; A strange error message from Visual Studio 2015</a>
+        <a class="basic-alignment left" href="/force-a-complete-garbage-collection-in-an-asp-dot-net-application/" title="Previous Post: Force a complete garbage collection in an ASP.NET application.">&laquo; Force a complete garbage collection in an ASP.NET application.</a>
       
       
-        <a class="basic-alignment right" href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1/" title="Next Post: Migrating a large web application from XAF 12.1 to 15.1 - Part 1">Migrating a large web application from XAF 12.1 to 15.1 - Part 1 &raquo;</a>
+        <a class="basic-alignment right" href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2/" title="Next Post: Migrating a large web application from XAF 12.1 to 15.1 - Part 2">Migrating a large web application from XAF 12.1 to 15.1 - Part 2 &raquo;</a>
       
     </p>
   </footer>
@@ -287,8 +251,8 @@ First up: Never mess with the .NET garbage collector.</p>
       
         
         // var disqus_developer = 1;
-        var disqus_identifier = 'http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application/';
-        var disqus_url = 'http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application/';
+        var disqus_identifier = 'http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1/';
+        var disqus_url = 'http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1/';
         var disqus_script = 'embed.js';
       
     (function () {

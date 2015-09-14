@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-09-09T22:55:55+01:00</updated>
+  <updated>2015-09-14T10:42:42+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,89 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 3]]></title>
+    <link href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3/"/>
+    <updated>2015-09-16T09:39:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3</id>
+    <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='I&#8217;m happy to report there is a considerable improvement under load in version 15.1.'>
+This is the third part of a <a href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2">series</a> about migrating a large application from XAF 12.1 to XAF 15.1. In this part I will compare the results of a simple stress test between the versions.</p>
+
+<p>I have described in previous posts how to <a href="http://ZeroSharp.github.com/load-testing-xaf-overview/">stress test XAF applications</a>. One of our most basic tests is to simulate 25 users cycling through all the navigation tabs for an hour. I&#8217;m happy to report there is a considerable improvement under load in version 15.1.</p>
+
+<p>(Note that we purposefully stress test against a single web application so that we can compare apples with apples. In production we have multiple instances load-balanced.)</p>
+
+<p>Here is an interactive summary of the 15.1 results:
+</span></p>
+
+<p>Here is version 15.1. There were zero errors and 382 completed scripts.</p>
+
+<p>By comparison, the same test against DevExpress 12.1 yielded only 258 completions. So 15.1 shows a 48% performance improvement over 12.1.</p>
+
+<iframe class="cmd" src="https://load.wpm.neustar.biz/load/test/share/e4c5e109f8f04ceebd72cdb5c93eb1c2" width="1024" height="512">
+
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 2]]></title>
+    <link href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2/"/>
+    <updated>2015-09-15T10:37:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2</id>
+    <content type="html"><![CDATA[<p>This is the second part of a <a href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1">series</a> about migrating a large application from XAF 12.1 to XAF 15.1.</p>
+
+<p>In the 13.1 release, DevExpress made a change to the way XAF <code>Validator</code> class is used. It now requires an <code>IObjectSpace</code> parameter corresponding to the object. It is needed to correctly evaluate any rules which are descendants of the <code>RuleSearchObjectProperties</code>. These include:</p>
+
+<ul>
+<li><code>RuleCombinationOfPropertiesIsUnique</code></li>
+<li><code>RuleIsReferenced</code></li>
+<li><code>RuleObjectExists</code></li>
+<li><code>RuleUniqueValue</code></li>
+</ul>
+
+
+<p>A lot of our code has been around for years now and the older parts rely heavily on <code>Session</code> and <code>UnitOfWork</code> instead of <code>IObjectSpace</code> For the most part our application used <code>IObjectSpace</code> only within <code>ViewControllers</code>.</p>
+
+<p>But there were several situations where we need the validator where we don&#8217;t have an <code>IObjectSpace</code>. For instance we sometimes need to validate from within <a href="https://documentation.devexpress.com/#eXpressAppFramework/clsDevExpressPersistentBaseActionAttributetopic">method actions</a> (decorated with the <code>ActionAttribute</code>). For performance reasons, we pass criteria to our middleware and it uses a <code>UnitOfWork</code> to run the method on each object. So in this case, there was no <code>IObjectSpace</code> to pass to the XAF <code>Validator</code>.</p>
+
+<p><span class='pullquote-right' data-pullquote='When writing code I often find myself having to decide between the &#8216;quick&#8217; fix and the &#8216;right&#8217; fix.'>
+Here I had a refactoring dilemma to solve. Either I need to rewrite all of the affected rules so that they no longer make use of the <code>IObjectSpace</code>. For instance, I could use <code>RuleFromBoolProperty</code> instead. In our application, this would mean rewriting about 50 rules. Or alternatively, I could go through the entire code base looking for <code>new UnitOfWork()</code> and <code>new Session()</code> and try to use an <code>IObjectSpace</code> instead. When writing code I often find myself having to decide between the &#8216;quick&#8217; fix and the &#8216;right&#8217; fix. Here, moving to <code>IObjectSpace</code> throughout is clearly the right fix and although it would take more time to implement, the system will be more in-line with best XAF practices throughout.
+</span></p>
+
+<p> Eventually, the refactoring was complete and all unit tests are passing. I was eager to run a multi-user load stress test against the 15.1 version to compare performance under load. I have described in previous posts how to <a href="http://ZeroSharp.github.com/load-testing-xaf-overview/">stress test XAF applications</a>. I&#8217;ll be sharing the results in the next post.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 1]]></title>
+    <link href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1/"/>
+    <updated>2015-09-14T10:01:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1</id>
+    <content type="html"><![CDATA[<p>I am the principal software architect for a treasury application in use by over 100 large multinational corporates. Upgrades are generally met with reluctance in the enterprise world and so we&#8217;ve been somewhat stuck on an old version of the expressAppFramework.</p>
+
+<p>Recently I&#8217;ve been pushing to move to the newer version and I have spent about three weeks migrating the substantial code base to XAF 15.1 and .NET 4.6.</p>
+
+<p>The steps are:</p>
+
+<ul>
+<li>Run the project converter tool.</li>
+<li>Try to compile. Identify the errors which are easily fixable (check with the &#8216;breaking changes&#8217; documents from DevExpress.)</li>
+<li>When in doubt, compare the libraries with a decompiler like .NET Reflector.</li>
+<li>Refactor where necessary (ensure you have unit tests for the behaviour you are changing).</li>
+</ul>
+
+
+<p>On this last point, my whole approach to refactoring has been shaped by Michael C. Feather&#8217;s book <a href="http://amzn.com/0131177052"><em>Working Effectively with Legacy Code</em></a>. Highly recommended for anyone maintaining complex applications regardless of whether the code is legacy or not&#8230;</p>
+
+<p>I was pleasantly surprised that I was very quickly able to get everything to compile and even run. The layout was not correct, but a lot of things worked straight away.</p>
+
+<p>I then had to spend some time restoring the customisations we&#8217;d made to the default ASP.NET layout. In XAF 12.1 these were applied directly to <em>default.aspx.cs</em> and <em>dialog.aspx.cs</em>, but in 15.1 these no longer exist. Instead, you can customise layout by providing your own alternate templates. I was expecting this to be much harder, but by <a href="https://documentation.devexpress.com/#eXpressAppFramework/CustomDocument112696">following the instructions in the documentation</a> I managed to restore our layout quite easily.</p>
+
+<p>I still had a lot of failing unit tests. One seemingly minor change to XAF validation proved to be a lot of work to fix in our code.
+Since 13.1, the XAF <code>Validator</code> class now requires an <code>IObjectSpace</code> parameter in the constructor. This was by far the biggest problem to fix and is the subject of the next blog post.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Force a complete garbage collection in an ASP.NET application.]]></title>
@@ -2425,573 +2508,6 @@ Good news. The conversion is now two-way. Get the source code <a href="https://g
 <p>Now, this is all highly experimental. You can see there are some warnings&#8230; Also, there is no connection with XPO, so the <em>Preview</em> is always empty.</p>
 
 <p>That said, it doesn&#8217;t seem like too much of a stretch to eventually allow far more Visual Studio integration for XAF reports&#8230;</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Making XAF reports even better - Part 1]]></title>
-    <link href="http://ZeroSharp.github.com/making-xaf-reports-even-better-part-1/"/>
-    <updated>2013-05-21T14:38:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/making-xaf-reports-even-better-part-1</id>
-    <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='The aim of these posts is to provide a two-way conversion process between .repx and C# files.'>
-The ability to create reports using a report writer is a very powerful feature of <a href="http://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a>, but there are some limitations which are particularly cumbersome to deal with in complex project.</p>
-
-<p>One of the projects I work on has over 100 reports in it. Even though we make use of unit tests to ensure they are not broken, the maintenance of the code in the embedded scripts is particularly difficult to manage.</p>
-
-<ul>
-<li>XafReports are <em>.repx</em> files which are usually loaded into the report table during the database update routine. They are a subclass of XtraReports which with some added restrictions.</li>
-<li>Any scripts are stored as a string or serialized to a <em>resources</em> property.</li>
-<li>The report writer is available only in the Windows Forms application. This must be used whenever a change is made to a report. The modified report must be exported as a repx file and then added to the module as an embedded report. The procedure is <a href="http://documentation.devexpress.com/#Xaf/CustomDocument2786">described here</a>.</li>
-</ul>
-
-
-<p>These aspects of XAF reports give rise to several development headaches.</p>
-
-<ul>
-<li>While script syntax can be checked within the report writer at design time (via the Validate button in the scripts tab), the script code is still brittle.</li>
-<li>Errors that result from Script syntax are sometimes only discovered at run time (you can write a unit test to check during build, but we really want to the compiler to tell us).</li>
-<li>Refactoring any classes requires a considerable amount of work with the report writer in order to apply any changes to the code within the scripts.</li>
-<li>There is no Intellisense in the report writer.</li>
-<li>Version control diff comparisons and merging are impossible.</li>
-</ul>
-
-
-<p>The aim of these posts is to provide a two-way conversion process between .repx and C# files. In order to accomplish this we&#8217;ll be relying on Visual Studio&#8217;s excellent T4 templating engine.
-</span></p>
-
-<h2>Installing T4Toolbox</h2>
-
-<p><a href="http://msdn.microsoft.com/en-us/library/vstudio/bb126445.aspx">T4 Text Transformation Toolkit</a> is a template based code generation framework which is included with Visual Studio. On top of this <a href="http://www.olegsych.com/">Oleg Sych</a> provides a Visual Studio extension called <a href="http://visualstudiogallery.msdn.microsoft.com/7f9bd62f-2505-4aa4-9378-ee7830371684">T4 Toolbox</a> which adds some additional features.</p>
-
-<p>Install T4 Toolbox by selecting <strong>Tools/Extensions and Updates</strong> from Visual Studio and searching for it.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/xaf-report-sync-001.png"></p>
-
-<h2>The ReportSync MainDemo</h2>
-
-<p>Next, download the modified MainDemo application from my <a href="https://github.com/ZeroSharp/Xaf_MainDemo_ReportSync">GitHub repository</a> and open it in Visual Studio.</p>
-
-<p>First lets look at the embedded reports which I have modified slightly so that they include scripts. I added these scripts via the MainDemo.Win application.</p>
-
-<p>Let&#8217;s look at the <em>ContactsGroupByPosition.repx</em> file. You will find that there is a section:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">this</span><span class="p">.</span><span class="n">ScriptsSource</span> <span class="p">=</span> <span class="s">&quot;\r\nprivate void xrLabel4_BeforePrint(object sender, System.Drawing.Printing.PrintE&quot;</span> <span class="p">+</span>
-</span><span class='line'>    <span class="s">&quot;ventArgs e) {\r\n\txrLabel4.Text = xrLabel4.Text + \&quot; Test!\&quot;;\r\n}\r\n&quot;</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>In this case, the script has been saved as a string. The other report, which has only slightly more complex script code looks like this:</p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">private</span> <span class="n">System</span><span class="p">.</span><span class="n">Resources</span><span class="p">.</span><span class="n">ResourceManager</span> <span class="n">resources</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">get</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">_resources</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>            <span class="kt">string</span> <span class="n">resourceString</span> <span class="p">=</span> <span class="s">@&quot;zsrvvgEAAACRAAAAbFN5c3RlbS5SZXNvdXJjZXMuUmVzb3VyY2VSZWFkZXIsIG1zY29ybGliLCBWZXJzaW9uPT.....5kIFtEdWVEYXRlXSA8PSAnQEN1cnJlbnREYXRlJwABEFRhc2tzU3RhdGVSZXBvcnQ=&quot;</span><span class="p">;</span>
-</span><span class='line'>            <span class="k">this</span><span class="p">.</span><span class="n">_resources</span> <span class="p">=</span> <span class="k">new</span> <span class="n">DevExpress</span><span class="p">.</span><span class="n">XtraReports</span><span class="p">.</span><span class="n">Serialization</span><span class="p">.</span><span class="n">XRResourceManager</span><span class="p">(</span><span class="n">resourceString</span><span class="p">);</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>        <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="n">_resources</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="c1">// ...</span>
-</span><span class='line'><span class="k">this</span><span class="p">.</span><span class="n">ScriptsSource</span> <span class="p">=</span> <span class="n">resources</span><span class="p">.</span><span class="n">GetString</span><span class="p">(</span><span class="s">&quot;$this.ScriptsSource&quot;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Here, the scripts are not even in plain text. They have been serialised to the <em>resources</em> property.</p>
-
-<h2>The MainDemo.Reports assembly</h2>
-
-<p>You will find a new assembly <strong>MainDemo.Reports</strong> which contains a T4 template <em>RepxToCSharp.tt</em>. This is a T4 template which will search for repx files and transform them into much more helpful plain C#.</p>
-
-<p>The template will run every time it is saved. Currently, it depends on code within the MainDemo.Reports assembly, so make sure you have compiled it in Debug mode. Then open the <em>RepxToCSharp.tt</em> and press <code>Ctrl+S</code> to save (and run the T4 transformation).</p>
-
-<h2>The output</h2>
-
-<p>The template will generate two types of output. First, it generates the following report which you should find in <em>RepxToCSharp.txt</em></p>
-
-<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='text'><span class='line'>(This is an automatically generated file which should be excluded from version control)
-</span><span class='line'>
-</span><span class='line'>Summary of repx transformation
-</span><span class='line'>==============================
-</span><span class='line'>Total repx files found                                      :  2
-</span><span class='line'>  Total reports generated                                   :  2
-</span><span class='line'>  Total reports skipped because unchanged                   :  0
-</span><span class='line'>
-</span><span class='line'>Time elapsed: 00:00:02.1762029
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>In addition, each repx will have been transformed into two correpsonding files. All the generated files are highlighted in yellow:</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/xaf-report-sync-002.png"></p>
-
-<p>Now the scripts have been deserialized from the repx and put in a partial class and the remainder of the repx has been transformed into a corresponding <code>XafReport</code> descendant. See for instance, <em>ContactsGroupedByPosition.cs</em> (which stored its scripts as a string) is as follows:</p>
-
-<figure class='code'><figcaption><span>ContactsGroupedByPosition.cs </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">_ContactsGroupedByPosition</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// -- Start of embedded scripts -- </span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">private</span> <span class="k">void</span> <span class="nf">xrLabel4_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>      <span class="n">xrLabel4</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">xrLabel4</span><span class="p">.</span><span class="n">Text</span> <span class="p">+</span> <span class="s">&quot; Test!&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// -- End of embedded scripts --    </span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And <em>TasksStateReport.cs</em> is now like this</p>
-
-<figure class='code'><figcaption><span>TasksStateReport.cs </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">_TasksStateReport</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">// -- Start of embedded scripts -- </span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">private</span> <span class="k">void</span> <span class="nf">xrLabel1_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// This is a test</span>
-</span><span class='line'>        <span class="n">xrLabel1</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="s">&quot;Hello&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">private</span> <span class="k">void</span> <span class="nf">xrLabel2_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">xrLabel2</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">GetLabel2Text</span><span class="p">();</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">public</span> <span class="kt">string</span> <span class="nf">GetLabel2Text</span><span class="p">()</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>      <span class="k">return</span> <span class="s">&quot;Label 2!&quot;</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">// -- End of embedded scripts --    </span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>A note about performance</h2>
-
-<p>The process of transforming the repx into C# is quite quick (a couple of seconds per <em>repx</em>), but when you have dozens of reports, it can quickly be tiresome. Therefore, there is a performance optimisation which checksums the repx and skips the transformation if it has not changed.</p>
-
-<p>(In a future version, we will also use a similar checksum in the other direction to determine whether the scripts have been modified).</p>
-
-<h2>Already much better</h2>
-
-<p>Now we have much more useful source files. Versions can be compared easily. The compiler will immediately inform us of any problems with the scripts within our reports.</p>
-
-<p>This is work in progress. Next up, I will be adding the &#8216;reverse&#8217;. That is, a new transformation template which looks for scripts which have changed and &#8216;injects&#8217; them back into the original <em>repx</em> file.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Load Testing XAF: Bonus - Simultaneous EasyTests]]></title>
-    <link href="http://ZeroSharp.github.com/load-testing-xaf-bonus-simultaneous-easytests/"/>
-    <updated>2013-04-22T16:31:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/load-testing-xaf-bonus-simultaneous-easytests</id>
-    <content type="html"><![CDATA[<p>In <a href="http://ZeroSharp.github.com/load-testing-xaf-overview">my recent series on load testing XAF</a>, I used a Selenium javascript test to run the client browser instances. This is a good and cheap method of validating the performance of XAF applications under production load.</p>
-
-<p>However, if the load tests fail because of a concurrency bug or a performance bottleneck, it can still be difficult to analyse and solve. For this, we need to be able to simulate load locally against the development environment.</p>
-
-<p>In this post I will demonstrate how to run multiple simultaneous XAF EasyTests against a local server. As a load test, it is not very scientific, but it can be extremely useful as a debugging tool.</p>
-
-<h2>The EasyTest script</h2>
-
-<p>First, we will create a new EasyTest which will cycle through the existing navigation tabs. Open the XAF MainDemo and create a new EasyTest as follows.</p>
-
-<figure class='code'><figcaption><span>MainDemo_CycleThroughTabs.ets  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='text'><span class='line'>#Application MainDemoWeb
-</span><span class='line'>
-</span><span class='line'>*FillForm
-</span><span class='line'> User Name = Sam
-</span><span class='line'> Password =
-</span><span class='line'>*Action Log On
-</span><span class='line'>
-</span><span class='line'>*Action Navigation(Contact)
-</span><span class='line'>*Action Navigation(Task)
-</span><span class='line'>*Action Navigation(Department)
-</span><span class='line'>*Action Navigation(Scheduler Event)
-</span><span class='line'>*Action Navigation(My Details)
-</span><span class='line'>*Action Navigation(Note)
-</span><span class='line'>*Action Navigation(Payment)
-</span><span class='line'>*Action Navigation(Position)
-</span><span class='line'>*Action Navigation(Resume)
-</span><span class='line'>*Action Navigation(Role)
-</span><span class='line'>*Action Navigation(User)
-</span><span class='line'>*Action Navigation(Reports.Analysis)
-</span><span class='line'>*Action Navigation(Reports.Reports)
-</span><span class='line'>*Action Log Off
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>(This test replicates the Selenium test we created in <a href="http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/">Part 2</a> of my previous series on load testing with NeuStar and Amazon.) It is important to note that we are only testing the web application and that we do not include a <code>#DropDB</code> directive.</p>
-
-<p>First, ensure that you can run this test with the default settings.</p>
-
-<h2>The config file</h2>
-
-<p>Now modify the config.xml file as follows:</p>
-
-<figure class='code'><figcaption><span>Config.xml  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;</span>
-</span><span class='line'><span class="nt">&lt;Options</span> <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="na">TestRunTimeLimit=</span><span class="s">&quot;5&quot;</span> <span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;Applications&gt;</span>
-</span><span class='line'>    <span class="c">&lt;!-- Web --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;Application</span>
-</span><span class='line'>      <span class="na">Name=</span><span class="s">&quot;MainDemoWeb&quot;</span>
-</span><span class='line'>      <span class="na">Url=</span><span class="s">&quot;http://localhost:4030&quot;</span>
-</span><span class='line'>      <span class="na">SingleWebDev=</span><span class="s">&quot;True&quot;</span>
-</span><span class='line'>      <span class="na">WebBrowserType=</span><span class="s">&quot;Standalone&quot;</span>
-</span><span class='line'>      <span class="na">PhysicalPath=</span><span class="s">&quot;[ConfigPath]\..\MainDemo.Web&quot;</span>
-</span><span class='line'>      <span class="na">AdapterAssemblyName=</span><span class="s">&quot;DevExpress.ExpressApp.EasyTest.WebAdapter.v12.2, Version=12.2.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="c">&lt;!-- For IIS --&gt;</span>
-</span><span class='line'>    <span class="c">&lt;!--&lt;Application</span>
-</span><span class='line'><span class="c">      Name=&quot;MainDemoWeb&quot;</span>
-</span><span class='line'><span class="c">      Url=&quot;http://localhost/MainDemo.Web/Default.aspx&quot;</span>
-</span><span class='line'><span class="c">      PhysicalPath=&quot;&quot;</span>
-</span><span class='line'><span class="c">      DontRestartIIS=&quot;True&quot;</span>
-</span><span class='line'><span class="c">      DontRunWebDev=&quot;True&quot;</span>
-</span><span class='line'><span class="c">      WebBrowserType=&quot;Standalone&quot;      </span>
-</span><span class='line'><span class="c">      AdapterAssemblyName=&quot;DevExpress.ExpressApp.EasyTest.WebAdapter.v12.2, Version=12.2.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;/--&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/Applications&gt;</span>
-</span><span class='line'><span class="nt">&lt;/Options&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>There are a few important things to note.</p>
-
-<p>I have not shown the <em>Win</em> section here since we are not using it. Also, I am using XAF 12.2.8. You may need to change the version number in the <code>AdapterAssemblyName</code> attribute. I have increased the <code>TestRunTimeLimit</code> attribute from 3 to 5. Everything goes a little slower when there are multiple browsers and we need to make sure the test does not time out.</p>
-
-<p>With the above config, the EasyTest will no longer run from within Visual Studio.</p>
-
-<p>You can choose to run the simultaneous tests against the debug web server or IIS. Uncomment the relevant section. The interesting settings are:</p>
-
-<ul>
-<li><code>SingleWebDev="True"</code> which instructs the EasyTest runner to run all tests against the same instance of the development webserver. Without this, the webserver would be stopped and started for each test.</li>
-<li><code>WebBrowserType="Standalone"</code> which causes each launched browser to be launched with its own session. (There are a few mentions of this setting in the support center, but it is not very well documented).</li>
-<li><code>DontRestartIIS</code> and <code>DontRunWebDev</code> which are self-explanatory</li>
-</ul>
-
-
-<h2>The launch command</h2>
-
-<p>Next, create the following batch file in the MainDemo.EasyTests subdirectory. ##</p>
-
-<figure class='code'><figcaption><span>Launch.bat  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-</pre></td><td class='code'><pre><code class='bat'><span class='line'><span class="c">:: Requires the Debug webserver to be running on port 49660</span>
-</span><span class='line'><span class="c">:: Requires EasyTests to be enabled</span>
-</span><span class='line'><span class="c">:: Requires NetDA to be running</span>
-</span><span class='line'><span class="c">:: Requires admin rights</span>
-</span><span class='line'><span class="c">:: Must be run from a command prompt</span>
-</span><span class='line'><span class="c">::</span>
-</span><span class='line'><span class="c">:: Usage: &gt; launch &lt;numberOfBrowsers&gt;</span>
-</span><span class='line'><span class="c">:: e.g. : &gt; launch 21</span>
-</span><span class='line'><span class="c">:: will launch 21 simultaneous browsers at 3 second intervals</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">@</span><span class="k">echo</span> <span class="k">off</span>
-</span><span class='line'>
-</span><span class='line'><span class="nl">:DELETE_OUTPUT</span>
-</span><span class='line'><span class="k">if</span> <span class="k">exist</span> *.jpeg <span class="k">del</span> *.jpeg
-</span><span class='line'><span class="k">if</span> <span class="k">exist</span> *.html <span class="k">del</span> *.html
-</span><span class='line'><span class="k">if</span> <span class="k">exist</span> TestsLog.xml <span class="k">del</span> TestsLog.xml
-</span><span class='line'>
-</span><span class='line'><span class="nl">:CHECK_ADMIN</span>
-</span><span class='line'>net session <span class="p">&gt;</span><span class="n">nul</span> <span class="m">2</span>&gt;&amp;<span class="m">1</span>
-</span><span class='line'><span class="k">if</span> <span class="nv">%ERRORLEVEL%</span> <span class="o">equ</span> <span class="m">0</span> <span class="k">goto</span> <span class="nl">CHECK_CONSOLE</span>
-</span><span class='line'><span class="k">echo</span> Must be run from an administrative command window
-</span><span class='line'><span class="k">goto</span> <span class="nl">ERROR</span>
-</span><span class='line'>
-</span><span class='line'><span class="nl">:CHECK_CONSOLE</span>
-</span><span class='line'><span class="k">echo</span> <span class="nv">%CMDCMDLINE%</span> <span class="p">|</span> <span class="n">find</span> <span class="n">/i</span> <span class="s2">&quot;/c&quot;</span> <span class="p">&gt;</span><span class="n">nul</span>
-</span><span class='line'><span class="k">if</span> <span class="k">ERRORLEVEL</span> <span class="m">1</span> <span class="k">goto</span> <span class="nl">CHECK_PARAMS</span>
-</span><span class='line'><span class="k">echo</span> Must be run from an administrative console (not Windows Explorer)
-</span><span class='line'><span class="k">goto</span> <span class="nl">ERROR</span>
-</span><span class='line'>
-</span><span class='line'><span class="nl">:CHECK_PARAMS</span>
-</span><span class='line'><span class="k">IF</span> [<span class="nv">%1</span>]<span class="o">==</span>[] <span class="k">GOTO</span> <span class="nl">USAGE</span>
-</span><span class='line'>
-</span><span class='line'><span class="nl">:LAUNCH</span>
-</span><span class='line'><span class="k">set</span> <span class="n">/a</span> i<span class="o">=</span><span class="m">0</span>
-</span><span class='line'>
-</span><span class='line'><span class="nl">:LOOP</span>
-</span><span class='line'><span class="k">if</span> <span class="nv">%i%</span><span class="o">==</span><span class="nv">%1</span> <span class="k">goto</span> <span class="nl">OK</span>
-</span><span class='line'><span class="k">set</span> <span class="n">/a</span> i<span class="o">=</span><span class="nv">%i%</span>+<span class="m">1</span>
-</span><span class='line'>start <span class="s2">&quot;x&quot;</span> <span class="s2">&quot;C:\Program Files (x86)\DevExpress\DXperience 12.2\Tools\eXpressAppFramework\EasyTest\TestExecutor.v12.2.exe&quot;</span> MainDemo_CycleThroughTabs.ets
-</span><span class='line'><span class="c">:: Wait 3 seconds</span>
-</span><span class='line'>ping <span class="m">1</span>.<span class="m">1</span>.<span class="m">1</span>.<span class="m">1</span> -n <span class="m">1</span> -w <span class="m">3000</span> <span class="p">&gt;</span><span class="n">nul</span>
-</span><span class='line'><span class="k">goto</span> <span class="nl">LOOP</span>
-</span><span class='line'>
-</span><span class='line'><span class="nl">:USAGE</span>
-</span><span class='line'><span class="k">echo</span> Usage: <span class="nv">%0</span> numberOfBrowsers
-</span><span class='line'><span class="k">echo</span> numberOfBrowsers must be an integer
-</span><span class='line'><span class="k">goto</span> <span class="nl">OK</span>
-</span><span class='line'>
-</span><span class='line'><span class="nl">:ERROR</span>
-</span><span class='line'>
-</span><span class='line'><span class="nl">:OK</span>
-</span><span class='line'><span class="k">pause</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>If you want to run your tests against the development webserver, you will need to make sure it is running before launching the batch file. The easiest way to do this is to run the application from within Visual Studio and then close the browser. You should still see the development webserver running in the task bar notification area. Against IIS, it is enough to ensure it is started.</p>
-
-<p>Now, open an administrative command prompt. Note that you must run from an administrative console: it is not sufficient to &#8216;run as administrator&#8217; from Windows Explorer. Navigate to the EasyTest subdirectory where the Launch.bat file is located and launch a single test with the following command:</p>
-
-<pre><code>launch.bat 1
-</code></pre>
-
-<p>You should see the test run without error. If this works, you can then launch 20 simultaneous test runs with 3 second intervals by running:</p>
-
-<pre><code>launch.bat 20
-</code></pre>
-
-<h2>Conclusion</h2>
-
-<p>As a load test, you do not get much useful information. Even if we managed to extract accurate data for client response times and throughput, the overhead of running the multiple browsers would skew the results too much. However, this approach is extremely useful for isolating concurrency and performance problems.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Load Testing XAF: Part 5 - Analysis]]></title>
-    <link href="http://ZeroSharp.github.com/load-testing-xaf-part-5-analysis/"/>
-    <updated>2013-04-14T07:37:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/load-testing-xaf-part-5-analysis</id>
-    <content type="html"><![CDATA[<p>This is the final post in a series about load testing XAF applications.  Previously in the series:</p>
-
-<ul>
-<li><a href="http://ZeroSharp.github.com/load-testing-xaf-overview/">Load Testing XAF: Overview</a></li>
-<li><a href="http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/">Part 1: Deploying the target webserver</a></li>
-<li><a href="http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/">Part 2: Selenium</a></li>
-<li><a href="http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Part 3: Uploading and validating a script</a></li>
-<li><a href="http://ZeroSharp.github.com/load-testing-xaf-part-4-launching-the-load-test/">Part 4: Launching the load test</a></li>
-</ul>
-
-
-<p>In this part, we analyse the results of the load test we ran in <a href="http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Part 4</a>.</p>
-
-<h2>Results</h2>
-
-<p>The results of the test we ran are <a href="https://load.wpm.neustar.biz/load/test/share/e0f547d711624168bc7fa0a69ddd8283">here</a>. The graphs are interactive and give quite interesting data about the load tests. Feel free to have a look and play around with the results.</p>
-
-<h2>The Performance Graphs</h2>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/load-testing/load-testing-006.png"></p>
-
-<p>The above graph shows the basic information about the test. We can see there were 649 transactions (the Selenium script was run 649 times) and there were 17 errors.</p>
-
-<p>You can see that the test managed to follow the planned scenario (the actual number of users follows the yellow line). You can also see information about the throughput in bytes during the test.</p>
-
-<h2>The Script Performance Graphs</h2>
-
-<p>Here we see information pertaining to the script we chose to run. Had we run multiple different scripts, we would be able to isolate each one.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/load-testing/load-testing-009.png"></p>
-
-<p>It is clear that the transaction time rises quite slowly with the load until about 12:17 when there is a jump. More on that later.</p>
-
-<p>First, I have removed the plot of the total transaction time, so that we can see more detail from the remaining steps. Two things seem to be clear: the response time for each individual step does not seem to be much affected by the load, but the login step rises gradually.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/load-testing/load-testing-010.png"></p>
-
-<p>Now back to the spike at 12:17, if you look at the transaction data more closely (not shown here but available on the <a href="https://load.wpm.neustar.biz/load/test/share/e0f547d711624168bc7fa0a69ddd8283">NeuStar results page</a>, it looks like several transactions finished at the same time and that the jump coincides with several simultaneous logins.</p>
-
-<p>So again, it seems that login is the &#8216;weakest link&#8217;, i.e., the most resource intensive step and the one that suffers the most under load.</p>
-
-<h2>The Errors</h2>
-
-<p>Lets look more closely at the errors.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/load-testing/load-testing-007.png"></p>
-
-<p>The first type of error we can see from the screen-shot occurred at the login page. This error happened 6 times and was very similar to another error which occurred once. In fact, all 6 of these errors happened at the very end of the test. As such, they can be ignored, because it is likely that the load test was scaling down and interrupting sessions at this point.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/load-testing/load-testing-008.png"></p>
-
-<p>One of the very nice features of NeuStar&#8217;s load testing solution is that you not only get a screenshot, but also a video which shows you exactly what the user experienced when an error occurs. By clicking on the second error, it looks like there may be a problem  when the system is under load. There were 6 errors and it is clear in the video that the errors occur when attempting to navigate away from the <em>Scheduler Event</em> view to the <em>My Details</em> view. The screen-shot gives us some useful information. DevExpress? Any ideas?</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/load-testing/load-testing-011.jpg"></p>
-
-<p>There are a couple of other errors, but I think these are most likely a result of problems with the Selenium script rather than XAF. The AJAX update panels make it quite hard to detect when the page is fully ready and although we try to accommodate this with <code>selenium.waitForCondition()</code> my feeling is that the <code>click()</code> occurred before everything was properly wired up.</p>
-
-<h2>Further tests</h2>
-
-<p>This series has covered the process of load testing XAF applications in its entirety, but in some ways, it feels like only the beginning. There are many other configurations and tests which would be interesting.</p>
-
-<p>For instance</p>
-
-<ul>
-<li>Reduce think time which is currently set to 3 seconds per step</li>
-<li>Use a smaller/larger EC2 instance</li>
-<li>Increase the number of virtual users</li>
-<li>Try load balancing with sticky sessions</li>
-<li>Experiment with/without compression (IIS or via the <code>web.config</code>)</li>
-<li>Experiment with/without caching (both at the http level, and via the <a href="http://documentation.devexpress.com/#XPO/CustomDocument9892">cached data store</a></li>
-</ul>
-
-
-<p>There are also many ways of improving XAF performance that are not in the MainDemo. These include:</p>
-
-<ul>
-<li><a href="http://documentation.devexpress.com/#wpf/CustomDocument6279">Server mode</a> in all grids</li>
-<li><a href="http://community.devexpress.com/blogs/xpo/archive/2006/03/27/session-management-and-caching.aspx">XPO Caching</a></li>
-<li>Where possible, move any heavy operations to a separate asynchronous web service call</li>
-</ul>
-
-
-<p>We have implemented all of these in our production application.</p>
-
-<h2>A note about concurrency</h2>
-
-<p>In our experience, people tend to over estimate the number of concurrent users for their application. Our application has probably upwards of 5000 users defined, but we know from our logs that there have never been more than 80 simultaneously logged in. Also, even with 80 concurrent users, they have a much longer &#8216;think time&#8217; than 3 seconds on average.</p>
-
-<p>For the production environment, we run at least one 25 user test for every major release and ensure the performance is at least as good as the previous release. We have occasionally run tests with up to 200 simultaneous users. The response time goes down to unacceptable levels (~30 seconds), but the application behaves. In production, the system is load balanced (with sticky sessions) and we know from previous experience that this is sufficient for our application.</p>
-
-<h2>Conclusion</h2>
-
-<p>This concludes my series on load testing. We&#8217;ve managed to get some very useful information with some very low-cost tools. The largest part of effort is the writing of the Selenium script which is certainly tricky. In the future I&#8217;d really like to harness the DevExpress EasyTests to replace the script but I haven&#8217;t yet found a way of doing this. Feel free to use my Selenium script as a starting point for testing your own XAF applications, and let us know of any interesting results!</p>
 ]]></content>
   </entry>
   

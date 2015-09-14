@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Recently I took part in Startup Weekend Buenos Aires. It works just like most hackathons: New friends: Caro, Eze, Gus and me You give a one minute &hellip;">
+  <meta name="description" content="My very first blog post was about setting up Octopress. The following is an updated version of those instructions for setting up Octopress with &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,451 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/setting-up-octopress-on-windows-again/">Setting Up Octopress on Windows Again</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-17T11:20:00+00:00" pubdate data-updated="true">Jan 17<span>th</span>, 2013</time>
+        
+         | <a href="/setting-up-octopress-on-windows-again/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>My <a href="/setting-up-octopress-on-windows/">very first blog post</a> was about setting up Octopress. The following is an updated version of those instructions for setting up Octopress with Windows, ruby 1.9.3, python 2.7.3.</p>
+
+<p>This is quick guide to setting up <a href="http://octopress.org/">Octopress</a> to publish to GitHub pages. I&#8217;m using Windows 8 64-bit, but the instructions should work with other versions of Windows.</p>
+
+<h3>Get with GitHub</h3>
+
+<p>First, get an account on GitHub and follow the excellent instructions for Windows here.  <a href="http://help.github.com/win-set-up-git/">here</a>.</p>
+
+<p>Once you are set up with GitHub, get <a href="https://github.com/scottmuc/yari">yari</a> by opening a command prompt:</p>
+
+<p>Then create a directory for all your github projects.  You could put this anywhere, e.g., <code>%USERPROFILE%\github</code>.  I chose to create a directory <code>C:\projects\github\</code>.</p>
+
+<h3>Installing Octopress</h3>
+
+<p><img class="right" src="/images/blog/octopress_logo.png"></p>
+
+<h4>Use yari instead of RVM/rbenv</h4>
+
+<p>Scott Muc has written <a href="https://github.com/scottmuc/yari">yari</a> which lets you switch between Windows Ruby versions.  Get it with the following command.</p>
+
+<pre><code>cd C:\projects\github\
+git clone git://github.com/scottmuc/yari.git yari
+</code></pre>
+
+<p>Once this has completed you can setup the required Ruby environment with the command:</p>
+
+<pre><code>yari 1.9.3
+</code></pre>
+
+<p>Then follow the rest of the instructions from <a href="http://octopress.org/docs/setup/">the Octopress setup instructions</a>.</p>
+
+<pre><code>git clone git://github.com/imathis/octopress.git octopress
+cd octopress
+ruby --version  # Should report Ruby 1.9.3 thanks to yari
+</code></pre>
+
+<p>Next install dependencies</p>
+
+<pre><code>gem install bundler
+bundle install
+</code></pre>
+
+<p>Install the default Octopress theme.</p>
+
+<pre><code>rake install
+</code></pre>
+
+<h3>Deploying to GitHub</h3>
+
+<p>The instructions are <a href="http://octopress.org/docs/deploying/github/">here</a>.  The only difficulty I had was working out which URL to use after:</p>
+
+<pre><code>rake setup_github_pages
+</code></pre>
+
+<p>This will ask you for your Github Pages repository url, but it is not clear that this is the SSH one, e.g., <code>git@github.com:ZeroSharp/zerosharp.github.com.git</code>.  You can find it near the top of <a href="https://github.com/ZeroSharp/zerosharp.github.com">the repository page</a>.</p>
+
+<h3>Configuring your blog</h3>
+
+<p>Follow the instructions <a href="http://octopress.org/docs/configuring/">here</a> to configure your blog.</p>
+
+<h4>Markdown</h4>
+
+<p>It is quite difficult to find good help on the markdown syntax other than for the codeblocks section.  For instance, it is not clear how to generate a codeblock with no line numbers, like this one:</p>
+
+<pre><code>How do I output a codeblock with no line numbers?
+</code></pre>
+
+<p>It turns out it either requires a <code>&lt;pre&gt;</code> tag instead of a <code>{ codeblock }</code> tag, or alternatively, start the line with four spaces.  The official syntax is <a href="http://daringfireball.net/projects/markdown/syntax">here</a>, but I also found <a href="http://warpedvisions.org/projects/markdown-cheat-sheet/">this cheat sheet</a>.</p>
+
+<h4>Fonts and Styles</h4>
+
+<p>See <a href="http://blog.bigdinosaur.org/changing-octopresss-header/">Lee&#8217;s Bigdinosaur blog</a>.</p>
+
+<h4>Problem with CodeBlocks</h4>
+
+<p>I had a problem with codeblocks which seems to be specific to Windows.  It seems that whenever you include a <code>lang</code> parameter in a <code>codeblock</code>, you get:</p>
+
+<pre><code>Liquid error: No such file or directory - python2.7 -c “import sys; print sys.executable”
+</code></pre>
+
+<p>There are two issues:</p>
+
+<ul>
+<li>Syntax highlighting requires Python which is not automatically installed.</li>
+<li>There is a problem with pythonexec.rb which does not seem to support Windows Python installations very well.</li>
+</ul>
+
+
+<p>Luckily we can fix them both.  Install <a href="http://www.python.org/getit/releases/2.7.3/">Python 2.7.3</a>.  Actually I used <a href="http://ninite.com/">ninite.com</a> to install it.</p>
+
+<p>Then modify the pythonrubyexec.rb which is in the depths of the yari subdirectory.  Try here: <code>.\yari\ruby-1.9.3-p194-i386-mingw32\lib\ruby\gems\1.9.3\gems\rubypython-0.5.3\lib\rubypython\pythonexec.rb</code></p>
+
+<p>At the top of pythonexec.rb, modify the file as follows:</p>
+
+<figure class='code'><figcaption><span>pythonexec.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>class RubyPython::PythonExec
+</span><span class='line'>  def initialize(python_executable)
+</span><span class='line'>    @python = python_executable || &quot;python&quot;
+</span><span class='line'>
+</span><span class='line'><span class="gi">+    if (@python.include? &#39;python2.7&#39;)</span>
+</span><span class='line'><span class="gi">+      @python = &quot;python&quot;</span>
+</span><span class='line'><span class="gi">+    end</span>
+</span><span class='line'>
+</span><span class='line'>    @python = %x(#{@python} -c &quot;import sys; print sys.executable&quot;).chomp
+</span><span class='line'>
+</span><span class='line'>    @version = run_command &quot;import sys; print &#39;%d.%d&#39; % sys.version_info[:2]&quot;
+</span><span class='line'>
+</span><span class='line'><span class="gd">-    @dirname = File.dirname(@python)</span>
+</span><span class='line'><span class="gi">+    @dirname = &quot;C:/Python27&quot;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/better-handling-of-decimals-in-the-xaf-audit-trail/">Better Handling of Decimals in the XAF Audit Trail</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-15T10:29:00+00:00" pubdate data-updated="true">Jan 15<span>th</span>, 2013</time>
+        
+         | <a href="/better-handling-of-decimals-in-the-xaf-audit-trail/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>The following screenshot shows the detail view of an object change from the DevExpress XAF Audit Trail. The <code>DecimalValue</code> property was changed from 123.45 to 543.22.</p>
+
+<p><img src="/images/blog/audit-trail-001.jpg"></p>
+
+<p>Why is the <code>OldValue</code> property is displayed with two trailing zeros? The corresponding property is defined as follows:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="na">[DefaultClassOptions]</span>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">MyClass</span> <span class="p">:</span> <span class="n">XPObject</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">MyClass</span><span class="p">(</span><span class="n">Session</span> <span class="n">session</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//...</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="kt">decimal</span> <span class="n">_DecimalValue</span><span class="p">;</span>
+</span><span class='line'><span class="na">    [ModelDefault(&quot;DisplayFormat&quot;, &quot;{0:n2}&quot;)]</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">decimal</span> <span class="n">DecimalValue</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">get</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">_DecimalValue</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">set</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">SetPropertyValue</span><span class="p">(</span><span class="s">&quot;DecimalValue&quot;</span><span class="p">,</span> <span class="k">ref</span> <span class="n">_DecimalValue</span><span class="p">,</span> <span class="k">value</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="n">XPCollection</span><span class="p">&lt;</span><span class="n">AuditDataItemPersistent</span><span class="p">&gt;</span> <span class="n">_ChangeHistory</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">public</span> <span class="n">XPCollection</span><span class="p">&lt;</span><span class="n">AuditDataItemPersistent</span><span class="p">&gt;</span> <span class="n">ChangeHistory</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">get</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">_ChangeHistory</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="n">_ChangeHistory</span> <span class="p">=</span> <span class="n">AuditedObjectWeakReference</span><span class="p">.</span><span class="n">GetAuditTrail</span><span class="p">(</span><span class="n">Session</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">_ChangeHistory</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Explanation and fix</h3>
+
+<p>A C# <code>decimal</code> is a type which represents a number&#8217;s value <em>and its precision</em>. It actually stores the number of trailing zeros along with the value. For the <code>NewValue</code>, it has stored the decimal value as the user entered it - with no trailing zeros. Howevever, for the <code>OldValue</code>, it has retrieved the value from the database and used the SQL column definition to determine the precision.</p>
+
+<p>The default SQL column type that XPO column type for properties of type <code>decimal</code> is the <code>money</code> type (<a href="http://msdn.microsoft.com/en-us/library/aa933242.aspx">see the MSDN documentation</a>) which stores 4 decimal places of precision. If we override this with, say, a <code>DECIMAL(28, 13)</code>, the audit trail would show 13 decimal places of precision.</p>
+
+<p>From the user&#8217;s perspective, this looks a little confusing, so let&#8217;s fix it.</p>
+
+<p>During the initialization of your application (in Application_Start for a web application), add an event to the <code>AuditTrailService</code> as follows.</p>
+
+<pre><code>AuditTrailConfig.Initialize();
+</code></pre>
+
+<p>and then declare the <code>AuditTrailConfig</code> helper class as follows:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">AuditTrailConfig</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">Initialize</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">AuditTrailService</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">SaveAuditTrailData</span> <span class="p">+=</span> <span class="n">Instance_SaveAuditTrailData</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">static</span> <span class="k">void</span> <span class="nf">Instance_SaveAuditTrailData</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">SaveAuditTrailDataEventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">NormalizeOldValuesDecimalPrecision</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">NormalizeOldValuesDecimalPrecision</span><span class="p">(</span><span class="n">SaveAuditTrailDataEventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="kt">var</span> <span class="n">decimalAuditTrailDataItems</span> <span class="p">=</span> <span class="n">e</span><span class="p">.</span><span class="n">AuditTrailDataItems</span>
+</span><span class='line'>                                          <span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">OldValue</span> <span class="k">is</span> <span class="kt">decimal</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">foreach</span> <span class="p">(</span><span class="n">AuditDataItem</span> <span class="n">auditTrailItem</span> <span class="k">in</span> <span class="n">decimalAuditTrailDataItems</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="c1">// remove any trailing zeros from OldValue</span>
+</span><span class='line'>            <span class="n">auditTrailItem</span><span class="p">.</span><span class="n">OldValue</span> <span class="p">=</span> <span class="p">((</span><span class="kt">decimal</span><span class="p">)</span><span class="n">auditTrailItem</span><span class="p">.</span><span class="n">OldValue</span><span class="p">).</span><span class="n">Normalize</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>Normalize()</code> method is an extension method. See the <a href="/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/">trick in my last post</a> for more information.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">DecimalExtensions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="kt">decimal</span> <span class="nf">Normalize</span><span class="p">(</span><span class="k">this</span> <span class="kt">decimal</span> <span class="k">value</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">value</span> <span class="p">/</span> <span class="m">1.000000000000000000000000000000000</span><span class="n">m</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And then the same change would be logged as follows.</p>
+
+<p><img src="/images/blog/audit-trail-002.jpg"></p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/">How to Remove the Trailing Zeros of Precision From a C# Decimal</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-09T17:45:00+00:00" pubdate data-updated="true">Jan 9<span>th</span>, 2013</time>
+        
+         | <a href="/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>You may know that the C# <code>Decimal</code> type remembers any trailing zeros. So for instance:</p>
+
+<pre><code>Console.WriteLine(123.45m);
+Console.WriteLine(123.45000m);
+Console.WriteLine(123.4500000m);
+</code></pre>
+
+<p>results in</p>
+
+<pre><code>123.45
+123.45000
+123.4500000
+</code></pre>
+
+<p>This is because the <code>Decimal</code> type is designed for representing a number including its accuracy.</p>
+
+<p>It is tricky to find a good way of controlling this accuracy. If I have <code>x = 123.45000</code>, how can I easily remove the trailing zeros so that <code>x.ToString()</code> outputs <code>123.45</code>?</p>
+
+<p>For a while it looked like I&#8217;d have to perform some <a href="http://stackoverflow.com/a/4298787/1077279">Jon Skeet wizardry</a>, but there is a simpler solution. The following extension method will remove all the trailing zeros.</p>
+
+<pre><code>public static class DecimalExtensions
+{
+    public static Decimal Normalize(this Decimal value)
+    {
+        return value / 1.000000000000000000000000000000000m;
+    }
+}
+</code></pre>
+
+<p>And if you need an exact number of trailing zeros, you can first <code>Normalize()</code> and then multiply.</p>
+
+<pre><code>Console.WriteLine(123.45m.Normalize() * 1.000m); 
+</code></pre>
+
+<p>will output the following.</p>
+
+<pre><code>123.45000
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -776,291 +1221,6 @@ LANG = en_US.UTF-8
 </code></pre>
 
 <p>Now my blog generates without error.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/the-best-pc-laptop-is-a-mac/">The Best PC Laptop Is a Mac</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-10-09T17:09:00+01:00" pubdate data-updated="true">Oct 9<span>th</span>, 2012</time>
-        
-         | <a href="/the-best-pc-laptop-is-a-mac/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h3>A month ago</h3>
-
-<p>I&#8217;ve never liked laptops. The screen seems so small. A powerful laptop is too heavy; a light one doesn&#8217;t cut the mustard.
-I can&#8217;t even find the on/off switch.</p>
-
-<p>Then there are those fancy new <strong>Macbook Pro</strong>s with retina displays. They seem light and powerful and the screen looks great. I don&#8217;t know much about Macs, but I&#8217;d like to learn.</p>
-
-<blockquote><p>But I need Microsoft Windows and Visual Studio. I know theoretically I can run a virtual machine or setup a dual boot, but I&#8217;ll bet it&#8217;s all a bit of a hassle and rather clunky&#8230;</p></blockquote>
-
-
-<h3>Three hours after my Macbook Pro arrived</h3>
-
-<p>Windows 8 is installed and looks absolutely beautiful! The font is small, but the screen is so sharp that it is quite readable. Visual Studio looks great with the font size in the editor Window set to 14 or 15.</p>
-
-<p>The installation was much simpler than most other Windows installations I&#8217;ve done. I followed <a href="http://www.iclarified.com/entry/index.php?enid=20961">this tutorial on iClarified</a> to set up a dual boot. You use a tool called the Bootcamp Advisor which is already installed on your Mac to create an bootable USB for installing Windows. Since all Macs are the same, the Bootcamp Advisor sets up all the drivers correctly for you.</p>
-
-<h3>Three weeks later</h3>
-
-<blockquote><p>This is by far the most pleasant laptop I&#8217;ve ever used for development.</p></blockquote>
-
-
-<p>The screen is wonderful - the machine seems very fast and it is no weight to carry around.</p>
-
-<h3>A tiny little gripe</h3>
-
-<p>There is a little annoyance with the Bootcamp Control Panel which won&#8217;t start properly, but Thomas Jespersen found a <a href="http://apple.stackexchange.com/a/59132/30710">workaround</a>, <a href="https://gist.github.com/3859956">which I&#8217;ve put in a batch file</a>. You need this to make the F1-12 keys work as they would in Windows.</p>
-
-<h3>Some help with the Mac keyboard and trackpad</h3>
-
-<p>I&#8217;m very picky about keyboards and I need to be able to find all my Visual Studio shortcuts in the same places. All in all I find the keyboard fine to work with.</p>
-
-<p>The <code>delete</code> key works like a PC <code>backspace</code> so you have to do <code>fn+delete</code> to delete forwards. Here&#8217;s a list of other shortcuts.</p>
-
-<table>
-<thead>
-<tr>
-<th>PC (running Windows) </th>
-<th> &nbsp;Macbook (running Windows) </th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><em>Windows</em> key             </td>
-<td> &nbsp;<em>command</em> </td>
-</tr>
-<tr>
-<td><em>Del</em>                     </td>
-<td> &nbsp;<em>fn+delete</em>  </td>
-</tr>
-<tr>
-<td><em>Ins</em>                     </td>
-<td> &nbsp;<em>fn+return</em> </td>
-</tr>
-<tr>
-<td><em>Home</em>                    </td>
-<td> &nbsp;<em>fn+left</em> </td>
-</tr>
-<tr>
-<td><em>End</em>                     </td>
-<td> &nbsp;<em>fn+right</em> </td>
-</tr>
-<tr>
-<td><em>PgUp</em>                    </td>
-<td> &nbsp;<em>fn+up</em> </td>
-</tr>
-<tr>
-<td><em>PgDn</em>                    </td>
-<td> &nbsp;<em>fn+down</em> </td>
-</tr>
-<tr>
-<td><em>Ctrl+Home</em>               </td>
-<td> &nbsp;<em>fn+control+left</em> </td>
-</tr>
-<tr>
-<td><em>Ctrl+End</em>                </td>
-<td> &nbsp;<em>fn+control+right</em> </td>
-</tr>
-</tbody>
-</table>
-
-
-<p>&nbsp;
-There are some keys which you will still not find, for instance, <code>NumLock</code>, <code>PrtScn</code>, <code>Break</code>.</p>
-
-<p>If I need these, I use the On-Screen keyboard (type &#8216;osk&#8217; into the search bar). If you cannot see the <code>NumLock</code>, the options allow you to show the numeric keypad. Alternatively, you could always plug in a USB keyboard.</p>
-
-<p>The trackpad works great including the two-finger click for right-click and two-finger swipe for scroll.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/a-look-at-the-devexpress-maindemo-with-google-page-speed/">A Look at the DevExpress MainDemo With Google Page Speed</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-12T17:22:00+01:00" pubdate data-updated="true">Sep 12<span>th</span>, 2012</time>
-        
-         | <a href="/a-look-at-the-devexpress-maindemo-with-google-page-speed/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>In this post I&#8217;ll demonstrate how to use the <a href="https://developers.google.com/speed/pagespeed/">Google Page Speed</a> tools to analyse the performance of the DevExpress XAF MainDemo.</p>
-
-<p>The easiest way to run Google Page Speed is as a Chrome or Firefox plugin. Both are available <a href="https://developers.google.com/speed/pagespeed/insights_extensions">here</a>. I use Chrome.</p>
-
-<p>Now open the DevExpress MainDemo from Visual Studio. By default it is installed to:</p>
-
-<pre><code>C:\Users\Public\Documents\DXperience 12.1 Demos\eXpressApp Framework\MainDemo\CS\MainDemo.sln
-</code></pre>
-
-<p>Set the MainDemo.Web as the startup project and change the connection string in web.config if necessary. Launch the application with Chrome and login as &#8216;Sam&#8217; (password is blank). Then press <code>F12</code> to bring up the developer tools. The last tab is the Page Speed Analysis and your browser should look like this:</p>
-
-<p><img src="/images/blog/google-page-speed-001.png"></p>
-
-<p>Now click <code>Start Analysis</code> button. After a few seconds you should get something like the following results.</p>
-
-<h4>Results against the debug webserver</h4>
-
-<p><img src="/images/blog/google-page-speed-002.png"></p>
-
-<p>It&#8217;s as easy as that. We now have a list of suggested improvements. The same report can be generated for any page you visit with your browser.</p>
-
-<p>I get an overall score of 72 out of 100. First thing to note is that the only &#8216;high priority&#8217; recommendation is to &#8216;enable keep-alive&#8217; which I suspect will not be necessary when running in IIS instead of the debug webserver.</p>
-
-<h4>Switch to use IIS</h4>
-
-<p>Actually to get the main demo to run in IIS is not altogether simple because of the security permissions required for logging in and creating or updating the schema. If you get an error message after login:</p>
-
-<pre><code>Login failed for user 'IIS APPPOOL\DefaultAppPool
-</code></pre>
-
-<p>you will need to add the IIS application pool identity to the SQL Server security.</p>
-
-<ul>
-<li>Launch SQL Server management studio and connect to the database.</li>
-<li>In the <code>Security\Logins</code> right click and select <code>New Login...</code>.</li>
-<li>Type in <code>IIS APPPOOL\DefaultAppPool</code> (you won&#8217;t find it by searching) or <code>IIS APPPOOL\ASP.NET v4.0</code> depending on the security context of the application pool you are using.</li>
-<li>Select <code>Server Roles</code> and check <code>public</code> and <code>sysadmin</code> to allow the MainDemo to create the database.</li>
-</ul>
-
-
-<p>(All of this is assuming you are using a non-public instance of SQL Server for development.)</p>
-
-<h4>Results against IIS</h4>
-
-<p>The results are much better: an overall score of 93.</p>
-
-<p><img src="/images/blog/google-page-speed-003.png"></p>
-
-<h4>Other points of interest</h4>
-
-<p>Let&#8217;s experiment by turning off compression in the webconfig.</p>
-
-<pre><code>&lt;compression 
-  enableHtmlCompression="false" 
-  enableCallbackCompression="false" 
-  enableResourceCompression="false" 
-  enableResourceMerging="false" /&gt;
-</code></pre>
-
-<p>The overall score drops to 62.</p>
-
-<p><img class="right" src="/images/blog/google-page-speed-004.png"></p>
-
-<p>You can alternatively use IIS&#8217;s dynamic compression by setting <code>enableResourceMerging="true"</code> and the others false and adding a <code>urlCompression</code> setting as follows.</p>
-
-<pre><code>&lt;system.webServer&gt;
-  &lt;urlCompression doDynamicCompression="true" /&gt;
-  ...
-&lt;/system.webServer&gt; 
-</code></pre>
-
-<p>(Note that you may need to install the dynamic compression module via <strong>Control Panel/Programs/Turn Windows Features On or Off</strong>.)</p>
-
-<p>Then the analysis is back up to 93. The advantage of IIS dynamic compression in IIS 7 is that it turns itself off automatically when the CPU load is high. See <a href="http://www.codeproject.com/Articles/242133/Making-the-most-out-of-IIS-compression-Part-1-conf">Matt Perdeck&#8217;s series of articles about IIS Compression</a> for more information.</p>
-
-<p>One mysterious point: if you navigate to the <a href="http://demos.devexpress.com/XAF/MainDemo/default.aspx">online version of the MainDemo</a> and run the analysis there you will notice that compression resource merging must be turned off for some reason and the overall score is only 75. Perhaps someone from DevExpress can explain&#8230;</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/xpobatch-source-code-available/">XpoBatch Source Code Available</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-07-25T16:24:00+01:00" pubdate data-updated="true">Jul 25<span>th</span>, 2012</time>
-        
-         | <a href="/xpobatch-source-code-available/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>The source code for the fast batch operations with DevExpress XPO <a href="https://github.com/ZeroSharp/XpoBatch">is now available on on GitHub</a>.</p>
-
-<p>It includes unit tests that can be run against SQL Server or in memory. It runs against DevExpress 12.1.7, but it will work against 11.2 (and possibly earlier versions) with a couple of minor modifications which are documented in the code.</p>
-
-<h4>References</h4>
-
-<ul>
-<li><a href="/fast-batch-deletions-with-devexpress-xpo/">Fast batch deletions</a></li>
-<li><a href="/fast-batch-modifications-with-devexpress-xpo/">Fast batch modifications</a></li>
-</ul>
-
 </div>
   
   
