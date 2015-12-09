@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-12-09T16:54:05+00:00</updated>
+  <updated>2015-12-09T16:55:17+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,78 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[DevExpress 2015.2 review part 2]]></title>
-    <link href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-2/"/>
-    <updated>2015-12-09T14:43:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-2</id>
-    <content type="html"><![CDATA[<p>This is the second and final dive into some of the new DevExpress XAF 2015.2 features. The <a href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1/">first part</a> covers the Report Designer and the new XML serialisation.</p>
-
-<h2>Batch editing</h2>
-
-<p>Another feature I&#8217;m excited about is the support for batch editing within the web application grids.</p>
-
-<p>Let&#8217;s see what happens when combined with the validation rules. What happens if I edit two rows but only one has a validation problem - does the whole batch get rejected? Or just the row with the problem?</p>
-
-<p>First I modified the edit mode of the Tasks grid to <code>Batch</code> via the model.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-15-2-review-001.png"></p>
-
-<p>Then I added a new <code>RuleRequiredField</code> validation rule via the model.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-15-2-review-002.png"></p>
-
-<p>I started up the MainDemo application and navigated to the Tasks view and tried to delete the subject of multiple rows at the same time.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-15-2-review-003.png"></p>
-
-<p>I never even got to press Save because of another new 15.2 feature: <a href="https://community.devexpress.com/blogs/eaf/archive/2015/11/24/xaf-validation-module-enhancements-for-windows-and-the-web-coming-soon-in-v15-2.aspx">inplace validation</a>! The rules are being validated <em>without</em> a round trip to the server!</p>
-
-<p>So let&#8217;s try another way. <em>Inplace Validation</em> does not work with all rule types, so I deleted my <code>RuleRequiredField</code> from the model and instead added a new <code>RuleFromBoolProperty</code> to the <code>DemoTask</code> object as follows:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[MemberDesignTimeVisibility(false)]</span>
-</span><span class='line'><span class="na">[RuleFromBoolProperty(&quot;SubjectIsRequired&quot;, </span>
-</span><span class='line'><span class="na">    DefaultContexts.Save, </span>
-</span><span class='line'><span class="na">    &quot;Subject is required.&quot;, </span>
-</span><span class='line'><span class="na">    UsedProperties = &quot;Subject&quot;, </span>
-</span><span class='line'><span class="na">    SkipNullOrEmptyValues = false)]</span>
-</span><span class='line'><span class="k">public</span> <span class="kt">bool</span> <span class="n">IsSubjectRequired</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">get</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="p">!</span><span class="n">String</span><span class="p">.</span><span class="n">IsNullOrWhiteSpace</span><span class="p">(</span><span class="n">Subject</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now we go back to the list view for Task and try to set multiple subjects to empty.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-15-2-review-004.png"></p>
-
-<p>Fantastic! This time the broken rules appear for each row and it is quite clear which message belongs to which object.</p>
-
-<p>So the batch editing makes use of inplace validation when it can, but handles more complex validation rules well too. This is an excellent combination because the inpalce validation will help to make the client seem very quick and responsive.</p>
-
-<h2>Conclusion</h2>
-
-<p>This concludes my review of DevExpress 2015.2. We&#8217;ve looked in some detail at two of the most impressive new features - the way reports are serialised and the improvements to client-side validation. These changes help with performance and ease of maintenance and I&#8217;m very happy to see that the DevExpress team has focused on these areas. Looking forward to the 2016 releases!</p>
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 3]]></title>
@@ -1964,6 +1892,113 @@ As you can see, this is a very valuable glimpse into the server which can be tur
 <h2>MainDemo Sample Project</h2>
 
 <p>I have uploaded a modified XAF MainDemo to this <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Glimpse">GitHub repository</a> with all the above changes. (Don&#8217;t forget to debug against IIS Express).</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[DevExpress 13.2 Review - Part 2]]></title>
+    <link href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-2/"/>
+    <updated>2013-12-10T16:10:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-2</id>
+    <content type="html"><![CDATA[<p>This is the second part of a review of the new DevExpress 13.2. In <a href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1">the last part</a> we looked in-depth at the new <a href="https://community.devexpress.com/blogs/eaf/archive/2013/11/08/easy-large-reports-in-13-2-ctp-of-reportsv2-module.aspx">Reports V2</a>. In this part I&#8217;ll go over some of the other new features including the support for warnings and confirmations in the validation module.</p>
+
+<h2>Soft Validation Rules</h2>
+
+<p>With 13.2, DevExpress adds support for warning/confirmation messages to the validation engine. Warnings can be used to handle an unusual but valid data entry. An example would be:</p>
+
+<blockquote><p>The date of birth results in an age of over 100. Are you sure?</p></blockquote>
+
+
+<p>Here the age of the contact is unusual but not impossible, so instead of prohibiting it entirely, we ask the user for confirmation before saving.</p>
+
+<p>Let&#8217;s add this rule to the MainDemo. Open the model and navigate to the Validation node. Add a <code>RuleValueComparison</code> and configure it as follows</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-13-2-review-010.png"></p>
+
+<p>Of course you could instead also define the same rule with an attribute on the <code>Birthday</code> property. Something like:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[RuleValueComparison(&quot;IsOlderThan100_Warning&quot;, </span>
+</span><span class='line'><span class="na">    DefaultContexts.Save,</span>
+</span><span class='line'><span class="na">    ValueComparisonType.GreaterThan, &quot;AddYears(Now(), -100)&quot;,</span>
+</span><span class='line'><span class="na">    &quot;Birthday makes this Contact older than 100. Are you sure?&quot;,</span>
+</span><span class='line'><span class="na">    ParametersMode.Expression,</span>
+</span><span class='line'><span class="na">    ResultType = ValidationResultType.Warning)]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Notice the new <code>ResultType</code> parameter is set to <code>ValidationResultType.Warning</code>.</p>
+
+<p>Another typical use is to provide better handling of duplicates. Consider the following:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[RuleCombinationOfPropertiesIsUnique(&quot;DuplicateName_Warning&quot;, </span>
+</span><span class='line'><span class="na">    DefaultContexts.Save, </span>
+</span><span class='line'><span class="na">    &quot;LastName;FirstName&quot;, </span>
+</span><span class='line'><span class="na">    &quot;There is already a Contact with the name {FullName}. Are you sure?&quot;, </span>
+</span><span class='line'><span class="na">    ResultType = ValidationResultType.Warning)]</span>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">Contact</span> <span class="p">:</span> <span class="n">Person</span> <span class="p">{</span>
+</span><span class='line'>  <span class="c1">//etc ...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And then this is what happens if I try to add another John Nilsen.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-13-2-review-011.png"></p>
+
+<p>Another scenario would be to warn the user of something which needs attention. Such as &#8220;Warning! You are running out of funds in your current account.&#8221; Or &#8220;Warning! Deleting this record will format your hard drive.&#8221;</p>
+
+<h3>List Views</h3>
+
+<p>Soft validation also works in the list views, even with multiple selection, but there are a couple of things that don&#8217;t work very smoothly yet and I would expect the web implementation to evolve over the coming releases.</p>
+
+<p>In order to demonstrate this I need to use a context which allows multiple selection such as deletion. So let&#8217;s decorate our class with the following simple rule.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[RuleCriteria(&quot;Deletion_Warning&quot;, DefaultContexts.Delete, &quot;1=0&quot;, &quot;Warning! Are you sure?&quot;, ResultType = ValidationResultType.Warning)]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then I select all the contacts and press <code>Delete</code>, after the confirmation window, I get this:</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-13-2-review-014.png"></p>
+
+<h3>Web Application</h3>
+
+<p>Soft validation is also available in the web application. This is what a warning looks like.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-13-2-review-015.png"></p>
+
+<p>I would prefer to see a <em>Confirm</em> button rather than the current <em>Ignore</em> checkbox since a button requires a single click to validate.</p>
+
+<p>When there are several warnings and errors at the same time, the current implementation displays them all. I think it would be preferable if warnings were not displayed unless there are no errors. Unless DevExpress provide this as an option soon, I will attempt to extend the controller in this regard in a future post.</p>
+
+<h2>Other new features</h2>
+
+<p>In the 13.2 release, there is now support for runtime extension of the model. DevExpress is calling this feature <em>custom fields</em> and (again) it is marked as beta. This is not a feature I&#8217;ve looked at, but there are a few other non-XAF DevExpress novelties which I&#8217;d like to see working within XAF. These include <a href="https://www.devexpress.com/Subscriptions/New-2013-v2-Beta.xml?product=aspnet#ctl00_ctl00_Content_Content_ctl659">new themes</a> and <a href="https://www.devexpress.com/Subscriptions/New-2013-v2-Beta.xml?product=aspnet#ctl00_ctl00_Content_Content_ctl660">support for grid batch editing</a>.</p>
+
+<h2>One warning</h2>
+
+<p><img class="left" src="http://ZeroSharp.github.com/images/blog/devexpress-13-2-review-001.png">
+<img class="right" src="http://ZeroSharp.github.com/images/blog/devexpress-13-2-review-002.png">
+The default directories for the installation have changed again. I&#8217;m sure DevExpress has some good reason for this, but if, like me, you have several different versions installed you end up with a confusing directory tree. Whenever this happens I always end up having to modify build scripts and config files so that all my tools work as expected. For those of you who use Red Gate&#8217;s <em>.NET Reflector</em>, you can find my config file <a href="https://gist.github.com/shamp00/7748150">in this gist</a>.</p>
+
+<h2>Conclusions</h2>
+
+<p>For the 13.2 release, DevExpress have focused on making the existing functionality work better rather than developing new modules.</p>
+
+<p>Better reports. Better validation. A better framework all round.</p>
 ]]></content>
   </entry>
   

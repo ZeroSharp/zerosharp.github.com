@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-12-09T16:54:05+00:00</updated>
+  <updated>2015-12-09T16:55:17+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,71 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[DevExpress 2015.2 review part 2]]></title>
-    <link href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-2/"/>
-    <updated>2015-12-09T14:43:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-2</id>
-    <content type="html"><![CDATA[<p>This is the second and final dive into some of the new DevExpress XAF 2015.2 features. The <a href="/devexpress-15-dot-2-review-part-1/">first part</a> covers the Report Designer and the new XML serialisation.</p>
-
-<h2>Batch editing</h2>
-
-<p>Another feature I'm excited about is the support for batch editing within the web application grids.</p>
-
-<p>Let's see what happens when combined with the validation rules. What happens if I edit two rows but only one has a validation problem - does the whole batch get rejected? Or just the row with the problem?</p>
-
-<p>First I modified the edit mode of the Tasks grid to <code>Batch</code> via the model.</p>
-
-<p><img src="/images/blog/devexpress-15-2-review-001.png"></p>
-
-<p>Then I added a new <code>RuleRequiredField</code> validation rule via the model.</p>
-
-<p><img src="/images/blog/devexpress-15-2-review-002.png"></p>
-
-<p>I started up the MainDemo application and navigated to the Tasks view and tried to delete the subject of multiple rows at the same time.</p>
-
-<p><img src="/images/blog/devexpress-15-2-review-003.png"></p>
-
-<p>I never even got to press Save because of another new 15.2 feature: <a href="https://community.devexpress.com/blogs/eaf/archive/2015/11/24/xaf-validation-module-enhancements-for-windows-and-the-web-coming-soon-in-v15-2.aspx">inplace validation</a>! The rules are being validated <em>without</em> a round trip to the server!</p>
-
-<p>So let's try another way. <em>Inplace Validation</em> does not work with all rule types, so I deleted my <code>RuleRequiredField</code> from the model and instead added a new <code>RuleFromBoolProperty</code> to the <code>DemoTask</code> object as follows:</p>
-
-<p>```c#
-[MemberDesignTimeVisibility(false)]
-[RuleFromBoolProperty("SubjectIsRequired",</p>
-
-<pre><code>DefaultContexts.Save, 
-"Subject is required.", 
-UsedProperties = "Subject", 
-SkipNullOrEmptyValues = false)]
-</code></pre>
-
-<p>public bool IsSubjectRequired
-{</p>
-
-<pre><code>get
-{
-    return !String.IsNullOrWhiteSpace(Subject);
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>Now we go back to the list view for Task and try to set multiple subjects to empty.</p>
-
-<p><img src="/images/blog/devexpress-15-2-review-004.png"></p>
-
-<p>Fantastic! This time the broken rules appear for each row and it is quite clear which message belongs to which object.</p>
-
-<p>So the batch editing makes use of inplace validation when it can, but handles more complex validation rules well too. This is an excellent combination because the inpalce validation will help to make the client seem very quick and responsive.</p>
-
-<h2>Conclusion</h2>
-
-<p>This concludes my review of DevExpress 2015.2. We've looked in some detail at two of the most impressive new features - the way reports are serialised and the improvements to client-side validation. These changes help with performance and ease of maintenance and I'm very happy to see that the DevExpress team has focused on these areas. Looking forward to the 2016 releases!</p>
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 3]]></title>
@@ -212,6 +147,28 @@ if (shouldForceGarbageCollection)
 </code></pre>
 
 <p>You should see the text <strong>'Forced garbage collection OK'</strong> in the top left of the browser window.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Fixing slow debugging of ASP.NET applications]]></title>
+    <link href="http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications/"/>
+    <updated>2015-06-03T21:31:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications</id>
+    <content type="html"><![CDATA[<p>For a while I've noticed an annoying slowness when debugging ASP.NET applications from Visual Studio. Just after every page load it takes about a second before the buttons become clickable. I noticed mostly when debugging XAF applications, perhaps because the pages are quite complex.</p>
+
+<p>Turns out the culprit is something called <a href="http://www.asp.net/visual-studio/overview/2013/using-browser-link">Browser Link</a> which was introduced in Visual Studio 2013. It's enabled by default.</p>
+
+<p>To turn it off you can turn it off from the menu:</p>
+
+<p><img src="/images/blog/browserlink-001.png"></p>
+
+<p>Or you can add the following to your web.config file.
+<code>xml
+&lt;appSettings&gt;
+  &lt;add key="vs:EnableBrowserLink" value="false"/&gt;
+&lt;/appSettings&gt;
+</code></p>
 ]]></content>
   </entry>
   

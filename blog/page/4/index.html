@@ -9,8 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="There are many ways to perform queries with XPO. You can do this: 1
-Session.FindObject&lt;Contact&gt;(new BinaryOperator(&quot;Name&quot;, &quot; &hellip;">
+  <meta name="description" content="A fellow Octopress blogger recently asked how I removed the RSS subscription icon from the Octopress navigation bar. First, create a new site &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -114,126 +113,6 @@ Session.FindObject&lt;Contact&gt;(new BinaryOperator(&quot;Name&quot;, &quot; &h
     <div id="content">
       <div class="blog-index">
   
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/fluent-queries-with-devexpress-xpo-intro/">Fluent Queries With DevExpress XPO - Intro</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-12T17:54:00+01:00" pubdate data-updated="true">Aug 12<span>th</span>, 2013</time>
-        
-         | <a href="/fluent-queries-with-devexpress-xpo-intro/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>There are <a href="http://documentation.devexpress.com/#xaf/CustomDocument3052">many ways to perform queries with XPO</a>.</p>
-
-<p>You can do this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Session</span><span class="p">.</span><span class="n">FindObject</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;(</span><span class="k">new</span> <span class="n">BinaryOperator</span><span class="p">(</span><span class="s">&quot;Name&quot;</span><span class="p">,</span> <span class="s">&quot;Elvis&quot;</span><span class="p">));</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>or this</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Session</span><span class="p">.</span><span class="n">FindObject</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;(</span><span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;Name = &#39;Elvis&#39;&quot;</span><span class="p">));</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Another way to use the <a href="http://documentation.devexpress.com/#XPO/CustomDocument2537">simplified criteria syntax</a>, and with the <a href="https://code.google.com/p/dxcorecommunityplugins/wiki/XPO_EasyFields">Xpo_EasyFields CodeRush plugin</a>. Then you can do:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Session</span><span class="p">.</span><span class="n">FindObject</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;(</span><span class="n">Customer</span><span class="p">.</span><span class="n">Fields</span><span class="p">.</span><span class="n">Name</span> <span class="p">==</span> <span class="s">&quot;Elvis&quot;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>For each of the above, you can optionally query within the transaction by passing in the <code>PersistentCriteriaEvaluationBehavior.InTransaction</code> parameter.</p>
-
-<p>Or we can use LINQ via <code>XPQuery&lt;T&gt;.TransformExpression()</code>.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Session</span><span class="p">.</span><span class="n">FindObject</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;(</span>
-</span><span class='line'>    <span class="n">XPQuery</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;.</span><span class="n">TransformExpression</span><span class="p">(</span><span class="n">Session</span><span class="p">,</span> <span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">Name</span> <span class="p">==</span> <span class="s">&quot;Elvis&quot;</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>All of these methods are powerful, but the power comes at a cost. The syntax is neither elegant nor particularly clear and as a result it is not very practical to maintain or test.</p>
-
-<h2>A Fluent Interface for XPO</h2>
-
-<p>How about if we could do the following?</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">var</span> <span class="n">customer</span> <span class="p">=</span> <span class="n">Session</span>
-</span><span class='line'>                <span class="p">.</span><span class="n">Query</span><span class="p">()</span>
-</span><span class='line'>                  <span class="p">.</span><span class="n">Contacts</span>
-</span><span class='line'>                    <span class="p">.</span><span class="n">ByName</span><span class="p">(</span><span class="s">&quot;Elvis&quot;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Or, for a more elaborate example:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">var</span> <span class="n">customer</span> <span class="p">=</span> <span class="n">Session</span>
-</span><span class='line'>                 <span class="p">.</span><span class="n">Query</span><span class="p">()</span>
-</span><span class='line'>                 <span class="p">.</span><span class="n">InTransaction</span>
-</span><span class='line'>                    <span class="p">.</span><span class="n">Contacts</span>
-</span><span class='line'>                      <span class="p">.</span><span class="n">ByPosition</span><span class="p">(</span><span class="s">&quot;Developer&quot;</span><span class="p">)</span>
-</span><span class='line'>                        <span class="p">.</span><span class="n">ThatHave</span>
-</span><span class='line'>                          <span class="p">.</span><span class="n">NoPhoto</span><span class="p">()</span>
-</span><span class='line'>                        <span class="p">.</span><span class="n">And</span>
-</span><span class='line'>                          <span class="p">.</span><span class="n">TasksInProgress</span><span class="p">()</span>
-</span><span class='line'>                        <span class="p">.</span><span class="n">And</span>
-</span><span class='line'>                          <span class="p">.</span><span class="n">TasksWith</span><span class="p">(</span><span class="n">Priority</span><span class="p">.</span><span class="n">High</span><span class="p">)</span>
-</span><span class='line'>                 <span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>In the next post I&#8217;ll show how to put the fluent interface code together.</p>
-</div>
-  
-  
-
-
-    </article>
   
   
     <article>
@@ -1723,6 +1602,72 @@ The ability to create reports using a report writer is a very powerful feature o
 <p>I see Firefox startup after a few seconds and the script correctly cycles through all of the tabs and then exits.</p>
 
 <p>We will use this scenario as the basis of a load test in the next post.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/load-testing-xaf-part-1-deploying/">Load Testing XAF: Part 1 - Deploying</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-22T11:21:00+00:00" pubdate data-updated="true">Mar 22<span>nd</span>, 2013</time>
+        
+         | <a href="/load-testing-xaf-part-1-deploying/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This is the first part of a tutorial about load testing XAF applications. See the <a href="/load-testing-xaf-overview/">overview</a> for a bit of background. In this post we set up the target webserver.</p>
+
+<p>You can target any machine which has a publicly available web address, but for this tutorial, I&#8217;m&#8217; deploying the MainDemo to the Amazon cloud, by following the instructions in <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1</a> and <a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2</a> of my previous series about Amazon Web Services.</p>
+
+<p>I am using version 12.2.7 of the DevExpress XAF MainDemo. There are a couple of extra changes to make to the web.config.</p>
+
+<ul>
+<li>Set debug to false <code>&lt;compilation targetFramework="4.0" debug="false"&gt;</code> in the <code>&lt;compilation&gt;</code> section of <code>&lt;system.web&gt;</code></li>
+<li>Switch to <em>Release</em> mode before deploying.</li>
+</ul>
+
+
+<p>There are a couple of differences compared to the tutorial:</p>
+
+<ul>
+<li>I chose a <em>Medium</em> instance instead of a <em>Micro</em> instance for EC2 (the web server) and deployed it against IIS 8.</li>
+<li>For RDS (the database), I stuck with a <em>Micro</em> instance.</li>
+</ul>
+
+
+<p><img src="/images/blog/load-testing/load-testing-001.png"></p>
+
+<p>For the load test, it is also important to disable the automatic health checks performed by the load balancer.</p>
+
+<p><img src="/images/blog/load-testing/load-testing-002.png"></p>
+
+<p>The reason for this is that we are trying to determine the breaking point of our application. If the elastic load balancer detects that a system is struggling, it might automatically flag it as unhealthy and replace it with a newly launched instance. While this behaviour might be desirable for a production system, it doesn&#8217;t make sense for a load test.</p>
+
+<p>Make sure you can connect to your installation from a web browser before continuing. I chose to deploy to a Windows 2012 instance running IIS 8.0 (which was not available when I wrote my previous XAF AWS tutorial) and I had a little trouble with the URL. If I navigate to the application&#8217;s base URL (<em>http://zerosharp-maindemo.elasticbeanstalk.com/</em> in my case), then I get forwarding problems after logging in. Instead, I navigate to the full address <em>http://zerosharp-maindemo.elasticbeanstalk.com/MainDemo.Web_deploy/Default.aspx</em> and everything works. I&#8217;ll try to look into it later, but it&#8217;s not important for the load testing.</p>
 </div>
   
   

@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-12-09T16:54:05+00:00</updated>
+  <updated>2015-12-09T16:55:17+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,78 +12,6 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
-  
-  <entry>
-    <title type="html"><![CDATA[DevExpress 2015.2 review part 2]]></title>
-    <link href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-2/"/>
-    <updated>2015-12-09T14:43:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-2</id>
-    <content type="html"><![CDATA[<p>This is the second and final dive into some of the new DevExpress XAF 2015.2 features. The <a href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1/">first part</a> covers the Report Designer and the new XML serialisation.</p>
-
-<h2>Batch editing</h2>
-
-<p>Another feature I&#8217;m excited about is the support for batch editing within the web application grids.</p>
-
-<p>Let&#8217;s see what happens when combined with the validation rules. What happens if I edit two rows but only one has a validation problem - does the whole batch get rejected? Or just the row with the problem?</p>
-
-<p>First I modified the edit mode of the Tasks grid to <code>Batch</code> via the model.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-15-2-review-001.png"></p>
-
-<p>Then I added a new <code>RuleRequiredField</code> validation rule via the model.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-15-2-review-002.png"></p>
-
-<p>I started up the MainDemo application and navigated to the Tasks view and tried to delete the subject of multiple rows at the same time.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-15-2-review-003.png"></p>
-
-<p>I never even got to press Save because of another new 15.2 feature: <a href="https://community.devexpress.com/blogs/eaf/archive/2015/11/24/xaf-validation-module-enhancements-for-windows-and-the-web-coming-soon-in-v15-2.aspx">inplace validation</a>! The rules are being validated <em>without</em> a round trip to the server!</p>
-
-<p>So let&#8217;s try another way. <em>Inplace Validation</em> does not work with all rule types, so I deleted my <code>RuleRequiredField</code> from the model and instead added a new <code>RuleFromBoolProperty</code> to the <code>DemoTask</code> object as follows:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[MemberDesignTimeVisibility(false)]</span>
-</span><span class='line'><span class="na">[RuleFromBoolProperty(&quot;SubjectIsRequired&quot;, </span>
-</span><span class='line'><span class="na">    DefaultContexts.Save, </span>
-</span><span class='line'><span class="na">    &quot;Subject is required.&quot;, </span>
-</span><span class='line'><span class="na">    UsedProperties = &quot;Subject&quot;, </span>
-</span><span class='line'><span class="na">    SkipNullOrEmptyValues = false)]</span>
-</span><span class='line'><span class="k">public</span> <span class="kt">bool</span> <span class="n">IsSubjectRequired</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">get</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="p">!</span><span class="n">String</span><span class="p">.</span><span class="n">IsNullOrWhiteSpace</span><span class="p">(</span><span class="n">Subject</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now we go back to the list view for Task and try to set multiple subjects to empty.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-15-2-review-004.png"></p>
-
-<p>Fantastic! This time the broken rules appear for each row and it is quite clear which message belongs to which object.</p>
-
-<p>So the batch editing makes use of inplace validation when it can, but handles more complex validation rules well too. This is an excellent combination because the inpalce validation will help to make the client seem very quick and responsive.</p>
-
-<h2>Conclusion</h2>
-
-<p>This concludes my review of DevExpress 2015.2. We&#8217;ve looked in some detail at two of the most impressive new features - the way reports are serialised and the improvements to client-side validation. These changes help with performance and ease of maintenance and I&#8217;m very happy to see that the DevExpress team has focused on these areas. Looking forward to the 2016 releases!</p>
-]]></content>
-  </entry>
   
   <entry>
     <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 3]]></title>
@@ -2506,6 +2434,80 @@ In the past I have always thought of NDepend as a complex tool. I was never sure
 
 
 <p>In the next post I&#8217;ll show how to put the fluent interface code together.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Making XAF reports even better - Part 2]]></title>
+    <link href="http://ZeroSharp.github.com/making-xaf-reports-even-better-part-2/"/>
+    <updated>2013-05-28T11:51:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/making-xaf-reports-even-better-part-2</id>
+    <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='Repx files with embedded scripts are now much more maintainable. You can correct syntax errors, refactor, version control, merge versions easily.'>
+Good news. The conversion is now two-way. Get the source code <a href="https://github.com/ZeroSharp/Xaf_MainDemo_ReportSync">from GitHub</a>. Make sure you have built MainDemo.Reports project.</p>
+
+<p>You will find there are now two T4 transforms in the project. <em>RepxToCSharp.tt</em> is covered in the <a href="http://ZeroSharp.github.com/making-xaf-reports-even-better-part-1">Part 1</a>. It searches for any <em>.repx</em> files in the solution and converts the scripts into compilable C#.</p>
+
+<p>The second transform is new. <em>CSharpToRepx.tt</em> copies any changes to the script part back into the original <em>.repx</em> files. Again, there are performance optimisations via checksums to prevent overwriting unchanged files.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>(This is an automatically generated file which should be excluded from version control)
+</span><span class='line'>
+</span><span class='line'>Summary of C# transformation
+</span><span class='line'>============================
+</span><span class='line'>Total C# files found                                        :  2
+</span><span class='line'>  Total reports injected                                    :  1
+</span><span class='line'>  Total reports missing                                     :  0
+</span><span class='line'>  Total reports skipped because unchanged                   :  1
+</span><span class='line'>
+</span><span class='line'>Time elapsed: 00:00:02.3483264
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Repx files with embedded scripts are now much more maintainable. You can correct syntax errors, refactor, version control, merge versions easily. You could even write unit tests against the code in the scripts.</p>
+
+<p></span></p>
+
+<p>Currently the easiest way of running these scripts is to open them and save them with <code>Ctrl+S</code>. This is because T4 templates were originally designed as a Visual Studio tool.</p>
+
+<p>In the future I&#8217;m hoping to improve the integration further. There are ways of including the transformations into the build instead, most of which are covered in <a href="http://www.olegsych.com/2010/04/understanding-t4-msbuild-integration">a blog post by Mr T4, Oleg Sych</a>. I like the idea of it being a NuGet package that can be easily added to any XAF project, but there&#8217;s a but I&#8217;ll need some more time to work out how best to achieve this.</p>
+
+<h2>Basic usage summary</h2>
+
+<p>Until then, here are some basic usage instructions.</p>
+
+<ul>
+<li>Add the T4 Toolbox extension to Visual Studio</li>
+<li>Add a copy of the MainDemo.Reports project to your own solution</li>
+<li>Make sure you build it before running the transforms</li>
+<li>Open <em>RepxToCSharp.tt</em> in Visual Studio.</li>
+<li>Save it with <code>Ctrl+S</code> to run the transform. It will search all the folders in your Solution for <em>.repx</em> files and add corresponding C# classes.</li>
+<li>Make any changes you like to the script section (anything outside of <code>// -- Start of embedded scripts --</code> and <code>// -- End of embedded scripts --</code>) will be ignored.</li>
+<li>Open <em>CSharpToRepx.tt</em> and run it with <code>Ctrl+S</code>. The changes will be saved back to the corresponding <em>.repx</em>.</li>
+</ul>
+
+
+<h2>Even more power?</h2>
+
+<p>You may notice that if you reload the MainDemo.Reports project, you can now see <code>View in Designer</code> in the context menu when you right-click on the <em>.repx.cs</em> file.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/xaf-report-sync-003.png"></p>
+
+<p>Let&#8217;s click it and see what happens. It opens directly in Visual Studio (like an <code>XtraReport</code>).</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/xaf-report-sync-004.png"></p>
+
+<p>Now, this is all highly experimental. You can see there are some warnings&#8230; Also, there is no connection with XPO, so the <em>Preview</em> is always empty.</p>
+
+<p>That said, it doesn&#8217;t seem like too much of a stretch to eventually allow far more Visual Studio integration for XAF reports&#8230;</p>
 ]]></content>
   </entry>
   
