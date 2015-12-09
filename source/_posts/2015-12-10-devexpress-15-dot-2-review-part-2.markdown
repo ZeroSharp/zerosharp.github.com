@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "DevExpress 2015.2 review part 2"
-date: 2015-12-10 14:43
+date: 2015-12-10 09:43
 comments: true
 categories: [c#, devexpress, xaf]
 description: A review of the new DevExpress 2015.2 release with particular focus on the XAF ASP.NET batch editing in list views.

@@ -99,6 +99,6 @@ The XML serialisation looks like a considerable upgrade to the mechanism for sto
 
 ## Coming up ##
 
-Tomorrow I'll be looking at the new [batch editing in grids]() in more detail.
+Tomorrow I'll be looking at the new [batch editing in grids](https://community.devexpress.com/blogs/eaf/archive/2015/11/24/xaf-validation-module-enhancements-for-windows-and-the-web-coming-soon-in-v15-2.aspx) in more detail.
 
 
