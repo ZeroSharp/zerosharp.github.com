@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-12-09T16:55:17+00:00</updated>
+  <updated>2015-12-09T16:56:49+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,134 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[DevExpress 2015.2 review part 1]]></title>
+    <link href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1/"/>
+    <updated>2015-12-09T14:43:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1</id>
+    <content type="html"><![CDATA[<p>Last week, DevExpress released 2015.2.3, their second major version of the year.</p>
+
+<p>There are already some good blog posts about the changes:</p>
+
+<ul>
+<li><a href="http://www.codeproject.com/Tips/1060260/Whats-New-for-XAF">Michael Bogaerts</a></li>
+<li><a href="http://vimarx.com/blog/92/">Gustavo Marzioni</a></li>
+<li><a href="https://www.devexpress.com/Subscriptions/New-2015.xml?product=xaf">DevExpress What&#8217;s New</a></li>
+</ul>
+
+
+<p>Rather than repeat general overviews provided in these, this two-part blog post is more of a &#8216;deep dive&#8217;. In particular I&#8217;ll be looking at two of the new features in the expressApp Framework (XAF).
+Today I&#8217;ll cover the new XML serialisation in the report designer. Tomorrow&#8217;s post will examine the new batch editing features.</p>
+
+<h2>Reports</h2>
+
+<p><span class='pullquote-right' data-pullquote='I&#8217;m happy to report that v1 reports are still very much present.'>
+Reporting is definitely one of the areas where XAF has progressed the most in recent versions. There is now an in-browser report designer (since 14.2) and an alternative implementation of the reports (reports v2, since 13.2).</p>
+
+<p>In this release, I was a little worried that the support for Reports v1 would be deprecated, since our production system has over 100 custom reports and we have not yet looked for an easy way to migrate these to v2. I&#8217;m happy to report that v1 reports are still very much present.
+</span></p>
+
+<p>However there are also a number of new features in v2 Reports, not least of which is the ability to store the report&#8217;s layout in XML. There&#8217;s currently not a lot of documentation about the XML serialization, so let&#8217;s dig in and see what we can discover.</p>
+
+<h3>XML serialization deep dive</h3>
+
+<p>First I ran the demo and ran the <em>Copy Predefined Report</em> on the Contacts Report.</p>
+
+<p>Then I ran the report designer and added a dummy <code>OnBeforePrint()</code> script to one of the table&#8217;s cells.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">xrTableCell8_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">var</span> <span class="n">x</span> <span class="p">=</span> <span class="m">23</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then, in the MainDemo&#8217;s Updater.cs file, I placed the following code.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">var</span> <span class="n">reportData</span> <span class="p">=</span> <span class="n">ObjectSpace</span><span class="p">.</span><span class="n">FindObject</span><span class="p">&lt;</span><span class="n">ReportDataV2</span><span class="p">&gt;(</span><span class="k">new</span> <span class="n">BinaryOperator</span><span class="p">(</span><span class="s">&quot;DisplayName&quot;</span><span class="p">,</span> <span class="s">&quot;Contacts Report&quot;</span><span class="p">)</span> <span class="p">&amp;</span> <span class="k">new</span> <span class="n">BinaryOperator</span><span class="p">(</span><span class="s">&quot;IsPredefined&quot;</span><span class="p">,</span> <span class="k">new</span> <span class="n">OperandValue</span><span class="p">(</span><span class="k">false</span><span class="p">)));</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">reportData</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">var</span> <span class="n">report</span> <span class="p">=</span> <span class="n">ReportDataProvider</span><span class="p">.</span><span class="n">ReportsStorage</span><span class="p">.</span><span class="n">LoadReport</span><span class="p">(</span><span class="n">reportData</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">report</span><span class="p">.</span><span class="n">SaveLayoutToXml</span><span class="p">(</span><span class="s">@&quot;C:\Temp\ContactsReport.xml&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">report</span><span class="p">.</span><span class="n">SaveLayout</span><span class="p">(</span><span class="s">@&quot;C:\Temp\ContactsReport.repx&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This creates two output files. One of them contains the familiar <em>.repx</em> format. The other contains the newer <em>.xml</em> serialization.</p>
+
+<p>The contents of the XML file is displayed below and is 77 lines long.</p>
+
+<div><script src='https://gist.github.com/f085bf10dd65ace5d229.js?file=ContactReport.xml'></script>
+<noscript><pre><code></code></pre></noscript></div>
+
+
+<p>By comparison, the <a href="https://gist.github.com/shamp00/f085bf10dd65ace5d229#file-contactsreport-repx">ContactReport.repx</a> is 408 lines long and much harder to read.</p>
+
+<p>As you can see the XML file is <em>much</em> smaller and simpler than the <em>.repx</em> file. At first I didn&#8217;t believe it contained all the necessary information, so I started up the MainDemo WinForms application, created a blank new report and imported the layout and the layout looks correct and the preview loads with data as expected.</p>
+
+<h3>Scripts</h3>
+
+<p>What about scripts? Are they serialized in the xml version? You bet. In the XML export you can see this has been serialised near the top of the file.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>ScriptsSource=
+</span><span class='line'>   &quot;<span class="ni">&amp;#xD;&amp;#xA;</span>private void xrTableCell8_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e)
+</span><span class='line'>   {<span class="ni">&amp;#xD;&amp;#xA;</span>  var x = 23;<span class="ni">&amp;#xD;&amp;#xA;</span>}<span class="ni">&amp;#xD;&amp;#xA;</span>&quot;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Setup</h3>
+
+<p>In order to use this new XML serialization of report layouts, you must set the ReportsV2 module to use it.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">reportsModuleV2</span><span class="p">.</span><span class="n">ReportStoreMode</span> <span class="p">=</span> <span class="n">ReportStoreModes</span><span class="p">.</span><span class="n">XML</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This will most likely invalidate any reports which have already been serialized to the database. There are some notes on how to fix this <a href="https://www.devexpress.com/Support/Center/Question/Details/T275363">here</a>.</p>
+
+<h3>Default for new projects</h3>
+
+<p>What about new projects? I created a new solution and chose <em>DevExpress 15.2 XAF Solution Wizard</em> as the type of solution and added the reports module. Now when I navigate to the <code>WinApplication.Designer.cs</code> file, I find:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">//</span>
+</span><span class='line'><span class="c1">// reportsModuleV2</span>
+</span><span class='line'><span class="c1">//</span>
+</span><span class='line'><span class="k">this</span><span class="p">.</span><span class="n">reportsModuleV2</span><span class="p">.</span><span class="n">ReportDataType</span> <span class="p">=</span> <span class="k">typeof</span><span class="p">(</span><span class="n">DevExpress</span><span class="p">.</span><span class="n">Persistent</span><span class="p">.</span><span class="n">BaseImpl</span><span class="p">.</span><span class="n">ReportDataV2</span><span class="p">);</span>
+</span><span class='line'><span class="k">this</span><span class="p">.</span><span class="n">reportsModuleV2</span><span class="p">.</span><span class="n">ReportStoreMode</span> <span class="p">=</span> <span class="n">DevExpress</span><span class="p">.</span><span class="n">ExpressApp</span><span class="p">.</span><span class="n">ReportsV2</span><span class="p">.</span><span class="n">ReportStoreModes</span><span class="p">.</span><span class="n">XML</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So the default storage method for new projects is now XML.</p>
+
+<h3>Conclusion</h3>
+
+<p>The XML serialisation looks like a considerable upgrade to the mechanism for storing, loading and saving reports. Now I just need to find a good way of converting my existing v1 reports&#8230; Perhaps a future blog post.</p>
+
+<h2>Coming up</h2>
+
+<p>Tomorrow I&#8217;ll be looking at the new <a href="">batch editing in grids</a> in more detail.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 3]]></title>
@@ -1892,113 +2020,6 @@ As you can see, this is a very valuable glimpse into the server which can be tur
 <h2>MainDemo Sample Project</h2>
 
 <p>I have uploaded a modified XAF MainDemo to this <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Glimpse">GitHub repository</a> with all the above changes. (Don&#8217;t forget to debug against IIS Express).</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[DevExpress 13.2 Review - Part 2]]></title>
-    <link href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-2/"/>
-    <updated>2013-12-10T16:10:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-2</id>
-    <content type="html"><![CDATA[<p>This is the second part of a review of the new DevExpress 13.2. In <a href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1">the last part</a> we looked in-depth at the new <a href="https://community.devexpress.com/blogs/eaf/archive/2013/11/08/easy-large-reports-in-13-2-ctp-of-reportsv2-module.aspx">Reports V2</a>. In this part I&#8217;ll go over some of the other new features including the support for warnings and confirmations in the validation module.</p>
-
-<h2>Soft Validation Rules</h2>
-
-<p>With 13.2, DevExpress adds support for warning/confirmation messages to the validation engine. Warnings can be used to handle an unusual but valid data entry. An example would be:</p>
-
-<blockquote><p>The date of birth results in an age of over 100. Are you sure?</p></blockquote>
-
-
-<p>Here the age of the contact is unusual but not impossible, so instead of prohibiting it entirely, we ask the user for confirmation before saving.</p>
-
-<p>Let&#8217;s add this rule to the MainDemo. Open the model and navigate to the Validation node. Add a <code>RuleValueComparison</code> and configure it as follows</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-13-2-review-010.png"></p>
-
-<p>Of course you could instead also define the same rule with an attribute on the <code>Birthday</code> property. Something like:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[RuleValueComparison(&quot;IsOlderThan100_Warning&quot;, </span>
-</span><span class='line'><span class="na">    DefaultContexts.Save,</span>
-</span><span class='line'><span class="na">    ValueComparisonType.GreaterThan, &quot;AddYears(Now(), -100)&quot;,</span>
-</span><span class='line'><span class="na">    &quot;Birthday makes this Contact older than 100. Are you sure?&quot;,</span>
-</span><span class='line'><span class="na">    ParametersMode.Expression,</span>
-</span><span class='line'><span class="na">    ResultType = ValidationResultType.Warning)]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Notice the new <code>ResultType</code> parameter is set to <code>ValidationResultType.Warning</code>.</p>
-
-<p>Another typical use is to provide better handling of duplicates. Consider the following:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[RuleCombinationOfPropertiesIsUnique(&quot;DuplicateName_Warning&quot;, </span>
-</span><span class='line'><span class="na">    DefaultContexts.Save, </span>
-</span><span class='line'><span class="na">    &quot;LastName;FirstName&quot;, </span>
-</span><span class='line'><span class="na">    &quot;There is already a Contact with the name {FullName}. Are you sure?&quot;, </span>
-</span><span class='line'><span class="na">    ResultType = ValidationResultType.Warning)]</span>
-</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">Contact</span> <span class="p">:</span> <span class="n">Person</span> <span class="p">{</span>
-</span><span class='line'>  <span class="c1">//etc ...</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And then this is what happens if I try to add another John Nilsen.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-13-2-review-011.png"></p>
-
-<p>Another scenario would be to warn the user of something which needs attention. Such as &#8220;Warning! You are running out of funds in your current account.&#8221; Or &#8220;Warning! Deleting this record will format your hard drive.&#8221;</p>
-
-<h3>List Views</h3>
-
-<p>Soft validation also works in the list views, even with multiple selection, but there are a couple of things that don&#8217;t work very smoothly yet and I would expect the web implementation to evolve over the coming releases.</p>
-
-<p>In order to demonstrate this I need to use a context which allows multiple selection such as deletion. So let&#8217;s decorate our class with the following simple rule.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[RuleCriteria(&quot;Deletion_Warning&quot;, DefaultContexts.Delete, &quot;1=0&quot;, &quot;Warning! Are you sure?&quot;, ResultType = ValidationResultType.Warning)]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Then I select all the contacts and press <code>Delete</code>, after the confirmation window, I get this:</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-13-2-review-014.png"></p>
-
-<h3>Web Application</h3>
-
-<p>Soft validation is also available in the web application. This is what a warning looks like.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-13-2-review-015.png"></p>
-
-<p>I would prefer to see a <em>Confirm</em> button rather than the current <em>Ignore</em> checkbox since a button requires a single click to validate.</p>
-
-<p>When there are several warnings and errors at the same time, the current implementation displays them all. I think it would be preferable if warnings were not displayed unless there are no errors. Unless DevExpress provide this as an option soon, I will attempt to extend the controller in this regard in a future post.</p>
-
-<h2>Other new features</h2>
-
-<p>In the 13.2 release, there is now support for runtime extension of the model. DevExpress is calling this feature <em>custom fields</em> and (again) it is marked as beta. This is not a feature I&#8217;ve looked at, but there are a few other non-XAF DevExpress novelties which I&#8217;d like to see working within XAF. These include <a href="https://www.devexpress.com/Subscriptions/New-2013-v2-Beta.xml?product=aspnet#ctl00_ctl00_Content_Content_ctl659">new themes</a> and <a href="https://www.devexpress.com/Subscriptions/New-2013-v2-Beta.xml?product=aspnet#ctl00_ctl00_Content_Content_ctl660">support for grid batch editing</a>.</p>
-
-<h2>One warning</h2>
-
-<p><img class="left" src="http://ZeroSharp.github.com/images/blog/devexpress-13-2-review-001.png">
-<img class="right" src="http://ZeroSharp.github.com/images/blog/devexpress-13-2-review-002.png">
-The default directories for the installation have changed again. I&#8217;m sure DevExpress has some good reason for this, but if, like me, you have several different versions installed you end up with a confusing directory tree. Whenever this happens I always end up having to modify build scripts and config files so that all my tools work as expected. For those of you who use Red Gate&#8217;s <em>.NET Reflector</em>, you can find my config file <a href="https://gist.github.com/shamp00/7748150">in this gist</a>.</p>
-
-<h2>Conclusions</h2>
-
-<p>For the 13.2 release, DevExpress have focused on making the existing functionality work better rather than developing new modules.</p>
-
-<p>Better reports. Better validation. A better framework all round.</p>
 ]]></content>
   </entry>
   

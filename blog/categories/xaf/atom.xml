@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-12-09T16:55:17+00:00</updated>
+  <updated>2015-12-09T16:56:49+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,117 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[DevExpress 2015.2 review part 1]]></title>
+    <link href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1/"/>
+    <updated>2015-12-09T14:43:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1</id>
+    <content type="html"><![CDATA[<p>Last week, DevExpress released 2015.2.3, their second major version of the year.</p>
+
+<p>There are already some good blog posts about the changes:</p>
+
+<ul>
+<li><a href="http://www.codeproject.com/Tips/1060260/Whats-New-for-XAF">Michael Bogaerts</a></li>
+<li><a href="http://vimarx.com/blog/92/">Gustavo Marzioni</a></li>
+<li><a href="https://www.devexpress.com/Subscriptions/New-2015.xml?product=xaf">DevExpress What's New</a></li>
+</ul>
+
+
+<p>Rather than repeat general overviews provided in these, this two-part blog post is more of a 'deep dive'. In particular I'll be looking at two of the new features in the expressApp Framework (XAF).
+Today I'll cover the new XML serialisation in the report designer. Tomorrow's post will examine the new batch editing features.</p>
+
+<h2>Reports</h2>
+
+<p><span class='pullquote-right' data-pullquote='I&#8217;m happy to report that v1 reports are still very much present.'>
+Reporting is definitely one of the areas where XAF has progressed the most in recent versions. There is now an in-browser report designer (since 14.2) and an alternative implementation of the reports (reports v2, since 13.2).</p>
+
+<p>In this release, I was a little worried that the support for Reports v1 would be deprecated, since our production system has over 100 custom reports and we have not yet looked for an easy way to migrate these to v2. I'm happy to report that v1 reports are still very much present.
+</span></p>
+
+<p>However there are also a number of new features in v2 Reports, not least of which is the ability to store the report's layout in XML. There's currently not a lot of documentation about the XML serialization, so let's dig in and see what we can discover.</p>
+
+<h3>XML serialization deep dive</h3>
+
+<p>First I ran the demo and ran the <em>Copy Predefined Report</em> on the Contacts Report.</p>
+
+<p>Then I ran the report designer and added a dummy <code>OnBeforePrint()</code> script to one of the table's cells.</p>
+
+<p><code>c#
+private void xrTableCell8_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e) {
+  var x = 23;
+}
+</code></p>
+
+<p>Then, in the MainDemo's Updater.cs file, I placed the following code.
+```c#
+var reportData = ObjectSpace.FindObject<ReportDataV2>(new BinaryOperator("DisplayName", "Contacts Report") &amp; new BinaryOperator("IsPredefined", new OperandValue(false)));
+if (reportData != null)
+{</p>
+
+<pre><code>var report = ReportDataProvider.ReportsStorage.LoadReport(reportData);
+report.SaveLayoutToXml(@"C:\Temp\ContactsReport.xml");
+report.SaveLayout(@"C:\Temp\ContactsReport.repx");
+</code></pre>
+
+<p>}
+```</p>
+
+<p>This creates two output files. One of them contains the familiar <em>.repx</em> format. The other contains the newer <em>.xml</em> serialization.</p>
+
+<p>The contents of the XML file is displayed below and is 77 lines long.</p>
+
+<p><div><script src='https://gist.github.com/f085bf10dd65ace5d229.js?file=ContactReport.xml'></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
+
+<p>By comparison, the <a href="https://gist.github.com/shamp00/f085bf10dd65ace5d229#file-contactsreport-repx">ContactReport.repx</a> is 408 lines long and much harder to read.</p>
+
+<p>As you can see the XML file is <em>much</em> smaller and simpler than the <em>.repx</em> file. At first I didn't believe it contained all the necessary information, so I started up the MainDemo WinForms application, created a blank new report and imported the layout and the layout looks correct and the preview loads with data as expected.</p>
+
+<h3>Scripts</h3>
+
+<p>What about scripts? Are they serialized in the xml version? You bet. In the XML export you can see this has been serialised near the top of the file.</p>
+
+<p><code>xml
+ScriptsSource=
+   "&amp;#xD;&amp;#xA;private void xrTableCell8_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e)
+   {&amp;#xD;&amp;#xA;  var x = 23;&amp;#xD;&amp;#xA;}&amp;#xD;&amp;#xA;"
+</code></p>
+
+<h3>Setup</h3>
+
+<p>In order to use this new XML serialization of report layouts, you must set the ReportsV2 module to use it.</p>
+
+<p><code>c#
+reportsModuleV2.ReportStoreMode = ReportStoreModes.XML
+</code></p>
+
+<p>This will most likely invalidate any reports which have already been serialized to the database. There are some notes on how to fix this <a href="https://www.devexpress.com/Support/Center/Question/Details/T275363">here</a>.</p>
+
+<h3>Default for new projects</h3>
+
+<p>What about new projects? I created a new solution and chose <em>DevExpress 15.2 XAF Solution Wizard</em> as the type of solution and added the reports module. Now when I navigate to the <code>WinApplication.Designer.cs</code> file, I find:</p>
+
+<p><code>c#
+//
+// reportsModuleV2
+//
+this.reportsModuleV2.ReportDataType = typeof(DevExpress.Persistent.BaseImpl.ReportDataV2);
+this.reportsModuleV2.ReportStoreMode = DevExpress.ExpressApp.ReportsV2.ReportStoreModes.XML;
+</code></p>
+
+<p>So the default storage method for new projects is now XML.</p>
+
+<h3>Conclusion</h3>
+
+<p>The XML serialisation looks like a considerable upgrade to the mechanism for storing, loading and saving reports. Now I just need to find a good way of converting my existing v1 reports... Perhaps a future blog post.</p>
+
+<h2>Coming up</h2>
+
+<p>Tomorrow I'll be looking at the new <a href="">batch editing in grids</a> in more detail.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 3]]></title>
@@ -147,28 +258,6 @@ if (shouldForceGarbageCollection)
 </code></pre>
 
 <p>You should see the text <strong>'Forced garbage collection OK'</strong> in the top left of the browser window.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Fixing slow debugging of ASP.NET applications]]></title>
-    <link href="http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications/"/>
-    <updated>2015-06-03T21:31:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications</id>
-    <content type="html"><![CDATA[<p>For a while I've noticed an annoying slowness when debugging ASP.NET applications from Visual Studio. Just after every page load it takes about a second before the buttons become clickable. I noticed mostly when debugging XAF applications, perhaps because the pages are quite complex.</p>
-
-<p>Turns out the culprit is something called <a href="http://www.asp.net/visual-studio/overview/2013/using-browser-link">Browser Link</a> which was introduced in Visual Studio 2013. It's enabled by default.</p>
-
-<p>To turn it off you can turn it off from the menu:</p>
-
-<p><img src="/images/blog/browserlink-001.png"></p>
-
-<p>Or you can add the following to your web.config file.
-<code>xml
-&lt;appSettings&gt;
-  &lt;add key="vs:EnableBrowserLink" value="false"/&gt;
-&lt;/appSettings&gt;
-</code></p>
 ]]></content>
   </entry>
   

@@ -1,0 +1,399 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>DevExpress 2015.2 review part 1 - ZeroSharp</title>
+  <meta name="author" content="Robert Anderson">
+
+  
+  <meta name="description" content="A review of the new DevExpress 2015.2 release with particular focus on the XAF ASP.NET report designer.">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="http://feeds.feedburner.com/zerosharp" rel="alternate" title="ZeroSharp" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> 
+
+<!-- <ra+> -->
+<link href="http://fonts.googleapis.com/css?family=Ubuntu:500" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
+
+<link href="/stylesheets/custom/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+<!-- </ra+> -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-30564687-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <!--<h1><a href="/">ZeroSharp</a></h1>-->
+  <a href="http://www.zerosharp.com/"><h1>ZeroSharp</h1></a>
+  
+    <h2>Robert Anderson's ones and zeros</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">  
+
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ZeroSharp.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/license/">License</a></li>  
+</ul>
+<ul class="subscription">
+    <li><a rel="me" href="https://plus.google.com/112685056596124127572?rel=author">
+      <img src="/images/asides/googleplus.png" width="24" height="24" alt="Rob on Google+">
+    </a></li>    
+    <li><a rel="me" href="http://twitter.com/8ctopus">
+      <img src="/images/asides/twitter.png" width="24" height="24" alt="Rob on Twitter" />
+    </a></li>
+    <!--<li><a rel="me" href="http://stackoverflow.com/users/1077279/shamp00">
+      <img src="/images/asides/stackoverflow.png" width="24" height="24" alt="Rob on StackOverflow" />
+    </a></li>
+    <li><a rel="me" href="https://github.com/zerosharp">
+      <img src="/images/asides/github.png" width="24" height="24" alt="Rob on GitHub" />
+    </a></li>
+    <li><a rel="me" href="http://www.linkedin.com/profile/view?id=926740"  class ="googleplus-hidden" >
+      <img src="/images/asides/linkedin.png" width="24" height="24" alt="Rob on LinkedIn" />
+    </a></li>
+    <li><a rel="me" href="http://springpad.com/#!/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/springpad.png" width="24" height="24" alt="Rob on SpringPad" />
+    </a></li>    
+    <li><a rel="me" href="http://pinterest.com/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/pinterest.png" width="24" height="24" alt="Rob on Pinterest" />
+    </a></li>
+    <li><a rel="me" href="http://www.last.fm/user/nosredna"  class ="googleplus-hidden" >
+      <img src="/images/asides/lastfm.png" width="24" height="24" alt="Rob on Last.fm" />
+    </a></li>-->
+    <li><a href="http://feeds.feedburner.com/zerosharp">
+      <img src="/images/asides/rss.png" rel="subscribe-rss" width="24" height="24" alt="RSS Feed" />
+    </a></li>
+</ul>
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">DevExpress 2015.2 Review Part 1</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-12-09T14:43:00+00:00" pubdate data-updated="true">Dec 9<span>th</span>, 2015</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>Last week, DevExpress released 2015.2.3, their second major version of the year.</p>
+
+<p>There are already some good blog posts about the changes:</p>
+
+<ul>
+<li><a href="http://www.codeproject.com/Tips/1060260/Whats-New-for-XAF">Michael Bogaerts</a></li>
+<li><a href="http://vimarx.com/blog/92/">Gustavo Marzioni</a></li>
+<li><a href="https://www.devexpress.com/Subscriptions/New-2015.xml?product=xaf">DevExpress What&#8217;s New</a></li>
+</ul>
+
+
+<p>Rather than repeat general overviews provided in these, this two-part blog post is more of a &#8216;deep dive&#8217;. In particular I&#8217;ll be looking at two of the new features in the expressApp Framework (XAF).
+Today I&#8217;ll cover the new XML serialisation in the report designer. Tomorrow&#8217;s post will examine the new batch editing features.</p>
+
+<h2>Reports</h2>
+
+<p><span class='pullquote-right' data-pullquote='I&#8217;m happy to report that v1 reports are still very much present.'>
+Reporting is definitely one of the areas where XAF has progressed the most in recent versions. There is now an in-browser report designer (since 14.2) and an alternative implementation of the reports (reports v2, since 13.2).</p>
+
+<p>In this release, I was a little worried that the support for Reports v1 would be deprecated, since our production system has over 100 custom reports and we have not yet looked for an easy way to migrate these to v2. I&#8217;m happy to report that v1 reports are still very much present.
+</span></p>
+
+<p>However there are also a number of new features in v2 Reports, not least of which is the ability to store the report&#8217;s layout in XML. There&#8217;s currently not a lot of documentation about the XML serialization, so let&#8217;s dig in and see what we can discover.</p>
+
+<h3>XML serialization deep dive</h3>
+
+<p>First I ran the demo and ran the <em>Copy Predefined Report</em> on the Contacts Report.</p>
+
+<p>Then I ran the report designer and added a dummy <code>OnBeforePrint()</code> script to one of the table&#8217;s cells.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">xrTableCell8_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kt">var</span> <span class="n">x</span> <span class="p">=</span> <span class="m">23</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then, in the MainDemo&#8217;s Updater.cs file, I placed the following code.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">var</span> <span class="n">reportData</span> <span class="p">=</span> <span class="n">ObjectSpace</span><span class="p">.</span><span class="n">FindObject</span><span class="p">&lt;</span><span class="n">ReportDataV2</span><span class="p">&gt;(</span><span class="k">new</span> <span class="n">BinaryOperator</span><span class="p">(</span><span class="s">&quot;DisplayName&quot;</span><span class="p">,</span> <span class="s">&quot;Contacts Report&quot;</span><span class="p">)</span> <span class="p">&amp;</span> <span class="k">new</span> <span class="n">BinaryOperator</span><span class="p">(</span><span class="s">&quot;IsPredefined&quot;</span><span class="p">,</span> <span class="k">new</span> <span class="n">OperandValue</span><span class="p">(</span><span class="k">false</span><span class="p">)));</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="n">reportData</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="kt">var</span> <span class="n">report</span> <span class="p">=</span> <span class="n">ReportDataProvider</span><span class="p">.</span><span class="n">ReportsStorage</span><span class="p">.</span><span class="n">LoadReport</span><span class="p">(</span><span class="n">reportData</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">report</span><span class="p">.</span><span class="n">SaveLayoutToXml</span><span class="p">(</span><span class="s">@&quot;C:\Temp\ContactsReport.xml&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="n">report</span><span class="p">.</span><span class="n">SaveLayout</span><span class="p">(</span><span class="s">@&quot;C:\Temp\ContactsReport.repx&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This creates two output files. One of them contains the familiar <em>.repx</em> format. The other contains the newer <em>.xml</em> serialization.</p>
+
+<p>The contents of the XML file is displayed below and is 77 lines long.</p>
+
+<div><script src='https://gist.github.com/f085bf10dd65ace5d229.js?file=ContactReport.xml'></script>
+<noscript><pre><code></code></pre></noscript></div>
+
+
+<p>By comparison, the <a href="https://gist.github.com/shamp00/f085bf10dd65ace5d229#file-contactsreport-repx">ContactReport.repx</a> is 408 lines long and much harder to read.</p>
+
+<p>As you can see the XML file is <em>much</em> smaller and simpler than the <em>.repx</em> file. At first I didn&#8217;t believe it contained all the necessary information, so I started up the MainDemo WinForms application, created a blank new report and imported the layout and the layout looks correct and the preview loads with data as expected.</p>
+
+<h3>Scripts</h3>
+
+<p>What about scripts? Are they serialized in the xml version? You bet. In the XML export you can see this has been serialised near the top of the file.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>ScriptsSource=
+</span><span class='line'>   &quot;<span class="ni">&amp;#xD;&amp;#xA;</span>private void xrTableCell8_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e)
+</span><span class='line'>   {<span class="ni">&amp;#xD;&amp;#xA;</span>  var x = 23;<span class="ni">&amp;#xD;&amp;#xA;</span>}<span class="ni">&amp;#xD;&amp;#xA;</span>&quot;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Setup</h3>
+
+<p>In order to use this new XML serialization of report layouts, you must set the ReportsV2 module to use it.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">reportsModuleV2</span><span class="p">.</span><span class="n">ReportStoreMode</span> <span class="p">=</span> <span class="n">ReportStoreModes</span><span class="p">.</span><span class="n">XML</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This will most likely invalidate any reports which have already been serialized to the database. There are some notes on how to fix this <a href="https://www.devexpress.com/Support/Center/Question/Details/T275363">here</a>.</p>
+
+<h3>Default for new projects</h3>
+
+<p>What about new projects? I created a new solution and chose <em>DevExpress 15.2 XAF Solution Wizard</em> as the type of solution and added the reports module. Now when I navigate to the <code>WinApplication.Designer.cs</code> file, I find:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">//</span>
+</span><span class='line'><span class="c1">// reportsModuleV2</span>
+</span><span class='line'><span class="c1">//</span>
+</span><span class='line'><span class="k">this</span><span class="p">.</span><span class="n">reportsModuleV2</span><span class="p">.</span><span class="n">ReportDataType</span> <span class="p">=</span> <span class="k">typeof</span><span class="p">(</span><span class="n">DevExpress</span><span class="p">.</span><span class="n">Persistent</span><span class="p">.</span><span class="n">BaseImpl</span><span class="p">.</span><span class="n">ReportDataV2</span><span class="p">);</span>
+</span><span class='line'><span class="k">this</span><span class="p">.</span><span class="n">reportsModuleV2</span><span class="p">.</span><span class="n">ReportStoreMode</span> <span class="p">=</span> <span class="n">DevExpress</span><span class="p">.</span><span class="n">ExpressApp</span><span class="p">.</span><span class="n">ReportsV2</span><span class="p">.</span><span class="n">ReportStoreModes</span><span class="p">.</span><span class="n">XML</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So the default storage method for new projects is now XML.</p>
+
+<h3>Conclusion</h3>
+
+<p>The XML serialisation looks like a considerable upgrade to the mechanism for storing, loading and saving reports. Now I just need to find a good way of converting my existing v1 reports&#8230; Perhaps a future blog post.</p>
+
+<h2>Coming up</h2>
+
+<p>Tomorrow I&#8217;ll be looking at the new <a href="">batch editing in grids</a> in more detail.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-12-09T14:43:00+00:00" pubdate data-updated="true">Dec 9<span>th</span>, 2015</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3/" title="Previous Post: Migrating a large web application from XAF 12.1 to 15.1 - Part 3">&laquo; Migrating a large web application from XAF 12.1 to 15.1 - Part 3</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2015 - Robert Anderson
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'zerosharp';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1/';
+        var disqus_url = 'http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>
