@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "DevExpress 2015.2 review part 1"
-date: 2015-12-10 14:43
+date: 2015-12-09 14:43
 comments: true
 categories: [c#, devexpress, xaf]
 description: A review of the new DevExpress 2015.2 release with particular focus on the XAF ASP.NET report designer.
