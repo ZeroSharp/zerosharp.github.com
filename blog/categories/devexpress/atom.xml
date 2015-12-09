@@ -4,7 +4,7 @@
   <title><![CDATA[Category: devexpress | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/devexpress/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-12-09T16:56:49+00:00</updated>
+  <updated>2015-12-09T17:01:28+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -120,7 +120,7 @@ this.reportsModuleV2.ReportStoreMode = DevExpress.ExpressApp.ReportsV2.ReportSto
 
 <h2>Coming up</h2>
 
-<p>Tomorrow I'll be looking at the new <a href="">batch editing in grids</a> in more detail.</p>
+<p>Tomorrow I'll be looking at the new <a href="https://community.devexpress.com/blogs/eaf/archive/2015/11/24/xaf-validation-module-enhancements-for-windows-and-the-web-coming-soon-in-v15-2.aspx">batch editing in grids</a> in more detail.</p>
 ]]></content>
   </entry>
   
