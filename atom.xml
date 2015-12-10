@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-12-09T17:01:28+00:00</updated>
+  <updated>2015-12-10T09:28:03+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,78 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[DevExpress 2015.2 review part 2]]></title>
+    <link href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-2/"/>
+    <updated>2015-12-10T09:43:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-2</id>
+    <content type="html"><![CDATA[<p>This is the second and final dive into some of the new DevExpress XAF 2015.2 features. The <a href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1/">first part</a> covers the Report Designer and the new XML serialisation.</p>
+
+<h2>Batch editing</h2>
+
+<p>Another feature I&#8217;m excited about is the support for batch editing within the web application grids.</p>
+
+<p>Let&#8217;s see what happens when combined with the validation rules. What happens if I edit two rows but only one has a validation problem - does the whole batch get rejected? Or just the row with the problem?</p>
+
+<p>First I modified the edit mode of the Tasks grid to <code>Batch</code> via the model.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-15-2-review-001.png"></p>
+
+<p>Then I added a new <code>RuleRequiredField</code> validation rule via the model.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-15-2-review-002.png"></p>
+
+<p>I started up the MainDemo application and navigated to the Tasks view and tried to delete the subject of multiple rows at the same time.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-15-2-review-003.png"></p>
+
+<p>I never even got to press Save because of another new 15.2 feature: <a href="https://community.devexpress.com/blogs/eaf/archive/2015/11/24/xaf-validation-module-enhancements-for-windows-and-the-web-coming-soon-in-v15-2.aspx">inplace validation</a>! The rules are being validated <em>without</em> a round trip to the server!</p>
+
+<p>So let&#8217;s try another way. <em>Inplace Validation</em> does not work with all rule types, so I deleted my <code>RuleRequiredField</code> from the model and instead added a new <code>RuleFromBoolProperty</code> to the <code>DemoTask</code> object as follows:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[MemberDesignTimeVisibility(false)]</span>
+</span><span class='line'><span class="na">[RuleFromBoolProperty(&quot;SubjectIsRequired&quot;, </span>
+</span><span class='line'><span class="na">    DefaultContexts.Save, </span>
+</span><span class='line'><span class="na">    &quot;Subject is required.&quot;, </span>
+</span><span class='line'><span class="na">    UsedProperties = &quot;Subject&quot;, </span>
+</span><span class='line'><span class="na">    SkipNullOrEmptyValues = false)]</span>
+</span><span class='line'><span class="k">public</span> <span class="kt">bool</span> <span class="n">IsSubjectRequired</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">get</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">!</span><span class="n">String</span><span class="p">.</span><span class="n">IsNullOrWhiteSpace</span><span class="p">(</span><span class="n">Subject</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we go back to the list view for Task and try to set multiple subjects to empty.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-15-2-review-004.png"></p>
+
+<p>Fantastic! This time the broken rules appear for each row and it is quite clear which message belongs to which object.</p>
+
+<p>So the batch editing makes use of inplace validation when it can, but handles more complex validation rules well too. This is an excellent combination because the inpalce validation will help to make the client seem very quick and responsive.</p>
+
+<h2>Conclusion</h2>
+
+<p>This concludes my review of DevExpress 2015.2. We&#8217;ve looked in some detail at two of the most impressive new features - the way reports are serialised and the improvements to client-side validation. These changes help with performance and ease of maintenance and I&#8217;m very happy to see that the DevExpress team has focused on these areas. Looking forward to the 2016 releases!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[DevExpress 2015.2 review part 1]]></title>
@@ -1839,187 +1911,6 @@ The biggest XAF project I work with has one very complex business object. The la
 <p>Whenever I need to check whether I&#8217;ve broken the build, I can just <em>pull to refresh</em>.</p>
 
 <p>When I first discovered the application it had a problem with CruiseControl.NET&#8217;s <a href="http://cruisecontrolnet.org/projects/ccnet/wiki/RemoteServices">remote services</a> (which we needed because the actual build server is on a network machine not visible from the internet). I contacted <em>SixAfter</em> and was very impressed with the helpful response from Michael Primeaux. Within a couple of weeks there was a new version of the app with support for the remote services configuration. Hats off.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Glimpse with DevExpress XAF]]></title>
-    <link href="http://ZeroSharp.github.com/glimpse-with-devexpress-xaf/"/>
-    <updated>2013-12-17T12:41:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/glimpse-with-devexpress-xaf</id>
-    <content type="html"><![CDATA[<p>I have finally got around to getting Glimpse working with XAF. Glimpse is an amazing extensible ASP.NET plug-in which gives you valuable information about what is going on within your server in production. It&#8217;s also very pretty.</p>
-
-<p>Let&#8217;s jump right in and have a look at what XAF looks like with Glimpse running.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-016.png"></p>
-
-<p>That banner along the bottom of the screen is the Glimpse heads up display (HUD). Hovering over various sections of it pops up more information:</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-019.png"></p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-018.png"></p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-017.png"></p>
-
-<p>If you click on the Glimpse icon in the bottom right, you get even more goodies. Here&#8217;s the <em>Timeline</em> view.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-011.png"></p>
-
-<p>And there are many other tabs available. The <em>Configuration</em> tab shows the contents of the <em>web.config</em> file.
-<img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-009.png">
-Here&#8217;s the <em>Control Tree</em> tab:
-<img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-010.png">
-The <em>Page Life Cycle</em> tab:
-<img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-005.png">
-The <em>Request</em> tab:
-<img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-004.png">
-The <em>Session</em> tab:
-<img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-003.png">
-And the <em>Trace</em> tab including the DevExpress log items that were added to the trace during this page load:
-<img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-002.png">
-As you can see, this is a very valuable glimpse into the server which can be turned on as needed in production.</p>
-
-<h2>Adding Glimpse to an XAF application</h2>
-
-<p>First install the Glimpse Nuget package into the project.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-001.png"></p>
-
-<p>The Nuget installation will make various incorrect changes to the web.config. The corrected sections are below:</p>
-
-<p>First, add Glimpse to the <code>&lt;configSections&gt;</code>.</p>
-
-<figure class='code'><figcaption><span>web.config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='diff'><span class='line'>  &lt;configSections&gt;
-</span><span class='line'>    &lt;sectionGroup name=&quot;devExpress&quot;&gt;
-</span><span class='line'>      &lt;section name=&quot;compression&quot; requirePermission=&quot;false&quot; type=&quot;DevExpress.Web.ASPxClasses.CompressionConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'>      &lt;section name=&quot;themes&quot; type=&quot;DevExpress.Web.ASPxClasses.ThemesConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'>      &lt;section name=&quot;settings&quot; type=&quot;DevExpress.Web.ASPxClasses.SettingsConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'>    &lt;/sectionGroup&gt;
-</span><span class='line'><span class="gi">+   &lt;section name=&quot;glimpse&quot; type=&quot;Glimpse.Core.Configuration.Section, Glimpse.Core&quot; /&gt;</span>
-</span><span class='line'>  &lt;/configSections&gt;
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Next, <code>&lt;system.webserver&gt;</code> should look like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='diff'><span class='line'>  &lt;system.webServer&gt;
-</span><span class='line'>    &lt;handlers&gt;
-</span><span class='line'>      &lt;add name=&quot;TestControls.axd_*&quot; path=&quot;TestControls.axd&quot; verb=&quot;*&quot; type=&quot;DevExpress.ExpressApp.Web.TestScripts.TestScriptsManager, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; preCondition=&quot;integratedMode&quot; /&gt;
-</span><span class='line'>      &lt;add name=&quot;ImageResource.axd_*&quot; path=&quot;ImageResource.axd&quot; verb=&quot;*&quot; type=&quot;DevExpress.ExpressApp.Web.ImageResourceHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; preCondition=&quot;integratedMode&quot; /&gt;
-</span><span class='line'>      &lt;add name=&quot;SessionKeepAliveReconnectHttpHandler&quot; verb=&quot;*&quot; path=&quot;SessionKeepAliveReconnect.aspx*&quot; type=&quot;DevExpress.ExpressApp.Web.SessionKeepAliveReconnectHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; preCondition=&quot;integratedMode&quot; /&gt;
-</span><span class='line'>      &lt;add name=&quot;WebWindowTemplateHttpHandler&quot; verb=&quot;*&quot; path=&quot;*.aspx&quot; type=&quot;DevExpress.ExpressApp.Web.WebWindowTemplateHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; preCondition=&quot;integratedMode&quot; /&gt;
-</span><span class='line'>      &lt;add name=&quot;ASPxUploadProgressHandler&quot; verb=&quot;GET,POST&quot; path=&quot;ASPxUploadProgressHandlerPage.ashx&quot; type=&quot;DevExpress.Web.ASPxUploadControl.ASPxUploadProgressHttpHandler, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; preCondition=&quot;integratedMode&quot; /&gt;
-</span><span class='line'>      &lt;add name=&quot;ReportExportResource.axd_*&quot; preCondition=&quot;integratedMode&quot; verb=&quot;*&quot; path=&quot;ReportExportResource.axd&quot; type=&quot;DevExpress.ExpressApp.Reports.Web.ReportExportHttpHandler, DevExpress.ExpressApp.Reports.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'> +    &lt;add name=&quot;Glimpse&quot; path=&quot;glimpse.axd&quot; verb=&quot;GET&quot; type=&quot;Glimpse.AspNet.HttpHandler, Glimpse.AspNet&quot; preCondition=&quot;integratedMode&quot; /&gt;
-</span><span class='line'>    &lt;/handlers&gt;
-</span><span class='line'>    &lt;validation validateIntegratedModeConfiguration=&quot;false&quot; /&gt;
-</span><span class='line'>    &lt;modules&gt;
-</span><span class='line'>      &lt;add name=&quot;ASPxHttpHandlerModule&quot; type=&quot;DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'> +    &lt;add name=&quot;Glimpse&quot; type=&quot;Glimpse.AspNet.HttpModule, Glimpse.AspNet&quot; preCondition=&quot;integratedMode&quot; /&gt;
-</span><span class='line'>    &lt;/modules&gt;
-</span><span class='line'>  &lt;/system.webServer&gt;
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>NuGet added some incorrect definitions to <code>system.web</code>. Make sure to restore this section to the DevExpress default:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;system.web&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;httpRuntime</span> <span class="na">requestValidationMode=</span><span class="s">&quot;2.0&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;sessionState</span> <span class="na">mode=</span><span class="s">&quot;InProc&quot;</span> <span class="na">timeout=</span><span class="s">&quot;2&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;httpHandlers</span> <span class="na">configSource=</span><span class="s">&quot;HttpHandlers.Web.Config&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;httpModules</span> <span class="na">configSource=</span><span class="s">&quot;HttpModules.Web.Config&quot;</span> <span class="nt">/&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And now we&#8217;ll add the corrected changes to <code>HttpHandlers.Web.Config</code> and <code>HttpModule.Web.Config</code></p>
-
-<figure class='code'><figcaption><span>HttpHandlers.Web.Config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='diff'><span class='line'>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-</span><span class='line'>&lt;httpHandlers&gt;
-</span><span class='line'><span class="gi">+ &lt;add verb=&quot;GET&quot; path=&quot;glimpse.axd&quot; type=&quot;Glimpse.AspNet.HttpHandler, Glimpse.AspNet&quot; /&gt;</span>
-</span><span class='line'>  &lt;add verb=&quot;*&quot; path=&quot;TestControls.axd&quot; type=&quot;DevExpress.ExpressApp.Web.TestScripts.TestScriptsManager, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'>  &lt;add verb=&quot;*&quot; path=&quot;ImageResource.axd&quot; type=&quot;DevExpress.ExpressApp.Web.ImageResourceHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'>  &lt;add verb=&quot;*&quot; path=&quot;SessionKeepAliveReconnect.aspx*&quot; type=&quot;DevExpress.ExpressApp.Web.SessionKeepAliveReconnectHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'>  &lt;add verb=&quot;*&quot; path=&quot;*.aspx&quot; type=&quot;DevExpress.ExpressApp.Web.WebWindowTemplateHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'>  &lt;add verb=&quot;GET,POST&quot; path=&quot;ASPxUploadProgressHandlerPage.ashx&quot; validate=&quot;false&quot; type=&quot;DevExpress.Web.ASPxUploadControl.ASPxUploadProgressHttpHandler, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'>  &lt;add verb=&quot;*&quot; path=&quot;ReportExportResource.axd&quot; type=&quot;DevExpress.ExpressApp.Reports.Web.ReportExportHttpHandler, DevExpress.ExpressApp.Reports.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'>&lt;/httpHandlers&gt;
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span>HttpModules.Web.Config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;httpModules&gt;</span>
-</span><span class='line'>+ <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;Glimpse&quot;</span> <span class="na">type=</span><span class="s">&quot;Glimpse.AspNet.HttpModule, Glimpse.AspNet&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ASPxHttpHandlerModule&quot;</span> <span class="na">type=</span><span class="s">&quot;DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'><span class="nt">&lt;/httpModules&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Next, there is <a href="https://github.com/Glimpse/Glimpse/issues/632">an outstanding problem</a> with the current release version of the Glimpse ASP.NET NuGet package (1.6.0) which prevents it from working with the development webserver. (Apparently it&#8217;s fixed in 1.7.0 which should be released soon). If you try to run MainDemo.Web you will get the following error:</p>
-
-<pre><code>Type 'System.Web.HttpContextWrapper' in assembly 'System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' is not marked as serializable.
-</code></pre>
-
-<p>However it works fine against IIS Express (or full IIS). Go to the MainDemo.Web and change the debug properties as follows:</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-015.png"></p>
-
-<p>Then run the web application. Glimpse is off by default. In order to turn it on, you need to set a cookie, which you can do by navigating to <code>Glimpse.axd</code>. This is the Glimpse configuration screen.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-glimpse-014.png"></p>
-
-<h2>Additional Glimpse extensions</h2>
-
-<p>Glimpse is extensible and there are <a href="http://getglimpse.com/Packages">many additional plugins</a> available. Many of these take the form of additional tabs with details about a particular aspect of your application: SQL Queries, Elmah errors, ASP.NET caching, logging, dependency injection, <em>etc.</em></p>
-
-<h2>MainDemo Sample Project</h2>
-
-<p>I have uploaded a modified XAF MainDemo to this <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Glimpse">GitHub repository</a> with all the above changes. (Don&#8217;t forget to debug against IIS Express).</p>
 ]]></content>
   </entry>
   

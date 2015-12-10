@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-12-09T17:01:28+00:00</updated>
+  <updated>2015-12-10T09:28:03+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,78 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[DevExpress 2015.2 review part 2]]></title>
+    <link href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-2/"/>
+    <updated>2015-12-10T09:43:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-2</id>
+    <content type="html"><![CDATA[<p>This is the second and final dive into some of the new DevExpress XAF 2015.2 features. The <a href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1/">first part</a> covers the Report Designer and the new XML serialisation.</p>
+
+<h2>Batch editing</h2>
+
+<p>Another feature I&#8217;m excited about is the support for batch editing within the web application grids.</p>
+
+<p>Let&#8217;s see what happens when combined with the validation rules. What happens if I edit two rows but only one has a validation problem - does the whole batch get rejected? Or just the row with the problem?</p>
+
+<p>First I modified the edit mode of the Tasks grid to <code>Batch</code> via the model.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-15-2-review-001.png"></p>
+
+<p>Then I added a new <code>RuleRequiredField</code> validation rule via the model.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-15-2-review-002.png"></p>
+
+<p>I started up the MainDemo application and navigated to the Tasks view and tried to delete the subject of multiple rows at the same time.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-15-2-review-003.png"></p>
+
+<p>I never even got to press Save because of another new 15.2 feature: <a href="https://community.devexpress.com/blogs/eaf/archive/2015/11/24/xaf-validation-module-enhancements-for-windows-and-the-web-coming-soon-in-v15-2.aspx">inplace validation</a>! The rules are being validated <em>without</em> a round trip to the server!</p>
+
+<p>So let&#8217;s try another way. <em>Inplace Validation</em> does not work with all rule types, so I deleted my <code>RuleRequiredField</code> from the model and instead added a new <code>RuleFromBoolProperty</code> to the <code>DemoTask</code> object as follows:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[MemberDesignTimeVisibility(false)]</span>
+</span><span class='line'><span class="na">[RuleFromBoolProperty(&quot;SubjectIsRequired&quot;, </span>
+</span><span class='line'><span class="na">    DefaultContexts.Save, </span>
+</span><span class='line'><span class="na">    &quot;Subject is required.&quot;, </span>
+</span><span class='line'><span class="na">    UsedProperties = &quot;Subject&quot;, </span>
+</span><span class='line'><span class="na">    SkipNullOrEmptyValues = false)]</span>
+</span><span class='line'><span class="k">public</span> <span class="kt">bool</span> <span class="n">IsSubjectRequired</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">get</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">!</span><span class="n">String</span><span class="p">.</span><span class="n">IsNullOrWhiteSpace</span><span class="p">(</span><span class="n">Subject</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we go back to the list view for Task and try to set multiple subjects to empty.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-15-2-review-004.png"></p>
+
+<p>Fantastic! This time the broken rules appear for each row and it is quite clear which message belongs to which object.</p>
+
+<p>So the batch editing makes use of inplace validation when it can, but handles more complex validation rules well too. This is an excellent combination because the inpalce validation will help to make the client seem very quick and responsive.</p>
+
+<h2>Conclusion</h2>
+
+<p>This concludes my review of DevExpress 2015.2. We&#8217;ve looked in some detail at two of the most impressive new features - the way reports are serialised and the improvements to client-side validation. These changes help with performance and ease of maintenance and I&#8217;m very happy to see that the DevExpress team has focused on these areas. Looking forward to the 2016 releases!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[DevExpress 2015.2 review part 1]]></title>
@@ -2471,97 +2543,6 @@ In the past I have always thought of NDepend as a complex tool. I was never sure
 <p>Much more readable. Also more maintainable because all queries are in one place and make use of good old LINQ. It&#8217;s also easier to test the queries because they are independent of the calling code.</p>
 
 <p>See <a href="https://github.com/ZeroSharp/Xaf_MainDemo_FluentQueries">a sample implementation</a> built against the DevExpress XAF MainDemo on GitHub.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Fluent queries with DevExpress XPO - Intro]]></title>
-    <link href="http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-intro/"/>
-    <updated>2013-08-12T17:54:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-intro</id>
-    <content type="html"><![CDATA[<p>There are <a href="http://documentation.devexpress.com/#xaf/CustomDocument3052">many ways to perform queries with XPO</a>.</p>
-
-<p>You can do this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Session</span><span class="p">.</span><span class="n">FindObject</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;(</span><span class="k">new</span> <span class="n">BinaryOperator</span><span class="p">(</span><span class="s">&quot;Name&quot;</span><span class="p">,</span> <span class="s">&quot;Elvis&quot;</span><span class="p">));</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>or this</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Session</span><span class="p">.</span><span class="n">FindObject</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;(</span><span class="n">CriteriaOperator</span><span class="p">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">&quot;Name = &#39;Elvis&#39;&quot;</span><span class="p">));</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Another way to use the <a href="http://documentation.devexpress.com/#XPO/CustomDocument2537">simplified criteria syntax</a>, and with the <a href="https://code.google.com/p/dxcorecommunityplugins/wiki/XPO_EasyFields">Xpo_EasyFields CodeRush plugin</a>. Then you can do:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Session</span><span class="p">.</span><span class="n">FindObject</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;(</span><span class="n">Customer</span><span class="p">.</span><span class="n">Fields</span><span class="p">.</span><span class="n">Name</span> <span class="p">==</span> <span class="s">&quot;Elvis&quot;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>For each of the above, you can optionally query within the transaction by passing in the <code>PersistentCriteriaEvaluationBehavior.InTransaction</code> parameter.</p>
-
-<p>Or we can use LINQ via <code>XPQuery&lt;T&gt;.TransformExpression()</code>.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Session</span><span class="p">.</span><span class="n">FindObject</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;(</span>
-</span><span class='line'>    <span class="n">XPQuery</span><span class="p">&lt;</span><span class="n">Contact</span><span class="p">&gt;.</span><span class="n">TransformExpression</span><span class="p">(</span><span class="n">Session</span><span class="p">,</span> <span class="n">c</span> <span class="p">=&gt;</span> <span class="n">c</span><span class="p">.</span><span class="n">Name</span> <span class="p">==</span> <span class="s">&quot;Elvis&quot;</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>All of these methods are powerful, but the power comes at a cost. The syntax is neither elegant nor particularly clear and as a result it is not very practical to maintain or test.</p>
-
-<h2>A Fluent Interface for XPO</h2>
-
-<p>How about if we could do the following?</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">var</span> <span class="n">customer</span> <span class="p">=</span> <span class="n">Session</span>
-</span><span class='line'>                <span class="p">.</span><span class="n">Query</span><span class="p">()</span>
-</span><span class='line'>                  <span class="p">.</span><span class="n">Contacts</span>
-</span><span class='line'>                    <span class="p">.</span><span class="n">ByName</span><span class="p">(</span><span class="s">&quot;Elvis&quot;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Or, for a more elaborate example:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="kt">var</span> <span class="n">customer</span> <span class="p">=</span> <span class="n">Session</span>
-</span><span class='line'>                 <span class="p">.</span><span class="n">Query</span><span class="p">()</span>
-</span><span class='line'>                 <span class="p">.</span><span class="n">InTransaction</span>
-</span><span class='line'>                    <span class="p">.</span><span class="n">Contacts</span>
-</span><span class='line'>                      <span class="p">.</span><span class="n">ByPosition</span><span class="p">(</span><span class="s">&quot;Developer&quot;</span><span class="p">)</span>
-</span><span class='line'>                        <span class="p">.</span><span class="n">ThatHave</span>
-</span><span class='line'>                          <span class="p">.</span><span class="n">NoPhoto</span><span class="p">()</span>
-</span><span class='line'>                        <span class="p">.</span><span class="n">And</span>
-</span><span class='line'>                          <span class="p">.</span><span class="n">TasksInProgress</span><span class="p">()</span>
-</span><span class='line'>                        <span class="p">.</span><span class="n">And</span>
-</span><span class='line'>                          <span class="p">.</span><span class="n">TasksWith</span><span class="p">(</span><span class="n">Priority</span><span class="p">.</span><span class="n">High</span><span class="p">)</span>
-</span><span class='line'>                 <span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>In the next post I&#8217;ll show how to put the fluent interface code together.</p>
 ]]></content>
   </entry>
   

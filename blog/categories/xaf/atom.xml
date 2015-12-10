@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xaf | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xaf/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-12-09T17:01:28+00:00</updated>
+  <updated>2015-12-10T09:28:03+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,71 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[DevExpress 2015.2 review part 2]]></title>
+    <link href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-2/"/>
+    <updated>2015-12-10T09:43:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-2</id>
+    <content type="html"><![CDATA[<p>This is the second and final dive into some of the new DevExpress XAF 2015.2 features. The <a href="/devexpress-15-dot-2-review-part-1/">first part</a> covers the Report Designer and the new XML serialisation.</p>
+
+<h2>Batch editing</h2>
+
+<p>Another feature I'm excited about is the support for batch editing within the web application grids.</p>
+
+<p>Let's see what happens when combined with the validation rules. What happens if I edit two rows but only one has a validation problem - does the whole batch get rejected? Or just the row with the problem?</p>
+
+<p>First I modified the edit mode of the Tasks grid to <code>Batch</code> via the model.</p>
+
+<p><img src="/images/blog/devexpress-15-2-review-001.png"></p>
+
+<p>Then I added a new <code>RuleRequiredField</code> validation rule via the model.</p>
+
+<p><img src="/images/blog/devexpress-15-2-review-002.png"></p>
+
+<p>I started up the MainDemo application and navigated to the Tasks view and tried to delete the subject of multiple rows at the same time.</p>
+
+<p><img src="/images/blog/devexpress-15-2-review-003.png"></p>
+
+<p>I never even got to press Save because of another new 15.2 feature: <a href="https://community.devexpress.com/blogs/eaf/archive/2015/11/24/xaf-validation-module-enhancements-for-windows-and-the-web-coming-soon-in-v15-2.aspx">inplace validation</a>! The rules are being validated <em>without</em> a round trip to the server!</p>
+
+<p>So let's try another way. <em>Inplace Validation</em> does not work with all rule types, so I deleted my <code>RuleRequiredField</code> from the model and instead added a new <code>RuleFromBoolProperty</code> to the <code>DemoTask</code> object as follows:</p>
+
+<p>```c#
+[MemberDesignTimeVisibility(false)]
+[RuleFromBoolProperty("SubjectIsRequired",</p>
+
+<pre><code>DefaultContexts.Save, 
+"Subject is required.", 
+UsedProperties = "Subject", 
+SkipNullOrEmptyValues = false)]
+</code></pre>
+
+<p>public bool IsSubjectRequired
+{</p>
+
+<pre><code>get
+{
+    return !String.IsNullOrWhiteSpace(Subject);
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Now we go back to the list view for Task and try to set multiple subjects to empty.</p>
+
+<p><img src="/images/blog/devexpress-15-2-review-004.png"></p>
+
+<p>Fantastic! This time the broken rules appear for each row and it is quite clear which message belongs to which object.</p>
+
+<p>So the batch editing makes use of inplace validation when it can, but handles more complex validation rules well too. This is an excellent combination because the inpalce validation will help to make the client seem very quick and responsive.</p>
+
+<h2>Conclusion</h2>
+
+<p>This concludes my review of DevExpress 2015.2. We've looked in some detail at two of the most impressive new features - the way reports are serialised and the improvements to client-side validation. These changes help with performance and ease of maintenance and I'm very happy to see that the DevExpress team has focused on these areas. Looking forward to the 2016 releases!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[DevExpress 2015.2 review part 1]]></title>
@@ -203,61 +268,6 @@ Here I had a refactoring dilemma to solve. Either I need to rewrite all of the a
 
 <p>I still had a lot of failing unit tests. One seemingly minor change to XAF validation proved to be a lot of work to fix in our code.
 Since 13.1, the XAF <code>Validator</code> class now requires an <code>IObjectSpace</code> parameter in the constructor. This was by far the biggest problem to fix and is the subject of the next blog post.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Force a complete garbage collection in an ASP.NET application.]]></title>
-    <link href="http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application/"/>
-    <updated>2015-08-05T09:26:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application</id>
-    <content type="html"><![CDATA[<p>How can I force a full garbage collection easily within an ASP.NET application? The method here is for XAF web applications but the same approach should work with any ASP.NET app.</p>
-
-<p><span class='pullquote-right' data-pullquote='First up: Never mess with the .NET garbage collector.'>
-First up: Never mess with the .NET garbage collector.</p>
-
-<p>I sometimes mess with the garbage collector in .NET when I'm trying to pin down some memory problem. Also, after <a href="/load-testing-xaf-part-1-deploying/">a load test</a>, I prefer to force the garbage collector to collect everything it can so that I can check that the memory drops as expected.
-</span></p>
-
-<p>Garbage collection in .NET is complex and it is hard to be sure you've done it correctly. <a href="///%20See%20http://blogs.msdn.com/b/tess/archive/2006/02/02/net-memory-my-object-is-not-rooted-why-wasn-t-it-garbage-collected.aspx">This ancient article by Tess Ferrandez</a> pointed me in the following direction.</p>
-
-<p>```c#
-void ForceGarbageCollection()
-{</p>
-
-<pre><code>/// This will garbage collect all generations (including large object), 
-GC.Collect(3);
-/// then execute any finalizers
-GC.WaitForPendingFinalizers();
-/// and then garbage collect again to take care of all the objects that had finalizers.            
-GC.Collect(3);
-</code></pre>
-
-<p>}
-```</p>
-
-<p>How can we easily trigger this routine in an XAF web application? First, add the following to the <em>Global.asax.cs</em> file:</p>
-
-<p>```c# Global.asax.cs
-protected void Application_BeginRequest(object sender, EventArgs e) {</p>
-
-<pre><code>var shouldForceGarbageCollection = Request.QueryString["ForceGC"] != null;
-if (shouldForceGarbageCollection)
-{
-    ForceGarbageCollection();
-    Response.Write("&lt;H1&gt;Forced garbage collection OK!&lt;/H1&gt;");
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>Then whenever you want to trigger a garbage collection, visit the following URL:</p>
-
-<pre><code>http://.../Login.aspx?ForceGC=1
-</code></pre>
-
-<p>You should see the text <strong>'Forced garbage collection OK'</strong> in the top left of the browser window.</p>
 ]]></content>
   </entry>
   
