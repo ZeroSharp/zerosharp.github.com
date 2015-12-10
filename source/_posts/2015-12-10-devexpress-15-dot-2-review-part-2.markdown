@@ -5,7 +5,6 @@ date: 2015-12-10 09:43
 comments: true
 categories: [c#, devexpress, xaf]
 description: A review of the new DevExpress 2015.2 release with particular focus on the XAF ASP.NET batch editing in list views.
-published: false
 ---
 This is the second and final dive into some of the new DevExpress XAF 2015.2 features. The [first part](/devexpress-15-dot-2-review-part-1/) covers the Report Designer and the new XML serialisation.  
 
