@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ndepend | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/ndepend/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-12-10T09:28:03+00:00</updated>
+  <updated>2015-12-22T20:48:26+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[A review of NDepend 5]]></title>
     <link href="http://ZeroSharp.github.com/a-review-of-ndepend-5/"/>
-    <updated>2013-10-02T17:54:00+01:00</updated>
+    <updated>2013-10-02T17:54:00+02:00</updated>
     <id>http://ZeroSharp.github.com/a-review-of-ndepend-5</id>
     <content type="html"><![CDATA[<p>NDepend is a commercial static analysis tool for .NET managed code. It's been around a long time (since 2004!). Version 5 was just released and in this post I'm going to try it out on the DevExpress MainDemo.</p>
 

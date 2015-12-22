@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-12-10T09:28:03+00:00</updated>
+  <updated>2015-12-22T20:48:26+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Fluent queries with DevExpress XPO - Implementation]]></title>
     <link href="http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-implementation/"/>
-    <updated>2013-08-14T11:03:00+01:00</updated>
+    <updated>2013-08-14T11:03:00+02:00</updated>
     <id>http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-implementation</id>
     <content type="html"><![CDATA[<p>Continuing from my <a href="http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-intro">last post</a>, I&#8217;ll demonstrate how to create a fluent interface so that you can do:</p>
 
@@ -313,7 +313,7 @@
   <entry>
     <title type="html"><![CDATA[Fluent queries with DevExpress XPO - Intro]]></title>
     <link href="http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-intro/"/>
-    <updated>2013-08-12T17:54:00+01:00</updated>
+    <updated>2013-08-12T17:54:00+02:00</updated>
     <id>http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-intro</id>
     <content type="html"><![CDATA[<p>There are <a href="http://documentation.devexpress.com/#xaf/CustomDocument3052">many ways to perform queries with XPO</a>.</p>
 
@@ -404,7 +404,7 @@
   <entry>
     <title type="html"><![CDATA[XpoBatch source code available]]></title>
     <link href="http://ZeroSharp.github.com/xpobatch-source-code-available/"/>
-    <updated>2012-07-25T16:24:00+01:00</updated>
+    <updated>2012-07-25T16:24:00+02:00</updated>
     <id>http://ZeroSharp.github.com/xpobatch-source-code-available</id>
     <content type="html"><![CDATA[<p>The source code for the fast batch operations with DevExpress XPO <a href="https://github.com/ZeroSharp/XpoBatch">is now available on on GitHub</a>.</p>
 
@@ -423,7 +423,7 @@
   <entry>
     <title type="html"><![CDATA[Fast batch modifications with DevExpress XPO]]></title>
     <link href="http://ZeroSharp.github.com/fast-batch-modifications-with-devexpress-xpo/"/>
-    <updated>2012-07-24T14:02:00+01:00</updated>
+    <updated>2012-07-24T14:02:00+02:00</updated>
     <id>http://ZeroSharp.github.com/fast-batch-modifications-with-devexpress-xpo</id>
     <content type="html"><![CDATA[<p>Last week I wrote about <a href="http://ZeroSharp.github.com/fast-batch-deletions-with-devexpress-xpo/">fast batch deletions</a>. In this post I&#8217;ll show how to do the same for modifications.</p>
 
@@ -696,7 +696,7 @@
   <entry>
     <title type="html"><![CDATA[Fast batch deletions with DevExpress XPO]]></title>
     <link href="http://ZeroSharp.github.com/fast-batch-deletions-with-devexpress-xpo/"/>
-    <updated>2012-07-12T17:00:00+01:00</updated>
+    <updated>2012-07-12T17:00:00+02:00</updated>
     <id>http://ZeroSharp.github.com/fast-batch-deletions-with-devexpress-xpo</id>
     <content type="html"><![CDATA[<p>When deleting a collection of objects, DevExpress recommends using <a href="http://documentation.devexpress.com/#XPO/DevExpressXpoSession_Deletetopic116"><code>Session.Delete(ICollection objects)</code></a>. This has the same effect as calling the <code>Delete()</code> method for every object in the collection so that the business logic is applied correctly. The business logic in this context refers to code such as that in the <code>OnDeleting()</code>, <code>OnDeleted()</code> methods, but it also includes the clearing of references to the object by other objects. This approach is slow, but ensures the integrity of the data.</p>
 

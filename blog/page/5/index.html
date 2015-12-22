@@ -9,7 +9,8 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Writing a Selenium User Test against MainDemo This is another post in a series about load testing XAF applications. Previously in the series: Load &hellip;">
+  <meta name="description" content="This is another post in a series about load testing XAF applications. Previously in the series: Load Testing XAF: Overview
+Part 1: Deploying the &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -119,6 +120,69 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Load Testing XAF: Part 3 - Uploading and Validating the Virtual User Script</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-04-03T16:39:00+02:00" pubdate data-updated="true">Apr 3<span>rd</span>, 2013</time>
+        
+         | <a href="/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This is another post in a series about load testing XAF applications.  Previously in the series:</p>
+
+<ul>
+<li><a href="/load-testing-xaf-overview/">Load Testing XAF: Overview</a></li>
+<li><a href="/load-testing-xaf-part-1-deploying/">Part 1: Deploying the target webserver</a></li>
+<li><a href="/load-testing-xaf-part-2-selenium/">Part 2: Selenium</a></li>
+</ul>
+
+
+<p>In this part, we will load test the application we set up in <a href="/load-testing-xaf-part-1-deploying/">Part 1</a>, using the Selenium load test we created in <a href="/load-testing-xaf-part-2-selenium/">Part 2</a>.</p>
+
+<h2>Neustar Web Performance Management</h2>
+
+<p>NeuStar (formerly BrowserMob) are a company specialised in web application performance monitoring. We are interested in their <a href="https://home.wpm.neustar.biz/">web performance module</a>. It is free to create an account. To run a test with less than 25 virtual users costs only $0.15 per virtual user. Tests with more than 25 users (up to 5000) require an additional paid plan.</p>
+
+<h2>Create a script</h2>
+
+<p>In order to run a load test, we first need to create the script and validate it. Go to the <a href="https://script.wpm.neustar.biz/">scripting</a> page and select &#8216;Create a new script&#8217;. Then cut and paste the <a href="https://gist.github.com/shamp00/5302223">Selenium code for <code>MainDemo_CycleThroughTabs.js</code></a> from the <a href="/load-testing-xaf-part-2-selenium/">previous post</a>.</p>
+
+<p>Now change the <code>targetHost</code> variable near the top of the file to point to the location of your MainDemo installation. You can then validate the script. This will actually run through the Selenium test on a newly provisioned Amazon instance to ensure that it passes.</p>
+
+<p><img src="/images/blog/load-testing/load-testing-004.png"></p>
+
+<p>If you get a green icon, you can proceed with setting up a load test, otherwise you can see what went wrong in a video of the user session.</p>
+
+<p>In the next post we will configure and launch the load test.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/load-testing-xaf-part-2-selenium/">Load Testing XAF: Part 2 - Selenium</a></h1>
     
     
@@ -135,7 +199,7 @@
   
 
 
-<time datetime="2013-03-28T16:56:00+00:00" pubdate data-updated="true">Mar 28<span>th</span>, 2013</time>
+<time datetime="2013-03-28T16:56:00+01:00" pubdate data-updated="true">Mar 28<span>th</span>, 2013</time>
         
          | <a href="/load-testing-xaf-part-2-selenium/#disqus_thread">Comments</a>
         
@@ -530,7 +594,7 @@
   
 
 
-<time datetime="2013-03-22T11:21:00+00:00" pubdate data-updated="true">Mar 22<span>nd</span>, 2013</time>
+<time datetime="2013-03-22T11:21:00+01:00" pubdate data-updated="true">Mar 22<span>nd</span>, 2013</time>
         
          | <a href="/load-testing-xaf-part-1-deploying/#disqus_thread">Comments</a>
         
@@ -596,7 +660,7 @@
   
 
 
-<time datetime="2013-03-12T18:20:00+00:00" pubdate data-updated="true">Mar 12<span>th</span>, 2013</time>
+<time datetime="2013-03-12T18:20:00+01:00" pubdate data-updated="true">Mar 12<span>th</span>, 2013</time>
         
          | <a href="/load-testing-xaf-overview/#disqus_thread">Comments</a>
         
@@ -669,7 +733,7 @@
   
 
 
-<time datetime="2013-02-28T17:40:00+00:00" pubdate data-updated="true">Feb 28<span>th</span>, 2013</time>
+<time datetime="2013-02-28T17:40:00+01:00" pubdate data-updated="true">Feb 28<span>th</span>, 2013</time>
         
          | <a href="/how-to-recursively-change-file-ownership/#disqus_thread">Comments</a>
         
@@ -731,7 +795,7 @@
   
 
 
-<time datetime="2013-02-14T05:10:00+00:00" pubdate data-updated="true">Feb 14<span>th</span>, 2013</time>
+<time datetime="2013-02-14T05:10:00+01:00" pubdate data-updated="true">Feb 14<span>th</span>, 2013</time>
         
          | <a href="/colourful-git-command-line/#disqus_thread">Comments</a>
         
@@ -772,7 +836,7 @@
   
 
 
-<time datetime="2013-02-08T14:52:00+00:00" pubdate data-updated="true">Feb 8<span>th</span>, 2013</time>
+<time datetime="2013-02-08T14:52:00+01:00" pubdate data-updated="true">Feb 8<span>th</span>, 2013</time>
         
          | <a href="/a-c-number-developers-adventures-in-ios-integrating-git-and-monodevelop/#disqus_thread">Comments</a>
         
@@ -913,7 +977,7 @@ $ git push -u origin --all
   
 
 
-<time datetime="2013-02-01T11:59:00+00:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time>
+<time datetime="2013-02-01T11:59:00+01:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time>
         
          | <a href="/clone-your-octopress-to-blog-from-two-places/#disqus_thread">Comments</a>
         
@@ -1013,7 +1077,7 @@ $ git pull origin master  # update the local master branch
   
 
 
-<time datetime="2013-01-31T17:38:00+00:00" pubdate data-updated="true">Jan 31<span>st</span>, 2013</time>
+<time datetime="2013-01-31T17:38:00+01:00" pubdate data-updated="true">Jan 31<span>st</span>, 2013</time>
         
          | <a href="/installing-ruby-with-homebrew-and-rbenv-on-mac-os-x-mountain-lion/#disqus_thread">Comments</a>
         
@@ -1182,7 +1246,7 @@ ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-darwin12.2.1]
   
 
 
-<time datetime="2013-01-30T11:18:00+00:00" pubdate data-updated="true">Jan 30<span>th</span>, 2013</time>
+<time datetime="2013-01-30T11:18:00+01:00" pubdate data-updated="true">Jan 30<span>th</span>, 2013</time>
         
          | <a href="/a-c-number-developers-adventures-in-ios-getting-started/#disqus_thread">Comments</a>
         
@@ -1232,44 +1296,6 @@ ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-darwin12.2.1]
 <h3>Next up</h3>
 
 <p>Over the next few weeks I&#8217;m aiming to finish the app I built for Startup Weekend and I&#8217;ll be sharing what I learn along the way.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/my-amateur-git-skills-have-lead-to-an-rss-deluge/">My Amateur Git Skills Have Lead to an RSS Deluge</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-29T11:31:00+00:00" pubdate data-updated="true">Jan 29<span>th</span>, 2013</time>
-        
-         | <a href="/my-amateur-git-skills-have-lead-to-an-rss-deluge/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I was trying to upgrade to the latest Octopress version but it seems I did something with the atom.xml file and some of you got every single post as &#8216;new&#8217; in your RSS readers. Not sure what I did, but sorry for any extra mouse clicks. All working now.</p>
 </div>
   
   

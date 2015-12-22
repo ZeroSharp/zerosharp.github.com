@@ -4,7 +4,7 @@
   <title><![CDATA[Category: msbuild | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/msbuild/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-12-10T09:28:03+00:00</updated>
+  <updated>2015-12-22T20:48:26+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Persisting changes to config files within NuGet packages]]></title>
     <link href="http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages/"/>
-    <updated>2014-08-13T06:39:00+01:00</updated>
+    <updated>2014-08-13T06:39:00+02:00</updated>
     <id>http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages</id>
     <content type="html"><![CDATA[<p>Whenever NuGet updates or restores a NuGet package, the config files within it are overwritten. Here's a method to make sure the changes are reapplied via a <a href="http://msdn.microsoft.com/en-us/library/dd465326.aspx">config transform</a> whenever the solution is built.</p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: powershell | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/powershell/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-12-10T09:28:03+00:00</updated>
+  <updated>2015-12-22T20:48:26+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[How to recursively change file ownership]]></title>
     <link href="http://ZeroSharp.github.com/how-to-recursively-change-file-ownership/"/>
-    <updated>2013-02-28T17:40:00+00:00</updated>
+    <updated>2013-02-28T17:40:00+01:00</updated>
     <id>http://ZeroSharp.github.com/how-to-recursively-change-file-ownership</id>
     <content type="html"><![CDATA[<p>I recently ran into some file ownership trouble after cloning a bitbucket repository.</p>
 

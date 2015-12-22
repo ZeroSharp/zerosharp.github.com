@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-12-10T09:28:03+00:00</updated>
+  <updated>2015-12-22T20:48:26+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -14,9 +14,144 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Serverless Framework - Part 1: Up and running]]></title>
+    <link href="http://ZeroSharp.github.com/serverless-framework-part-1-up-and-running/"/>
+    <updated>2015-12-22T20:26:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/serverless-framework-part-1-up-and-running</id>
+    <content type="html"><![CDATA[<p>I was in the middle of a blog post about the JAWS framework and before I had finished it changed its name to <a href="https://github.com/serverless/serverless">the Serverless framework</a>. It is a very clever way to build apps without worrying about provisioning server or whether it will scale. This is because it uses Amazon Web Services and in particular the Amazon lambda compute service. It's currently in beta.</p>
+
+<p>Follow <a href="http://docs.serverless.com/docs/configuring-aws">the instructions</a> for setting up an administrative IAM user for use with the framework.</p>
+
+<p>Make sure you have node and npm installed. You need node 4.0 or greater.</p>
+
+<pre><code>$ node -v
+v4.2.3
+$ npm -v
+2.14.7
+</code></pre>
+
+<p>Install the Serverless framework.</p>
+
+<pre><code>$ npm install serverless -g 
+</code></pre>
+
+<p>Create a new project</p>
+
+<pre><code>$ serverless project create
+</code></pre>
+
+<p>```</p>
+
+<hr />
+
+<p>|   _   .-----.----.--.--.-----.----|  .-----.-----.-----.
+|   |<em><strong>|  -</strong>|   </em>|  |  |  -<strong>|   _|  |  -</strong>|<strong> --|</strong> --|
+|<strong><strong>   |</strong></strong><em>|<strong>|  _</strong>/|</em><em><em><strong>|</strong>| |<strong>|</strong></em></em><em>|</em><strong><strong>|</strong></strong>_|
+|   |   |             The Serverless Application Framework
+|       |                         serverless.com, v.0.0.15
+`-------'
+Serverless: Enter a project name:  (serverlessVyxSv1W8e) potdCheck
+Serverless: Enter a project domain (used for serverless regional bucket names):  (myapp.com) serverless.zerosharp.com
+Serverless: Enter an email to use for AWS alarms:  (me@myapp.com) potdCheck@nosredna.com
+Serverless: Select a region for your project:</p>
+
+<pre><code>us-east-1
+us-west-2
+</code></pre>
+
+<blockquote><p>eu-west-1</p>
+
+<pre><code>ap-northeast-1
+</code></pre>
+
+<p>Serverless: Select an AWS profile for your project:
+default
+Serverless: Creating a project region bucket on S3: serverless.euwest1.zerosharp.com...<br/>
+Serverless: Creating CloudFormation Stack for your new project (~5 mins)...<br/>
+Serverless: Successfully created project: serverlessPotdCheck
+```</p></blockquote>
+
+<p>It takes about 5 minutes to setup the necessary CloudFormation stack for your project. Change directory to the newly created project.</p>
+
+<pre><code>$ cd serverlessPotdCheck
+</code></pre>
+
+<p>Create a new module.</p>
+
+<pre><code>$ serverless module create
+</code></pre>
+
+<p><code>
+Serverless: Enter a name for your new module:  potd
+Serverless: Enter a function name for your new module:  check
+Serverless: Successfully created function: "check"  
+Serverless: Installing "serverless-helpers" for this module via NPM...  
+serverless-helpers-js@0.0.3 node_modules/serverless-helpers-js
+└── dotenv@1.2.0
+Serverless: Successfully created new serverless module "potd" with its first function "check"  
+</code></p>
+
+<p>This has created the javascript code for a basic lambda function which we can immediately deploy.</p>
+
+<pre><code>$ serverless function deploy
+</code></pre>
+
+<p>```  <br/>
+Serverless: Deploying functions in "development" to the following regions: eu-west-1<br/>
+Serverless: | 123123123 { Code:
+   { S3Bucket: 'serverless.euwest1.zerosharp.com',</p>
+
+<pre><code> S3Key: 'Serverless/serverlessPotdCheck/development/lambdas/check@1450717964169.zip' },
+</code></pre>
+
+<p>  FunctionName: 'serverlessPotdCheck-check',
+  Handler: 'modules/potd/check/handler.handler',
+  Role: 'arn:aws:iam::962613113552:role/serverlessPotdCheck-development-r-IamRoleLambda-12LOSLPN3JHS8',
+  Runtime: 'nodejs',
+  Description: 'Serverless Lambda function for project: serverlessPotdCheck',
+  MemorySize: 1024,
+  Publish: true,</p>
+
+<p>  ...</p>
+
+<p>Serverless: Successfully deployed functions in "development" to the following regions: eu-west-1<br/>
+```</p>
+
+<p>Now deploy the endpoints.</p>
+
+<pre><code>$ serverless endpoint deploy
+</code></pre>
+
+<p><code>
+Serverless: Deploying endpoints in "development" to the following regions: eu-west-1  
+Serverless: Successfully deployed endpoints in "development" to the following regions:  
+Serverless: eu-west-1 ------------------------  
+Serverless:   GET - https://udjkzpj2a2.execute-api.eu-west-1.amazonaws.com/development/potd/check
+</code></p>
+
+<p>Now open a browser and navigate to the URL in the last line. You should see the following JSON response.</p>
+
+<p>```json
+{</p>
+
+<pre><code>message: "Your Serverless function ran successfully!"
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Now that's already fantastic. With a handful of commands we have deployed an arbitrary javascript function to a URL endpoint very cheaply and with automatic scaling. We never had to consider instance size or memory or operating system.</p>
+
+<p>And it's extremely extensible too - thanks to the other AWS services, we can easily make it secure (with Amazon Cognito) kick off emails (SES), store files (S3), add persistence (DynamoDB), etc.</p>
+
+<p>In the next post, I'll be applying it to a real life scenario to replace an existing web service.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Load Testing XAF: Part 5 - Analysis]]></title>
     <link href="http://ZeroSharp.github.com/load-testing-xaf-part-5-analysis/"/>
-    <updated>2013-04-14T07:37:00+01:00</updated>
+    <updated>2013-04-14T07:37:00+02:00</updated>
     <id>http://ZeroSharp.github.com/load-testing-xaf-part-5-analysis</id>
     <content type="html"><![CDATA[<p>This is the final post in a series about load testing XAF applications.  Previously in the series:</p>
 
@@ -117,7 +252,7 @@
   <entry>
     <title type="html"><![CDATA[Load Testing XAF: Part 4 - Launching the load test]]></title>
     <link href="http://ZeroSharp.github.com/load-testing-xaf-part-4-launching-the-load-test/"/>
-    <updated>2013-04-08T11:19:00+01:00</updated>
+    <updated>2013-04-08T11:19:00+02:00</updated>
     <id>http://ZeroSharp.github.com/load-testing-xaf-part-4-launching-the-load-test</id>
     <content type="html"><![CDATA[<p>This is another post in a series about load testing XAF applications.  Previously in the series:</p>
 
@@ -148,7 +283,7 @@
   <entry>
     <title type="html"><![CDATA[Load Testing XAF: Part 3 - Uploading and Validating the Virtual User Script]]></title>
     <link href="http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/"/>
-    <updated>2013-04-03T16:39:00+01:00</updated>
+    <updated>2013-04-03T16:39:00+02:00</updated>
     <id>http://ZeroSharp.github.com/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script</id>
     <content type="html"><![CDATA[<p>This is another post in a series about load testing XAF applications.  Previously in the series:</p>
 
@@ -182,7 +317,7 @@
   <entry>
     <title type="html"><![CDATA[Load Testing XAF: Part 2 - Selenium]]></title>
     <link href="http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium/"/>
-    <updated>2013-03-28T16:56:00+00:00</updated>
+    <updated>2013-03-28T16:56:00+01:00</updated>
     <id>http://ZeroSharp.github.com/load-testing-xaf-part-2-selenium</id>
     <content type="html"><![CDATA[<h1>Writing a Selenium User Test against MainDemo</h1>
 
@@ -592,43 +727,6 @@ ttp://localhost:58404/Default.aspx' (CycleThroughTabs.js#50)
 <p>I see Firefox startup after a few seconds and the script correctly cycles through all of the tabs and then exits.</p>
 
 <p>We will use this scenario as the basis of a load test in the next post.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Load Testing XAF: Part 1 - Deploying]]></title>
-    <link href="http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/"/>
-    <updated>2013-03-22T11:21:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying</id>
-    <content type="html"><![CDATA[<p>This is the first part of a tutorial about load testing XAF applications. See the <a href="/load-testing-xaf-overview/">overview</a> for a bit of background. In this post we set up the target webserver.</p>
-
-<p>You can target any machine which has a publicly available web address, but for this tutorial, I'm' deploying the MainDemo to the Amazon cloud, by following the instructions in <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1</a> and <a href="http://blog.zerosharp.com/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2</a> of my previous series about Amazon Web Services.</p>
-
-<p>I am using version 12.2.7 of the DevExpress XAF MainDemo. There are a couple of extra changes to make to the web.config.</p>
-
-<ul>
-<li>Set debug to false <code>&lt;compilation targetFramework="4.0" debug="false"&gt;</code> in the <code>&lt;compilation&gt;</code> section of <code>&lt;system.web&gt;</code></li>
-<li>Switch to <em>Release</em> mode before deploying.</li>
-</ul>
-
-
-<p>There are a couple of differences compared to the tutorial:</p>
-
-<ul>
-<li>I chose a <em>Medium</em> instance instead of a <em>Micro</em> instance for EC2 (the web server) and deployed it against IIS 8.</li>
-<li>For RDS (the database), I stuck with a <em>Micro</em> instance.</li>
-</ul>
-
-
-<p><img src="/images/blog/load-testing/load-testing-001.png"></p>
-
-<p>For the load test, it is also important to disable the automatic health checks performed by the load balancer.</p>
-
-<p><img src="/images/blog/load-testing/load-testing-002.png"></p>
-
-<p>The reason for this is that we are trying to determine the breaking point of our application. If the elastic load balancer detects that a system is struggling, it might automatically flag it as unhealthy and replace it with a newly launched instance. While this behaviour might be desirable for a production system, it doesn't make sense for a load test.</p>
-
-<p>Make sure you can connect to your installation from a web browser before continuing. I chose to deploy to a Windows 2012 instance running IIS 8.0 (which was not available when I wrote my previous XAF AWS tutorial) and I had a little trouble with the URL. If I navigate to the application's base URL (<em>http://zerosharp-maindemo.elasticbeanstalk.com/</em> in my case), then I get forwarding problems after logging in. Instead, I navigate to the full address <em>http://zerosharp-maindemo.elasticbeanstalk.com/MainDemo.Web_deploy/Default.aspx</em> and everything works. I'll try to look into it later, but it's not important for the load testing.</p>
 ]]></content>
   </entry>
   
