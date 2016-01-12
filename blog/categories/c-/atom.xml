@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c# | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/c-/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-12-22T20:48:26+01:00</updated>
+  <updated>2016-01-12T09:54:09+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[DevExpress 2015.2 review part 2]]></title>
     <link href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-2/"/>
-    <updated>2015-12-10T09:43:00+01:00</updated>
+    <updated>2015-12-10T09:43:00+00:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-2</id>
     <content type="html"><![CDATA[<p>This is the second and final dive into some of the new DevExpress XAF 2015.2 features. The <a href="/devexpress-15-dot-2-review-part-1/">first part</a> covers the Report Designer and the new XML serialisation.</p>
 
@@ -81,7 +81,7 @@ SkipNullOrEmptyValues = false)]
   <entry>
     <title type="html"><![CDATA[DevExpress 2015.2 review part 1]]></title>
     <link href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1/"/>
-    <updated>2015-12-09T14:43:00+01:00</updated>
+    <updated>2015-12-09T14:43:00+00:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1</id>
     <content type="html"><![CDATA[<p>Last week, DevExpress released 2015.2.3, their second major version of the year.</p>
 
@@ -192,7 +192,7 @@ this.reportsModuleV2.ReportStoreMode = DevExpress.ExpressApp.ReportsV2.ReportSto
   <entry>
     <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 3]]></title>
     <link href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3/"/>
-    <updated>2015-09-16T09:39:00+02:00</updated>
+    <updated>2015-09-16T09:39:00+01:00</updated>
     <id>http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3</id>
     <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='I&#8217;m happy to report there is a considerable improvement under load in version 15.1.'>
 This is the third part of a <a href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2">series</a> about migrating a large application from XAF 12.1 to XAF 15.1. In this part I will compare the results of a simple stress test between the versions.</p>
@@ -215,7 +215,7 @@ This is the third part of a <a href="/migrating-a-large-web-application-from-xaf
   <entry>
     <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 2]]></title>
     <link href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2/"/>
-    <updated>2015-09-15T10:37:00+02:00</updated>
+    <updated>2015-09-15T10:37:00+01:00</updated>
     <id>http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2</id>
     <content type="html"><![CDATA[<p>This is the second part of a <a href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1">series</a> about migrating a large application from XAF 12.1 to XAF 15.1.</p>
 
@@ -244,7 +244,7 @@ Here I had a refactoring dilemma to solve. Either I need to rewrite all of the a
   <entry>
     <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 1]]></title>
     <link href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1/"/>
-    <updated>2015-09-14T10:01:00+02:00</updated>
+    <updated>2015-09-14T10:01:00+01:00</updated>
     <id>http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1</id>
     <content type="html"><![CDATA[<p>I am the principal software architect for a treasury application in use by over 100 large multinational corporates. Upgrades are generally met with reluctance in the enterprise world and so we've been somewhat stuck on an old version of the expressAppFramework.</p>
 

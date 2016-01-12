@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-12-22T20:48:26+01:00</updated>
+  <updated>2016-01-12T09:54:09+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[DevExpress 2015.2 review part 2]]></title>
     <link href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-2/"/>
-    <updated>2015-12-10T09:43:00+01:00</updated>
+    <updated>2015-12-10T09:43:00+00:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-2</id>
     <content type="html"><![CDATA[<p>This is the second and final dive into some of the new DevExpress XAF 2015.2 features. The <a href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1/">first part</a> covers the Report Designer and the new XML serialisation.</p>
 
@@ -88,7 +88,7 @@
   <entry>
     <title type="html"><![CDATA[DevExpress 2015.2 review part 1]]></title>
     <link href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1/"/>
-    <updated>2015-12-09T14:43:00+01:00</updated>
+    <updated>2015-12-09T14:43:00+00:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1</id>
     <content type="html"><![CDATA[<p>Last week, DevExpress released 2015.2.3, their second major version of the year.</p>
 
@@ -216,7 +216,7 @@ Reporting is definitely one of the areas where XAF has progressed the most in re
   <entry>
     <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 3]]></title>
     <link href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3/"/>
-    <updated>2015-09-16T09:39:00+02:00</updated>
+    <updated>2015-09-16T09:39:00+01:00</updated>
     <id>http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3</id>
     <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='I&#8217;m happy to report there is a considerable improvement under load in version 15.1.'>
 This is the third part of a <a href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2">series</a> about migrating a large application from XAF 12.1 to XAF 15.1. In this part I will compare the results of a simple stress test between the versions.</p>
@@ -240,7 +240,7 @@ This is the third part of a <a href="http://ZeroSharp.github.com/migrating-a-lar
   <entry>
     <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 2]]></title>
     <link href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2/"/>
-    <updated>2015-09-15T10:37:00+02:00</updated>
+    <updated>2015-09-15T10:37:00+01:00</updated>
     <id>http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2</id>
     <content type="html"><![CDATA[<p>This is the second part of a <a href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1">series</a> about migrating a large application from XAF 12.1 to XAF 15.1.</p>
 
@@ -269,7 +269,7 @@ Here I had a refactoring dilemma to solve. Either I need to rewrite all of the a
   <entry>
     <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 1]]></title>
     <link href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1/"/>
-    <updated>2015-09-14T10:01:00+02:00</updated>
+    <updated>2015-09-14T10:01:00+01:00</updated>
     <id>http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1</id>
     <content type="html"><![CDATA[<p>I am the principal software architect for a treasury application in use by over 100 large multinational corporates. Upgrades are generally met with reluctance in the enterprise world and so we&#8217;ve been somewhat stuck on an old version of the expressAppFramework.</p>
 
@@ -299,7 +299,7 @@ Since 13.1, the XAF <code>Validator</code> class now requires an <code>IObjectSp
   <entry>
     <title type="html"><![CDATA[Force a complete garbage collection in an ASP.NET application.]]></title>
     <link href="http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application/"/>
-    <updated>2015-08-05T09:26:00+02:00</updated>
+    <updated>2015-08-05T09:26:00+01:00</updated>
     <id>http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application</id>
     <content type="html"><![CDATA[<p>How can I force a full garbage collection easily within an ASP.NET application? The method here is for XAF web applications but the same approach should work with any ASP.NET app.</p>
 
@@ -365,7 +365,7 @@ First up: Never mess with the .NET garbage collector.</p>
   <entry>
     <title type="html"><![CDATA[Fixing slow debugging of ASP.NET applications]]></title>
     <link href="http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications/"/>
-    <updated>2015-06-03T21:31:00+02:00</updated>
+    <updated>2015-06-03T21:31:00+01:00</updated>
     <id>http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications</id>
     <content type="html"><![CDATA[<p>For a while I&#8217;ve noticed an annoying slowness when debugging ASP.NET applications from Visual Studio. Just after every page load it takes about a second before the buttons become clickable. I noticed mostly when debugging XAF applications, perhaps because the pages are quite complex.</p>
 
@@ -391,7 +391,7 @@ First up: Never mess with the .NET garbage collector.</p>
   <entry>
     <title type="html"><![CDATA[DevExpress 14.2 review]]></title>
     <link href="http://ZeroSharp.github.com/devexpress-14-dot-2-review/"/>
-    <updated>2015-01-20T08:35:00+01:00</updated>
+    <updated>2015-01-20T08:35:00+00:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-14-dot-2-review</id>
     <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='The truly outstanding new feature is the ASP.NET report writer'>
 This post is an overview of the brand new version XAF 14.2. The truly outstanding new feature is the ASP.NET report writer which is now available in all XAF applications.</p>
@@ -445,7 +445,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
   <entry>
     <title type="html"><![CDATA[ELMAH with DevExpress XAF]]></title>
     <link href="http://ZeroSharp.github.com/elmah-with-devexpress-xaf/"/>
-    <updated>2014-10-08T15:45:00+02:00</updated>
+    <updated>2014-10-08T15:45:00+01:00</updated>
     <id>http://ZeroSharp.github.com/elmah-with-devexpress-xaf</id>
     <content type="html"><![CDATA[<p><a href="https://code.google.com/p/elmah/">ELMAH (Error Logging Modules and Handlers)</a> is an open source library for logging unhandled exceptions. This post explains how to get it running with the <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a> main demo.</p>
 
@@ -681,7 +681,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
   <entry>
     <title type="html"><![CDATA[A web UI performance tip for XAF web applications]]></title>
     <link href="http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications/"/>
-    <updated>2014-03-31T10:16:00+02:00</updated>
+    <updated>2014-03-31T10:16:00+01:00</updated>
     <id>http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications</id>
     <content type="html"><![CDATA[<p>The purpose of this post is to raise your awareness of a toggle which exists in the <a href="http://www.devexpress.com/xaf/">DevExpress XAF framework</a> which can significantly improve UI performance in the web application.</p>
 
@@ -712,7 +712,7 @@ The biggest XAF project I work with has one very complex business object. The la
   <entry>
     <title type="html"><![CDATA[Provisioning a new development machine with BoxStarter]]></title>
     <link href="http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter/"/>
-    <updated>2014-02-25T15:29:00+01:00</updated>
+    <updated>2014-02-25T15:29:00+00:00</updated>
     <id>http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter</id>
     <content type="html"><![CDATA[<p>I&#8217;ve been playing around with <a href="http://boxstarter.org/">Boxstarter</a> to configure my entire development environment with hardly any user intervention.</p>
 
@@ -938,7 +938,7 @@ The biggest XAF project I work with has one very complex business object. The la
   <entry>
     <title type="html"><![CDATA[Glimpse with DevExpress XAF]]></title>
     <link href="http://ZeroSharp.github.com/glimpse-with-devexpress-xaf/"/>
-    <updated>2013-12-17T12:41:00+01:00</updated>
+    <updated>2013-12-17T12:41:00+00:00</updated>
     <id>http://ZeroSharp.github.com/glimpse-with-devexpress-xaf</id>
     <content type="html"><![CDATA[<p>I have finally got around to getting Glimpse working with XAF. Glimpse is an amazing extensible ASP.NET plug-in which gives you valuable information about what is going on within your server in production. It&#8217;s also very pretty.</p>
 
@@ -1119,7 +1119,7 @@ As you can see, this is a very valuable glimpse into the server which can be tur
   <entry>
     <title type="html"><![CDATA[DevExpress 13.2 Review - Part 2]]></title>
     <link href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-2/"/>
-    <updated>2013-12-10T16:10:00+01:00</updated>
+    <updated>2013-12-10T16:10:00+00:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-2</id>
     <content type="html"><![CDATA[<p>This is the second part of a review of the new DevExpress 13.2. In <a href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1">the last part</a> we looked in-depth at the new <a href="https://community.devexpress.com/blogs/eaf/archive/2013/11/08/easy-large-reports-in-13-2-ctp-of-reportsv2-module.aspx">Reports V2</a>. In this part I&#8217;ll go over some of the other new features including the support for warnings and confirmations in the validation module.</p>
 
@@ -1226,7 +1226,7 @@ The default directories for the installation have changed again. I&#8217;m sure 
   <entry>
     <title type="html"><![CDATA[DevExpress 13.2 Review - Part 1]]></title>
     <link href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1/"/>
-    <updated>2013-12-02T16:23:00+01:00</updated>
+    <updated>2013-12-02T16:23:00+00:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1</id>
     <content type="html"><![CDATA[<p>The first version of XAF I ever installed was called <em>eXpressApp-1.0.CTP2.exe</em> in July 2006! It has certainly come a long way since then.</p>
 
@@ -1393,7 +1393,7 @@ The default directories for the installation have changed again. I&#8217;m sure 
   <entry>
     <title type="html"><![CDATA[How to improve XAF grid layout for Chrome]]></title>
     <link href="http://ZeroSharp.github.com/how-to-improve-xaf-grid-layout-for-chrome/"/>
-    <updated>2013-11-08T09:55:00+01:00</updated>
+    <updated>2013-11-08T09:55:00+00:00</updated>
     <id>http://ZeroSharp.github.com/how-to-improve-xaf-grid-layout-for-chrome</id>
     <content type="html"><![CDATA[<p>This post proposes a workaround for a specific XAF rendering problem related to recent versions of Google Chrome.</p>
 
@@ -1511,7 +1511,7 @@ The default directories for the installation have changed again. I&#8217;m sure 
   <entry>
     <title type="html"><![CDATA[Three ways to store a list of currency codes in XAF]]></title>
     <link href="http://ZeroSharp.github.com/three-ways-to-store-a-list-of-currency-codes-in-xaf/"/>
-    <updated>2013-10-22T18:15:00+02:00</updated>
+    <updated>2013-10-22T18:15:00+01:00</updated>
     <id>http://ZeroSharp.github.com/three-ways-to-store-a-list-of-currency-codes-in-xaf</id>
     <content type="html"><![CDATA[<p>In the <a href="http://ZeroSharp.github.com/the-ugly-the-heavy-and-the-good">last post</a> we looked at three solutions to a relatively simple XAF requirement. In this post I&#8217;ll discuss another XAF challenge, explain the options and provide a versatile and maintainable solution.</p>
 
@@ -1714,7 +1714,7 @@ The default directories for the installation have changed again. I&#8217;m sure 
   <entry>
     <title type="html"><![CDATA[The Ugly, the Heavy and the Good: 3 solutions to an XAF layout problem]]></title>
     <link href="http://ZeroSharp.github.com/the-ugly-the-heavy-and-the-good/"/>
-    <updated>2013-10-14T09:51:00+02:00</updated>
+    <updated>2013-10-14T09:51:00+01:00</updated>
     <id>http://ZeroSharp.github.com/the-ugly-the-heavy-and-the-good</id>
     <content type="html"><![CDATA[<p>This post aims to look at various solutions to a seemingly simple layout change.</p>
 
@@ -1917,7 +1917,7 @@ The default directories for the installation have changed again. I&#8217;m sure 
   <entry>
     <title type="html"><![CDATA[A review of NDepend 5]]></title>
     <link href="http://ZeroSharp.github.com/a-review-of-ndepend-5/"/>
-    <updated>2013-10-02T17:54:00+02:00</updated>
+    <updated>2013-10-02T17:54:00+01:00</updated>
     <id>http://ZeroSharp.github.com/a-review-of-ndepend-5</id>
     <content type="html"><![CDATA[<p>NDepend is a commercial static analysis tool for .NET managed code. It&#8217;s been around a long time (since 2004!). Version 5 was just released and in this post I&#8217;m going to try it out on the DevExpress MainDemo.</p>
 
@@ -2003,7 +2003,7 @@ In the past I have always thought of NDepend as a complex tool. I was never sure
   <entry>
     <title type="html"><![CDATA[MiniProfiler with DevExpress XAF]]></title>
     <link href="http://ZeroSharp.github.com/miniprofiler-with-devexpress-xaf/"/>
-    <updated>2013-08-27T09:14:00+02:00</updated>
+    <updated>2013-08-27T09:14:00+01:00</updated>
     <id>http://ZeroSharp.github.com/miniprofiler-with-devexpress-xaf</id>
     <content type="html"><![CDATA[<p>In this post I will demonstrate how to add <a href="http://miniprofiler.com/">MiniProfiler</a> to the XAF MainDemo web application.</p>
 
@@ -2252,7 +2252,7 @@ In the past I have always thought of NDepend as a complex tool. I was never sure
   <entry>
     <title type="html"><![CDATA[Fluent queries with DevExpress XPO - Implementation]]></title>
     <link href="http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-implementation/"/>
-    <updated>2013-08-14T11:03:00+02:00</updated>
+    <updated>2013-08-14T11:03:00+01:00</updated>
     <id>http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-implementation</id>
     <content type="html"><![CDATA[<p>Continuing from my <a href="http://ZeroSharp.github.com/fluent-queries-with-devexpress-xpo-intro">last post</a>, I&#8217;ll demonstrate how to create a fluent interface so that you can do:</p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: iphone | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/iphone/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-12-22T20:48:26+01:00</updated>
+  <updated>2016-01-12T09:54:09+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[CruiseControl Notifications on your iPhone]]></title>
     <link href="http://ZeroSharp.github.com/cruisecontrol-notifications-on-your-iphone/"/>
-    <updated>2014-02-07T11:32:00+01:00</updated>
+    <updated>2014-02-07T11:32:00+00:00</updated>
     <id>http://ZeroSharp.github.com/cruisecontrol-notifications-on-your-iphone</id>
     <content type="html"><![CDATA[<p><img class="right" src="/images/blog/ccwatcher-002.jpg" width="200"></p>
 
@@ -41,7 +41,7 @@
   <entry>
     <title type="html"><![CDATA[A C# Developer's Adventures in iOS - Integrating Git and MonoDevelop]]></title>
     <link href="http://ZeroSharp.github.com/a-c-number-developers-adventures-in-ios-integrating-git-and-monodevelop/"/>
-    <updated>2013-02-08T14:52:00+01:00</updated>
+    <updated>2013-02-08T14:52:00+00:00</updated>
     <id>http://ZeroSharp.github.com/a-c-number-developers-adventures-in-ios-integrating-git-and-monodevelop</id>
     <content type="html"><![CDATA[<p>This is the second post in a series about iOS development from the perspective of a C# developer.</p>
 
@@ -164,7 +164,7 @@ $ git push -u origin --all
   <entry>
     <title type="html"><![CDATA[A C# Developer's Adventures in iOS - Getting Started]]></title>
     <link href="http://ZeroSharp.github.com/a-c-number-developers-adventures-in-ios-getting-started/"/>
-    <updated>2013-01-30T11:18:00+01:00</updated>
+    <updated>2013-01-30T11:18:00+00:00</updated>
     <id>http://ZeroSharp.github.com/a-c-number-developers-adventures-in-ios-getting-started</id>
     <content type="html"><![CDATA[<h2>First steps in iPhone development</h2>
 
@@ -213,7 +213,7 @@ $ git push -u origin --all
   <entry>
     <title type="html"><![CDATA[How I went from C# Developer to iPhone Developer in a Weekend]]></title>
     <link href="http://ZeroSharp.github.com/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend/"/>
-    <updated>2013-01-04T10:35:00+01:00</updated>
+    <updated>2013-01-04T10:35:00+00:00</updated>
     <id>http://ZeroSharp.github.com/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend</id>
     <content type="html"><![CDATA[<p>Recently I took part in <a href="http://buenosaires.startupweekend.org/">Startup Weekend Buenos Aires</a>. It works just like most hackathons:</p>
 

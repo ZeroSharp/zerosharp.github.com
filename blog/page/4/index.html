@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="In this post I will demonstrate how to add MiniProfiler to the XAF MainDemo web application. MiniProfiler is a simple fast profiler with a pretty &hellip;">
+  <meta name="description" content="This post is about fixing an annoyance whereby Visual Studio refuses to update extensions when running as an administrator. I always had a problem &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -119,6 +119,74 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/fix-visual-studio-update-links-when-running-as-administrator/">Fix Visual Studio Update Links When Running as Administrator</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-09-02T09:58:00+01:00" pubdate data-updated="true">Sep 2<span>nd</span>, 2013</time>
+        
+         | <a href="/fix-visual-studio-update-links-when-running-as-administrator/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This post is about fixing an annoyance whereby Visual Studio refuses to update extensions when running as an administrator.</p>
+
+<p>I always had a problem when an update to an extension or tool tried to open the browser. For instance, I would see this notification in the system tray.</p>
+
+<p><img src="/images/blog/visual-studio-updates-001.png"></p>
+
+<p>And then when I went to <em>Tools/Extensions and Updates&#8230;</em> in Visual Studio, I&#8217;d get to something like this:</p>
+
+<p><img src="/images/blog/visual-studio-updates-002.png"></p>
+
+<p>But the <em>Update</em> button was not responding to any clicks. The only workaround I found was to restart Visual Studio under my normal user account and then the button would work.</p>
+
+<h2>The fix at last</h2>
+
+<p>It turns out the problem rather specific. It only occurs when you run VS2012 as an administrator and you have Google Chrome set as your default browser. The problem is that older versions of Google Chrome failed to register themselves as the default browser for administrator users. You can confirm this by doing the following from an admin command prompt:</p>
+
+<pre><code>start http://blog.zerosharp.com
+</code></pre>
+
+<p>You&#8217;ll get a message saying <em>Class not registered</em>.</p>
+
+<p>Unfortunately, updating to newer installations of Chrome does not fix the problem. You need to uninstall and reinstall. (This sounds like a lot of hassle, but if you are using Chrome sync it is very easy and only takes about a minute).</p>
+
+<ul>
+<li>Uninstall Chrome by going to <em>Control Panel/Uninstall a program</em>. * Open IE and download Chrome.</li>
+<li>During the installation process it will ask you to enable sync.</li>
+<li>A few seconds later everything should be back as at it was.</li>
+</ul>
+
+
+<p>But better, because the <em>Update</em> button in Visual Studio now works.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/miniprofiler-with-devexpress-xaf/">MiniProfiler With DevExpress XAF</a></h1>
     
     
@@ -135,7 +203,7 @@
   
 
 
-<time datetime="2013-08-27T09:14:00+02:00" pubdate data-updated="true">Aug 27<span>th</span>, 2013</time>
+<time datetime="2013-08-27T09:14:00+01:00" pubdate data-updated="true">Aug 27<span>th</span>, 2013</time>
         
          | <a href="/miniprofiler-with-devexpress-xaf/#disqus_thread">Comments</a>
         
@@ -413,7 +481,7 @@
   
 
 
-<time datetime="2013-08-14T11:03:00+02:00" pubdate data-updated="true">Aug 14<span>th</span>, 2013</time>
+<time datetime="2013-08-14T11:03:00+01:00" pubdate data-updated="true">Aug 14<span>th</span>, 2013</time>
         
          | <a href="/fluent-queries-with-devexpress-xpo-implementation/#disqus_thread">Comments</a>
         
@@ -739,7 +807,7 @@
   
 
 
-<time datetime="2013-08-12T17:54:00+02:00" pubdate data-updated="true">Aug 12<span>th</span>, 2013</time>
+<time datetime="2013-08-12T17:54:00+01:00" pubdate data-updated="true">Aug 12<span>th</span>, 2013</time>
         
          | <a href="/fluent-queries-with-devexpress-xpo-intro/#disqus_thread">Comments</a>
         
@@ -859,7 +927,7 @@
   
 
 
-<time datetime="2013-07-09T09:13:00+02:00" pubdate data-updated="true">Jul 9<span>th</span>, 2013</time>
+<time datetime="2013-07-09T09:13:00+01:00" pubdate data-updated="true">Jul 9<span>th</span>, 2013</time>
         
          | <a href="/removing-the-rss-subscription-icon-from-octopress/#disqus_thread">Comments</a>
         
@@ -957,7 +1025,7 @@
   
 
 
-<time datetime="2013-05-28T11:51:00+02:00" pubdate data-updated="true">May 28<span>th</span>, 2013</time>
+<time datetime="2013-05-28T11:51:00+01:00" pubdate data-updated="true">May 28<span>th</span>, 2013</time>
         
          | <a href="/making-xaf-reports-even-better-part-2/#disqus_thread">Comments</a>
         
@@ -1060,7 +1128,7 @@ Good news. The conversion is now two-way. Get the source code <a href="https://g
   
 
 
-<time datetime="2013-05-21T14:38:00+02:00" pubdate data-updated="true">May 21<span>st</span>, 2013</time>
+<time datetime="2013-05-21T14:38:00+01:00" pubdate data-updated="true">May 21<span>st</span>, 2013</time>
         
          | <a href="/making-xaf-reports-even-better-part-1/#disqus_thread">Comments</a>
         
@@ -1293,7 +1361,7 @@ The ability to create reports using a report writer is a very powerful feature o
   
 
 
-<time datetime="2013-04-29T16:21:00+02:00" pubdate data-updated="true">Apr 29<span>th</span>, 2013</time>
+<time datetime="2013-04-29T16:21:00+01:00" pubdate data-updated="true">Apr 29<span>th</span>, 2013</time>
         
          | <a href="/fixing-an-unmanaged-code-appcrash/#disqus_thread">Comments</a>
         
@@ -1415,7 +1483,7 @@ The ability to create reports using a report writer is a very powerful feature o
   
 
 
-<time datetime="2013-04-22T16:31:00+02:00" pubdate data-updated="true">Apr 22<span>nd</span>, 2013</time>
+<time datetime="2013-04-22T16:31:00+01:00" pubdate data-updated="true">Apr 22<span>nd</span>, 2013</time>
         
          | <a href="/load-testing-xaf-bonus-simultaneous-easytests/#disqus_thread">Comments</a>
         
@@ -1706,7 +1774,7 @@ The ability to create reports using a report writer is a very powerful feature o
   
 
 
-<time datetime="2013-04-14T07:37:00+02:00" pubdate data-updated="true">Apr 14<span>th</span>, 2013</time>
+<time datetime="2013-04-14T07:37:00+01:00" pubdate data-updated="true">Apr 14<span>th</span>, 2013</time>
         
          | <a href="/load-testing-xaf-part-5-analysis/#disqus_thread">Comments</a>
         
@@ -1815,66 +1883,6 @@ The ability to create reports using a report writer is a very powerful feature o
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/load-testing-xaf-part-4-launching-the-load-test/">Load Testing XAF: Part 4 - Launching the Load Test</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-08T11:19:00+02:00" pubdate data-updated="true">Apr 8<span>th</span>, 2013</time>
-        
-         | <a href="/load-testing-xaf-part-4-launching-the-load-test/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>This is another post in a series about load testing XAF applications.  Previously in the series:</p>
-
-<ul>
-<li><a href="/load-testing-xaf-overview/">Load Testing XAF: Overview</a></li>
-<li><a href="/load-testing-xaf-part-1-deploying/">Part 1: Deploying the target webserver</a></li>
-<li><a href="/load-testing-xaf-part-2-selenium/">Part 2: Selenium</a></li>
-<li><a href="/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Part 3: Uploading and validating a script</a></li>
-</ul>
-
-
-<p>In this part, we will launch a 1 hour test with 25 virtual users using the <a href="http://home.wpm.neustar.biz/">NeuStar Web Performance Management</a> module.</p>
-
-<h2>Schedule and launch a test</h2>
-
-<p>From the script validation screen, click on <em>Schedule a load test with this script</em>. The defaults are good, but you can specify in detail how to run your load test. For instance, you can coordinate multiple Selenium scripts to simulate different types of activity on your site.</p>
-
-<p><img src="/images/blog/load-testing/load-testing-005.png"></p>
-
-<p>Notice that the load test cost for 25 users for an hour will be only $3.75.</p>
-
-<p>When you click <code>Launch</code>, Neustar takes 7 or 8 minutes to provision the Amazon machines and stage the test, after which you will get realtime detail information about response times, bandwidth and errors.</p>
-
-<p>In the next post we&#8217;ll analyse the results of this test.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/5/">&larr; Older</a>
@@ -1894,7 +1902,7 @@ The ability to create reports using a report writer is a very powerful feature o
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2015 - Robert Anderson
+  Copyright &copy; 2016 - Robert Anderson
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

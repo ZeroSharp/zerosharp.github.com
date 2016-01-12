@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="I was in the middle of a blog post about the JAWS framework and before I had finished it changed its name to the Serverless framework. It is a very &hellip;">
+  <meta name="description" content="Happy New Year everyone! This is the second part of a series about the Serverless framework. Read the first part to get up and running. First I&#8217 &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -119,6 +119,212 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/serverless-framework-part-2-typescript-and-mocha/">Serverless Framework - Part 2: TypeScript and Mocha</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-01-12T08:08:00+00:00" pubdate data-updated="true">Jan 12<span>th</span>, 2016</time>
+        
+         | <a href="/serverless-framework-part-2-typescript-and-mocha/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Happy New Year everyone!</p>
+
+<p>This is the second part of a series about the <a href="https://github.com/serverless/serverless">Serverless</a> framework. Read <a href="/serverless-framework-part-1-up-and-running/">the first part</a> to get up and running.</p>
+
+<p>First I&#8217;ll describe the webservice I&#8217;m building. Then we&#8217;ll configure our environment for Typescript and Mocha testing.</p>
+
+<h2>Poor man&#8217;s dual factor authentication via a password of the day</h2>
+
+<p><span class='pullquote-right' data-pullquote='it&#8217;s about not having the hassle of administering a server.'>
+I&#8217;m the technical lead for an enterprise application which is in use by about 100 large multinational corporates. As part of the installation process, we ask for a registration code which is based on the date. The customer has to call us to get the password of the day. This gives us an opportunity to engage with the customer and also gives us little more control. It&#8217;s a simple form of dual factor authorization where one of the factors requires a phone call.</p>
+
+<p>In the old days, the routine for checking the validity of the password was part of the source code, but we&#8217;ve since moved the checking function to a web service.</p>
+
+<p>It&#8217;s my goal to replace this &#8216;password of the day&#8217; check function with a Serverless module. The service will take a password as input and check that it matches the password of the day.</p>
+
+<p>It&#8217;s a tiny, simple, rarely-used web service but AWS lambda is still a great fit for it. Although lambda can scale if necessary, in this case it&#8217;s about not having the hassle of administering a server.
+</span></p>
+
+<h2>Mocha and TypeScript</h2>
+
+<p>Let&#8217;s do things properly and set up a testing framework.</p>
+
+<p>Make sure you&#8217;re in the module folder.</p>
+
+<pre><code>$ cd back/modules/potd
+</code></pre>
+
+<p>Then we&#8217;ll install Mocha.</p>
+
+<pre><code>$ npm install mocha --save-dev
+mocha@2.3.4 node_modules/mocha
+├── escape-string-regexp@1.0.2
+├── diff@1.4.0
+├── commander@2.3.0
+├── supports-color@1.2.0
+├── growl@1.8.1
+├── debug@2.2.0 (ms@0.7.1)
+├── jade@0.26.3 (commander@0.6.1, mkdirp@0.3.0)
+├── mkdirp@0.5.0 (minimist@0.0.8)
+└── glob@3.2.3 (inherits@2.0.1, graceful-fs@2.0.3, minimatch@0.2.14)
+</code></pre>
+
+<p>Next we&#8217;ll install TypeScript. Of course you can use plain javascript if you prefer. My background is C#: I make fewer dumb mistakes with TypeScript. It looks like there <a href="https://github.com/serverless/serverless/issues/371">is a typescript plugin in the pipeline</a> which will make typescript integration even easier in the future, but for now:</p>
+
+<pre><code>$ npm install typescript --save
+typescript@1.7.5 node_modules/typescript
+
+$ npm install tsd -g
+npm WARN engine joi-assert@0.0.3: wanted: {"node":"&gt;= 0.10.0 &lt;= 0.11.0"} (current: {"node":"4.2.3","npm":"2.14.7"})
+/usr/local/bin/tsd -&gt; /usr/local/lib/node_modules/tsd/build/cli.js
+tsd@0.6.5 /usr/local/lib/node_modules/tsd
+├── diff@1.4.0
+├── assertion-error@1.0.0
+├── type-detect@0.1.2
+... etc ...
+
+$ tsd init
+-&gt; written tsd.json
+-&gt; written typings/tsd.d.ts
+</code></pre>
+
+<p>Now we add the type definitions for Mocha.</p>
+
+<pre><code>$ tsd install mocha --save
+- mocha / mocha    
+&gt;&gt; running install..
+&gt;&gt; written 1 file:
+    - mocha/mocha.d.ts
+</code></pre>
+
+<p>We need a config file for the TypeScript compiler. This goes in the same module directory (<em>back/modules/potd</em> in my case).</p>
+
+<figure class='code'><figcaption><span>tsconfig.json </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="nt">&quot;compilerOptions&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nt">&quot;module&quot;</span><span class="p">:</span> <span class="s2">&quot;commonjs&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nt">&quot;target&quot;</span><span class="p">:</span> <span class="s2">&quot;es5&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nt">&quot;noImplicitAny&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="nt">&quot;sourceMap&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>        <span class="nt">&quot;declaration&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>        <span class="nt">&quot;outdir&quot;</span><span class="p">:</span> <span class="s2">&quot;lib&quot;</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nt">&quot;exclude&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s2">&quot;node_modules&quot;</span>
+</span><span class='line'>    <span class="p">]</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now make a subdirectory for our TypeScript source files.</p>
+
+<pre><code>$ mkdir src
+$ mkdir src/test
+</code></pre>
+
+<p>Next up we need to modify the package.json file to add a scripts section. Only the <code>"scripts"</code> section needs changing.</p>
+
+<figure class='code'><figcaption><span>tsconfig.json </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;potd&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.0.1&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Dependencies for a Password of the day Serverless Module&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;author&quot;</span><span class="p">:</span> <span class="s2">&quot;Robert Anderson&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;license&quot;</span><span class="p">:</span> <span class="s2">&quot;MIT&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;private&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;repository&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;git&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;git://github.com/&quot;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nt">&quot;keywords&quot;</span><span class="p">:</span> <span class="p">[],</span>
+</span><span class='line'>  <span class="nt">&quot;devDependencies&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nt">&quot;mocha&quot;</span><span class="p">:</span> <span class="s2">&quot;^2.3.4&quot;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nt">&quot;dependencies&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nt">&quot;serverless-helpers-js&quot;</span><span class="p">:</span> <span class="s2">&quot;~0.0.3&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;typescript&quot;</span><span class="p">:</span> <span class="s2">&quot;^1.7.5&quot;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nt">&quot;scripts&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nt">&quot;prepublish&quot;</span><span class="p">:</span> <span class="s2">&quot;tsc&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;pretest&quot;</span><span class="p">:</span> <span class="s2">&quot;tsc&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;test&quot;</span><span class="p">:</span> <span class="s2">&quot;mocha ./lib/test&quot;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We&#8217;ve finished setting up everything for TypeScript and Mocha. Whenever you run <code>tsc</code>, any TypeScript files in <em>/src</em> will get compiled to javascript in <em>/lib</em>. And running <code>npm test</code> will compile and then run any Mocha tests in <em>/lib/test</em>.</p>
+
+<p>The <a href="https://github.com/ZeroSharp/ServerlessPotd">source code so far</a> is on GitHub. Note the default <em>.gitignore</em> file skips the <em>admin.env</em> file which contains the (sensitive) AWS keys in it so don&#8217;t forget to add your own.</p>
+
+<p>In the next post we&#8217;ll create a TypeScript class for the guts of the lambda function which checks the password of the day, along with some corresponding Mocha tests, also written in TypeScript.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/serverless-framework-part-1-up-and-running/">Serverless Framework - Part 1: Up and Running</a></h1>
     
     
@@ -135,7 +341,7 @@
   
 
 
-<time datetime="2015-12-22T20:26:00+01:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2015</time>
+<time datetime="2015-12-22T20:26:00+00:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2015</time>
         
          | <a href="/serverless-framework-part-1-up-and-running/#disqus_thread">Comments</a>
         
@@ -334,7 +540,7 @@ $ npm -v
   
 
 
-<time datetime="2015-12-10T09:43:00+01:00" pubdate data-updated="true">Dec 10<span>th</span>, 2015</time>
+<time datetime="2015-12-10T09:43:00+00:00" pubdate data-updated="true">Dec 10<span>th</span>, 2015</time>
         
          | <a href="/devexpress-15-dot-2-review-part-2/#disqus_thread">Comments</a>
         
@@ -435,7 +641,7 @@ $ npm -v
   
 
 
-<time datetime="2015-12-09T14:43:00+01:00" pubdate data-updated="true">Dec 9<span>th</span>, 2015</time>
+<time datetime="2015-12-09T14:43:00+00:00" pubdate data-updated="true">Dec 9<span>th</span>, 2015</time>
         
          | <a href="/devexpress-15-dot-2-review-part-1/#disqus_thread">Comments</a>
         
@@ -592,7 +798,7 @@ Reporting is definitely one of the areas where XAF has progressed the most in re
   
 
 
-<time datetime="2015-09-16T09:39:00+02:00" pubdate data-updated="true">Sep 16<span>th</span>, 2015</time>
+<time datetime="2015-09-16T09:39:00+01:00" pubdate data-updated="true">Sep 16<span>th</span>, 2015</time>
         
          | <a href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3/#disqus_thread">Comments</a>
         
@@ -645,7 +851,7 @@ This is the third part of a <a href="/migrating-a-large-web-application-from-xaf
   
 
 
-<time datetime="2015-09-15T10:37:00+02:00" pubdate data-updated="true">Sep 15<span>th</span>, 2015</time>
+<time datetime="2015-09-15T10:37:00+01:00" pubdate data-updated="true">Sep 15<span>th</span>, 2015</time>
         
          | <a href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2/#disqus_thread">Comments</a>
         
@@ -703,7 +909,7 @@ Here I had a refactoring dilemma to solve. Either I need to rewrite all of the a
   
 
 
-<time datetime="2015-09-14T10:01:00+02:00" pubdate data-updated="true">Sep 14<span>th</span>, 2015</time>
+<time datetime="2015-09-14T10:01:00+01:00" pubdate data-updated="true">Sep 14<span>th</span>, 2015</time>
         
          | <a href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1/#disqus_thread">Comments</a>
         
@@ -762,7 +968,7 @@ Since 13.1, the XAF <code>Validator</code> class now requires an <code>IObjectSp
   
 
 
-<time datetime="2015-08-05T09:26:00+02:00" pubdate data-updated="true">Aug 5<span>th</span>, 2015</time>
+<time datetime="2015-08-05T09:26:00+01:00" pubdate data-updated="true">Aug 5<span>th</span>, 2015</time>
         
          | <a href="/force-a-complete-garbage-collection-in-an-asp-dot-net-application/#disqus_thread">Comments</a>
         
@@ -857,7 +1063,7 @@ First up: Never mess with the .NET garbage collector.</p>
   
 
 
-<time datetime="2015-08-03T15:35:00+02:00" pubdate data-updated="true">Aug 3<span>rd</span>, 2015</time>
+<time datetime="2015-08-03T15:35:00+01:00" pubdate data-updated="true">Aug 3<span>rd</span>, 2015</time>
         
          | <a href="/a-strange-error-message-from-visual-studio-2015/#disqus_thread">Comments</a>
         
@@ -902,7 +1108,7 @@ First up: Never mess with the .NET garbage collector.</p>
   
 
 
-<time datetime="2015-06-03T21:31:00+02:00" pubdate data-updated="true">Jun 3<span>rd</span>, 2015</time>
+<time datetime="2015-06-03T21:31:00+01:00" pubdate data-updated="true">Jun 3<span>rd</span>, 2015</time>
         
          | <a href="/fixing-slow-debugging-of-asp-dot-net-applications/#disqus_thread">Comments</a>
         
@@ -936,58 +1142,6 @@ First up: Never mess with the .NET garbage collector.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/top-tip-for-viewing-csv-files-in-excel/">Top Tip for Viewing CSV Files in Excel</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-05-08T11:32:00+02:00" pubdate data-updated="true">May 8<span>th</span>, 2015</time>
-        
-         | <a href="/top-tip-for-viewing-csv-files-in-excel/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Here&#8217;s a quick hack when your CSV file has a different separator than Excel is expecting.</p>
-
-<p>Add this on the first line of the CSV file:</p>
-
-<pre><code>sep=;
-</code></pre>
-
-<p>or</p>
-
-<pre><code>sep=,
-</code></pre>
-
-<p>This will override system setting for list separator character and Excel will open the file correctly.</p>
-
-<p><sup>Note: Excel expects the separator to match the one defined in the <em>Control Panel/Region/Formats/Additional settings/List Separator</em>. On a French system, it expects a semi-colon.</sup></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -1005,7 +1159,7 @@ First up: Never mess with the .NET garbage collector.</p>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2015 - Robert Anderson
+  Copyright &copy; 2016 - Robert Anderson
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-12-22T20:48:26+01:00</updated>
+  <updated>2016-01-12T09:54:09+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -14,9 +14,186 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Serverless Framework - Part 2: TypeScript and Mocha]]></title>
+    <link href="http://ZeroSharp.github.com/serverless-framework-part-2-typescript-and-mocha/"/>
+    <updated>2016-01-12T08:08:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/serverless-framework-part-2-typescript-and-mocha</id>
+    <content type="html"><![CDATA[<p>Happy New Year everyone!</p>
+
+<p>This is the second part of a series about the <a href="https://github.com/serverless/serverless">Serverless</a> framework. Read <a href="http://ZeroSharp.github.com/serverless-framework-part-1-up-and-running/">the first part</a> to get up and running.</p>
+
+<p>First I&#8217;ll describe the webservice I&#8217;m building. Then we&#8217;ll configure our environment for Typescript and Mocha testing.</p>
+
+<h2>Poor man&#8217;s dual factor authentication via a password of the day</h2>
+
+<p><span class='pullquote-right' data-pullquote='it&#8217;s about not having the hassle of administering a server.'>
+I&#8217;m the technical lead for an enterprise application which is in use by about 100 large multinational corporates. As part of the installation process, we ask for a registration code which is based on the date. The customer has to call us to get the password of the day. This gives us an opportunity to engage with the customer and also gives us little more control. It&#8217;s a simple form of dual factor authorization where one of the factors requires a phone call.</p>
+
+<p>In the old days, the routine for checking the validity of the password was part of the source code, but we&#8217;ve since moved the checking function to a web service.</p>
+
+<p>It&#8217;s my goal to replace this &#8216;password of the day&#8217; check function with a Serverless module. The service will take a password as input and check that it matches the password of the day.</p>
+
+<p>It&#8217;s a tiny, simple, rarely-used web service but AWS lambda is still a great fit for it. Although lambda can scale if necessary, in this case it&#8217;s about not having the hassle of administering a server.
+</span></p>
+
+<h2>Mocha and TypeScript</h2>
+
+<p>Let&#8217;s do things properly and set up a testing framework.</p>
+
+<p>Make sure you&#8217;re in the module folder.</p>
+
+<pre><code>$ cd back/modules/potd
+</code></pre>
+
+<p>Then we&#8217;ll install Mocha.</p>
+
+<pre><code>$ npm install mocha --save-dev
+mocha@2.3.4 node_modules/mocha
+├── escape-string-regexp@1.0.2
+├── diff@1.4.0
+├── commander@2.3.0
+├── supports-color@1.2.0
+├── growl@1.8.1
+├── debug@2.2.0 (ms@0.7.1)
+├── jade@0.26.3 (commander@0.6.1, mkdirp@0.3.0)
+├── mkdirp@0.5.0 (minimist@0.0.8)
+└── glob@3.2.3 (inherits@2.0.1, graceful-fs@2.0.3, minimatch@0.2.14)
+</code></pre>
+
+<p>Next we&#8217;ll install TypeScript. Of course you can use plain javascript if you prefer. My background is C#: I make fewer dumb mistakes with TypeScript. It looks like there <a href="https://github.com/serverless/serverless/issues/371">is a typescript plugin in the pipeline</a> which will make typescript integration even easier in the future, but for now:</p>
+
+<pre><code>$ npm install typescript --save
+typescript@1.7.5 node_modules/typescript
+
+$ npm install tsd -g
+npm WARN engine joi-assert@0.0.3: wanted: {"node":"&gt;= 0.10.0 &lt;= 0.11.0"} (current: {"node":"4.2.3","npm":"2.14.7"})
+/usr/local/bin/tsd -&gt; /usr/local/lib/node_modules/tsd/build/cli.js
+tsd@0.6.5 /usr/local/lib/node_modules/tsd
+├── diff@1.4.0
+├── assertion-error@1.0.0
+├── type-detect@0.1.2
+... etc ...
+
+$ tsd init
+-&gt; written tsd.json
+-&gt; written typings/tsd.d.ts
+</code></pre>
+
+<p>Now we add the type definitions for Mocha.</p>
+
+<pre><code>$ tsd install mocha --save
+- mocha / mocha    
+&gt;&gt; running install..
+&gt;&gt; written 1 file:
+    - mocha/mocha.d.ts
+</code></pre>
+
+<p>We need a config file for the TypeScript compiler. This goes in the same module directory (<em>back/modules/potd</em> in my case).</p>
+
+<figure class='code'><figcaption><span>tsconfig.json </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="nt">&quot;compilerOptions&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nt">&quot;module&quot;</span><span class="p">:</span> <span class="s2">&quot;commonjs&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nt">&quot;target&quot;</span><span class="p">:</span> <span class="s2">&quot;es5&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="nt">&quot;noImplicitAny&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>        <span class="nt">&quot;sourceMap&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>        <span class="nt">&quot;declaration&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>        <span class="nt">&quot;outdir&quot;</span><span class="p">:</span> <span class="s2">&quot;lib&quot;</span>
+</span><span class='line'>    <span class="p">},</span>
+</span><span class='line'>    <span class="nt">&quot;exclude&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class='line'>        <span class="s2">&quot;node_modules&quot;</span>
+</span><span class='line'>    <span class="p">]</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now make a subdirectory for our TypeScript source files.</p>
+
+<pre><code>$ mkdir src
+$ mkdir src/test
+</code></pre>
+
+<p>Next up we need to modify the package.json file to add a scripts section. Only the <code>"scripts"</code> section needs changing.</p>
+
+<figure class='code'><figcaption><span>tsconfig.json </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;potd&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.0.1&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Dependencies for a Password of the day Serverless Module&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;author&quot;</span><span class="p">:</span> <span class="s2">&quot;Robert Anderson&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;license&quot;</span><span class="p">:</span> <span class="s2">&quot;MIT&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;private&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;repository&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;git&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;git://github.com/&quot;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nt">&quot;keywords&quot;</span><span class="p">:</span> <span class="p">[],</span>
+</span><span class='line'>  <span class="nt">&quot;devDependencies&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nt">&quot;mocha&quot;</span><span class="p">:</span> <span class="s2">&quot;^2.3.4&quot;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nt">&quot;dependencies&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nt">&quot;serverless-helpers-js&quot;</span><span class="p">:</span> <span class="s2">&quot;~0.0.3&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;typescript&quot;</span><span class="p">:</span> <span class="s2">&quot;^1.7.5&quot;</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nt">&quot;scripts&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nt">&quot;prepublish&quot;</span><span class="p">:</span> <span class="s2">&quot;tsc&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;pretest&quot;</span><span class="p">:</span> <span class="s2">&quot;tsc&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nt">&quot;test&quot;</span><span class="p">:</span> <span class="s2">&quot;mocha ./lib/test&quot;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We&#8217;ve finished setting up everything for TypeScript and Mocha. Whenever you run <code>tsc</code>, any TypeScript files in <em>/src</em> will get compiled to javascript in <em>/lib</em>. And running <code>npm test</code> will compile and then run any Mocha tests in <em>/lib/test</em>.</p>
+
+<p>The <a href="https://github.com/ZeroSharp/ServerlessPotd">source code so far</a> is on GitHub. Note the default <em>.gitignore</em> file skips the <em>admin.env</em> file which contains the (sensitive) AWS keys in it so don&#8217;t forget to add your own.</p>
+
+<p>In the next post we&#8217;ll create a TypeScript class for the guts of the lambda function which checks the password of the day, along with some corresponding Mocha tests, also written in TypeScript.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[Serverless Framework - Part 1: Up and running]]></title>
     <link href="http://ZeroSharp.github.com/serverless-framework-part-1-up-and-running/"/>
-    <updated>2015-12-22T20:26:00+01:00</updated>
+    <updated>2015-12-22T20:26:00+00:00</updated>
     <id>http://ZeroSharp.github.com/serverless-framework-part-1-up-and-running</id>
     <content type="html"><![CDATA[<p>I was in the middle of a blog post about the JAWS framework and before I had finished it changed its name to <a href="https://github.com/serverless/serverless">the Serverless framework</a>. It is a very clever way to build apps without worrying about provisioning server or whether it will scale. This is because it uses Amazon Web Services and in particular the Amazon lambda compute service. It&#8217;s currently in beta.</p>
 
@@ -186,7 +363,7 @@ $ npm -v
   <entry>
     <title type="html"><![CDATA[DevExpress 2015.2 review part 2]]></title>
     <link href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-2/"/>
-    <updated>2015-12-10T09:43:00+01:00</updated>
+    <updated>2015-12-10T09:43:00+00:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-2</id>
     <content type="html"><![CDATA[<p>This is the second and final dive into some of the new DevExpress XAF 2015.2 features. The <a href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1/">first part</a> covers the Report Designer and the new XML serialisation.</p>
 
@@ -258,7 +435,7 @@ $ npm -v
   <entry>
     <title type="html"><![CDATA[DevExpress 2015.2 review part 1]]></title>
     <link href="http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1/"/>
-    <updated>2015-12-09T14:43:00+01:00</updated>
+    <updated>2015-12-09T14:43:00+00:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-15-dot-2-review-part-1</id>
     <content type="html"><![CDATA[<p>Last week, DevExpress released 2015.2.3, their second major version of the year.</p>
 
@@ -386,7 +563,7 @@ Reporting is definitely one of the areas where XAF has progressed the most in re
   <entry>
     <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 3]]></title>
     <link href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3/"/>
-    <updated>2015-09-16T09:39:00+02:00</updated>
+    <updated>2015-09-16T09:39:00+01:00</updated>
     <id>http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3</id>
     <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='I&#8217;m happy to report there is a considerable improvement under load in version 15.1.'>
 This is the third part of a <a href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2">series</a> about migrating a large application from XAF 12.1 to XAF 15.1. In this part I will compare the results of a simple stress test between the versions.</p>
@@ -410,7 +587,7 @@ This is the third part of a <a href="http://ZeroSharp.github.com/migrating-a-lar
   <entry>
     <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 2]]></title>
     <link href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2/"/>
-    <updated>2015-09-15T10:37:00+02:00</updated>
+    <updated>2015-09-15T10:37:00+01:00</updated>
     <id>http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2</id>
     <content type="html"><![CDATA[<p>This is the second part of a <a href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1">series</a> about migrating a large application from XAF 12.1 to XAF 15.1.</p>
 
@@ -439,7 +616,7 @@ Here I had a refactoring dilemma to solve. Either I need to rewrite all of the a
   <entry>
     <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 1]]></title>
     <link href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1/"/>
-    <updated>2015-09-14T10:01:00+02:00</updated>
+    <updated>2015-09-14T10:01:00+01:00</updated>
     <id>http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1</id>
     <content type="html"><![CDATA[<p>I am the principal software architect for a treasury application in use by over 100 large multinational corporates. Upgrades are generally met with reluctance in the enterprise world and so we&#8217;ve been somewhat stuck on an old version of the expressAppFramework.</p>
 
@@ -469,7 +646,7 @@ Since 13.1, the XAF <code>Validator</code> class now requires an <code>IObjectSp
   <entry>
     <title type="html"><![CDATA[Force a complete garbage collection in an ASP.NET application.]]></title>
     <link href="http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application/"/>
-    <updated>2015-08-05T09:26:00+02:00</updated>
+    <updated>2015-08-05T09:26:00+01:00</updated>
     <id>http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application</id>
     <content type="html"><![CDATA[<p>How can I force a full garbage collection easily within an ASP.NET application? The method here is for XAF web applications but the same approach should work with any ASP.NET app.</p>
 
@@ -535,7 +712,7 @@ First up: Never mess with the .NET garbage collector.</p>
   <entry>
     <title type="html"><![CDATA[A strange error message from Visual Studio 2015]]></title>
     <link href="http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015/"/>
-    <updated>2015-08-03T15:35:00+02:00</updated>
+    <updated>2015-08-03T15:35:00+01:00</updated>
     <id>http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015</id>
     <content type="html"><![CDATA[<p>When I recently upgraded to Visual Studio 2015, everything seemed to go very smoothly except that whenever I debugged my main application I got a dialog window with the following strange error:</p>
 
@@ -551,7 +728,7 @@ First up: Never mess with the .NET garbage collector.</p>
   <entry>
     <title type="html"><![CDATA[Fixing slow debugging of ASP.NET applications]]></title>
     <link href="http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications/"/>
-    <updated>2015-06-03T21:31:00+02:00</updated>
+    <updated>2015-06-03T21:31:00+01:00</updated>
     <id>http://ZeroSharp.github.com/fixing-slow-debugging-of-asp-dot-net-applications</id>
     <content type="html"><![CDATA[<p>For a while I&#8217;ve noticed an annoying slowness when debugging ASP.NET applications from Visual Studio. Just after every page load it takes about a second before the buttons become clickable. I noticed mostly when debugging XAF applications, perhaps because the pages are quite complex.</p>
 
@@ -577,7 +754,7 @@ First up: Never mess with the .NET garbage collector.</p>
   <entry>
     <title type="html"><![CDATA[Top tip for viewing CSV files in Excel]]></title>
     <link href="http://ZeroSharp.github.com/top-tip-for-viewing-csv-files-in-excel/"/>
-    <updated>2015-05-08T11:32:00+02:00</updated>
+    <updated>2015-05-08T11:32:00+01:00</updated>
     <id>http://ZeroSharp.github.com/top-tip-for-viewing-csv-files-in-excel</id>
     <content type="html"><![CDATA[<p>Here&#8217;s a quick hack when your CSV file has a different separator than Excel is expecting.</p>
 
@@ -600,7 +777,7 @@ First up: Never mess with the .NET garbage collector.</p>
   <entry>
     <title type="html"><![CDATA[DevExpress 14.2 review]]></title>
     <link href="http://ZeroSharp.github.com/devexpress-14-dot-2-review/"/>
-    <updated>2015-01-20T08:35:00+01:00</updated>
+    <updated>2015-01-20T08:35:00+00:00</updated>
     <id>http://ZeroSharp.github.com/devexpress-14-dot-2-review</id>
     <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='The truly outstanding new feature is the ASP.NET report writer'>
 This post is an overview of the brand new version XAF 14.2. The truly outstanding new feature is the ASP.NET report writer which is now available in all XAF applications.</p>
@@ -654,7 +831,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
   <entry>
     <title type="html"><![CDATA[ELMAH with DevExpress XAF]]></title>
     <link href="http://ZeroSharp.github.com/elmah-with-devexpress-xaf/"/>
-    <updated>2014-10-08T15:45:00+02:00</updated>
+    <updated>2014-10-08T15:45:00+01:00</updated>
     <id>http://ZeroSharp.github.com/elmah-with-devexpress-xaf</id>
     <content type="html"><![CDATA[<p><a href="https://code.google.com/p/elmah/">ELMAH (Error Logging Modules and Handlers)</a> is an open source library for logging unhandled exceptions. This post explains how to get it running with the <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a> main demo.</p>
 
@@ -890,7 +1067,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 4: Roslyn]]></title>
     <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-4/"/>
-    <updated>2014-09-17T08:08:00+02:00</updated>
+    <updated>2014-09-17T08:08:00+01:00</updated>
     <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-4</id>
     <content type="html"><![CDATA[<p>This is the fourth and final part of a series about using Roslyn with dependency injection to create a flexible and powerful plug-in framework. Here I review the parts of the solution that deal with the Roslyn runtime compilation of plug-ins. Check out <a href="https://github.com/ZeroSharp/RoslynPlugins">the working example on GitHub</a>.</p>
 
@@ -1409,7 +1586,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 3: Dependency Injection]]></title>
     <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/"/>
-    <updated>2014-09-15T08:01:00+02:00</updated>
+    <updated>2014-09-15T08:01:00+01:00</updated>
     <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3</id>
     <content type="html"><![CDATA[<p>This is the third part of a series about using Roslyn with dependency injection to create a flexible and powerful plug-in framework. Here I review the parts of the solution that deal with dependency injection. Check out <a href="https://github.com/ZeroSharp/RoslynPlugins">the working example on GitHub</a>.</p>
 
@@ -1580,7 +1757,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 2: The Solution]]></title>
     <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/"/>
-    <updated>2014-09-11T09:18:00+02:00</updated>
+    <updated>2014-09-11T09:18:00+01:00</updated>
     <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2</id>
     <content type="html"><![CDATA[<p>Previously: <a href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/">Part 1: The Goal</a></p>
 
@@ -1634,7 +1811,7 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
   <entry>
     <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 1: The Goal]]></title>
     <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/"/>
-    <updated>2014-09-09T10:47:00+02:00</updated>
+    <updated>2014-09-09T10:47:00+01:00</updated>
     <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1</id>
     <content type="html"><![CDATA[<h2>The goal</h2>
 
@@ -1726,7 +1903,7 @@ How can we replace a given class&#8217;s code with new code at runtime? In parti
   <entry>
     <title type="html"><![CDATA[Persisting changes to config files within NuGet packages]]></title>
     <link href="http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages/"/>
-    <updated>2014-08-13T06:39:00+02:00</updated>
+    <updated>2014-08-13T06:39:00+01:00</updated>
     <id>http://ZeroSharp.github.com/persisting-changes-to-config-files-within-nuget-packages</id>
     <content type="html"><![CDATA[<p>Whenever NuGet updates or restores a NuGet package, the config files within it are overwritten. Here&#8217;s a method to make sure the changes are reapplied via a <a href="http://msdn.microsoft.com/en-us/library/dd465326.aspx">config transform</a> whenever the solution is built.</p>
 
@@ -1796,7 +1973,7 @@ How can we replace a given class&#8217;s code with new code at runtime? In parti
   <entry>
     <title type="html"><![CDATA[Pardon the interruption]]></title>
     <link href="http://ZeroSharp.github.com/pardon-the-interruption/"/>
-    <updated>2014-08-11T10:33:00+02:00</updated>
+    <updated>2014-08-11T10:33:00+01:00</updated>
     <id>http://ZeroSharp.github.com/pardon-the-interruption</id>
     <content type="html"><![CDATA[<p>I left my laptop on a train a couple of months ago. Good thing I remembered my brain. I&#8217;m back now. This blog still lives.</p>
 ]]></content>
@@ -1805,7 +1982,7 @@ How can we replace a given class&#8217;s code with new code at runtime? In parti
   <entry>
     <title type="html"><![CDATA[A web UI performance tip for XAF web applications]]></title>
     <link href="http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications/"/>
-    <updated>2014-03-31T10:16:00+02:00</updated>
+    <updated>2014-03-31T10:16:00+01:00</updated>
     <id>http://ZeroSharp.github.com/a-web-ui-performance-tip-for-xaf-web-applications</id>
     <content type="html"><![CDATA[<p>The purpose of this post is to raise your awareness of a toggle which exists in the <a href="http://www.devexpress.com/xaf/">DevExpress XAF framework</a> which can significantly improve UI performance in the web application.</p>
 
@@ -1830,232 +2007,6 @@ The biggest XAF project I work with has one very complex business object. The la
 
 
 <p>Certainly this is not without consequences, and I would urge a careful reading of the <a href="https://documentation.devexpress.com/#xaf/DevExpressExpressAppXafApplication_DelayedViewItemsInitializationtopic">relevant documentation</a>. To be honest, I still don&#8217;t really understand why my detail view is so much slower without this change. I have tried to isolate the cause without much success and I will update this post if I find anything new. But if some of your detail views seem overly slow, certainly try it out.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Provisioning a new development machine with BoxStarter]]></title>
-    <link href="http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter/"/>
-    <updated>2014-02-25T15:29:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter</id>
-    <content type="html"><![CDATA[<p>I&#8217;ve been playing around with <a href="http://boxstarter.org/">Boxstarter</a> to configure my entire development environment with hardly any user intervention.</p>
-
-<p><img class="right" src="http://ZeroSharp.github.com/images/blog/boxstarter-001.png" width="300"></p>
-
-<p>Here are the steps:</p>
-
-<ol>
-<li>Install Windows 8.1 on a new machine.</li>
-<li>Login.</li>
-<li>Open a command prompt and enter the following.</li>
-</ol>
-
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>START http://boxstarter.org/package/nr/url?http://bit.ly/1kapDXI</span></code></pre></td></tr></table></div></figure>
-
-
-<p>That&#8217;s it!</p>
-
-<p>Boxstarter will self-install via ClickOnce, asking for various confirmations and ultimately it will prompt you for your login password. (This gets saved and encrypted to allow for unattended reboots and re-logins during the installation). Then the real magic begins. Boxstarter downloads and installs all your tools and configures your environment, rebooting as necessary. An hour later your full development setup is installed, including Visual Studio 2013, any VS extensions, any other programs and tools, all the browsers you need, all critical Windows updates, etc. You just saved yourself a couple of days of work and a lot of hassle.</p>
-
-<p>How does Boxstarter know what to install? There&#8217;s a Powershell script located at that bitly address. Let&#8217;s take a look at the script.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-</pre></td><td class='code'><pre><code class='powershell'><span class='line'><span class="c"># Boxstarter options</span>
-</span><span class='line'><span class="nv">$Boxstarter</span><span class="p">.</span><span class="n">RebootOk</span><span class="p">=</span><span class="nv">$true</span> <span class="c"># Allow reboots?</span>
-</span><span class='line'><span class="nv">$Boxstarter</span><span class="p">.</span><span class="n">NoPassword</span><span class="p">=</span><span class="nv">$false</span> <span class="c"># Is this a machine with no login password?</span>
-</span><span class='line'><span class="nv">$Boxstarter</span><span class="p">.</span><span class="n">AutoLogin</span><span class="p">=</span><span class="nv">$true</span> <span class="c"># Save my password securely and auto-login after a reboot</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Basic setup</span>
-</span><span class='line'><span class="nb">Update-ExecutionPolicy</span> <span class="n">Unrestricted</span>
-</span><span class='line'><span class="nb">Set-ExplorerOptions</span> <span class="n">-showHidenFilesFoldersDrives</span> <span class="n">-showProtectedOSFiles</span> <span class="n">-showFileExtensions</span>
-</span><span class='line'><span class="nb">Enable-RemoteDesktop</span>
-</span><span class='line'><span class="nb">Disable-InternetExplorerESC</span>
-</span><span class='line'><span class="nb">Disable-UAC</span>
-</span><span class='line'><span class="nb">Set-TaskbarSmall</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nb">Test-PendingReboot</span><span class="p">)</span> <span class="p">{</span> <span class="nb">Invoke-Reboot</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Update Windows and reboot if necessary</span>
-</span><span class='line'><span class="n">Install-WindowsUpdate</span> <span class="n">-AcceptEula</span>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nb">Test-PendingReboot</span><span class="p">)</span> <span class="p">{</span> <span class="nb">Invoke-Reboot</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Install Visual Studio 2013 Professional </span>
-</span><span class='line'><span class="n">cinstm</span> <span class="n">VisualStudio2013Professional</span> <span class="n">-InstallArguments</span> <span class="n">WebTools</span>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nb">Test-PendingReboot</span><span class="p">)</span> <span class="p">{</span> <span class="nb">Invoke-Reboot</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Visual Studio SDK required for PoshTools extension</span>
-</span><span class='line'><span class="n">cinstm</span> <span class="n">VS2013SDK</span>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nb">Test-PendingReboot</span><span class="p">)</span> <span class="p">{</span> <span class="nb">Invoke-Reboot</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">cinstm</span> <span class="n">DotNet3</span><span class="p">.</span><span class="n">5</span> <span class="c"># Not automatically installed with VS 2013. Includes .NET 2.0. Uses Windows Features to install.</span>
-</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nb">Test-PendingReboot</span><span class="p">)</span> <span class="p">{</span> <span class="nb">Invoke-Reboot</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># VS extensions</span>
-</span><span class='line'><span class="n">Install-ChocolateyVsixPackage</span> <span class="n">PowerShellTools</span> <span class="n">http</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">c9eb3ba8</span><span class="p">-</span><span class="n">0c59</span><span class="p">-</span><span class="n">4944</span><span class="p">-</span><span class="n">9a62</span><span class="p">-</span><span class="n">6eee37294597</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">112013</span><span class="p">/</span><span class="n">6</span><span class="p">/</span><span class="n">PowerShellTools</span><span class="p">.</span><span class="n">vsix</span>
-</span><span class='line'><span class="n">Install-ChocolateyVsixPackage</span> <span class="n">WebEssentials2013</span> <span class="n">http</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">56633663</span><span class="p">-</span><span class="n">6799</span><span class="p">-</span><span class="n">41d7</span><span class="p">-</span><span class="n">9df7</span><span class="p">-</span><span class="n">0f2a504ca361</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">105627</span><span class="p">/</span><span class="n">31</span><span class="p">/</span><span class="n">WebEssentials2013</span><span class="p">.</span><span class="n">vsix</span>
-</span><span class='line'><span class="n">Install-ChocolateyVsixPackage</span> <span class="n">T4Toolbox</span> <span class="n">http</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">791817a4-eb9a</span><span class="p">-</span><span class="n">4000</span><span class="p">-</span><span class="n">9c85</span><span class="p">-</span><span class="n">972cc60fd5aa</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">116854</span><span class="p">/</span><span class="n">1</span><span class="p">/</span><span class="n">T4Toolbox</span><span class="p">.</span><span class="n">12</span><span class="p">.</span><span class="n">vsix</span>
-</span><span class='line'><span class="n">Install-ChocolateyVsixPackage</span> <span class="n">StopOnFirstBuildError</span> <span class="n">http</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">91aaa139</span><span class="p">-</span><span class="n">5d3c</span><span class="p">-</span><span class="n">43a7-b39f</span><span class="p">-</span><span class="n">369196a84fa5</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">44205</span><span class="p">/</span><span class="n">3</span><span class="p">/</span><span class="n">StopOnFirstBuildError</span><span class="p">.</span><span class="n">vsix</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># AWS Toolkit is now an MSI available here http://sdk-for-net.amazonwebservices.com/latest/AWSToolsAndSDKForNet.msi (no chocolatey package as of FEB 2014)</span>
-</span><span class='line'><span class="c"># Install-ChocolateyVsixPackage AwsToolkit http://visualstudiogallery.msdn.microsoft.com/175787af-a563-4306-957b-686b4ee9b497</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#Other dev tools</span>
-</span><span class='line'><span class="n">cinstm</span> <span class="n">fiddler4</span>
-</span><span class='line'><span class="n">cinstm</span> <span class="n">beyondcompare</span>
-</span><span class='line'><span class="n">cinstm</span> <span class="n">ProcExp</span> <span class="c">#cinstm sysinternals</span>
-</span><span class='line'><span class="n">cinstm</span> <span class="n">NugetPackageExplorer</span>
-</span><span class='line'><span class="n">cinstm</span> <span class="n">windbg</span>
-</span><span class='line'><span class="n">cinstm</span> <span class="n">Devbox-Clink</span>
-</span><span class='line'><span class="n">cinstm</span> <span class="n">TortoiseHg</span>
-</span><span class='line'><span class="c">#cinstm VisualHG # Chocolatey package is corrupt as of Feb 2014 </span>
-</span><span class='line'><span class="n">cinstm</span> <span class="n">linqpad4</span>
-</span><span class='line'><span class="n">cinstm</span> <span class="n">TestDriven</span><span class="p">.</span><span class="n">Net</span>
-</span><span class='line'><span class="n">cinstm</span> <span class="n">ncrunch2</span><span class="p">.</span><span class="n">vs2013</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#Browsers</span>
-</span><span class='line'><span class="n">cinstm</span> <span class="n">googlechrome</span>
-</span><span class='line'><span class="n">cinstm</span> <span class="n">firefox</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#Other essential tools</span>
-</span><span class='line'><span class="n">cinstm</span> <span class="n">7zip</span>
-</span><span class='line'><span class="n">cinstm</span> <span class="n">adobereader</span>
-</span><span class='line'><span class="n">cinstm</span> <span class="n">javaruntime</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">#cinst Microsoft-Hyper-V-All -source windowsFeatures</span>
-</span><span class='line'><span class="n">cinst</span> <span class="n">IIS-WebServerRole</span> <span class="n">-source</span> <span class="n">windowsfeatures</span>
-</span><span class='line'><span class="n">cinst</span> <span class="n">IIS-HttpCompressionDynamic</span> <span class="n">-source</span> <span class="n">windowsfeatures</span>
-</span><span class='line'><span class="n">cinst</span> <span class="n">IIS-ManagementScriptingTools</span> <span class="n">-source</span> <span class="n">windowsfeatures</span>
-</span><span class='line'><span class="n">cinst</span> <span class="n">IIS-WindowsAuthentication</span> <span class="n">-source</span> <span class="n">windowsfeatures</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">Install-ChocolateyPinnedTaskBarItem</span> <span class="s2">&quot;</span><span class="si">$(</span><span class="err">$</span><span class="si">Boxstarter.programFiles86)</span><span class="s2">\Google\Chrome\Application\chrome.exe&quot;</span>
-</span><span class='line'><span class="n">Install-ChocolateyPinnedTaskBarItem</span> <span class="s2">&quot;</span><span class="si">$(</span><span class="err">$</span><span class="si">Boxstarter.programFiles86)</span><span class="s2">\Microsoft Visual Studio 12.0\Common7\IDE\devenv.exe&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Boxstarter works with <a href="http://chocolatey.org/">Chocolatey</a> and you can install anything with a Chocolatey package very easily. As you can see, most of the lines begin with <code>cinstm</code> which is a shortcut for <em>install with Chocolatey if missing</em>. You will notice there are also commands for configuring Windows and IIS options. There is plenty of additional information on the <a href="http://boxstarter.org/WhyBoxstarter">Boxstarter</a> documentation.</p>
-
-<h2>What about DevExpress?</h2>
-
-<p>Want to install your registered CodeRush and DexExpress components? Easy. Since the installation packages are not available on chocolatey, you will have to put them on a network share accessible from the newly provisioned machine.</p>
-
-<p>Then add the following to your boxstarter script:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='powershell'><span class='line'><span class="c"># Set the following to the network location of the DevExpress installers</span>
-</span><span class='line'><span class="nv">$pathToDevExpressComponentsSetup</span> <span class="p">=</span> <span class="s2">&quot;\\somewhere\DevExpressComponents-13.2.7.exe&quot;</span>
-</span><span class='line'><span class="nv">$pathToDevExpressComponentsSetup</span> <span class="p">=</span> <span class="s2">&quot;\\somewhere\DevExpressCodeRush-13.2.7.exe&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Command line options for unattended installation</span>
-</span><span class='line'><span class="c"># (/EULA is not required for versions earlier than 10.2.10)</span>
-</span><span class='line'><span class="nv">$silentArgs</span> <span class="p">=</span> <span class="s2">&quot;/Q /EMAIL:myaddress@company.com /CUSTOMERID:A1111 /PASSWORD:MYPASSWORD /DEBUG /EULA:accept&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Install .NET Components</span>
-</span><span class='line'><span class="n">Install-ChocolateyInstallPackage</span> <span class="s2">&quot;DevExpressComponents_13.2&quot;</span> <span class="s2">&quot;EXE&quot;</span> <span class="nv">$silentArgs</span> <span class="nv">$pathToDevExpressComponentsSetup</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Install CodeRush</span>
-</span><span class='line'><span class="n">Install-ChocolateyInstallPackage</span> <span class="s2">&quot;DevExpressCodeRush_13.2&quot;</span> <span class="s2">&quot;EXE&quot;</span> <span class="nv">$silentArgs</span> <span class="nv">$pathToDevExpressCodeRushSetup</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p><strong>Warning! don&#8217;t put your DevExpress passwords on a public website.</strong></p>
-
-<p>There are plenty of other ways of <em>launching</em> Boxstarter. You can <a href="https://chocolatey.org/packages/boxstarter">install Boxstarter via Chocolatey</a>. You can <a href="http://boxstarter.org/InstallingPackages">run Boxstarter remotely</a>. If you are putting passwords in the installation script, you should choose one of the other options.</p>
-
-<h2>Advantages</h2>
-
-<ul>
-<li>I save time!</li>
-<li>I can now version control the exact development environment along with the source code!</li>
-<li>Onboarding new and junior developers is much quicker.</li>
-<li>In a pinch, I can use this method to quickly provision a development machine with Azure or Amazon Web Services</li>
-</ul>
-
-
-<h2>One Last Hiccup</h2>
-
-<p>While I was testing my BoxStarter script I used the Windows 8.1 image from <a href="http://www.modern.ie/">http://www.modern.ie/</a>. Much later in the process I realised that Modern.IE only supplies 32-bit images and the chocolatey installer for Visual Studio extensions currently works only with 64-bit Windows.</p>
 ]]></content>
   </entry>
   

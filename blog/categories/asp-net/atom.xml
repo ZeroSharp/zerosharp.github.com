@@ -4,7 +4,7 @@
   <title><![CDATA[Category: asp.net | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/asp-net/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2015-12-22T20:48:26+01:00</updated>
+  <updated>2016-01-12T09:54:09+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -16,7 +16,7 @@
   <entry>
     <title type="html"><![CDATA[Force a complete garbage collection in an ASP.NET application.]]></title>
     <link href="http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application/"/>
-    <updated>2015-08-05T09:26:00+02:00</updated>
+    <updated>2015-08-05T09:26:00+01:00</updated>
     <id>http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application</id>
     <content type="html"><![CDATA[<p>How can I force a full garbage collection easily within an ASP.NET application? The method here is for XAF web applications but the same approach should work with any ASP.NET app.</p>
 
