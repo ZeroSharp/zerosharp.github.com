@@ -4,7 +4,7 @@
   <title><![CDATA[Category: mocha | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/mocha/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-01-12T09:54:09+00:00</updated>
+  <updated>2016-01-26T18:19:01+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -38,11 +38,15 @@ I'm the technical lead for an enterprise application which is in use by about 10
 
 <h2>Mocha and TypeScript</h2>
 
+<h2>New version 0.1.5</h2>
+
+<p><span class="fluo">Edit: since the original version of this post, a new version 0.1.5 of Serverless was released. I have updated the tutorial below to reflect the newer version. </span></p>
+
 <p>Let's do things properly and set up a testing framework.</p>
 
-<p>Make sure you're in the module folder.</p>
+<p>Make sure you're in the component folder.</p>
 
-<pre><code>$ cd back/modules/potd
+<pre><code>$ cd nodejscomponent
 </code></pre>
 
 <p>Then we'll install Mocha.</p>
@@ -133,7 +137,7 @@ $ mkdir src/test
 
 <p>Next up we need to modify the package.json file to add a scripts section. Only the <code>"scripts"</code> section needs changing.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>tsconfig.json </span></figcaption>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>package.json </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: serverless | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/serverless/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-01-12T09:54:09+00:00</updated>
+  <updated>2016-01-26T18:19:01+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -38,11 +38,15 @@ I'm the technical lead for an enterprise application which is in use by about 10
 
 <h2>Mocha and TypeScript</h2>
 
+<h2>New version 0.1.5</h2>
+
+<p><span class="fluo">Edit: since the original version of this post, a new version 0.1.5 of Serverless was released. I have updated the tutorial below to reflect the newer version. </span></p>
+
 <p>Let's do things properly and set up a testing framework.</p>
 
-<p>Make sure you're in the module folder.</p>
+<p>Make sure you're in the component folder.</p>
 
-<pre><code>$ cd back/modules/potd
+<pre><code>$ cd nodejscomponent
 </code></pre>
 
 <p>Then we'll install Mocha.</p>
@@ -133,7 +137,7 @@ $ mkdir src/test
 
 <p>Next up we need to modify the package.json file to add a scripts section. Only the <code>"scripts"</code> section needs changing.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>tsconfig.json </span></figcaption>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>package.json </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -223,7 +227,11 @@ $ mkdir src/test
     <link href="http://ZeroSharp.github.com/serverless-framework-part-1-up-and-running/"/>
     <updated>2015-12-22T20:26:00+00:00</updated>
     <id>http://ZeroSharp.github.com/serverless-framework-part-1-up-and-running</id>
-    <content type="html"><![CDATA[<p>I was in the middle of a blog post about the JAWS framework and before I had finished it changed its name to <a href="https://github.com/serverless/serverless">the Serverless framework</a>. It is a very clever way to build apps without worrying about provisioning server or whether it will scale. This is because it uses Amazon Web Services and in particular the Amazon lambda compute service. It's currently in beta.</p>
+    <content type="html"><![CDATA[<h2>New version 0.1.5</h2>
+
+<p><span class="fluo">Edit: since the original version of this post, a new version 0.1.5 of Serverless was released. I have updated the tutorial below to reflect the newer version. </span></p>
+
+<p>I was in the middle of a blog post about the JAWS framework and before I had finished it changed its name to <a href="https://github.com/serverless/serverless">the Serverless framework</a>. It is a very clever way to build apps without worrying about provisioning server or whether it will scale. This is because it uses Amazon Web Services and in particular the Amazon lambda compute service. It's currently in beta.</p>
 
 <p>Follow <a href="http://docs.serverless.com/docs/configuring-aws">the instructions</a> for setting up an administrative IAM user for use with the framework.</p>
 
@@ -245,7 +253,8 @@ $ npm -v
 <pre><code>$ serverless project create
 </code></pre>
 
-<p>```</p>
+<p>```
+Serverless: Creating a new Serverless Project...</p>
 
 <hr />
 
@@ -253,11 +262,11 @@ $ npm -v
 |   |<em><strong>|  -</strong>|   </em>|  |  |  -<strong>|   _|  |  -</strong>|<strong> --|</strong> --|
 |<strong><strong>   |</strong></strong><em>|<strong>|  _</strong>/|</em><em><em><strong>|</strong>| |<strong>|</strong></em></em><em>|</em><strong><strong>|</strong></strong>_|
 |   |   |             The Serverless Application Framework
-|       |                         serverless.com, v.0.0.15
+|       |                           serverless.com, v0.1.5
 `-------'
-Serverless: Enter a project name:  (serverlessVyxSv1W8e) potdCheck
-Serverless: Enter a project domain (used for serverless regional bucket names):  (myapp.com) serverless.zerosharp.com
-Serverless: Enter an email to use for AWS alarms:  (me@myapp.com) potdCheck@nosredna.com
+Serverless: Enter a project name:  (serverless4ylkhz) serverlessPotd
+Serverless: Enter a project domain (used for the Serverless Project Bucket):  (serverless4ylkhz.com) zerosharp.com
+Serverless: Enter an email to use for AWS alarms:  (me@serverless4ylkhz.com) potd@nosredna.com
 Serverless: Select a region for your project:</p>
 
 <pre><code>us-east-1
@@ -271,68 +280,78 @@ us-west-2
 
 <p>Serverless: Select an AWS profile for your project:
 default
-Serverless: Creating a project region bucket on S3: serverless.euwest1.zerosharp.com...<br/>
-Serverless: Creating CloudFormation Stack for your new project (~5 mins)...<br/>
-Serverless: Successfully created project: serverlessPotdCheck
+Serverless: Creating your project bucket on S3: serverless.eu-west-1.zerosharp.com...<br/>
+Serverless: Creating stage "development"...<br/>
+Serverless: Creating region "eu-west-1" in stage "development"...<br/>
+Serverless: Deploying resources to stage "development" in region "eu-west-1" via Cloudformation (~3 minutes)...<br/>
+Serverless: Successfully deployed "development" resources to "eu-west-1"<br/>
+Serverless: Successfully created region "eu-west-1" within stage "development"<br/>
+Serverless: Successfully created stage "development"<br/>
+Serverless: Successfully created project: serverlessPotd<br/>
 ```</p></blockquote>
 
-<p>It takes about 5 minutes to setup the necessary CloudFormation stack for your project. Change directory to the newly created project.</p>
+<p>It takes about 3 minutes to setup the necessary CloudFormation stack for your project. Change directory to the newly created project.</p>
 
-<pre><code>$ cd serverlessPotdCheck
+<pre><code>$ cd serverlessPotd
 </code></pre>
 
-<p>Create a new module.</p>
+<p>Create a new component.</p>
 
-<pre><code>$ serverless module create
+<pre><code>$ serverless component create
 </code></pre>
 
 <p><code>
-Serverless: Enter a name for your new module:  potd
-Serverless: Enter a function name for your new module:  check
+riemann:serverlessPotd ra$ serverless component create
+Serverless: Enter a name for your new component:  (nodejscomponent)
+Serverless: Enter a name for your component's first module:  (resource) potd
+Serverless: Enter a name for your module's first function:  (show) check
 Serverless: Successfully created function: "check"  
-Serverless: Installing "serverless-helpers" for this module via NPM...  
+Serverless: Successfully created new serverless module "potd" inside the component "nodejscomponent"  
+Serverless: Installing "serverless-helpers" for this component via NPM...  
 serverless-helpers-js@0.0.3 node_modules/serverless-helpers-js
 └── dotenv@1.2.0
-Serverless: Successfully created new serverless module "potd" with its first function "check"  
+Serverless: Successfully created new serverless component: nodejscomponent
 </code></p>
 
 <p>This has created the javascript code for a basic lambda function which we can immediately deploy.</p>
 
-<pre><code>$ serverless function deploy
+<pre><code>$ serverless dash deploy
 </code></pre>
 
-<p>```  <br/>
-Serverless: Deploying functions in "development" to the following regions: eu-west-1<br/>
-Serverless: | 123123123 { Code:
-   { S3Bucket: 'serverless.euwest1.zerosharp.com',</p>
+<p>At the prompt select both the function and the endpoint and then select <em>Deploy</em>.</p>
 
-<pre><code> S3Key: 'Serverless/serverlessPotdCheck/development/lambdas/check@1450717964169.zip' },
+<p>```</p>
+
+<hr />
+
+<p>|   _   .-----.----.--.--.-----.----|  .-----.-----.-----.
+|   |<em><strong>|  -</strong>|   </em>|  |  |  -<strong>|   _|  |  -</strong>|<strong> --|</strong> --|
+|<strong><strong>   |</strong></strong><em>|<strong>|  _</strong>/|</em><em><em><strong>|</strong>| |<strong>|</strong></em></em><em>|</em><strong><strong>|</strong></strong>_|
+|   |   |             The Serverless Application Framework
+|       |                           serverless.com, v0.1.5
+`-------'</p>
+
+<p>Serverless: Select the assets you wish to deploy:</p>
+
+<pre><code>nodejscomponent - potd - check
+  function - nodejscomponent/potd/check
+  endpoint - nodejscomponent/potd/check@potd/check~GET
+- - - - -
 </code></pre>
 
-<p>  FunctionName: 'serverlessPotdCheck-check',
-  Handler: 'modules/potd/check/handler.handler',
-  Role: 'arn:aws:iam::962613113552:role/serverlessPotdCheck-development-r-IamRoleLambda-12LOSLPN3JHS8',
-  Runtime: 'nodejs',
-  Description: 'Serverless Lambda function for project: serverlessPotdCheck',
-  MemorySize: 1024,
-  Publish: true,</p>
+<blockquote><p>Deploy</p></blockquote>
 
-<p>  ...</p>
+<p>Serverless: Deploying functions in "development" to the following regions: eu-west-1<br/>
+Serverless: ------------------------<br/>
+Serverless: Successfully deployed functions in "development" to the following regions: <br/>
+Serverless: eu-west-1 ------------------------<br/>
+Serverless:   nodejscomponent/potd/check: arn:aws:lambda:eu-west-1:962613113552:function:serverlessPotd-nodejscomponent-potd-check:development</p>
 
-<p>Serverless: Successfully deployed functions in "development" to the following regions: eu-west-1<br/>
+<p>Serverless: Deploying endpoints in "development" to the following regions: eu-west-1<br/>
+Serverless: Successfully deployed endpoints in "development" to the following regions:<br/>
+Serverless: eu-west-1 ------------------------<br/>
+Serverless:   GET - potd/check - https://rhnjv4ms2b.execute-api.eu-west-1.amazonaws.com/development/potd/check<br/>
 ```</p>
-
-<p>Now deploy the endpoints.</p>
-
-<pre><code>$ serverless endpoint deploy
-</code></pre>
-
-<p><code>
-Serverless: Deploying endpoints in "development" to the following regions: eu-west-1  
-Serverless: Successfully deployed endpoints in "development" to the following regions:  
-Serverless: eu-west-1 ------------------------  
-Serverless:   GET - https://udjkzpj2a2.execute-api.eu-west-1.amazonaws.com/development/potd/check
-</code></p>
 
 <p>Now open a browser and navigate to the URL in the last line. You should see the following JSON response.</p>
 
