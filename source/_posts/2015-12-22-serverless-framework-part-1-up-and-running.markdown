@@ -6,6 +6,9 @@ comments: true
 categories: [aws, serverless]
 description: An introduction to the Serverless framework. Making it easy to use Amazon Lambda to build highly scalable apps cheaply.
 ---
+## New version 0.1.5 ##
+{% highlight Edit: since the original version of this post, a new version 0.1.5 of Serverless was released. I have updated the tutorial below to reflect the newer version. %}
+
 I was in the middle of a blog post about the JAWS framework and before I had finished it changed its name to [the Serverless framework](https://github.com/serverless/serverless). It is a very clever way to build apps without worrying about provisioning server or whether it will scale. This is because it uses Amazon Web Services and in particular the Amazon lambda compute service. It's currently in beta.
 
 Follow [the instructions](http://docs.serverless.com/docs/configuring-aws) for setting up an administrative IAM user for use with the framework.
@@ -26,16 +29,17 @@ Create a new project
     $ serverless project create
 
 ```
+Serverless: Creating a new Serverless Project...  
  _______                             __
 |   _   .-----.----.--.--.-----.----|  .-----.-----.-----.
 |   |___|  -__|   _|  |  |  -__|   _|  |  -__|__ --|__ --|
 |____   |_____|__|  \___/|_____|__| |__|_____|_____|_____|
 |   |   |             The Serverless Application Framework
-|       |                         serverless.com, v.0.0.15
+|       |                           serverless.com, v0.1.5
 `-------'
-Serverless: Enter a project name:  (serverlessVyxSv1W8e) potdCheck
-Serverless: Enter a project domain (used for serverless regional bucket names):  (myapp.com) serverless.zerosharp.com
-Serverless: Enter an email to use for AWS alarms:  (me@myapp.com) potdCheck@nosredna.com
+Serverless: Enter a project name:  (serverless4ylkhz) serverlessPotd
+Serverless: Enter a project domain (used for the Serverless Project Bucket):  (serverless4ylkhz.com) zerosharp.com
+Serverless: Enter an email to use for AWS alarms:  (me@serverless4ylkhz.com) potd@nosredna.com
 Serverless: Select a region for your project: 
     us-east-1
     us-west-2
@@ -43,60 +47,69 @@ Serverless: Select a region for your project:
     ap-northeast-1
 Serverless: Select an AWS profile for your project: 
   > default
-Serverless: Creating a project region bucket on S3: serverless.euwest1.zerosharp.com...  
-Serverless: Creating CloudFormation Stack for your new project (~5 mins)...  
-Serverless: Successfully created project: serverlessPotdCheck
+Serverless: Creating your project bucket on S3: serverless.eu-west-1.zerosharp.com...  
+Serverless: Creating stage "development"...  
+Serverless: Creating region "eu-west-1" in stage "development"...  
+Serverless: Deploying resources to stage "development" in region "eu-west-1" via Cloudformation (~3 minutes)...  
+Serverless: Successfully deployed "development" resources to "eu-west-1"  
+Serverless: Successfully created region "eu-west-1" within stage "development"  
+Serverless: Successfully created stage "development"  
+Serverless: Successfully created project: serverlessPotd  
 ```
 
-It takes about 5 minutes to setup the necessary CloudFormation stack for your project. Change directory to the newly created project.
+It takes about 3 minutes to setup the necessary CloudFormation stack for your project. Change directory to the newly created project.
 
-    $ cd serverlessPotdCheck
+    $ cd serverlessPotd
     
-Create a new module.
+Create a new component.
 
-    $ serverless module create
+    $ serverless component create
     
 ```
-Serverless: Enter a name for your new module:  potd
-Serverless: Enter a function name for your new module:  check
+riemann:serverlessPotd ra$ serverless component create
+Serverless: Enter a name for your new component:  (nodejscomponent) 
+Serverless: Enter a name for your component's first module:  (resource) potd
+Serverless: Enter a name for your module's first function:  (show) check
 Serverless: Successfully created function: "check"  
-Serverless: Installing "serverless-helpers" for this module via NPM...  
+Serverless: Successfully created new serverless module "potd" inside the component "nodejscomponent"  
+Serverless: Installing "serverless-helpers" for this component via NPM...  
 serverless-helpers-js@0.0.3 node_modules/serverless-helpers-js
 └── dotenv@1.2.0
-Serverless: Successfully created new serverless module "potd" with its first function "check"  
+Serverless: Successfully created new serverless component: nodejscomponent 
 ```   
  
 This has created the javascript code for a basic lambda function which we can immediately deploy.
 
-    $ serverless function deploy
+    $ serverless dash deploy
+    
+At the prompt select both the function and the endpoint and then select _Deploy_.    
     
 ```    
+ _______                             __
+|   _   .-----.----.--.--.-----.----|  .-----.-----.-----.
+|   |___|  -__|   _|  |  |  -__|   _|  |  -__|__ --|__ --|
+|____   |_____|__|  \___/|_____|__| |__|_____|_____|_____|
+|   |   |             The Serverless Application Framework
+|       |                           serverless.com, v0.1.5
+`-------'
+
+Serverless: Select the assets you wish to deploy:
+    nodejscomponent - potd - check
+      function - nodejscomponent/potd/check
+      endpoint - nodejscomponent/potd/check@potd/check~GET
+    - - - - -
+  > Deploy
+
 Serverless: Deploying functions in "development" to the following regions: eu-west-1  
-Serverless: | 123123123 { Code: 
-   { S3Bucket: 'serverless.euwest1.zerosharp.com',
-     S3Key: 'Serverless/serverlessPotdCheck/development/lambdas/check@1450717964169.zip' },
-  FunctionName: 'serverlessPotdCheck-check',
-  Handler: 'modules/potd/check/handler.handler',
-  Role: 'arn:aws:iam::962613113552:role/serverlessPotdCheck-development-r-IamRoleLambda-12LOSLPN3JHS8',
-  Runtime: 'nodejs',
-  Description: 'Serverless Lambda function for project: serverlessPotdCheck',
-  MemorySize: 1024,
-  Publish: true,
-  
-  ...
-  
-Serverless: Successfully deployed functions in "development" to the following regions: eu-west-1  
-```
+Serverless: ------------------------  
+Serverless: Successfully deployed functions in "development" to the following regions:   
+Serverless: eu-west-1 ------------------------  
+Serverless:   nodejscomponent/potd/check: arn:aws:lambda:eu-west-1:962613113552:function:serverlessPotd-nodejscomponent-potd-check:development  
 
-Now deploy the endpoints.
-    
-    $ serverless endpoint deploy
-
-```
 Serverless: Deploying endpoints in "development" to the following regions: eu-west-1  
 Serverless: Successfully deployed endpoints in "development" to the following regions:  
 Serverless: eu-west-1 ------------------------  
-Serverless:   GET - https://udjkzpj2a2.execute-api.eu-west-1.amazonaws.com/development/potd/check
+Serverless:   GET - potd/check - https://rhnjv4ms2b.execute-api.eu-west-1.amazonaws.com/development/potd/check  
 ```
 
 Now open a browser and navigate to the URL in the last line. You should see the following JSON response.

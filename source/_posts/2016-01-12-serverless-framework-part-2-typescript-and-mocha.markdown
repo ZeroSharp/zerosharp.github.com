@@ -27,11 +27,14 @@ It's a tiny, simple, rarely-used web service but AWS lambda is still a great fit
 
 ## Mocha and TypeScript ##
 
+## New version 0.1.5 ##
+{% highlight Edit: since the original version of this post, a new version 0.1.5 of Serverless was released. I have updated the tutorial below to reflect the newer version. %}
+
 Let's do things properly and set up a testing framework.
 
-Make sure you're in the module folder.
+Make sure you're in the component folder.
     
-    $ cd back/modules/potd
+    $ cd nodejscomponent
     
 Then we'll install Mocha.    
 
@@ -98,7 +101,7 @@ Now make a subdirectory for our TypeScript source files.
     
 Next up we need to modify the package.json file to add a scripts section. Only the `"scripts"` section needs changing.
 
-{% codeblock lang:json tsconfig.json %}
+{% codeblock lang:json package.json %}
 {
   "name": "potd",
   "version": "0.0.1",
