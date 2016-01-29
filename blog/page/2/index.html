@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="When I recently upgraded to Visual Studio 2015, everything seemed to go very smoothly except that whenever I debugged my main application I got a &hellip;">
+  <meta name="description" content="For a while I&#8217;ve noticed an annoying slowness when debugging ASP.NET applications from Visual Studio. Just after every page load it takes about &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,51 +113,6 @@
     <div id="content">
       <div class="blog-index">
   
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/a-strange-error-message-from-visual-studio-2015/">A Strange Error Message From Visual Studio 2015</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-08-03T15:35:00+01:00" pubdate data-updated="true">Aug 3<span>rd</span>, 2015</time>
-        
-         | <a href="/a-strange-error-message-from-visual-studio-2015/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>When I recently upgraded to Visual Studio 2015, everything seemed to go very smoothly except that whenever I debugged my main application I got a dialog window with the following strange error:</p>
-
-<pre><code>The procedure entry point could not be located in the dynamic link library C:\...\bin\Debug\netutils.dll.
-</code></pre>
-
-<p>After pressing <code>OK</code> everything seemed to work as normal.</p>
-
-<p>After a considerable number of dead ends, I finally worked out that changing the name of the <em>NetUtils.dll</em> assembly fixes the problem. It seems that Visual Studio 2015 gets confused with a Windows system assembly with the same name. I don&#8217;t know why it was never a problem with Visual Studio 2013, but I renamed the assembly and now everything is working fine.</p>
-</div>
-  
-  
-
-
-    </article>
   
   
     <article>
@@ -1658,6 +1613,44 @@ How can we replace a given class&#8217;s code with new code at runtime? In parti
 <p>By the way, <a href="https://webconfigtransformationtester.apphb.com/">Web.config Transformation Tester</a> is a handy tool!</p>
 
 <p>Now whenever I build the project, the <em>AfterBuild</em> event ensures the supportedRuntime version is set correctly.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/pardon-the-interruption/">Pardon the Interruption</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-08-11T10:33:00+01:00" pubdate data-updated="true">Aug 11<span>th</span>, 2014</time>
+        
+         | <a href="/pardon-the-interruption/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I left my laptop on a train a couple of months ago. Good thing I remembered my brain. I&#8217;m back now. This blog still lives.</p>
 </div>
   
   

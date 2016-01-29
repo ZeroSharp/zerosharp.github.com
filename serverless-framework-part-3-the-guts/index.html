@@ -335,7 +335,7 @@
 
 <h2>Retrieving the parameter value</h2>
 
-<p>Now back in <em>index.js</em> you will find that the function&#8217;s <code>event</code> parameter has a property <code>password</code> which is set to the value of the querystring parameter. If you make the following change:, the function now returns the querystring value of the <code>password</code>.</p>
+<p>Now back in <em>index.js</em> you will find that the function&#8217;s <code>event</code> parameter has a property <code>password</code> which is set to the value of the querystring parameter.</p>
 
 <figure class='code'><figcaption><span>nodejscomponent/lib/index.js </span></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -349,7 +349,7 @@
 <span class='line-number'>9</span>
 </pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">respond</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">parameterValue</span> <span class="o">=</span> <span class="nx">event</span><span class="p">.</span><span class="nx">password</span><span class="p">;</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">parameterValue</span> <span class="o">=</span> <span class="nx">event</span><span class="p">.</span><span class="nx">password</span><span class="p">;</span> <span class="c1">// the querystring parameter</span>
 </span><span class='line'>  <span class="kd">var</span> <span class="nx">response</span> <span class="o">=</span> <span class="p">{</span>
 </span><span class='line'>    <span class="nx">message</span><span class="o">:</span> <span class="nx">parameterValue</span>
 </span><span class='line'>  <span class="p">};</span>
@@ -359,17 +359,17 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Redeploy</p>
+<p>Redeploy.</p>
 
 <pre><code> $ serverless dash deploy
 </code></pre>
 
-<p>Visit the URI</p>
+<p>Visit the URI.</p>
 
 <pre><code>http://something.amazonaws.com/development/potd/check?password=P455w0rd
 </code></pre>
 
-<p>The response will be</p>
+<p>The response is:</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -432,7 +432,7 @@
     
     <p class="meta">
       
-        <a class="basic-alignment left" href="/serverless-framework-part-4-connecting-the-parts/" title="Previous Post: Serverless Framework - Part 4: Connecting the parts">&laquo; Serverless Framework - Part 4: Connecting the parts</a>
+        <a class="basic-alignment left" href="/serverless-framework-part-2-typescript-and-mocha/" title="Previous Post: Serverless Framework - Part 2: TypeScript and Mocha">&laquo; Serverless Framework - Part 2: TypeScript and Mocha</a>
       
       
     </p>
