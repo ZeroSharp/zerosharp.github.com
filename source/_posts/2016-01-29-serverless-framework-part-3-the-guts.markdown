@@ -120,12 +120,12 @@ You can easily tailor the `requestTemplates` in this file to extract whatever pa
 
 ## Retrieving the parameter value ##
 
-Now back in _index.js_ you will find that the function's `event` parameter has a property `password` which is set to the value of the querystring parameter. If you make the following change:, the function now returns the querystring value of the `password`.
+Now back in _index.js_ you will find that the function's `event` parameter has a property `password` which is set to the value of the querystring parameter.
 
 {% codeblock lang:javascript nodejscomponent/lib/index.js %}
 module.exports.respond = function(event, cb) {
   
-  var parameterValue = event.password;
+  var parameterValue = event.password; // the querystring parameter
   var response = {
     message: parameterValue
   };
@@ -134,15 +134,15 @@ module.exports.respond = function(event, cb) {
 };
 {% endcodeblock %}
 
-Redeploy
+Redeploy.
 
      $ serverless dash deploy
      
-Visit the URI
+Visit the URI.
 
     http://something.amazonaws.com/development/potd/check?password=P455w0rd
 
-The response will be
+The response is:
 
 ```json
 {
