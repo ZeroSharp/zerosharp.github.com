@@ -9,7 +9,8 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="I&#8217;ve been playing around with Boxstarter to configure my entire development environment with hardly any user intervention. Here are the steps: &hellip;">
+  <meta name="description" content="I left my laptop on a train a couple of months ago. Good thing I remembered my brain. I&#8217;m back now. This blog still lives.
+">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +114,104 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/pardon-the-interruption/">Pardon the Interruption</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-08-11T10:33:00+01:00" pubdate data-updated="true">Aug 11<span>th</span>, 2014</time>
+        
+         | <a href="/pardon-the-interruption/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I left my laptop on a train a couple of months ago. Good thing I remembered my brain. I&#8217;m back now. This blog still lives.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/a-web-ui-performance-tip-for-xaf-web-applications/">A Web UI Performance Tip for XAF Web Applications</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-31T10:16:00+01:00" pubdate data-updated="true">Mar 31<span>st</span>, 2014</time>
+        
+         | <a href="/a-web-ui-performance-tip-for-xaf-web-applications/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>The purpose of this post is to raise your awareness of a toggle which exists in the <a href="http://www.devexpress.com/xaf/">DevExpress XAF framework</a> which can significantly improve UI performance in the web application.</p>
+
+<p><span class='pullquote-right' data-pullquote='In fact the general responsiveness of the entire web-application seems much better.'>
+The biggest XAF project I work with has one very complex business object. The layout for this screen includes about 100 properties, several nested tabs, some custom editors, several collection properties and a whole lot of <a href="https://documentation.devexpress.com/#Xaf/CustomDocument3286">Conditional Appearance</a> rules. It was very sluggish to navigate - it was taking several seconds to load the detail view and then it was very slow switching between tabs. Switching to edit mode was also slow.</p>
+
+<p>Last week, I almost accidentally changed the value of <code>DelayedViewItemsInitialization</code> to <code>false</code> and noticed that the UI speed was much much better. In fact the general responsiveness of the entire web-application seems much better.</p>
+
+<p>In order to give it a whirl, navigate to the WebApplication.cs file (normally in the ApplicationCode subfolder of your web project) and modify the constructor as follows:</p>
+
+<p></span></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="nf">MainDemoWebApplication</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">InitializeComponent</span><span class="p">();</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="n">DelayedViewItemsInitialization</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Certainly this is not without consequences, and I would urge a careful reading of the <a href="https://documentation.devexpress.com/#xaf/DevExpressExpressAppXafApplication_DelayedViewItemsInitializationtopic">relevant documentation</a>. To be honest, I still don&#8217;t really understand why my detail view is so much slower without this change. I have tried to isolate the cause without much success and I will update this post if I find anything new. But if some of your detail views seem overly slow, certainly try it out.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1569,217 +1668,6 @@ The default directories for the installation have changed again. I&#8217;m sure 
 <p>In this case, using a <code>ViewController</code> leads to relatively simple code and ease of maintenance. Other situations may well be better served by the other approaches.</p>
 
 <p>DevExpress XAF is a powerful mature product. As such, it can be daunting to new users because of all the different approaches for applying changes. It is always possible to find an elegant maintainable solution, but sometimes it is not obvious, even when the required change is small.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/a-review-of-ndepend-5/">A Review of NDepend 5</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-10-02T17:54:00+01:00" pubdate data-updated="true">Oct 2<span>nd</span>, 2013</time>
-        
-         | <a href="/a-review-of-ndepend-5/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>NDepend is a commercial static analysis tool for .NET managed code. It&#8217;s been around a long time (since 2004!). Version 5 was just released and in this post I&#8217;m going to try it out on the DevExpress MainDemo.</p>
-
-<p><span class='pullquote-right' data-pullquote='In version 5, a lot of work has been done to improve the learning curve.'>
-In the past I have always thought of NDepend as a complex tool. I was never sure where to start. In version 5, a lot of work has been done to improve the learning curve. The installation process is easy and a wizard very quickly points you in the right direction.</p>
-
-<p>After <a href="http://ndepend.com/NDependDownload.aspx">downloading the v5 trial</a> and running the installation you get to the following screen.
-</span></p>
-
-<p><img src="/images/blog/ndepend/ndepend-001.png"></p>
-
-<p>You cannot miss that big red arrow. In fact, it&#8217;s even animated in the actual product. Click on it and choose a Visual Studio solution to analyse. I&#8217;m going to navigate to the DevExpress MainDemo 13.1.</p>
-
-<p>So long as the project has been built at some point, NDepend works out what to analyse (otherwise you&#8217;ll get helpful warnings).</p>
-
-<p><img src="/images/blog/ndepend/ndepend-003.png"></p>
-
-<p>It is very fast and we get to this help screen.</p>
-
-<p><img src="/images/blog/ndepend/ndepend-004.png"></p>
-
-<p>Choose the dashboard.</p>
-
-<p><img src="/images/blog/ndepend/ndepend-005.png"></p>
-
-<p>Now that&#8217;s a lot of information, but it&#8217;s all well presented and easy to navigate. Let&#8217;s focus on the worst: I can see <em>2 Critical Rules Violated</em>. Drill down to find out more:</p>
-
-<p><img src="/images/blog/ndepend/ndepend-009.png"></p>
-
-<p>It&#8217;s complaining that we have classes with duplicate names in our projects. In the pane on the left we can see what they are: 3 types named <code>MainDemoWinApplication</code>, 3 named <code>Program</code>, <em>etc.</em> And sure enough there are: <em>MainDemo.Win</em>, <em>MainDemo.Win.Mdi</em> and <em>MainDemo.Win.Ribbon</em> all duplicate those class names.</p>
-
-<p>We can also see 2 <code>TaskAnalysis1LayoutUpdater</code> types and a quick search reveals that there&#8217;s one in the web module and another in the win module.</p>
-
-<p>So NDepend has correctly discovered some potential issues. As we XAF fans know, this one is not really a problem, because those modules are never loaded into the same AppDomain, but nevertheless the information is accurate and relevant.</p>
-
-<p>Lets have a brief look at the other screens. The dependency graph:</p>
-
-<p><img src="/images/blog/ndepend/ndepend-006.png"></p>
-
-<p>With a million options.</p>
-
-<p><img src="/images/blog/ndepend/ndepend-010.png"></p>
-
-<p>A dependency matrix.</p>
-
-<p><img src="/images/blog/ndepend/ndepend-007.png"></p>
-
-<p>A metrics view showing class and assembly sizes.</p>
-
-<p><img src="/images/blog/ndepend/ndepend-008.png"></p>
-
-<p>All with reams of helpful documentation.</p>
-
-<p><img src="/images/blog/ndepend/ndepend-011.png"></p>
-
-<p>Overall, the tool felt fast, responsive and stable. I&#8217;ve focused on the user interface aspects, but there is so much more. Some things you can do:</p>
-
-<ul>
-<li>Create your own analysis rules</li>
-<li><a href="http://www.ndepend.com/Doc_CQLinq_Syntax.aspx#Edition">Query your own code with LINQ</a></li>
-<li>Run analysis from <a href="http://www.ndepend.com/NDependConsole.aspx">the command line</a></li>
-<li>Run from within Visual Studio</li>
-<li>Add output to continuous integration (<a href="http://www.ndepend.com/Doc_CI_TeamCity.aspx">TeamCity</a>, <a href="http://www.ndepend.com/Doc_CI_CCNet.aspx">CruiseControl.NET</a>, etc.)</li>
-<li>Track <a href="http://www.ndepend.com/Doc_Trend.aspx">trends and progress over time</a></li>
-</ul>
-
-
-<p>NDepend shines at providing a high-level overview of code quality and as such it is a very useful addition to any developer&#8217;s toolkit. There are some scenarios where NDepend would be particularly useful:</p>
-
-<ul>
-<li>For a developer joining a mature project.</li>
-<li>For a senior developer looking to track progress on a refactoring drive.</li>
-<li>For helping evaluate the quality of an open source third party library.</li>
-</ul>
-
-
-<p>In this quick review, I&#8217;m not going deep enough to say anything about whether the DevExpress MainDemo is good code or not - it&#8217;s just a sample project I happen to be quite familiar with. It might be interesting to unleash NDepend on the full DevExpress source code and maybe one day I&#8217;ll get around to writing a future post about that.</p>
-
-<p>With regard to my own projects, I feel I&#8217;m so familiar with them that I ought to be aware of most of the recommendations NDepend is likely to make, but I&#8217;ll give it a spin and see what comes out&#8230;</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/always-run-visual-studio-as-an-administrator/">Always Run Visual Studio as an Administrator</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-09-09T07:49:00+01:00" pubdate data-updated="true">Sep 9<span>th</span>, 2013</time>
-        
-         | <a href="/always-run-visual-studio-as-an-administrator/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I always run Visual Studio as an administrator. There are various reasons why this is necessary including:</p>
-
-<ul>
-<li>using IIS with a web application</li>
-<li>running web UI tests</li>
-<li>profiling</li>
-</ul>
-
-
-<p>In fact there&#8217;s a list <a href="http://msdn.microsoft.com/en-us/library/vstudio/jj662724.aspx">on MSDN</a> of all the actions you require administrator permissions.</p>
-
-<p>Here is a way to make sure Visual Studio always opens with elevated privileges, even if you double click on a <em>.sln</em> file. (I&#8217;m running Windows 8.)</p>
-
-<ul>
-<li>Right-click <em>devenv.exe</em></li>
-<li>Select <em>Troubleshoot program</em></li>
-<li>Check <em>The program requires additional permissions</em></li>
-<li>Click <em>Next</em></li>
-<li>Click <em>Test the program&#8230;</em></li>
-<li>Wait for the program to launch</li>
-<li>Click <em>Next</em></li>
-<li>Select <em>Yes, save these settings for this program</em></li>
-<li>Click <em>Close</em></li>
-</ul>
-
-
-<p>If you have multiple versions of Visual Studio installed, you should repeat the operation for all of the following.</p>
-
-<table>
-<thead>
-<tr>
-<th>Program </th>
-<th> &nbsp;Default location</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>&nbsp;Visual Studio 2008&nbsp; </td>
-<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE\devenv.exe</em> &nbsp;</td>
-</tr>
-<tr>
-<td>&nbsp;Visual Studio 2010&nbsp; </td>
-<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe</em> &nbsp; </td>
-</tr>
-<tr>
-<td>&nbsp;Visual Studio 2012&nbsp; </td>
-<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\devenv.exe</em> &nbsp;</td>
-</tr>
-<tr>
-<td>&nbsp;VSLauncher.exe&nbsp; </td>
-<td> &nbsp;<em>C:\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\VSLauncher.exe</em> &nbsp;</td>
-</tr>
-</tbody>
-</table>
-
-
-<p>&nbsp;</p>
-
-<p>That&#8217;s it. Now Visual Studio always opens with administrator privileges.</p>
 </div>
   
   

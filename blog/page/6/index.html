@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="First steps in iPhone development This is the first in a series of posts about developing an iOS application from the perspective of a Windows C# &hellip;">
+  <meta name="description" content="This post covers how recreate a local repository of your Octopress blog. Perhaps you&#8217;ve accidentally lost it, or perhaps you would like to be &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,275 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/clone-your-octopress-to-blog-from-two-places/">Clone Your Octopress to Blog From Two Places</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-01T11:59:00+00:00" pubdate data-updated="true">Feb 1<span>st</span>, 2013</time>
+        
+         | <a href="/clone-your-octopress-to-blog-from-two-places/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><img class="right" src="/images/blog/clone-your-octopress-001.png"></p>
+
+<p>This post covers how recreate a local repository of your Octopress blog. Perhaps you&#8217;ve accidentally lost it, or perhaps you would like to be able to blog from two different places. Recently <a href="/the-best-pc-laptop-is-a-mac/">I bought a new computer</a> and I wanted to be able to blog from both my desktop and my laptop.</p>
+
+<h3>How Octopress works</h3>
+
+<p>Octopress repositories have two branches, <code>source</code> and <code>master</code>. The <code>source</code> branch contains the files that are used to generate the blog and the <code>master</code> contains the blog itself.</p>
+
+<p>When the local folders are initially configured according to the <a href="http://octopress.org/docs/setup/">Octopress Setup Guide</a>, the <code>master</code> branch is stored in a subfolder named &#8216;_deploy&#8217;. Since the folder name begins with an underscore, it is ignored when you <code>git push origin source</code>. Instead, the <code>master</code> branch (which contains your blog posts) gets updated when you <code>rake deploy</code>.</p>
+
+<h2>Recreating a local Octopress repository</h2>
+
+<p>To recreate the local directory structure of an existing Octopress blog, follow these instructions.</p>
+
+<h3>Clone your blog to the new machine</h3>
+
+<p>First you need to clone the <code>source</code> branch to the local octopress folder.</p>
+
+<pre><code>$ git clone -b source git@github.com:username/username.github.com.git octopress
+</code></pre>
+
+<p>Then clone the <code>master</code> branch to the _deploy subfolder.</p>
+
+<pre><code>$ cd octopress
+$ git clone git@github.com:username/username.github.com.git _deploy 
+</code></pre>
+
+<p>Then run the rake installation to configure everything</p>
+
+<pre><code>$ gem install bundler
+$ rbenv rehash    # If you use rbenv, rehash to be able to run the bundle command
+$ bundle install
+$ rake setup_github_pages
+</code></pre>
+
+<p>It will prompt you for your repository URL.</p>
+
+<pre><code>Enter the read/write url for your repository
+(For example, 'git@github.com:your_username/your_username.github.com)
+</code></pre>
+
+<p>That&#8217;s you setup with a new local copy of your Octopress blog.</p>
+
+<h3>Pushing changes from two different machines</h3>
+
+<p>If you want to blog from more than one computer, you need to make sure that you push everything before switching computers. From the first machine do the following whenever you&#8217;ve made changes:</p>
+
+<pre><code>$ rake generate
+$ git add .
+$ git commit -am "Some comment here." 
+$ git push origin source  # update the remote source branch 
+$ rake deploy             # update the remote master branch
+</code></pre>
+
+<p>Then on the other machine, you need to pull those changes.</p>
+
+<pre><code>$ cd octopress
+$ git pull origin source  # update the local source branch
+$ cd ./_deploy
+$ git pull origin master  # update the local master branch
+</code></pre>
+
+<p>Of course, it might be easier to deploy everything from a thumb drive instead&#8230;</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/installing-ruby-with-homebrew-and-rbenv-on-mac-os-x-mountain-lion/">Installing Ruby With Homebrew and Rbenv on Mac OS X Mountain Lion</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-31T17:38:00+00:00" pubdate data-updated="true">Jan 31<span>st</span>, 2013</time>
+        
+         | <a href="/installing-ruby-with-homebrew-and-rbenv-on-mac-os-x-mountain-lion/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>Install Ruby with rbenv</h2>
+
+<p>I decided to setup Octopress on my Mac so that I can publish blog posts from either Windows or MacOS. I&#8217;m on OS X 10.8.2.</p>
+
+<p>I tried to follow the <a href="http://octopress.org/docs/setup/rbenv/">Octopress instructions</a> for installing Ruby but ran into a few problems.</p>
+
+<h3>Install Homebrew</h3>
+
+<p><a href="http://mxcl.github.com/homebrew/">Homebrew</a> is a package manager for OS X. Open Terminal and install Homebrew with:</p>
+
+<pre><code>$ ruby -e "$(curl -fsSkL raw.github.com/mxcl/homebrew/go)"
+</code></pre>
+
+<p>Once the installation is successful, you can run the following command to check your environment.</p>
+
+<pre><code>$ brew doctor
+</code></pre>
+
+<p>Apparently, you should see:</p>
+
+<pre><code>Your system is raring to brew
+</code></pre>
+
+<p>But instead I had 3 warnings.</p>
+
+<pre>
+<span STYLE="color:red">Warning:</span> /usr/bin occurs before /usr/local/bin
+This means that system-provided programs will be used instead of those
+provided by Homebrew. The following tools exist at both paths:
+
+    gcov-4.2
+
+Consider amending your PATH so that /usr/local/bin
+occurs before /usr/bin in your PATH.
+</pre>
+
+
+<p>This one can be fixed by modifying your <code>.profile</code> file. Create it if it doesn&#8217;t already exist. Use <code>nano ~/.profile</code> if you don&#8217;t have a preferred editor.</p>
+
+<figure class='code'><figcaption><span>.profile </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Fix $PATH for homebrew</span>
+</span><span class='line'><span class="nv">homebrew</span><span class="o">=</span>/usr/local/bin:/usr/local/sbin
+</span><span class='line'><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$homebrew</span>:<span class="nv">$PATH</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Google tells me the other two warnings are related to Mono being installed and can be ignored.</p>
+
+<pre>
+<span STYLE="color:red">Warning:</span> /Library/Frameworks/Mono.framework detected
+This can be picked up by CMake's build system and likely cause the build to
+fail. You may need to move this file out of the way to compile CMake.
+
+<span STYLE="color:red">Warning:</span> You have a non-Homebrew 'pkg-config' in your PATH:
+  /usr/bin/pkg-config => /Library/Frameworks/Mono.framework/Versions/2.10.9/bin/pkg-config
+
+This was most likely created by the Mono installer. `./configure` may
+have problems finding brew-installed packages using this other pkg-config.
+</pre>
+
+
+<p>Ploughing on&#8230;</p>
+
+<h2>Install rbenv</h2>
+
+<p>Rbenv handles the installation of multiple Ruby environments.</p>
+
+<pre><code>$ brew update
+$ brew install rbenv
+$ brew install ruby-build
+</code></pre>
+
+<h2>Install gcc</h2>
+
+<p>If I try to install Ruby immediately, I get</p>
+
+<pre>
+<span STYLE="color:red">ERROR:</span> This package must be compiled with GCC, but ruby-build
+couldn't find a suitable `gcc` executable on your system.
+Please install GCC and try again.
+...
+</pre>
+
+
+<p>XCode used to ship with a compatible gcc, but no longer does. We can install it with Homebrew.</p>
+
+<pre><code>$ brew update
+$ brew tap homebrew/dupes
+$ brew install autoconf automake apple-gcc42
+</code></pre>
+
+<p>The new gcc will coexist happily alongside the default one.</p>
+
+<h2>Install Ruby 1.9.3</h2>
+
+<p>Now we can install Ruby.</p>
+
+<pre><code>$ rbenv install 1.9.3-p194
+$ rbenv rehash
+</code></pre>
+
+<p>Next run</p>
+
+<pre><code>$ ruby --version
+</code></pre>
+
+<p>Hmm&#8230; I get</p>
+
+<pre><code>ruby 1.8.7 (2012-02-08 patchlevel 358) [universal-darwin12.0]
+</code></pre>
+
+<p>Shouldn&#8217;t it say ruby 1.9.3? It turns out you need to add the following to the end of your <code>.profile</code>.</p>
+
+<figure class='code'><figcaption><span>.profile </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="c"># Initialize rbenv</span>
+</span><span class='line'><span class="k">if </span>which rbenv &gt; /dev/null; <span class="k">then </span><span class="nb">eval</span> <span class="s2">&quot;$(rbenv init -)&quot;</span>; <span class="k">fi</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now quit and restart Terminal.</p>
+
+<pre><code>$ rbenv global 1.9.3-p194
+$ ruby --version
+ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-darwin12.2.1]
+</code></pre>
+
+<p>Ruby 1.9.3 is installed correctly. If I quit and restart Terminal, <code>ruby --version</code> is still 1.9.3.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1008,170 +1277,6 @@ I downloaded <a href="http://xamarin.com/monotouch">Xamarin MonoTouch</a> onto m
 
 <p>Check out <a href="http://blog.xamarin.com/eight-reasons-c-sharp-is-the-best-language-for-mobile-development/">this recent blog post from the guys at Xamarin</a>.
 </span></p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 5</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-12-05T11:03:00+00:00" pubdate data-updated="true">Dec 5<span>th</span>, 2012</time>
-        
-         | <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>Part 5: Load balancing</h2>
-
-<p>This is the final post in this 5 part series about deploying XAF to the Amazon cloud. The other parts are:</p>
-
-<ul>
-<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1 - Creating a database in RDS</a></li>
-<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2 - Deploying to ElasticBeanstalk</a></li>
-<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3 - Troubleshooting</a></li>
-<li><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Part 4 - Incremental Deployment</a></li>
-</ul>
-
-
-<p>This part covers load balancing and autoscaling.</p>
-
-<h3>Load balancing</h3>
-
-<p>In order to enable load balancing with DevExpress XAF applications, you must activate client affinity (sticky sessions) which you can do in the <strong>Load Balancer tab</strong>.</p>
-
-<p><img src="/images/blog/aws/aws-autoscaling-2.jpg" title="'figure 19'" ></p>
-
-<p>This is because XAF relies http session variables (notably the <code>WebApplication</code>). With sticky sessions enabled, when a user first hits the Elastic Load Balancer, they are assigned a random server but all subsequent requests are routed to the same server instance.</p>
-
-<h2>Autoscaling</h2>
-
-<h3>Adding Capacity (Works)</h3>
-
-<p>Switch to the <strong>Auto Scaling</strong> tab of the Elastic Beanstalk instance.</p>
-
-<p><img src="/images/blog/aws/aws-autoscaling-1.jpg" title="'figure 19'" ></p>
-
-<p>The options for autoscaling are extensive and there is plenty information on the <a href="http://aws.amazon.com/autoscaling">Amazon website</a>. In the above screenshot we have the Elastic Load Balancer configured so that it will initially deploy 1 server (the Minimum Instance Count), but whenever the NetworkOut measurement of 600,000 bytes over a 5 minute interval, a new server launch is triggered up to a maximum of 4 servers. Adding capacity works fine with XAF applications.</p>
-
-<h3>Removing Capacity (Fails)</h3>
-
-<p>The configuration above also shows that if the NetworkOut drops to below 200,000 bytes over a period of 5 minutes then the number of servers should decrease. <strong>This will NOT work</strong>.</p>
-
-<p>The problem is that the Elastic Load Balancer will terminate the surplus server immediately (the equivalent of a <code>shutdown -s</code>). Any users connected to that server will immediately lose their session and will probably receive an ugly error.</p>
-
-<p>One workaround is to allow scaling out but to disable scaling in. To do this, set the &#8216;Lower Threshold&#8217; to zero.</p>
-
-<h3>Possible Improvements</h3>
-
-<p>There are a couple of potential longer term solutions to the problem of dropped sessions when scaling in.</p>
-
-<p>DevExpress could make the classes they use in the session variables serializable (e.g., <code>WebApplication</code>). When this is the case, the application can be configured to store the session variables to a persistent data store (SQL Server for instance) instead of in the session and then we could configure autoscaling to work correctly. There is <a href="http://www.devexpress.com/Support/Center/Question/Details/Q426045">an item in the Support Center in this regard</a> and <a href="http://www.devexpress.com/Support/Center/p/S36497.aspx">another one here</a>.</p>
-
-<p>Another solution would be if Amazon provided a new option to handle a server termination in a less brutal fashion. That is, stop routing new users to the surplus server but continue to server existing users until their sessions have all terminated. This approach is discussed in <a href="https://forums.aws.amazon.com/thread.jspa?threadID=61278">this AWS forum thread</a>.</p>
-
-<h2>Conclusions</h2>
-
-<p>The load balancing features of AWS work fine with XAF applications, but the benefits of autoscaling are lost because there is currently no effective method of removing capacity without knocking out existing sessions.</p>
-
-<h2>What next</h2>
-
-<p>In a future series, I will demonstrate how to load test XAF applications cheaply and effectively by making use of Amazon Web Services. Stay tuned.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/">Deploy XAF ASP.NET Applications to Amazon Web Services: Part 4</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-11-05T14:16:00+00:00" pubdate data-updated="true">Nov 5<span>th</span>, 2012</time>
-        
-         | <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-4-incremental-deployment/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>Part 4: Incremental Deployment</h2>
-
-<p>This is the fourth post in a series about deploying ASP.NET applications to the Amazon cloud. In the first three posts covered deploying the XAF ASP.NET MainDemo to the Amazon cloud (<a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-1-putting-the-database-in-the-cloud/">Part 1</a>, <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2</a>, <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-3-troubleshooting-via-remote-desktop/">Part 3</a>).</p>
-
-<p>When we deployed to the Elastic Beanstalk in <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-2-publishing-maindemo/">Part 2</a>, we chose <em>not</em> to enable incremental deployment.</p>
-
-<p><img src="/images/blog/aws/launch-aws-beanstalk-2.jpg" title="'figure 11'" ></p>
-
-<p>I want to explain this decision further.</p>
-
-<p>If you choose not to deploy incrementally your deployment will take longer because the entire web deployment package needs to be uploaded every time you re-publish which takes about 4-5 minutes on my connection. The incremental deployment option creates a git repository in the target environment so that only the modified files are re-deployed. If you are frequently making changes and redploying, you can save considerable time. A re-deployment takes only a few seconds.</p>
-
-<p>However, if you try to deploy from the default MainDemo location with incremental deployment enabled, you will probably get the following error</p>
-
-<pre><code>Commencing deployment for project MainDemo.Web
-...building deployment package obj\Release\Package\Archive...
-...deployment package created at C:\Users\Public\Documents\DXperience 12.1 Demos\eXpressApp Framework\MainDemo\CS\MainDemo.Web\obj\Release\Package\Archive
-...build of project archive completed succesfully
-...starting deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo'
-...starting incremental deployment to environment 'zerosharp-maindemo'
-Deployment to AWS Elastic Beanstalk failed with exception: Exception caught during execution of add command,
-Inner Exception Message: The specified path, file name, or both are too long. The fully qualified file name must be less than 260 characters, and the directory name must be less than 248 characters.
-...
-Deployment to AWS Elastic Beanstalk environment 'zerosharp-maindemo' did not complete successfully
-</code></pre>
-
-<p>The problem is with the NGit libraries that the AWS Toolkit uses. Presumably a fix will emerge, but the simplest workaround is to move the application to a shorter path. Then you can enable incremental deployment when you publish:</p>
-
-<p><img src="/images/blog/aws/launch-aws-beanstalk-incremental-2.jpg" title="'figure 21'" ></p>
-
-<p>Note that you can toggle incremental deployment whenever you publish, so you&#8217;re not locked in either way.</p>
-
-<h2>Next up</h2>
-
-<p>In the <a href="/deploy-xaf-asp-dot-net-applications-to-amazon-web-services-part-5-load-balancing/">next post</a> we will enable load balancing (which is easy) and discuss the problems with autoscaling XAF applications (which is not).</p>
 </div>
   
   
