@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="This is part of an ongoing series about the Serverless framework. For those following along, part 1 and part 2 have been updated for the current &hellip;">
+  <meta name="description" content="This is part of an ongoing series about the Serverless framework: Part 1, part 2, part 3. The Password of the Day Generator class First up we need a &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,333 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/serverless-framework-part-4-connecting-the-parts/">Serverless Framework - Part 4: Connecting the Parts</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-02-01T09:44:00+00:00" pubdate data-updated="true">Feb 1<span>st</span>, 2016</time>
+        
+         | <a href="/serverless-framework-part-4-connecting-the-parts/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This is part of an ongoing series about the <a href="https://github.com/serverless/serverless">Serverless framework</a>: <a href="/serverless-framework-part-1-up-and-running/">Part 1</a>, <a href="/serverless-framework-part-2-typescript-and-mocha/">part 2</a>, <a href="/serverless-framework-part-3-the-guts/">part 3</a>.</p>
+
+<h2>The Password of the Day Generator class</h2>
+
+<p>First up we need a class to generate and check the password of the day. For the moment, let&#8217;s pretend the password of the day is always the string <em>&#8220;Password&#8221;</em>. Put the following typescript class in <em>nodejscomponent/src</em>.</p>
+
+<figure class='code'><figcaption><span>nodejscomponent/src/passwordOfTheDay.ts </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kr">export</span> <span class="kd">function</span> <span class="nx">checkPotd</span><span class="p">(</span><span class="nx">password</span> <span class="o">:</span> <span class="nx">string</span><span class="p">)</span> <span class="o">:</span> <span class="kr">boolean</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">new</span> <span class="nx">PasswordGenerator</span><span class="p">().</span><span class="nx">check</span><span class="p">(</span><span class="nx">password</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kr">export</span> <span class="kr">class</span> <span class="nx">PasswordGenerator</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="nx">generate</span><span class="p">(</span><span class="nx">date</span><span class="o">:</span> <span class="nb">Date</span><span class="p">)</span> <span class="o">:</span> <span class="nx">string</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// generate today&#39;s password</span>
+</span><span class='line'>      <span class="k">return</span> <span class="s2">&quot;Password&quot;</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>    
+</span><span class='line'>  
+</span><span class='line'>  <span class="nx">check</span><span class="p">(</span><span class="nx">password</span> <span class="o">:</span> <span class="nx">string</span><span class="p">)</span> <span class="o">:</span> <span class="kr">boolean</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// check the value matches today&#39;s password of the day</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">password</span> <span class="o">==</span> <span class="k">this</span><span class="p">.</span><span class="nx">generate</span><span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">());</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now add a mocha test for it.</p>
+
+<figure class='code'><figcaption><span>nodejscomponent/src/test/passwordOfTheDayTest.ts </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">/// &lt;reference path=&quot;../../typings/mocha/mocha.d.ts&quot; /&gt;</span>
+</span><span class='line'><span class="kr">import</span> <span class="nx">PasswordOfTheDay</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;../passwordOfTheDay&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;Generator&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">subject</span> <span class="o">:</span> <span class="nx">PasswordOfTheDay</span><span class="p">.</span><span class="nx">PasswordGenerator</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">beforeEach</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">subject</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PasswordOfTheDay</span><span class="p">.</span><span class="nx">PasswordGenerator</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;#generate&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;should generate the password&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">result</span> <span class="o">:</span> <span class="nx">string</span> <span class="o">=</span> <span class="nx">subject</span><span class="p">.</span><span class="nx">generate</span><span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="mi">2010</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">24</span><span class="p">));</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="nx">result</span> <span class="o">!==</span> <span class="s2">&quot;Password&quot;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;Expected &#39;Password&#39; but was &quot;</span> <span class="o">+</span> <span class="nx">result</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;#check&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;should return false when the password is incorrect&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">result</span> <span class="o">:</span> <span class="kr">boolean</span> <span class="o">=</span> <span class="nx">subject</span><span class="p">.</span><span class="nx">check</span><span class="p">(</span><span class="s2">&quot;garbage&quot;</span><span class="p">);</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="nx">result</span> <span class="o">!==</span> <span class="kc">false</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;Expected &#39;false&#39; but was &quot;</span> <span class="o">+</span> <span class="nx">result</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;#check&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;should return true when the password is correct&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">result</span> <span class="o">:</span> <span class="kr">boolean</span> <span class="o">=</span> <span class="nx">subject</span><span class="p">.</span><span class="nx">check</span><span class="p">(</span><span class="s2">&quot;Password&quot;</span><span class="p">);</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="nx">result</span> <span class="o">!==</span> <span class="kc">true</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&quot;Expected &#39;true&#39; but was &quot;</span> <span class="o">+</span> <span class="nx">result</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now compile everything.</p>
+
+<pre><code>$ cd nodejscomponent
+$ tsc
+</code></pre>
+
+<p>You will now find that there is a corresponding javascript file in the <em>lib</em> folder</p>
+
+<figure class='code'><figcaption><span>nodejscomponent/src/passwordOfTheDay.js </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="kd">function</span> <span class="nx">checkPotd</span><span class="p">(</span><span class="nx">password</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">new</span> <span class="nx">PasswordGenerator</span><span class="p">().</span><span class="nx">check</span><span class="p">(</span><span class="nx">password</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">exports</span><span class="p">.</span><span class="nx">checkPotd</span> <span class="o">=</span> <span class="nx">checkPotd</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">PasswordGenerator</span> <span class="o">=</span> <span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">function</span> <span class="nx">PasswordGenerator</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>    <span class="nx">PasswordGenerator</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">generate</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">date</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// generate today&#39;s password</span>
+</span><span class='line'>        <span class="k">return</span> <span class="s2">&quot;Password&quot;</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>    <span class="nx">PasswordGenerator</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">check</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">password</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// check the value matches today&#39;s password of the day</span>
+</span><span class='line'>        <span class="k">return</span> <span class="nx">password</span> <span class="o">==</span> <span class="k">this</span><span class="p">.</span><span class="nx">generate</span><span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">());</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">PasswordGenerator</span><span class="p">;</span>
+</span><span class='line'><span class="p">})();</span>
+</span><span class='line'><span class="nx">exports</span><span class="p">.</span><span class="nx">PasswordGenerator</span> <span class="o">=</span> <span class="nx">PasswordGenerator</span><span class="p">;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And likewise for the mocha test in <em>lib/test</em>. Now to run those tests:</p>
+
+<pre><code>$ npm test
+
+&gt; @0.0.1 pretest /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
+&gt; tsc
+
+&gt; @0.0.1 test /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
+&gt; mocha ./lib/test
+
+Generator
+    #generate
+    ✓ should generate the password
+    #check
+    ✓ should return false when the password is incorrect
+    #check
+    ✓ should return true when the password is correct
+
+3 passing (10ms)
+</code></pre>
+
+<p>Nice. Next, modify the main entry point of the component <em>index.js</em>.</p>
+
+<figure class='code'><figcaption><span>nodejscomponent/lib/index.js </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">// Dependencies</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">PasswordOfTheDay</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;./passwordOfTheDay&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">respond</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">PasswordOfTheDay</span><span class="p">.</span><span class="nx">checkPotd</span><span class="p">(</span><span class="nx">event</span><span class="p">.</span><span class="nx">password</span><span class="p">);</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">response</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">message</span><span class="o">:</span> <span class="nx">result</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">cb</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">response</span><span class="p">);</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Notice how we make use of <code>event.password</code> which is the parameter we configured in <a href="/serverless-framework-part-3-the-guts/">part 3</a> in the <code>s_function.json</code> file.</p>
+
+<p>Let&#8217;s deploy!</p>
+
+<pre><code>$ serverless dash deploy
+_______                             __
+|   _   .-----.----.--.--.-----.----|  .-----.-----.-----.
+|   |___|  -__|   _|  |  |  -__|   _|  |  -__|__ --|__ --|
+|____   |_____|__|  \___/|_____|__| |__|_____|_____|_____|
+|   |   |             The Serverless Application Framework
+|       |                           serverless.com, v0.1.5
+`-------'
+
+Serverless: Select the assets you wish to deploy:
+    nodejscomponent - potd - check
+    function - nodejscomponent/potd/check
+    endpoint - nodejscomponent/potd/check@potd/check~GET
+    - - - - -
+&gt; Deploy
+
+Serverless: Deploying functions in "development" to the following regions: eu-west-1  
+Serverless: ------------------------  
+Serverless: Successfully deployed functions in "development" to the following regions:   
+Serverless: eu-west-1 ------------------------  
+Serverless:   nodejscomponent/potd/check: arn:aws:lambda:eu-west-1:962613113552:function:serverlessPotd-nodejscomponent-potd-check:development  
+
+Serverless: Deploying endpoints in "development" to the following regions: eu-west-1  
+Serverless: Successfully deployed endpoints in "development" to the following regions:  
+Serverless: eu-west-1 ------------------------  
+Serverless:   GET - potd/check - https://rhnjv4ms2b.execute-api.eu-west-1.amazonaws.com/development/potd/check  
+</code></pre>
+
+<p>And lets visit that URI</p>
+
+<pre><code>https://[...]amazonaws.com/development/potd/check?password=nonsense
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="err">message:</span> <span class="err">false</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<pre><code>https://[...]amazonaws.com/development/potd/check?password=Password
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="err">message:</span> <span class="err">true</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Rock and roll. A working password checker running on Lambda in the Amazon cloud.</p>
+
+<p>Next up - we&#8217;ll extend the <code>PasswordGenerator</code> class to pull in a node package and generate a better password.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1347,51 +1674,6 @@ First up: Never mess with the .NET garbage collector.</p>
 </code></pre>
 
 <p>You should see the text <strong>&#8216;Forced garbage collection OK&#8217;</strong> in the top left of the browser window.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/a-strange-error-message-from-visual-studio-2015/">A Strange Error Message From Visual Studio 2015</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-08-03T15:35:00+01:00" pubdate data-updated="true">Aug 3<span>rd</span>, 2015</time>
-        
-         | <a href="/a-strange-error-message-from-visual-studio-2015/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>When I recently upgraded to Visual Studio 2015, everything seemed to go very smoothly except that whenever I debugged my main application I got a dialog window with the following strange error:</p>
-
-<pre><code>The procedure entry point could not be located in the dynamic link library C:\...\bin\Debug\netutils.dll.
-</code></pre>
-
-<p>After pressing <code>OK</code> everything seemed to work as normal.</p>
-
-<p>After a considerable number of dead ends, I finally worked out that changing the name of the <em>NetUtils.dll</em> assembly fixes the problem. It seems that Visual Studio 2015 gets confused with a Windows system assembly with the same name. I don&#8217;t know why it was never a problem with Visual Studio 2013, but I renamed the assembly and now everything is working fine.</p>
 </div>
   
   

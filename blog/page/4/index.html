@@ -9,8 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="I always run Visual Studio as an administrator. There are various reasons why this is necessary including: using IIS with a web application
-running &hellip;">
+  <meta name="description" content="NDepend is a commercial static analysis tool for .NET managed code. It&#8217;s been around a long time (since 2004!). Version 5 was just released and &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -114,6 +113,121 @@ running &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/a-review-of-ndepend-5/">A Review of NDepend 5</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-10-02T17:54:00+01:00" pubdate data-updated="true">Oct 2<span>nd</span>, 2013</time>
+        
+         | <a href="/a-review-of-ndepend-5/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>NDepend is a commercial static analysis tool for .NET managed code. It&#8217;s been around a long time (since 2004!). Version 5 was just released and in this post I&#8217;m going to try it out on the DevExpress MainDemo.</p>
+
+<p><span class='pullquote-right' data-pullquote='In version 5, a lot of work has been done to improve the learning curve.'>
+In the past I have always thought of NDepend as a complex tool. I was never sure where to start. In version 5, a lot of work has been done to improve the learning curve. The installation process is easy and a wizard very quickly points you in the right direction.</p>
+
+<p>After <a href="http://ndepend.com/NDependDownload.aspx">downloading the v5 trial</a> and running the installation you get to the following screen.
+</span></p>
+
+<p><img src="/images/blog/ndepend/ndepend-001.png"></p>
+
+<p>You cannot miss that big red arrow. In fact, it&#8217;s even animated in the actual product. Click on it and choose a Visual Studio solution to analyse. I&#8217;m going to navigate to the DevExpress MainDemo 13.1.</p>
+
+<p>So long as the project has been built at some point, NDepend works out what to analyse (otherwise you&#8217;ll get helpful warnings).</p>
+
+<p><img src="/images/blog/ndepend/ndepend-003.png"></p>
+
+<p>It is very fast and we get to this help screen.</p>
+
+<p><img src="/images/blog/ndepend/ndepend-004.png"></p>
+
+<p>Choose the dashboard.</p>
+
+<p><img src="/images/blog/ndepend/ndepend-005.png"></p>
+
+<p>Now that&#8217;s a lot of information, but it&#8217;s all well presented and easy to navigate. Let&#8217;s focus on the worst: I can see <em>2 Critical Rules Violated</em>. Drill down to find out more:</p>
+
+<p><img src="/images/blog/ndepend/ndepend-009.png"></p>
+
+<p>It&#8217;s complaining that we have classes with duplicate names in our projects. In the pane on the left we can see what they are: 3 types named <code>MainDemoWinApplication</code>, 3 named <code>Program</code>, <em>etc.</em> And sure enough there are: <em>MainDemo.Win</em>, <em>MainDemo.Win.Mdi</em> and <em>MainDemo.Win.Ribbon</em> all duplicate those class names.</p>
+
+<p>We can also see 2 <code>TaskAnalysis1LayoutUpdater</code> types and a quick search reveals that there&#8217;s one in the web module and another in the win module.</p>
+
+<p>So NDepend has correctly discovered some potential issues. As we XAF fans know, this one is not really a problem, because those modules are never loaded into the same AppDomain, but nevertheless the information is accurate and relevant.</p>
+
+<p>Lets have a brief look at the other screens. The dependency graph:</p>
+
+<p><img src="/images/blog/ndepend/ndepend-006.png"></p>
+
+<p>With a million options.</p>
+
+<p><img src="/images/blog/ndepend/ndepend-010.png"></p>
+
+<p>A dependency matrix.</p>
+
+<p><img src="/images/blog/ndepend/ndepend-007.png"></p>
+
+<p>A metrics view showing class and assembly sizes.</p>
+
+<p><img src="/images/blog/ndepend/ndepend-008.png"></p>
+
+<p>All with reams of helpful documentation.</p>
+
+<p><img src="/images/blog/ndepend/ndepend-011.png"></p>
+
+<p>Overall, the tool felt fast, responsive and stable. I&#8217;ve focused on the user interface aspects, but there is so much more. Some things you can do:</p>
+
+<ul>
+<li>Create your own analysis rules</li>
+<li><a href="http://www.ndepend.com/Doc_CQLinq_Syntax.aspx#Edition">Query your own code with LINQ</a></li>
+<li>Run analysis from <a href="http://www.ndepend.com/NDependConsole.aspx">the command line</a></li>
+<li>Run from within Visual Studio</li>
+<li>Add output to continuous integration (<a href="http://www.ndepend.com/Doc_CI_TeamCity.aspx">TeamCity</a>, <a href="http://www.ndepend.com/Doc_CI_CCNet.aspx">CruiseControl.NET</a>, etc.)</li>
+<li>Track <a href="http://www.ndepend.com/Doc_Trend.aspx">trends and progress over time</a></li>
+</ul>
+
+
+<p>NDepend shines at providing a high-level overview of code quality and as such it is a very useful addition to any developer&#8217;s toolkit. There are some scenarios where NDepend would be particularly useful:</p>
+
+<ul>
+<li>For a developer joining a mature project.</li>
+<li>For a senior developer looking to track progress on a refactoring drive.</li>
+<li>For helping evaluate the quality of an open source third party library.</li>
+</ul>
+
+
+<p>In this quick review, I&#8217;m not going deep enough to say anything about whether the DevExpress MainDemo is good code or not - it&#8217;s just a sample project I happen to be quite familiar with. It might be interesting to unleash NDepend on the full DevExpress source code and maybe one day I&#8217;ll get around to writing a future post about that.</p>
+
+<p>With regard to my own projects, I feel I&#8217;m so familiar with them that I ought to be aware of most of the recommendations NDepend is likely to make, but I&#8217;ll give it a spin and see what comes out&#8230;</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1552,297 +1666,6 @@ The ability to create reports using a report writer is a very powerful feature o
 
 
 <p>And bingo! The application now runs without error.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/load-testing-xaf-bonus-simultaneous-easytests/">Load Testing XAF: Bonus - Simultaneous EasyTests</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-22T16:31:00+01:00" pubdate data-updated="true">Apr 22<span>nd</span>, 2013</time>
-        
-         | <a href="/load-testing-xaf-bonus-simultaneous-easytests/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>In <a href="/load-testing-xaf-overview">my recent series on load testing XAF</a>, I used a Selenium javascript test to run the client browser instances. This is a good and cheap method of validating the performance of XAF applications under production load.</p>
-
-<p>However, if the load tests fail because of a concurrency bug or a performance bottleneck, it can still be difficult to analyse and solve. For this, we need to be able to simulate load locally against the development environment.</p>
-
-<p>In this post I will demonstrate how to run multiple simultaneous XAF EasyTests against a local server. As a load test, it is not very scientific, but it can be extremely useful as a debugging tool.</p>
-
-<h2>The EasyTest script</h2>
-
-<p>First, we will create a new EasyTest which will cycle through the existing navigation tabs. Open the XAF MainDemo and create a new EasyTest as follows.</p>
-
-<figure class='code'><figcaption><span>MainDemo_CycleThroughTabs.ets  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='text'><span class='line'>#Application MainDemoWeb
-</span><span class='line'>
-</span><span class='line'>*FillForm
-</span><span class='line'> User Name = Sam
-</span><span class='line'> Password =
-</span><span class='line'>*Action Log On
-</span><span class='line'>
-</span><span class='line'>*Action Navigation(Contact)
-</span><span class='line'>*Action Navigation(Task)
-</span><span class='line'>*Action Navigation(Department)
-</span><span class='line'>*Action Navigation(Scheduler Event)
-</span><span class='line'>*Action Navigation(My Details)
-</span><span class='line'>*Action Navigation(Note)
-</span><span class='line'>*Action Navigation(Payment)
-</span><span class='line'>*Action Navigation(Position)
-</span><span class='line'>*Action Navigation(Resume)
-</span><span class='line'>*Action Navigation(Role)
-</span><span class='line'>*Action Navigation(User)
-</span><span class='line'>*Action Navigation(Reports.Analysis)
-</span><span class='line'>*Action Navigation(Reports.Reports)
-</span><span class='line'>*Action Log Off
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>(This test replicates the Selenium test we created in <a href="/load-testing-xaf-part-2-selenium/">Part 2</a> of my previous series on load testing with NeuStar and Amazon.) It is important to note that we are only testing the web application and that we do not include a <code>#DropDB</code> directive.</p>
-
-<p>First, ensure that you can run this test with the default settings.</p>
-
-<h2>The config file</h2>
-
-<p>Now modify the config.xml file as follows:</p>
-
-<figure class='code'><figcaption><span>Config.xml  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;</span>
-</span><span class='line'><span class="nt">&lt;Options</span> <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="na">TestRunTimeLimit=</span><span class="s">&quot;5&quot;</span> <span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;Applications&gt;</span>
-</span><span class='line'>    <span class="c">&lt;!-- Web --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;Application</span>
-</span><span class='line'>      <span class="na">Name=</span><span class="s">&quot;MainDemoWeb&quot;</span>
-</span><span class='line'>      <span class="na">Url=</span><span class="s">&quot;http://localhost:4030&quot;</span>
-</span><span class='line'>      <span class="na">SingleWebDev=</span><span class="s">&quot;True&quot;</span>
-</span><span class='line'>      <span class="na">WebBrowserType=</span><span class="s">&quot;Standalone&quot;</span>
-</span><span class='line'>      <span class="na">PhysicalPath=</span><span class="s">&quot;[ConfigPath]\..\MainDemo.Web&quot;</span>
-</span><span class='line'>      <span class="na">AdapterAssemblyName=</span><span class="s">&quot;DevExpress.ExpressApp.EasyTest.WebAdapter.v12.2, Version=12.2.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="c">&lt;!-- For IIS --&gt;</span>
-</span><span class='line'>    <span class="c">&lt;!--&lt;Application</span>
-</span><span class='line'><span class="c">      Name=&quot;MainDemoWeb&quot;</span>
-</span><span class='line'><span class="c">      Url=&quot;http://localhost/MainDemo.Web/Default.aspx&quot;</span>
-</span><span class='line'><span class="c">      PhysicalPath=&quot;&quot;</span>
-</span><span class='line'><span class="c">      DontRestartIIS=&quot;True&quot;</span>
-</span><span class='line'><span class="c">      DontRunWebDev=&quot;True&quot;</span>
-</span><span class='line'><span class="c">      WebBrowserType=&quot;Standalone&quot;      </span>
-</span><span class='line'><span class="c">      AdapterAssemblyName=&quot;DevExpress.ExpressApp.EasyTest.WebAdapter.v12.2, Version=12.2.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;/--&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/Applications&gt;</span>
-</span><span class='line'><span class="nt">&lt;/Options&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>There are a few important things to note.</p>
-
-<p>I have not shown the <em>Win</em> section here since we are not using it. Also, I am using XAF 12.2.8. You may need to change the version number in the <code>AdapterAssemblyName</code> attribute. I have increased the <code>TestRunTimeLimit</code> attribute from 3 to 5. Everything goes a little slower when there are multiple browsers and we need to make sure the test does not time out.</p>
-
-<p>With the above config, the EasyTest will no longer run from within Visual Studio.</p>
-
-<p>You can choose to run the simultaneous tests against the debug web server or IIS. Uncomment the relevant section. The interesting settings are:</p>
-
-<ul>
-<li><code>SingleWebDev="True"</code> which instructs the EasyTest runner to run all tests against the same instance of the development webserver. Without this, the webserver would be stopped and started for each test.</li>
-<li><code>WebBrowserType="Standalone"</code> which causes each launched browser to be launched with its own session. (There are a few mentions of this setting in the support center, but it is not very well documented).</li>
-<li><code>DontRestartIIS</code> and <code>DontRunWebDev</code> which are self-explanatory</li>
-</ul>
-
-
-<h2>The launch command</h2>
-
-<p>Next, create the following batch file in the MainDemo.EasyTests subdirectory. ##</p>
-
-<figure class='code'><figcaption><span>Launch.bat  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-</pre></td><td class='code'><pre><code class='bat'><span class='line'><span class="c">:: Requires the Debug webserver to be running on port 49660</span>
-</span><span class='line'><span class="c">:: Requires EasyTests to be enabled</span>
-</span><span class='line'><span class="c">:: Requires NetDA to be running</span>
-</span><span class='line'><span class="c">:: Requires admin rights</span>
-</span><span class='line'><span class="c">:: Must be run from a command prompt</span>
-</span><span class='line'><span class="c">::</span>
-</span><span class='line'><span class="c">:: Usage: &gt; launch &lt;numberOfBrowsers&gt;</span>
-</span><span class='line'><span class="c">:: e.g. : &gt; launch 21</span>
-</span><span class='line'><span class="c">:: will launch 21 simultaneous browsers at 3 second intervals</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">@</span><span class="k">echo</span> <span class="k">off</span>
-</span><span class='line'>
-</span><span class='line'><span class="nl">:DELETE_OUTPUT</span>
-</span><span class='line'><span class="k">if</span> <span class="k">exist</span> *.jpeg <span class="k">del</span> *.jpeg
-</span><span class='line'><span class="k">if</span> <span class="k">exist</span> *.html <span class="k">del</span> *.html
-</span><span class='line'><span class="k">if</span> <span class="k">exist</span> TestsLog.xml <span class="k">del</span> TestsLog.xml
-</span><span class='line'>
-</span><span class='line'><span class="nl">:CHECK_ADMIN</span>
-</span><span class='line'>net session <span class="p">&gt;</span><span class="n">nul</span> <span class="m">2</span>&gt;&amp;<span class="m">1</span>
-</span><span class='line'><span class="k">if</span> <span class="nv">%ERRORLEVEL%</span> <span class="o">equ</span> <span class="m">0</span> <span class="k">goto</span> <span class="nl">CHECK_CONSOLE</span>
-</span><span class='line'><span class="k">echo</span> Must be run from an administrative command window
-</span><span class='line'><span class="k">goto</span> <span class="nl">ERROR</span>
-</span><span class='line'>
-</span><span class='line'><span class="nl">:CHECK_CONSOLE</span>
-</span><span class='line'><span class="k">echo</span> <span class="nv">%CMDCMDLINE%</span> <span class="p">|</span> <span class="n">find</span> <span class="n">/i</span> <span class="s2">&quot;/c&quot;</span> <span class="p">&gt;</span><span class="n">nul</span>
-</span><span class='line'><span class="k">if</span> <span class="k">ERRORLEVEL</span> <span class="m">1</span> <span class="k">goto</span> <span class="nl">CHECK_PARAMS</span>
-</span><span class='line'><span class="k">echo</span> Must be run from an administrative console (not Windows Explorer)
-</span><span class='line'><span class="k">goto</span> <span class="nl">ERROR</span>
-</span><span class='line'>
-</span><span class='line'><span class="nl">:CHECK_PARAMS</span>
-</span><span class='line'><span class="k">IF</span> [<span class="nv">%1</span>]<span class="o">==</span>[] <span class="k">GOTO</span> <span class="nl">USAGE</span>
-</span><span class='line'>
-</span><span class='line'><span class="nl">:LAUNCH</span>
-</span><span class='line'><span class="k">set</span> <span class="n">/a</span> i<span class="o">=</span><span class="m">0</span>
-</span><span class='line'>
-</span><span class='line'><span class="nl">:LOOP</span>
-</span><span class='line'><span class="k">if</span> <span class="nv">%i%</span><span class="o">==</span><span class="nv">%1</span> <span class="k">goto</span> <span class="nl">OK</span>
-</span><span class='line'><span class="k">set</span> <span class="n">/a</span> i<span class="o">=</span><span class="nv">%i%</span>+<span class="m">1</span>
-</span><span class='line'>start <span class="s2">&quot;x&quot;</span> <span class="s2">&quot;C:\Program Files (x86)\DevExpress\DXperience 12.2\Tools\eXpressAppFramework\EasyTest\TestExecutor.v12.2.exe&quot;</span> MainDemo_CycleThroughTabs.ets
-</span><span class='line'><span class="c">:: Wait 3 seconds</span>
-</span><span class='line'>ping <span class="m">1</span>.<span class="m">1</span>.<span class="m">1</span>.<span class="m">1</span> -n <span class="m">1</span> -w <span class="m">3000</span> <span class="p">&gt;</span><span class="n">nul</span>
-</span><span class='line'><span class="k">goto</span> <span class="nl">LOOP</span>
-</span><span class='line'>
-</span><span class='line'><span class="nl">:USAGE</span>
-</span><span class='line'><span class="k">echo</span> Usage: <span class="nv">%0</span> numberOfBrowsers
-</span><span class='line'><span class="k">echo</span> numberOfBrowsers must be an integer
-</span><span class='line'><span class="k">goto</span> <span class="nl">OK</span>
-</span><span class='line'>
-</span><span class='line'><span class="nl">:ERROR</span>
-</span><span class='line'>
-</span><span class='line'><span class="nl">:OK</span>
-</span><span class='line'><span class="k">pause</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>If you want to run your tests against the development webserver, you will need to make sure it is running before launching the batch file. The easiest way to do this is to run the application from within Visual Studio and then close the browser. You should still see the development webserver running in the task bar notification area. Against IIS, it is enough to ensure it is started.</p>
-
-<p>Now, open an administrative command prompt. Note that you must run from an administrative console: it is not sufficient to &#8216;run as administrator&#8217; from Windows Explorer. Navigate to the EasyTest subdirectory where the Launch.bat file is located and launch a single test with the following command:</p>
-
-<pre><code>launch.bat 1
-</code></pre>
-
-<p>You should see the test run without error. If this works, you can then launch 20 simultaneous test runs with 3 second intervals by running:</p>
-
-<pre><code>launch.bat 20
-</code></pre>
-
-<h2>Conclusion</h2>
-
-<p>As a load test, you do not get much useful information. Even if we managed to extract accurate data for client response times and throughput, the overhead of running the multiple browsers would skew the results too much. However, this approach is extremely useful for isolating concurrency and performance problems.</p>
 </div>
   
   
