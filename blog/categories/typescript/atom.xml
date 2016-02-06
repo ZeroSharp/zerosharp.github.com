@@ -4,7 +4,7 @@
   <title><![CDATA[Category: typescript | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/typescript/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-02-01T08:06:24+00:00</updated>
+  <updated>2016-02-06T22:33:16+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -19,6 +19,11 @@
     <updated>2016-02-01T09:44:00+00:00</updated>
     <id>http://ZeroSharp.github.com/serverless-framework-part-4-connecting-the-parts</id>
     <content type="html"><![CDATA[<p>This is part of an ongoing series about the <a href="https://github.com/serverless/serverless">Serverless framework</a>: <a href="/serverless-framework-part-1-up-and-running/">Part 1</a>, <a href="/serverless-framework-part-2-typescript-and-mocha/">part 2</a>, <a href="/serverless-framework-part-3-the-guts/">part 3</a>.</p>
+
+<h2>New version 0.3.1</h2>
+
+<p><span class="fluo">Edit: since the original version of this post, a new version 0.3.1 of Serverless was released. I have updated the tutorial below to reflect the newer version. Also, <a href="https://github.com/DefinitelyTyped/tsd/issues/269">TSD has been deprecated</a> in favour of <a href="https://www.npmjs.com/package/typings">Typings</a> so I've updated to use Typings instead. </span>
+All parts have been updated for the latest version of the framework 0.3.1.</p>
 
 <h2>The Password of the Day Generator class</h2>
 
@@ -120,7 +125,7 @@
 <span class='line-number'>38</span>
 <span class='line-number'>39</span>
 <span class='line-number'>40</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">/// &lt;reference path=&quot;../../typings/mocha/mocha.d.ts&quot; /&gt;</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">/// &lt;reference path=&quot;../../typings/main.d.ts&quot; /&gt;</span>
 </span><span class='line'><span class="kr">import</span> <span class="nx">PasswordOfTheDay</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;../passwordOfTheDay&quot;</span><span class="p">);</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;Generator&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
@@ -287,8 +292,13 @@ _______                             __
 |   |___|  -__|   _|  |  |  -__|   _|  |  -__|__ --|__ --|
 |____   |_____|__|  \___/|_____|__| |__|_____|_____|_____|
 |   |   |             The Serverless Application Framework
-|       |                           serverless.com, v0.1.5
+|       |                           serverless.com, v0.3.1
 `-------'
+
+Use the &lt;up&gt;, &lt;down&gt;, &lt;pageup&gt;, &lt;pagedown&gt;, &lt;home&gt;, and &lt;end&gt; keys to navigate.
+Press &lt;enter&gt; to select/deselect, or &lt;space&gt; to select/deselect and move down.
+Press &lt;ctrl&gt; + &lt;enter&gt; to immediately deploy selected.
+
 
 Serverless: Select the assets you wish to deploy:
     nodejscomponent - potd - check
@@ -297,21 +307,16 @@ Serverless: Select the assets you wish to deploy:
     - - - - -
 &gt; Deploy
 
-Serverless: Deploying functions in "development" to the following regions: eu-west-1  
+Serverless: Deploying functions in "dev" to the following regions: eu-west-1  
 Serverless: ------------------------  
-Serverless: Successfully deployed functions in "development" to the following regions:   
+Serverless: Successfully deployed functions in "dev" to the following regions:   
 Serverless: eu-west-1 ------------------------  
-Serverless:   nodejscomponent/potd/check: arn:aws:lambda:eu-west-1:962613113552:function:serverlessPotd-nodejscomponent-potd-check:development  
-
-Serverless: Deploying endpoints in "development" to the following regions: eu-west-1  
-Serverless: Successfully deployed endpoints in "development" to the following regions:  
-Serverless: eu-west-1 ------------------------  
-Serverless:   GET - potd/check - https://rhnjv4ms2b.execute-api.eu-west-1.amazonaws.com/development/potd/check  
+Serverless:   nodejscomponent/potd/check: arn:aws:lambda:eu-west-1:962613113552:function:serverlessPotd-nodejscomponent-potd-check:dev  
 </code></pre>
 
 <p>And lets visit that URI</p>
 
-<pre><code>https://[...]amazonaws.com/development/potd/check?password=nonsense
+<pre><code>https://rhnjv4ms2b.execute-api.eu-west-1.amazonaws.com/development/potd/check?password=nonsense
 </code></pre>
 
 <p>```json  <br/>
@@ -323,7 +328,7 @@ Serverless:   GET - potd/check - https://rhnjv4ms2b.execute-api.eu-west-1.amazon
 <p>}
 ```</p>
 
-<pre><code>https://[...]amazonaws.com/development/potd/check?password=Password
+<pre><code>https://rhnjv4ms2b.execute-api.eu-west-1.amazonaws.com/development/potd/check?password=Password
 </code></pre>
 
 <p>```json  <br/>
@@ -338,6 +343,8 @@ Serverless:   GET - potd/check - https://rhnjv4ms2b.execute-api.eu-west-1.amazon
 <p>Rock and roll. A working password checker running on Lambda in the Amazon cloud.</p>
 
 <p>Next up - we'll extend the <code>PasswordGenerator</code> class to pull in a node package and generate a better password.</p>
+
+<p>The <a href="https://github.com/ZeroSharp/ServerlessPotd">source code so far</a> is on GitHub. Note the default <em>.gitignore</em> file skips the <em>admin.env</em> file which contains the (sensitive) AWS keys in it so don't forget to add your own.</p>
 ]]></content>
   </entry>
   
@@ -346,7 +353,7 @@ Serverless:   GET - potd/check - https://rhnjv4ms2b.execute-api.eu-west-1.amazon
     <link href="http://ZeroSharp.github.com/serverless-framework-part-3-the-guts/"/>
     <updated>2016-01-29T17:44:00+00:00</updated>
     <id>http://ZeroSharp.github.com/serverless-framework-part-3-the-guts</id>
-    <content type="html"><![CDATA[<p>This is part of an ongoing series about the <a href="https://github.com/serverless/serverless">Serverless framework</a>. For those following along, <a href="/serverless-framework-part-1-up-and-running/">part 1</a> and <a href="/serverless-framework-part-2-typescript-and-mocha/">part 2</a> have been updated for the current latest version of Serverless 0.1.5.</p>
+    <content type="html"><![CDATA[<p>This is part of an ongoing series about the <a href="https://github.com/serverless/serverless">Serverless framework</a>. For those following along, <a href="/serverless-framework-part-1-up-and-running/">part 1</a> and <a href="/serverless-framework-part-2-typescript-and-mocha/">part 2</a> have been updated for the current latest version of Serverless 0.3.1.</p>
 
 <p>In this post, we'll discuss how a Serverless function actually works.</p>
 
@@ -658,9 +665,9 @@ I'm the technical lead for an enterprise application which is in use by about 10
 
 <h2>Mocha and TypeScript</h2>
 
-<h2>New version 0.1.5</h2>
+<h2>New version 0.3.1</h2>
 
-<p><span class="fluo">Edit: since the original version of this post, a new version 0.1.5 of Serverless was released. I have updated the tutorial below to reflect the newer version. </span></p>
+<p><span class="fluo">Edit: since the original version of this post, a new version 0.3.1 of Serverless was released. I have updated the tutorial below to reflect the newer version. Also, <a href="https://github.com/DefinitelyTyped/tsd/issues/269">TSD has been deprecated</a> in favour of <a href="https://www.npmjs.com/package/typings">Typings</a> so I've updated to use Typings instead. </span></p>
 
 <p>Let's do things properly and set up a testing framework.</p>
 
@@ -672,15 +679,15 @@ I'm the technical lead for an enterprise application which is in use by about 10
 <p>Then we'll install Mocha.</p>
 
 <pre><code>$ npm install mocha --save-dev
-mocha@2.3.4 node_modules/mocha
+mocha@2.4.5 node_modules/mocha
 ├── escape-string-regexp@1.0.2
-├── diff@1.4.0
 ├── commander@2.3.0
+├── diff@1.4.0
 ├── supports-color@1.2.0
 ├── growl@1.8.1
 ├── debug@2.2.0 (ms@0.7.1)
+├── mkdirp@0.5.1 (minimist@0.0.8)
 ├── jade@0.26.3 (commander@0.6.1, mkdirp@0.3.0)
-├── mkdirp@0.5.0 (minimist@0.0.8)
 └── glob@3.2.3 (inherits@2.0.1, graceful-fs@2.0.3, minimatch@0.2.14)
 </code></pre>
 
@@ -689,27 +696,30 @@ mocha@2.3.4 node_modules/mocha
 <pre><code>$ npm install typescript --save
 typescript@1.7.5 node_modules/typescript
 
-$ npm install tsd -g
-npm WARN engine joi-assert@0.0.3: wanted: {"node":"&gt;= 0.10.0 &lt;= 0.11.0"} (current: {"node":"4.2.3","npm":"2.14.7"})
-/usr/local/bin/tsd -&gt; /usr/local/lib/node_modules/tsd/build/cli.js
-tsd@0.6.5 /usr/local/lib/node_modules/tsd
-├── diff@1.4.0
-├── assertion-error@1.0.0
-├── type-detect@0.1.2
+$ npm install typings -g
+/usr/local/bin/typings -&gt; /usr/local/lib/node_modules/typings/dist/bin/typings.js
+typings@0.6.6 /usr/local/lib/node_modules/typings
+├── array-uniq@1.0.2
+├── elegant-spinner@1.0.1
+├── thenify@3.2.0
+├── popsicle-status@1.0.1
 ... etc ...
+</code></pre>
 
-$ tsd init
--&gt; written tsd.json
--&gt; written typings/tsd.d.ts
+<p>Initialise typings.</p>
+
+<pre><code>$ typings init
+-&gt; written typings.json
 </code></pre>
 
 <p>Now we add the type definitions for Mocha.</p>
 
-<pre><code>$ tsd install mocha --save
-- mocha / mocha    
-&gt;&gt; running install..
-&gt;&gt; written 1 file:
-    - mocha/mocha.d.ts
+<pre><code>$ typings install mocha --ambient --save
+? Found mocha typings for DefinitelyTyped. Continue? Yes
+Installing mocha@~2.2.5 (DefinitelyTyped)...
+
+mocha
+└── (No dependencies)
 </code></pre>
 
 <p>We need a config file for the TypeScript compiler. This goes in the same module directory (<em>back/modules/potd</em> in my case).</p>
@@ -731,6 +741,8 @@ $ tsd init
 <span class='line-number'>14</span>
 <span class='line-number'>15</span>
 <span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
 </pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span><span class="err">&lt;/p&gt;</span>
 </span><span class='line'>
 </span><span class='line'><span class="err">&lt;pre&gt;&lt;code&gt;</span><span class="nt">&quot;compilerOptions&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -739,10 +751,12 @@ $ tsd init
 </span><span class='line'>    <span class="nt">&quot;noImplicitAny&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
 </span><span class='line'>    <span class="nt">&quot;sourceMap&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
 </span><span class='line'>    <span class="nt">&quot;declaration&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-</span><span class='line'>    <span class="nt">&quot;outdir&quot;</span><span class="p">:</span> <span class="s2">&quot;lib&quot;</span>
+</span><span class='line'>    <span class="nt">&quot;outDir&quot;</span><span class="p">:</span> <span class="s2">&quot;lib&quot;</span>
 </span><span class='line'><span class="p">},</span>
 </span><span class='line'><span class="nt">&quot;exclude&quot;</span><span class="p">:</span> <span class="p">[</span>
-</span><span class='line'>    <span class="s2">&quot;node_modules&quot;</span>
+</span><span class='line'>    <span class="s2">&quot;node_modules&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;typings/browser&quot;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s2">&quot;typings/browser.d.ts&quot;</span>
 </span><span class='line'><span class="p">]</span>
 </span><span class='line'><span class="err">&lt;/code&gt;&lt;/pre&gt;</span>
 </span><span class='line'>

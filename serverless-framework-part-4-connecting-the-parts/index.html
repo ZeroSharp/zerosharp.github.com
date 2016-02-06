@@ -143,6 +143,11 @@
 
 <div class="entry-content"><p>This is part of an ongoing series about the <a href="https://github.com/serverless/serverless">Serverless framework</a>: <a href="/serverless-framework-part-1-up-and-running/">Part 1</a>, <a href="/serverless-framework-part-2-typescript-and-mocha/">part 2</a>, <a href="/serverless-framework-part-3-the-guts/">part 3</a>.</p>
 
+<h2>New version 0.3.1</h2>
+
+<p><span class="fluo">Edit: since the original version of this post, a new version 0.3.1 of Serverless was released. I have updated the tutorial below to reflect the newer version. Also, <a href="https://github.com/DefinitelyTyped/tsd/issues/269">TSD has been deprecated</a> in favour of <a href="https://www.npmjs.com/package/typings">Typings</a> so I&#8217;ve updated to use Typings instead. </span>
+All parts have been updated for the latest version of the framework 0.3.1.</p>
+
 <h2>The Password of the Day Generator class</h2>
 
 <p>First up we need a class to generate and check the password of the day. For the moment, let&#8217;s pretend the password of the day is always the string <em>&#8220;Password&#8221;</em>. Put the following typescript class in <em>nodejscomponent/src</em>.</p>
@@ -230,7 +235,7 @@
 <span class='line-number'>36</span>
 <span class='line-number'>37</span>
 <span class='line-number'>38</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">/// &lt;reference path=&quot;../../typings/mocha/mocha.d.ts&quot; /&gt;</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">/// &lt;reference path=&quot;../../typings/main.d.ts&quot; /&gt;</span>
 </span><span class='line'><span class="kr">import</span> <span class="nx">PasswordOfTheDay</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;../passwordOfTheDay&quot;</span><span class="p">);</span>
 </span><span class='line'>
 </span><span class='line'><span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;Generator&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
@@ -380,8 +385,13 @@ _______                             __
 |   |___|  -__|   _|  |  |  -__|   _|  |  -__|__ --|__ --|
 |____   |_____|__|  \___/|_____|__| |__|_____|_____|_____|
 |   |   |             The Serverless Application Framework
-|       |                           serverless.com, v0.1.5
+|       |                           serverless.com, v0.3.1
 `-------'
+
+Use the &lt;up&gt;, &lt;down&gt;, &lt;pageup&gt;, &lt;pagedown&gt;, &lt;home&gt;, and &lt;end&gt; keys to navigate.
+Press &lt;enter&gt; to select/deselect, or &lt;space&gt; to select/deselect and move down.
+Press &lt;ctrl&gt; + &lt;enter&gt; to immediately deploy selected.
+
 
 Serverless: Select the assets you wish to deploy:
     nodejscomponent - potd - check
@@ -390,21 +400,16 @@ Serverless: Select the assets you wish to deploy:
     - - - - -
 &gt; Deploy
 
-Serverless: Deploying functions in "development" to the following regions: eu-west-1  
+Serverless: Deploying functions in "dev" to the following regions: eu-west-1  
 Serverless: ------------------------  
-Serverless: Successfully deployed functions in "development" to the following regions:   
+Serverless: Successfully deployed functions in "dev" to the following regions:   
 Serverless: eu-west-1 ------------------------  
-Serverless:   nodejscomponent/potd/check: arn:aws:lambda:eu-west-1:962613113552:function:serverlessPotd-nodejscomponent-potd-check:development  
-
-Serverless: Deploying endpoints in "development" to the following regions: eu-west-1  
-Serverless: Successfully deployed endpoints in "development" to the following regions:  
-Serverless: eu-west-1 ------------------------  
-Serverless:   GET - potd/check - https://rhnjv4ms2b.execute-api.eu-west-1.amazonaws.com/development/potd/check  
+Serverless:   nodejscomponent/potd/check: arn:aws:lambda:eu-west-1:962613113552:function:serverlessPotd-nodejscomponent-potd-check:dev  
 </code></pre>
 
 <p>And lets visit that URI</p>
 
-<pre><code>https://[...]amazonaws.com/development/potd/check?password=nonsense
+<pre><code>https://rhnjv4ms2b.execute-api.eu-west-1.amazonaws.com/development/potd/check?password=nonsense
 </code></pre>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -416,7 +421,7 @@ Serverless:   GET - potd/check - https://rhnjv4ms2b.execute-api.eu-west-1.amazon
 </span></code></pre></td></tr></table></div></figure>
 
 
-<pre><code>https://[...]amazonaws.com/development/potd/check?password=Password
+<pre><code>https://rhnjv4ms2b.execute-api.eu-west-1.amazonaws.com/development/potd/check?password=Password
 </code></pre>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -431,6 +436,8 @@ Serverless:   GET - potd/check - https://rhnjv4ms2b.execute-api.eu-west-1.amazon
 <p>Rock and roll. A working password checker running on Lambda in the Amazon cloud.</p>
 
 <p>Next up - we&#8217;ll extend the <code>PasswordGenerator</code> class to pull in a node package and generate a better password.</p>
+
+<p>The <a href="https://github.com/ZeroSharp/ServerlessPotd">source code so far</a> is on GitHub. Note the default <em>.gitignore</em> file skips the <em>admin.env</em> file which contains the (sensitive) AWS keys in it so don&#8217;t forget to add your own.</p>
 </div>
 
 

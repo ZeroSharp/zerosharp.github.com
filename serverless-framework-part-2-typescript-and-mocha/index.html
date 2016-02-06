@@ -161,9 +161,9 @@ I&#8217;m the technical lead for an enterprise application which is in use by ab
 
 <h2>Mocha and TypeScript</h2>
 
-<h2>New version 0.1.5</h2>
+<h2>New version 0.3.1</h2>
 
-<p><span class="fluo">Edit: since the original version of this post, a new version 0.1.5 of Serverless was released. I have updated the tutorial below to reflect the newer version. </span></p>
+<p><span class="fluo">Edit: since the original version of this post, a new version 0.3.1 of Serverless was released. I have updated the tutorial below to reflect the newer version. Also, <a href="https://github.com/DefinitelyTyped/tsd/issues/269">TSD has been deprecated</a> in favour of <a href="https://www.npmjs.com/package/typings">Typings</a> so I&#8217;ve updated to use Typings instead. </span></p>
 
 <p>Let&#8217;s do things properly and set up a testing framework.</p>
 
@@ -175,15 +175,15 @@ I&#8217;m the technical lead for an enterprise application which is in use by ab
 <p>Then we&#8217;ll install Mocha.</p>
 
 <pre><code>$ npm install mocha --save-dev
-mocha@2.3.4 node_modules/mocha
+mocha@2.4.5 node_modules/mocha
 ├── escape-string-regexp@1.0.2
-├── diff@1.4.0
 ├── commander@2.3.0
+├── diff@1.4.0
 ├── supports-color@1.2.0
 ├── growl@1.8.1
 ├── debug@2.2.0 (ms@0.7.1)
+├── mkdirp@0.5.1 (minimist@0.0.8)
 ├── jade@0.26.3 (commander@0.6.1, mkdirp@0.3.0)
-├── mkdirp@0.5.0 (minimist@0.0.8)
 └── glob@3.2.3 (inherits@2.0.1, graceful-fs@2.0.3, minimatch@0.2.14)
 </code></pre>
 
@@ -192,27 +192,30 @@ mocha@2.3.4 node_modules/mocha
 <pre><code>$ npm install typescript --save
 typescript@1.7.5 node_modules/typescript
 
-$ npm install tsd -g
-npm WARN engine joi-assert@0.0.3: wanted: {"node":"&gt;= 0.10.0 &lt;= 0.11.0"} (current: {"node":"4.2.3","npm":"2.14.7"})
-/usr/local/bin/tsd -&gt; /usr/local/lib/node_modules/tsd/build/cli.js
-tsd@0.6.5 /usr/local/lib/node_modules/tsd
-├── diff@1.4.0
-├── assertion-error@1.0.0
-├── type-detect@0.1.2
+$ npm install typings -g
+/usr/local/bin/typings -&gt; /usr/local/lib/node_modules/typings/dist/bin/typings.js
+typings@0.6.6 /usr/local/lib/node_modules/typings
+├── array-uniq@1.0.2
+├── elegant-spinner@1.0.1
+├── thenify@3.2.0
+├── popsicle-status@1.0.1
 ... etc ...
+</code></pre>
 
-$ tsd init
--&gt; written tsd.json
--&gt; written typings/tsd.d.ts
+<p>Initialise typings.</p>
+
+<pre><code>$ typings init
+-&gt; written typings.json
 </code></pre>
 
 <p>Now we add the type definitions for Mocha.</p>
 
-<pre><code>$ tsd install mocha --save
-- mocha / mocha    
-&gt;&gt; running install..
-&gt;&gt; written 1 file:
-    - mocha/mocha.d.ts
+<pre><code>$ typings install mocha --ambient --save
+? Found mocha typings for DefinitelyTyped. Continue? Yes
+Installing mocha@~2.2.5 (DefinitelyTyped)...
+
+mocha
+└── (No dependencies)
 </code></pre>
 
 <p>We need a config file for the TypeScript compiler. This goes in the same module directory (<em>back/modules/potd</em> in my case).</p>
@@ -231,6 +234,8 @@ $ tsd init
 <span class='line-number'>11</span>
 <span class='line-number'>12</span>
 <span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
 </pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
 </span><span class='line'>    <span class="nt">&quot;compilerOptions&quot;</span><span class="p">:</span> <span class="p">{</span>
 </span><span class='line'>        <span class="nt">&quot;module&quot;</span><span class="p">:</span> <span class="s2">&quot;commonjs&quot;</span><span class="p">,</span>
@@ -238,10 +243,12 @@ $ tsd init
 </span><span class='line'>        <span class="nt">&quot;noImplicitAny&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
 </span><span class='line'>        <span class="nt">&quot;sourceMap&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
 </span><span class='line'>        <span class="nt">&quot;declaration&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-</span><span class='line'>        <span class="nt">&quot;outdir&quot;</span><span class="p">:</span> <span class="s2">&quot;lib&quot;</span>
+</span><span class='line'>        <span class="nt">&quot;outDir&quot;</span><span class="p">:</span> <span class="s2">&quot;lib&quot;</span>
 </span><span class='line'>    <span class="p">},</span>
 </span><span class='line'>    <span class="nt">&quot;exclude&quot;</span><span class="p">:</span> <span class="p">[</span>
-</span><span class='line'>        <span class="s2">&quot;node_modules&quot;</span>
+</span><span class='line'>        <span class="s2">&quot;node_modules&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;typings/browser&quot;</span><span class="p">,</span>
+</span><span class='line'>        <span class="s2">&quot;typings/browser.d.ts&quot;</span>
 </span><span class='line'>    <span class="p">]</span>
 </span><span class='line'><span class="p">}</span>
 </span></code></pre></td></tr></table></div></figure>
