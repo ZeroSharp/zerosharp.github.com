@@ -28,8 +28,8 @@ It's a tiny, simple, rarely-used web service but AWS lambda is still a great fit
 
 ## Mocha and TypeScript ##
 
-## New version 0.1.5 ##
-{% highlight Edit: since the original version of this post, a new version 0.1.5 of Serverless was released. I have updated the tutorial below to reflect the newer version. %}
+## New version 0.3.1 ##
+{% highlight Edit: since the original version of this post, a new version 0.3.1 of Serverless was released. I have updated the tutorial below to reflect the newer version. Also, [TSD has been deprecated](https://github.com/DefinitelyTyped/tsd/issues/269) in favour of [Typings](https://www.npmjs.com/package/typings) so I've updated to use Typings instead. %}
 
 Let's do things properly and set up a testing framework.
 
@@ -40,15 +40,15 @@ Make sure you're in the component folder.
 Then we'll install Mocha.    
 
     $ npm install mocha --save-dev
-    mocha@2.3.4 node_modules/mocha
+    mocha@2.4.5 node_modules/mocha
     ├── escape-string-regexp@1.0.2
-    ├── diff@1.4.0
     ├── commander@2.3.0
+    ├── diff@1.4.0
     ├── supports-color@1.2.0
     ├── growl@1.8.1
     ├── debug@2.2.0 (ms@0.7.1)
+    ├── mkdirp@0.5.1 (minimist@0.0.8)
     ├── jade@0.26.3 (commander@0.6.1, mkdirp@0.3.0)
-    ├── mkdirp@0.5.0 (minimist@0.0.8)
     └── glob@3.2.3 (inherits@2.0.1, graceful-fs@2.0.3, minimatch@0.2.14)
 
 Next we'll install TypeScript. Of course you can use plain javascript if you prefer. My background is C#: I make fewer dumb mistakes with TypeScript. It looks like there [is a typescript plugin in the pipeline](https://github.com/serverless/serverless/issues/371) which will make typescript integration even easier in the future, but for now:
@@ -56,26 +56,28 @@ Next we'll install TypeScript. Of course you can use plain javascript if you pre
     $ npm install typescript --save
     typescript@1.7.5 node_modules/typescript
     
-    $ npm install tsd -g
-    npm WARN engine joi-assert@0.0.3: wanted: {"node":">= 0.10.0 <= 0.11.0"} (current: {"node":"4.2.3","npm":"2.14.7"})
-    /usr/local/bin/tsd -> /usr/local/lib/node_modules/tsd/build/cli.js
-    tsd@0.6.5 /usr/local/lib/node_modules/tsd
-    ├── diff@1.4.0
-    ├── assertion-error@1.0.0
-    ├── type-detect@0.1.2
+    $ npm install typings -g
+    /usr/local/bin/typings -> /usr/local/lib/node_modules/typings/dist/bin/typings.js
+    typings@0.6.6 /usr/local/lib/node_modules/typings
+    ├── array-uniq@1.0.2
+    ├── elegant-spinner@1.0.1
+    ├── thenify@3.2.0
+    ├── popsicle-status@1.0.1
     ... etc ...
 
-    $ tsd init
-    -> written tsd.json
-    -> written typings/tsd.d.ts
+Initialise typings.
+
+    $ typings init
+    -> written typings.json
     
 Now we add the type definitions for Mocha.
 
-    $ tsd install mocha --save
-    - mocha / mocha    
-    >> running install..
-    >> written 1 file:
-        - mocha/mocha.d.ts
+    $ typings install mocha --ambient --save
+    ? Found mocha typings for DefinitelyTyped. Continue? Yes
+    Installing mocha@~2.2.5 (DefinitelyTyped)...
+
+    mocha
+    └── (No dependencies)
         
 We need a config file for the TypeScript compiler. This goes in the same module directory (_back/modules/potd_ in my case).
 
@@ -87,10 +89,12 @@ We need a config file for the TypeScript compiler. This goes in the same module 
         "noImplicitAny": true,
         "sourceMap": false,
         "declaration": false,
-        "outdir": "lib"
+        "outDir": "lib"
     },
     "exclude": [
-        "node_modules"    
+        "node_modules",
+        "typings/browser",
+        "typings/browser.d.ts"    
     ]
 }
 {% endcodeblock %}

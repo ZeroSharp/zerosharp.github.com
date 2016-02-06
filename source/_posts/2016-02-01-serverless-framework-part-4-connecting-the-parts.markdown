@@ -6,7 +6,11 @@ comments: true
 categories: [serverless, aws, typescript, mocha]
 description: An introduction to the Serverless framework. Making it easy to use Amazon Lambda to build highly scalable apps cheaply. We connect up all the parts, Serverless, Typescript, Mocha and AWS.
 ---
-This is part of an ongoing series about the [Serverless framework](https://github.com/serverless/serverless): [Part 1](/serverless-framework-part-1-up-and-running/), [part 2](/serverless-framework-part-2-typescript-and-mocha/), [part 3](/serverless-framework-part-3-the-guts/).
+This is part of an ongoing series about the [Serverless framework](https://github.com/serverless/serverless): [Part 1](/serverless-framework-part-1-up-and-running/), [part 2](/serverless-framework-part-2-typescript-and-mocha/), [part 3](/serverless-framework-part-3-the-guts/). 
+
+## New version 0.3.1 ##
+{% highlight Edit: since the original version of this post, a new version 0.3.1 of Serverless was released. I have updated the tutorial below to reflect the newer version. Also, [TSD has been deprecated](https://github.com/DefinitelyTyped/tsd/issues/269) in favour of [Typings](https://www.npmjs.com/package/typings) so I've updated to use Typings instead. %}
+All parts have been updated for the latest version of the framework 0.3.1.
 
 ## The Password of the Day Generator class ##
 
@@ -37,7 +41,7 @@ export class PasswordGenerator
 Now add a mocha test for it.
 
 {% codeblock lang:javascript nodejscomponent/src/test/passwordOfTheDayTest.ts %}
-/// <reference path="../../typings/mocha/mocha.d.ts" />
+/// <reference path="../../typings/main.d.ts" />
 import PasswordOfTheDay = require("../passwordOfTheDay");
 
 describe("Generator", () => {
@@ -152,8 +156,13 @@ Let's deploy!
     |   |___|  -__|   _|  |  |  -__|   _|  |  -__|__ --|__ --|
     |____   |_____|__|  \___/|_____|__| |__|_____|_____|_____|
     |   |   |             The Serverless Application Framework
-    |       |                           serverless.com, v0.1.5
+    |       |                           serverless.com, v0.3.1
     `-------'
+
+    Use the <up>, <down>, <pageup>, <pagedown>, <home>, and <end> keys to navigate.
+    Press <enter> to select/deselect, or <space> to select/deselect and move down.
+    Press <ctrl> + <enter> to immediately deploy selected.
+
 
     Serverless: Select the assets you wish to deploy:
         nodejscomponent - potd - check
@@ -162,28 +171,23 @@ Let's deploy!
         - - - - -
     > Deploy
 
-    Serverless: Deploying functions in "development" to the following regions: eu-west-1  
+    Serverless: Deploying functions in "dev" to the following regions: eu-west-1  
     Serverless: ------------------------  
-    Serverless: Successfully deployed functions in "development" to the following regions:   
+    Serverless: Successfully deployed functions in "dev" to the following regions:   
     Serverless: eu-west-1 ------------------------  
-    Serverless:   nodejscomponent/potd/check: arn:aws:lambda:eu-west-1:962613113552:function:serverlessPotd-nodejscomponent-potd-check:development  
-
-    Serverless: Deploying endpoints in "development" to the following regions: eu-west-1  
-    Serverless: Successfully deployed endpoints in "development" to the following regions:  
-    Serverless: eu-west-1 ------------------------  
-    Serverless:   GET - potd/check - https://rhnjv4ms2b.execute-api.eu-west-1.amazonaws.com/development/potd/check  
+    Serverless:   nodejscomponent/potd/check: arn:aws:lambda:eu-west-1:962613113552:function:serverlessPotd-nodejscomponent-potd-check:dev  
 
 And lets visit that URI 
 
-    https://[...]amazonaws.com/development/potd/check?password=nonsense
+    https://rhnjv4ms2b.execute-api.eu-west-1.amazonaws.com/development/potd/check?password=nonsense
 
 ```json    
 {
     message: false
 }
 ```
-
-    https://[...]amazonaws.com/development/potd/check?password=Password
+   
+    https://rhnjv4ms2b.execute-api.eu-west-1.amazonaws.com/development/potd/check?password=Password
 
 ```json    
 {
@@ -194,3 +198,5 @@ And lets visit that URI
 Rock and roll. A working password checker running on Lambda in the Amazon cloud.
 
 Next up - we'll extend the `PasswordGenerator` class to pull in a node package and generate a better password.
+
+The [source code so far](https://github.com/ZeroSharp/ServerlessPotd) is on GitHub. Note the default _.gitignore_ file skips the _admin.env_ file which contains the (sensitive) AWS keys in it so don't forget to add your own.

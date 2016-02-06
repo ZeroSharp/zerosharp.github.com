@@ -6,7 +6,7 @@ comments: true
 categories: [serverless, aws, typescript, mocha]
 description: An introduction to the Serverless framework. Making it easy to use Amazon Lambda to build highly scalable apps cheaply. Here we discuss how a Serverless function works.
 ---
-This is part of an ongoing series about the [Serverless framework](https://github.com/serverless/serverless). For those following along, [part 1](/serverless-framework-part-1-up-and-running/) and [part 2](/serverless-framework-part-2-typescript-and-mocha/) have been updated for the current latest version of Serverless 0.1.5.
+This is part of an ongoing series about the [Serverless framework](https://github.com/serverless/serverless). For those following along, [part 1](/serverless-framework-part-1-up-and-running/) and [part 2](/serverless-framework-part-2-typescript-and-mocha/) have been updated for the current latest version of Serverless 0.3.1.
 
 In this post, we'll discuss how a Serverless function actually works.
 
