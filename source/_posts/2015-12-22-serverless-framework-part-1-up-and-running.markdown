@@ -86,7 +86,7 @@ This has created the javascript code for a basic lambda function which we can im
     
 At the prompt select both the function and the endpoint and then select _Deploy_.    
     
-```    
+```
  _______                             __
 |   _   .-----.----.--.--.-----.----|  .-----.-----.-----.
 |   |___|  -__|   _|  |  |  -__|   _|  |  -__|__ --|__ --|
