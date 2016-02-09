@@ -4,7 +4,7 @@
   <title><![CDATA[Category: music | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/music/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-02-06T22:33:16+00:00</updated>
+  <updated>2016-02-09T12:46:43+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -22,7 +22,7 @@
 
 <p>Robot quadcopters playing the James Bond theme tune.</p>
 
-<p><iframe width="640" height="390" src="http://www.youtube.com/embed/_sUeGC-8dyk " frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></p>
+<p>{% youtube _sUeGC-8dyk %}</p>
 
 <p>There is no human controlling the robots. Each one has been assigned a series of points in space that it must reach at specific times.  The robots are aware of each other and avoid collisions.</p>
 

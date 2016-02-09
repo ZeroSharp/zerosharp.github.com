@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: crypto-js | ZeroSharp]]></title>
+  <link href="http://ZeroSharp.github.com/blog/categories/crypto-js/atom.xml" rel="self"/>
+  <link href="http://ZeroSharp.github.com/"/>
+  <updated>2016-02-09T12:46:43+00:00</updated>
+  <id>http://ZeroSharp.github.com/</id>
+  <author>
+    <name><![CDATA[Robert Anderson]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Serverless Framework Part 5: Pulling in a node package]]></title>
+    <link href="http://ZeroSharp.github.com/serverless-framework-part-5-pulling-in-a-node-package/"/>
+    <updated>2016-02-09T11:31:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/serverless-framework-part-5-pulling-in-a-node-package</id>
+    <content type="html"><![CDATA[<p>This is the final part of an ongoing series about the <a href="https://github.com/serverless/serverless">Serverless framework</a>.</p>
+
+<p>In the previous posts, the <code>PasswordGenerator</code> always returned 'Password'. Instead each date should corresponds to a new unique password. We'll make use of the <a href="https://www.npmjs.com/package/crypto-js">Crypto-js</a> node package and we'll see that the AWS lambda copes just fine.</p>
+
+<h3>Installing a node package</h3>
+
+<p>Pull in the crypto-js package into the serverless component.</p>
+
+<pre><code>$ cd nodejscomponent/
+$ npm install crypto-js --save
+crypto-js@3.1.6 node_modules/crypto-js
+</code></pre>
+
+<p>Now we need the typescript definitions. Watch out there are two different TypeScript typings called <em>cryptojs</em> and <em>crypto-js</em>. The first one is more complete.</p>
+
+<pre><code>$ typings install cryptojs --ambient --save
+? Found cryptojs typings for DefinitelyTyped. Continue? Yes
+Installing cryptojs@~3.1.2 (DefinitelyTyped)...
+
+cryptojs
+└── (No dependencies)
+</code></pre>
+
+<p>I'm not sure why, but there's no <code>export</code> in the typings file for <em>cryptojs</em>. Add the following to the bottom of the <em>cryptojs.d.ts</em> file.</p>
+
+<p>{% codeblock lang:javascript nodejscomponent/typings/main/ambient/cryptojs.d.ts %}
+  ...
+declare module "crypto-js" {</p>
+
+<pre><code>export = CryptoJS;
+</code></pre>
+
+<p>}
+{% endcodeblock %}</p>
+
+<h3>Improved PasswordGenerator</h3>
+
+<p>{% codeblock lang:javascript nodejscomponent/src/passwordOfTheDay.ts %}
+/// <reference path="../typings/main.d.ts" />
+import CryptoJS = require("crypto-js");</p>
+
+<p>export function checkPotd(password : string) : boolean
+{</p>
+
+<pre><code>return new PasswordGenerator().check(password);
+</code></pre>
+
+<p>}</p>
+
+<p>export class PasswordGenerator
+{</p>
+
+<pre><code>generate(date: Date) : string 
+{
+    // Get the current date as a YYYYMMDD string
+    var yyyy = date.getFullYear().toString();
+    var mm = (date.getMonth()+1).toString(); // getMonth() is zero-based
+    var dd  = date.getDate().toString();
+    var plain = `${yyyy}${mm}${dd}`;
+
+    // Using AES CTR with 32 byte key and iv ensures the encrypted string is not too long
+    // See http://stackoverflow.com/a/13298019/1077279
+
+    var key = CryptoJS.enc.Hex.parse('108c786594543687891374723e809ec5e475a8361f7ad82df04e91ba2c139321');
+    // Use a different initialization vector each time by using the date as part of the vector
+    var iv  = CryptoJS.enc.Hex.parse(plain + '3a8fe4440be1e113a271574f379d70a76c3477aaff036d1e83fcd4b9');
+    var options = { mode: CryptoJS.mode.CTR, padding: CryptoJS.pad.NoPadding, iv: iv };
+
+    var encrypted = CryptoJS.AES.encrypt(plain, key, options);
+
+    return encrypted.ciphertext.toString();
+}   
+
+check(password : string) : boolean 
+{
+    // check the value matches today's password of the day
+    return password == this.generate(new Date());
+}
+</code></pre>
+
+<p>}
+{% endcodeblock %}</p>
+
+<h3>Run the tests</h3>
+
+<p>We expect the tests to fail now since we are no longer returning the same password.</p>
+
+<p>```
+$ npm test</p>
+
+<blockquote><p>@0.0.1 pretest /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
+tsc</p>
+
+<p>@0.0.1 test /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
+mocha ./lib/test</p></blockquote>
+
+<p>  Generator</p>
+
+<pre><code>#generate
+  1) should generate the password
+#check
+  ✓ should return false when the password is incorrect
+#check
+  2) should return true when the password is correct
+</code></pre>
+
+<p>  1 passing (16ms)
+  2 failing</p>
+
+<p>  1) Generator #generate should generate the password:</p>
+
+<pre><code> Error: Expected 'Password' but was bb4bde4d76b055
+  at Context.&lt;anonymous&gt; (lib/test/passwordOfTheDayTest.js:12:23)
+</code></pre>
+
+<p>  2) Generator #check should return true when the password is correct:</p>
+
+<pre><code> Error: Expected 'true' but was false
+  at Context.&lt;anonymous&gt; (lib/test/passwordOfTheDayTest.js:28:23)
+</code></pre>
+
+<p>npm ERR! Test failed.  See above for more details.
+```</p>
+
+<h3>Update and improve the tests</h3>
+
+<p>It's getting a little more complicated so let's pull in <a href="http://chaijs.com/">chai</a> which is a pretty assertions library.</p>
+
+<p><code>
+$ npm install chai --save-dev
+chai@3.5.0 node_modules/chai
+├── assertion-error@1.0.1
+├── type-detect@1.0.0
+└── deep-eql@0.1.3 (type-detect@0.1.1)
+</code>
+And the Typescript definitions for chai.</p>
+
+<p>```
+$ typings install chai --save --ambient
+? Found chai typings for DefinitelyTyped. Continue? Yes
+Installing chai@~3.4.0 (DefinitelyTyped)...</p>
+
+<p>chai
+└── (No dependencies)
+```</p>
+
+<p>Now let's flesh out the tests for the <code>PasswordGenerator</code> class.</p>
+
+<p>{% codeblock lang:javascript nodejscomponent/src/test/passwordOfTheDayTest.ts %}
+/// <reference path="../../typings/main.d.ts" />
+import PasswordOfTheDay = require("../passwordOfTheDay");
+import Chai = require("chai");</p>
+
+<p>// Tell chai that we'll be using the "should" style assertions.
+Chai.should();</p>
+
+<p>describe("Generator", () => {</p>
+
+<pre><code>var subject : PasswordOfTheDay.PasswordGenerator;
+
+beforeEach(function () {
+    subject = new PasswordOfTheDay.PasswordGenerator();
+});
+
+describe("#generate", () =&gt; {
+    it("should generate the password when the date is 24th July 2010", () =&gt; {
+        var date : Date = new Date(2010, 6, 24);
+        var password : string = subject.generate(date); 
+
+        password.should.equal("92ab1ff89bf9af");           
+    });
+});
+
+describe("#generate", () =&gt; {
+    it("should generate a different password when the date is 25th July 2010", () =&gt; {
+        var date : Date = new Date(2010, 6, 25);
+        var password : string = subject.generate(date); 
+
+        password.should.equal("26a394b21800f1");           
+    });
+});  
+describe("#check", () =&gt; {
+    it("should return false when the password is incorrect", () =&gt; {
+        var password : string = "garbage";
+        var result : boolean = subject.check(password);
+
+        result.should.be.false;
+    });
+});
+
+describe("#check", () =&gt; {
+    it("should return false when the password is null", () =&gt; {
+        var password : string = null;
+        var result : boolean = subject.check(password);
+
+        result.should.be.false;
+    });
+});
+
+describe("#check", () =&gt; {
+    it("should return true when the password is correct", () =&gt; {
+        var password : string = subject.generate(new Date());
+        var result : boolean = subject.check(password);
+
+        result.should.be.true;
+    });
+});
+</code></pre>
+
+<p>});
+{% endcodeblock %}</p>
+
+<p>Run our tests:</p>
+
+<p>```
+$ npm test</p>
+
+<blockquote><p>@0.0.1 pretest /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
+tsc</p>
+
+<p>@0.0.1 test /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
+mocha ./lib/test</p></blockquote>
+
+<p>  Generator</p>
+
+<pre><code>#generate
+  ✓ should generate the password when the date is 24th July 2010
+#generate
+  ✓ should generate a different password when the date is 25th July 2010
+#check
+  ✓ should return false when the password is incorrect
+#check
+  ✓ should return false when the password is null
+#check
+  ✓ should return true when the password is correct
+</code></pre>
+
+<p>  5 passing (20ms)
+```</p>
+
+<h3>Deploy</h3>
+
+<pre><code>$ serverless dash deploy
+</code></pre>
+
+<p>Now when we visit the endpoint with the correct password for today's date which happens to be <em>89366e6199f3</em>.</p>
+
+<pre><code>https://...amazonaws.com/dev/potd/check?password=89366e6199f3
+</code></pre>
+
+<p>```json
+{</p>
+
+<pre><code>message: true
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Mission accomplished! Notice that using a node package did not require any special steps on the AWS side. In fact we have not had to login to AWS since the very beginning when we created an IAM user for the project. And yet we've managed to build and deploy a cheap and scalable cloud-based service.</p>
+
+<p>That wraps up my series on building a small, but real-world Serverless application. In a future post, I'd like to look at providing a secured 'generate' service to allow authorized users to get today's password. Stay tuned.</p>
+]]></content>
+  </entry>
+  
+</feed>

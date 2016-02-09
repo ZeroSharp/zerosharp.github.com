@@ -4,7 +4,7 @@
   <title><![CDATA[Category: asp.net | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/asp-net/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-02-06T22:33:16+00:00</updated>
+  <updated>2016-02-09T12:46:43+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -20,11 +20,11 @@
     <id>http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application</id>
     <content type="html"><![CDATA[<p>How can I force a full garbage collection easily within an ASP.NET application? The method here is for XAF web applications but the same approach should work with any ASP.NET app.</p>
 
-<p><span class='pullquote-right' data-pullquote='First up: Never mess with the .NET garbage collector.'>
-First up: Never mess with the .NET garbage collector.</p>
+<p>{% pullquote %}
+{"First up: Never mess with the .NET garbage collector."}</p>
 
 <p>I sometimes mess with the garbage collector in .NET when I'm trying to pin down some memory problem. Also, after <a href="/load-testing-xaf-part-1-deploying/">a load test</a>, I prefer to force the garbage collector to collect everything it can so that I can check that the memory drops as expected.
-</span></p>
+{% endpullquote %}</p>
 
 <p>Garbage collection in .NET is complex and it is hard to be sure you've done it correctly. <a href="///%20See%20http://blogs.msdn.com/b/tess/archive/2006/02/02/net-memory-my-object-is-not-rooted-why-wasn-t-it-garbage-collected.aspx">This ancient article by Tess Ferrandez</a> pointed me in the following direction.</p>
 

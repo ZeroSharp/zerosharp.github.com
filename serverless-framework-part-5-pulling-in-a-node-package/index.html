@@ -1,0 +1,678 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Serverless Framework Part 5: Pulling in a node package - ZeroSharp</title>
+  <meta name="author" content="Robert Anderson">
+
+  
+  <meta name="description" content="An introduction to the Serverless framework. Making it easy to use Amazon Lambda to build highly scalable apps cheaply. We flesh out the password &hellip;">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ZeroSharp.github.com/serverless-framework-part-5-pulling-in-a-node-package/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="http://feeds.feedburner.com/zerosharp" rel="alternate" title="ZeroSharp" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> 
+
+<!-- <ra+> -->
+<link href="http://fonts.googleapis.com/css?family=Ubuntu:500" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
+
+<link href="/stylesheets/custom/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+<!-- </ra+> -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-30564687-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <!--<h1><a href="/">ZeroSharp</a></h1>-->
+  <a href="http://www.zerosharp.com/"><h1>ZeroSharp</h1></a>
+  
+    <h2>Robert Anderson's ones and zeros</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">  
+
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ZeroSharp.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/license/">License</a></li>  
+</ul>
+<ul class="subscription">
+    <li><a rel="me" href="https://plus.google.com/112685056596124127572?rel=author">
+      <img src="/images/asides/googleplus.png" width="24" height="24" alt="Rob on Google+">
+    </a></li>    
+    <li><a rel="me" href="http://twitter.com/8ctopus">
+      <img src="/images/asides/twitter.png" width="24" height="24" alt="Rob on Twitter" />
+    </a></li>
+    <!--<li><a rel="me" href="http://stackoverflow.com/users/1077279/shamp00">
+      <img src="/images/asides/stackoverflow.png" width="24" height="24" alt="Rob on StackOverflow" />
+    </a></li>
+    <li><a rel="me" href="https://github.com/zerosharp">
+      <img src="/images/asides/github.png" width="24" height="24" alt="Rob on GitHub" />
+    </a></li>
+    <li><a rel="me" href="http://www.linkedin.com/profile/view?id=926740"  class ="googleplus-hidden" >
+      <img src="/images/asides/linkedin.png" width="24" height="24" alt="Rob on LinkedIn" />
+    </a></li>
+    <li><a rel="me" href="http://springpad.com/#!/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/springpad.png" width="24" height="24" alt="Rob on SpringPad" />
+    </a></li>    
+    <li><a rel="me" href="http://pinterest.com/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/pinterest.png" width="24" height="24" alt="Rob on Pinterest" />
+    </a></li>
+    <li><a rel="me" href="http://www.last.fm/user/nosredna"  class ="googleplus-hidden" >
+      <img src="/images/asides/lastfm.png" width="24" height="24" alt="Rob on Last.fm" />
+    </a></li>-->
+    <li><a href="http://feeds.feedburner.com/zerosharp">
+      <img src="/images/asides/rss.png" rel="subscribe-rss" width="24" height="24" alt="RSS Feed" />
+    </a></li>
+</ul>
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Serverless Framework Part 5: Pulling in a Node Package</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-02-09T11:31:00+00:00" pubdate data-updated="true">Feb 9<span>th</span>, 2016</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>This is the final part of an ongoing series about the <a href="https://github.com/serverless/serverless">Serverless framework</a>.</p>
+
+<p>In the previous posts, the <code>PasswordGenerator</code> always returned &#8216;Password&#8217;. Instead each date should corresponds to a new unique password. We&#8217;ll make use of the <a href="https://www.npmjs.com/package/crypto-js">Crypto-js</a> node package and we&#8217;ll see that the AWS lambda copes just fine.</p>
+
+<h3>Installing a node package</h3>
+
+<p>Pull in the crypto-js package into the serverless component.</p>
+
+<pre><code>$ cd nodejscomponent/
+$ npm install crypto-js --save
+crypto-js@3.1.6 node_modules/crypto-js
+</code></pre>
+
+<p>Now we need the typescript definitions. Watch out there are two different TypeScript typings called <em>cryptojs</em> and <em>crypto-js</em>. The first one is more complete.</p>
+
+<pre><code>$ typings install cryptojs --ambient --save
+? Found cryptojs typings for DefinitelyTyped. Continue? Yes
+Installing cryptojs@~3.1.2 (DefinitelyTyped)...
+
+cryptojs
+└── (No dependencies)
+</code></pre>
+
+<p>I&#8217;m not sure why, but there&#8217;s no <code>export</code> in the typings file for <em>cryptojs</em>. Add the following to the bottom of the <em>cryptojs.d.ts</em> file.</p>
+
+<figure class='code'><figcaption><span>nodejscomponent/typings/main/ambient/cryptojs.d.ts </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'>  <span class="p">...</span>
+</span><span class='line'><span class="nx">declare</span> <span class="nx">module</span> <span class="s2">&quot;crypto-js&quot;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kr">export</span> <span class="o">=</span> <span class="nx">CryptoJS</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Improved PasswordGenerator</h3>
+
+<figure class='code'><figcaption><span>nodejscomponent/src/passwordOfTheDay.ts </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">/// &lt;reference path=&quot;../typings/main.d.ts&quot; /&gt;</span>
+</span><span class='line'><span class="kr">import</span> <span class="nx">CryptoJS</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;crypto-js&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="kr">export</span> <span class="kd">function</span> <span class="nx">checkPotd</span><span class="p">(</span><span class="nx">password</span> <span class="o">:</span> <span class="nx">string</span><span class="p">)</span> <span class="o">:</span> <span class="kr">boolean</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="k">new</span> <span class="nx">PasswordGenerator</span><span class="p">().</span><span class="nx">check</span><span class="p">(</span><span class="nx">password</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="kr">export</span> <span class="kr">class</span> <span class="nx">PasswordGenerator</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="nx">generate</span><span class="p">(</span><span class="nx">date</span><span class="o">:</span> <span class="nb">Date</span><span class="p">)</span> <span class="o">:</span> <span class="nx">string</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// Get the current date as a YYYYMMDD string</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">yyyy</span> <span class="o">=</span> <span class="nx">date</span><span class="p">.</span><span class="nx">getFullYear</span><span class="p">().</span><span class="nx">toString</span><span class="p">();</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">mm</span> <span class="o">=</span> <span class="p">(</span><span class="nx">date</span><span class="p">.</span><span class="nx">getMonth</span><span class="p">()</span><span class="o">+</span><span class="mi">1</span><span class="p">).</span><span class="nx">toString</span><span class="p">();</span> <span class="c1">// getMonth() is zero-based</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">dd</span>  <span class="o">=</span> <span class="nx">date</span><span class="p">.</span><span class="nx">getDate</span><span class="p">().</span><span class="nx">toString</span><span class="p">();</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">plain</span> <span class="o">=</span> <span class="err">`</span><span class="nx">$</span><span class="p">{</span><span class="nx">yyyy</span><span class="p">}</span><span class="nx">$</span><span class="p">{</span><span class="nx">mm</span><span class="p">}</span><span class="nx">$</span><span class="p">{</span><span class="nx">dd</span><span class="p">}</span><span class="err">`</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="c1">// Using AES CTR with 32 byte key and iv ensures the encrypted string is not too long</span>
+</span><span class='line'>        <span class="c1">// See http://stackoverflow.com/a/13298019/1077279</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">key</span> <span class="o">=</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">enc</span><span class="p">.</span><span class="nx">Hex</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="s1">&#39;108c786594543687891374723e809ec5e475a8361f7ad82df04e91ba2c139321&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="c1">// Use a different initialization vector each time by using the date as part of the vector</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">iv</span>  <span class="o">=</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">enc</span><span class="p">.</span><span class="nx">Hex</span><span class="p">.</span><span class="nx">parse</span><span class="p">(</span><span class="nx">plain</span> <span class="o">+</span> <span class="s1">&#39;3a8fe4440be1e113a271574f379d70a76c3477aaff036d1e83fcd4b9&#39;</span><span class="p">);</span>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">options</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">mode</span><span class="o">:</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">mode</span><span class="p">.</span><span class="nx">CTR</span><span class="p">,</span> <span class="nx">padding</span><span class="o">:</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">pad</span><span class="p">.</span><span class="nx">NoPadding</span><span class="p">,</span> <span class="nx">iv</span><span class="o">:</span> <span class="nx">iv</span> <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="kd">var</span> <span class="nx">encrypted</span> <span class="o">=</span> <span class="nx">CryptoJS</span><span class="p">.</span><span class="nx">AES</span><span class="p">.</span><span class="nx">encrypt</span><span class="p">(</span><span class="nx">plain</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">options</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">encrypted</span><span class="p">.</span><span class="nx">ciphertext</span><span class="p">.</span><span class="nx">toString</span><span class="p">();</span>
+</span><span class='line'>  <span class="p">}</span>    
+</span><span class='line'>  
+</span><span class='line'>  <span class="nx">check</span><span class="p">(</span><span class="nx">password</span> <span class="o">:</span> <span class="nx">string</span><span class="p">)</span> <span class="o">:</span> <span class="kr">boolean</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>        <span class="c1">// check the value matches today&#39;s password of the day</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">password</span> <span class="o">==</span> <span class="k">this</span><span class="p">.</span><span class="nx">generate</span><span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">());</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Run the tests</h3>
+
+<p>We expect the tests to fail now since we are no longer returning the same password.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ npm test
+</span><span class='line'>&gt; @0.0.1 pretest /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
+</span><span class='line'>&gt; tsc
+</span><span class='line'>
+</span><span class='line'>&gt; @0.0.1 test /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
+</span><span class='line'>&gt; mocha ./lib/test
+</span><span class='line'>
+</span><span class='line'>  Generator
+</span><span class='line'>    #generate
+</span><span class='line'>      1) should generate the password
+</span><span class='line'>    #check
+</span><span class='line'>      ✓ should return false when the password is incorrect
+</span><span class='line'>    #check
+</span><span class='line'>      2) should return true when the password is correct
+</span><span class='line'>
+</span><span class='line'>  1 passing (16ms)
+</span><span class='line'>  2 failing
+</span><span class='line'>
+</span><span class='line'>  1) Generator #generate should generate the password:
+</span><span class='line'>     Error: Expected 'Password' but was bb4bde4d76b055
+</span><span class='line'>      at Context.&lt;anonymous&gt; (lib/test/passwordOfTheDayTest.js:12:23)
+</span><span class='line'>
+</span><span class='line'>  2) Generator #check should return true when the password is correct:
+</span><span class='line'>     Error: Expected 'true' but was false
+</span><span class='line'>      at Context.&lt;anonymous&gt; (lib/test/passwordOfTheDayTest.js:28:23)
+</span><span class='line'>
+</span><span class='line'>npm ERR! Test failed.  See above for more details.</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Update and improve the tests</h3>
+
+<p>It&#8217;s getting a little more complicated so let&#8217;s pull in <a href="http://chaijs.com/">chai</a> which is a pretty assertions library.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ npm install chai --save-dev
+</span><span class='line'>chai@3.5.0 node_modules/chai
+</span><span class='line'>├── assertion-error@1.0.1
+</span><span class='line'>├── type-detect@1.0.0
+</span><span class='line'>└── deep-eql@0.1.3 (type-detect@0.1.1)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And the Typescript definitions for chai.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ typings install chai --save --ambient
+</span><span class='line'>? Found chai typings for DefinitelyTyped. Continue? Yes
+</span><span class='line'>Installing chai@~3.4.0 (DefinitelyTyped)...
+</span><span class='line'>
+</span><span class='line'>chai
+</span><span class='line'>└── (No dependencies)</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now let&#8217;s flesh out the tests for the <code>PasswordGenerator</code> class.</p>
+
+<figure class='code'><figcaption><span>nodejscomponent/src/test/passwordOfTheDayTest.ts </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="c1">/// &lt;reference path=&quot;../../typings/main.d.ts&quot; /&gt;</span>
+</span><span class='line'><span class="kr">import</span> <span class="nx">PasswordOfTheDay</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;../passwordOfTheDay&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="kr">import</span> <span class="nx">Chai</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&quot;chai&quot;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Tell chai that we&#39;ll be using the &quot;should&quot; style assertions.</span>
+</span><span class='line'><span class="nx">Chai</span><span class="p">.</span><span class="nx">should</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;Generator&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">subject</span> <span class="o">:</span> <span class="nx">PasswordOfTheDay</span><span class="p">.</span><span class="nx">PasswordGenerator</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">beforeEach</span><span class="p">(</span><span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">subject</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">PasswordOfTheDay</span><span class="p">.</span><span class="nx">PasswordGenerator</span><span class="p">();</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;#generate&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;should generate the password when the date is 24th July 2010&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">date</span> <span class="o">:</span> <span class="nb">Date</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="mi">2010</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">24</span><span class="p">);</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">password</span> <span class="o">:</span> <span class="nx">string</span> <span class="o">=</span> <span class="nx">subject</span><span class="p">.</span><span class="nx">generate</span><span class="p">(</span><span class="nx">date</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="nx">password</span><span class="p">.</span><span class="nx">should</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="s2">&quot;92ab1ff89bf9af&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;#generate&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;should generate a different password when the date is 25th July 2010&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">date</span> <span class="o">:</span> <span class="nb">Date</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Date</span><span class="p">(</span><span class="mi">2010</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">25</span><span class="p">);</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">password</span> <span class="o">:</span> <span class="nx">string</span> <span class="o">=</span> <span class="nx">subject</span><span class="p">.</span><span class="nx">generate</span><span class="p">(</span><span class="nx">date</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="nx">password</span><span class="p">.</span><span class="nx">should</span><span class="p">.</span><span class="nx">equal</span><span class="p">(</span><span class="s2">&quot;26a394b21800f1&quot;</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>    <span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;#check&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;should return false when the password is incorrect&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">password</span> <span class="o">:</span> <span class="nx">string</span> <span class="o">=</span> <span class="s2">&quot;garbage&quot;</span><span class="p">;</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">result</span> <span class="o">:</span> <span class="kr">boolean</span> <span class="o">=</span> <span class="nx">subject</span><span class="p">.</span><span class="nx">check</span><span class="p">(</span><span class="nx">password</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="nx">result</span><span class="p">.</span><span class="nx">should</span><span class="p">.</span><span class="nx">be</span><span class="p">.</span><span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;#check&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;should return false when the password is null&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">password</span> <span class="o">:</span> <span class="nx">string</span> <span class="o">=</span> <span class="kc">null</span><span class="p">;</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">result</span> <span class="o">:</span> <span class="kr">boolean</span> <span class="o">=</span> <span class="nx">subject</span><span class="p">.</span><span class="nx">check</span><span class="p">(</span><span class="nx">password</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="nx">result</span><span class="p">.</span><span class="nx">should</span><span class="p">.</span><span class="nx">be</span><span class="p">.</span><span class="kc">false</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">describe</span><span class="p">(</span><span class="s2">&quot;#check&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">it</span><span class="p">(</span><span class="s2">&quot;should return true when the password is correct&quot;</span><span class="p">,</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">password</span> <span class="o">:</span> <span class="nx">string</span> <span class="o">=</span> <span class="nx">subject</span><span class="p">.</span><span class="nx">generate</span><span class="p">(</span><span class="k">new</span> <span class="nb">Date</span><span class="p">());</span>
+</span><span class='line'>            <span class="kd">var</span> <span class="nx">result</span> <span class="o">:</span> <span class="kr">boolean</span> <span class="o">=</span> <span class="nx">subject</span><span class="p">.</span><span class="nx">check</span><span class="p">(</span><span class="nx">password</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="nx">result</span><span class="p">.</span><span class="nx">should</span><span class="p">.</span><span class="nx">be</span><span class="p">.</span><span class="kc">true</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">});</span>
+</span><span class='line'>    <span class="p">});</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Run our tests:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>$ npm test
+</span><span class='line'>&gt; @0.0.1 pretest /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
+</span><span class='line'>&gt; tsc
+</span><span class='line'>
+</span><span class='line'>&gt; @0.0.1 test /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
+</span><span class='line'>&gt; mocha ./lib/test
+</span><span class='line'>
+</span><span class='line'>  Generator
+</span><span class='line'>    #generate
+</span><span class='line'>      ✓ should generate the password when the date is 24th July 2010
+</span><span class='line'>    #generate
+</span><span class='line'>      ✓ should generate a different password when the date is 25th July 2010
+</span><span class='line'>    #check
+</span><span class='line'>      ✓ should return false when the password is incorrect
+</span><span class='line'>    #check
+</span><span class='line'>      ✓ should return false when the password is null
+</span><span class='line'>    #check
+</span><span class='line'>      ✓ should return true when the password is correct
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>  5 passing (20ms)</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Deploy</h3>
+
+<pre><code>$ serverless dash deploy
+</code></pre>
+
+<p>Now when we visit the endpoint with the correct password for today&#8217;s date which happens to be <em>89366e6199f3</em>.</p>
+
+<pre><code>https://...amazonaws.com/dev/potd/check?password=89366e6199f3
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="err">message:</span> <span class="err">true</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Mission accomplished! Notice that using a node package did not require any special steps on the AWS side. In fact we have not had to login to AWS since the very beginning when we created an IAM user for the project. And yet we&#8217;ve managed to build and deploy a cheap and scalable cloud-based service.</p>
+
+<p>That wraps up my series on building a small, but real-world Serverless application. In a future post, I&#8217;d like to look at providing a secured &#8216;generate&#8217; service to allow authorized users to get today&#8217;s password. Stay tuned.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-02-09T11:31:00+00:00" pubdate data-updated="true">Feb 9<span>th</span>, 2016</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/aws/'>aws</a>, <a class='category' href='/blog/categories/chai/'>chai</a>, <a class='category' href='/blog/categories/crypto-js/'>crypto-js</a>, <a class='category' href='/blog/categories/mocha/'>mocha</a>, <a class='category' href='/blog/categories/serverless/'>serverless</a>, <a class='category' href='/blog/categories/typescript/'>typescript</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/serverless-framework-part-5-pulling-in-a-node-package/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/serverless-framework-part-5-pulling-in-a-node-package/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/serverless-framework-part-4-connecting-the-parts/" title="Previous Post: Serverless Framework - Part 4: Connecting the parts">&laquo; Serverless Framework - Part 4: Connecting the parts</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - Robert Anderson
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'zerosharp';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/serverless-framework-part-5-pulling-in-a-node-package/';
+        var disqus_url = 'http://ZeroSharp.github.com/serverless-framework-part-5-pulling-in-a-node-package/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

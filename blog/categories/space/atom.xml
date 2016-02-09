@@ -4,7 +4,7 @@
   <title><![CDATA[Category: space | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/space/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-02-06T22:33:16+00:00</updated>
+  <updated>2016-02-09T12:46:43+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -28,7 +28,7 @@
 
 <p>This photo of the Endeavour Crater on Mars was taken by the <em>Opportunity</em> rover on March 9, 2012.</p>
 
-<p><img src="/images/blog/the-only-other-robot-001.jpg"></p>
+<p>{% img /images/blog/the-only-other-robot-001.jpg %}</p>
 
 <h4>Hardware - if it ain't broke, don't fix it</h4>
 
@@ -36,11 +36,13 @@
 
 <p>The computer on board is a <a href="http://en.wikipedia.org/wiki/IBM_RAD6000">RAD6000</a>. It is single board computer designed for the US Air Force by BAE Systems with a 32-bit processor based on the IBM RISC single chip CPU.  It has 128 MB of RAM.It is radiation hardened so that it can withstand the harsh environment of space. The RAD6000 is reported to cost between USD 200,000 and USD 300,000.</p>
 
-<p><blockquote><p>It's a venerable board. We've used it ever since the Mars Pathfinder Mission what — about 12 years ago, 14 years ago?</p><footer><strong>Peter Gluck,</strong> <cite><a href='http://news.oreilly.com/2008/07/the-software-behind-the-mars-p.html'>The Software Behind the Mars Phoenix</a></cite></footer></blockquote></p>
+<p>{% blockquote Peter Gluck, http://news.oreilly.com/2008/07/the-software-behind-the-mars-p.html The Software Behind the Mars Phoenix %}
+It's a venerable board. We've used it ever since the Mars Pathfinder Mission what — about 12 years ago, 14 years ago?
+{% endblockquote %}</p>
 
 <h4>Lifecycle</h4>
 
-<p><a href="http://en.wikipedia.org/wiki/File:Opportunity_-_Cratera_Eagle.jpg"><img class="right" src="/images/blog/the-only-other-robot-002.jpg" title="Eagle Crater landing site" ></a></p>
+<p><a href="http://en.wikipedia.org/wiki/File:Opportunity_-_Cratera_Eagle.jpg">{% img right /images/blog/the-only-other-robot-002.jpg Eagle Crater landing site %}</a></p>
 
 <p>The software on a Mars lander is expected take 3-4 years development.
 It's designed according to a <a href="http://en.wikipedia.org/wiki/Waterfall_model">Waterfall</a> model split roughly as follows:</p>
@@ -55,7 +57,9 @@ It's designed according to a <a href="http://en.wikipedia.org/wiki/Waterfall_mod
 
 <h4>Software</h4>
 
-<p><blockquote><p>One of the things about the software, one of the unique aspects about working software on a spacecraft is it's the only part of the system that you can change after launch.</p><footer><strong>left</strong></footer></blockquote></p>
+<p>{% blockquote left %}
+One of the things about the software, one of the unique aspects about working software on a spacecraft is it's the only part of the system that you can change after launch.
+{% endblockquote %}</p>
 
 <p>The operating system is <a href="http://en.wikipedia.org/wiki/VxWorks">VxWorks</a>.  The software on board the spacecraft is entirely in <em>C</em>.  The software on the rover is about 650,000 lines of <em>C</em>.</p>
 
@@ -80,7 +84,7 @@ It's designed according to a <a href="http://en.wikipedia.org/wiki/Waterfall_mod
     <link href="http://ZeroSharp.github.com/skiing-on-mars/"/>
     <updated>2012-04-27T11:45:00+01:00</updated>
     <id>http://ZeroSharp.github.com/skiing-on-mars</id>
-    <content type="html"><![CDATA[<p><a href="http://en.wikipedia.org/wiki/File:Mars_propm_rover.jpg"><img class="right" src="/images/blog/skiing-on-mars-003.jpg"></a>
+    <content type="html"><![CDATA[<p><a href="http://en.wikipedia.org/wiki/File:Mars_propm_rover.jpg">{% img right /images/blog/skiing-on-mars-003.jpg %}</a>
 This post is part of an ongoing series about robots, past and present.  See <a href="/friends-robots-countrymen/">Friends, Robots, Countrymen</a>.</p>
 
 <h3>The Soviet PrOP-M Rovers</h3>
@@ -89,8 +93,8 @@ This post is part of an ongoing series about robots, past and present.  See <a h
 
 <p>The first one crash landed.  The second landed sucessfully but failed twenty seconds after landing and never moved.  The reasons are unknown although the landing took place in the middle of a dust storm.  The base module did manage to transmit about 20 seconds worth of the <strong>first ever photograph of the surface of Mars</strong>, shown on the left here.  According to the Soviet Academy of Sciences there is nothing, horizon or otherwise, identifiable in this photograph.</p>
 
-<p><a href="http://en.wikipedia.org/wiki/File:Mars_3_Image.png"><img class="left" src="/images/blog/skiing-on-mars-001.png"></a>
-<a href="http://en.wikipedia.org/wiki/File:Soviet_Union-1972-Stamp-0.06._Mars_2.jpg"><img class="right" src="/images/blog/skiing-on-mars-002.jpg"></a></p>
+<p><a href="http://en.wikipedia.org/wiki/File:Mars_3_Image.png">{% img left /images/blog/skiing-on-mars-001.png %}</a>
+<a href="http://en.wikipedia.org/wiki/File:Soviet_Union-1972-Stamp-0.06._Mars_2.jpg">{% img right /images/blog/skiing-on-mars-002.jpg %}</a></p>
 
 <p>The rover itself, although never deployed, was equipped with sensors to detect obstacles (the two foremost metal bars in the photograph above).  <strong>The rovers were somewhat autonomous</strong> and capable of navigating obstacles.  The Soviet engineers were aware they might not have enough time for a remote-controlled operation of the rover (one-way communication takes between 4 and 20 minutes to Mars).</p>
 
@@ -102,7 +106,7 @@ This post is part of an ongoing series about robots, past and present.  See <a h
 
 <p>Watch a demonstration of how to program an analog computer to simulate a mass-spring system.  <strong>It's a far cry from my day job.</strong></p>
 
-<p><iframe width="640" height="390" src="http://www.youtube.com/embed/H_4bFgYReq0 " frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></p>
+<p>{% youtube H_4bFgYReq0 %}</p>
 
 <h4>References</h4>
 
