@@ -4,7 +4,7 @@
   <title><![CDATA[Category: apollodb | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/apollodb/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-02-09T12:46:43+00:00</updated>
+  <updated>2016-03-04T18:17:32+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -22,9 +22,7 @@
 
 <p>I love bug hunting. It's like a murder mystery: you've got your suspects and you try to eliminate them one at a time until, as a famous bug hunter said:</p>
 
-<p>{% blockquote Sherlock Holmes, The Sign of Four %}
-... when you have eliminated the impossible, whatever remains, however improbable, must be the truth.
-{% endblockquote %}</p>
+<p><blockquote><p>... when you have eliminated the impossible, whatever remains, however improbable, must be the truth.</p><footer><strong>Sherlock Holmes</strong> <cite>The Sign of Four</cite></footer></blockquote></p>
 
 <p>Between about 1995 and 2006, I used a data library called Apollo almost every day. It was a bunch of C++ drivers for dBase files with some more advanced options for encryption and indexing and was a popular option for <a href="http://en.wikipedia.org/wiki/Clipper_(programming_language">Clipper</a>) programmers. I joined a software project which was based on Clipper and Apollo in 1995. Apollo went through many different incarnations SuccessWare, Luxent, Vista, ApolloDB. All of these companies were essentially providing wrappers for different languages (Delphi, .NET) but the core C++ drivers always remained more or less the same <a href="http://www.apollodb.com/products.asp">and it's still going</a>.</p>
 
@@ -32,61 +30,89 @@
 
 <p>When I tried to run the upgraded .NET 4.5 library I got a mysterious app crash.</p>
 
-<p>{% img /images/blog/appcrash/app-crash-001.png %}</p>
+<p><img src="/images/blog/appcrash/app-crash-001.png"></p>
 
 <p>The application would then close without any error message or stack trace. Nothing I did was allowing me catch any exception. None of the signatures, e.g., the <code>c0000374</code> exception code show up on Google. It shows up in the Windows event log, but apparently EventID 1000 is a very generic error message.</p>
 
-<p>{% img /images/blog/appcrash/app-crash-002.png %}</p>
+<p><img src="/images/blog/appcrash/app-crash-002.png"></p>
 
 <p>I had a suspicion the problem was something to do with the Apollo assembly and I also knew that Apollo was not all managed code. I stumbled over the <em>Enable native code debugging</em> in the project settings. I've never used this setting. (My next approach would have been to use tracing to try to pinpoint the location of the crash.)</p>
 
-<p>{% img /images/blog/appcrash/app-crash-003.png %}</p>
+<p><img src="/images/blog/appcrash/app-crash-003.png"></p>
 
 <p>Visual Studio really impresses with its debugging capabilities. When we run again, we get a stack trace and an error message.</p>
 
-<p>{% img /images/blog/appcrash/app-crash-004.png %}</p>
+<p><img src="/images/blog/appcrash/app-crash-004.png"></p>
 
 <p>Well Google didn't seem to have much to say about <em>'This may be due to a corruption of the heap'</em>. But the problem seems to do with <code>apolloTable.FieldName(i)</code>. With a decompiler I had a look at its definition.</p>
 
-<p>{% codeblock lang:csharp %}
-public string FieldName(short fieldNum)
-{</p>
-
-<pre><code>//...
-return ApolloAPI.sx_FieldName(fieldNum);
-//...
-</code></pre>
-
-<p>}
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="kt">string</span> <span class="nf">FieldName</span><span class="p">(</span><span class="kt">short</span> <span class="n">fieldNum</span><span class="p">)</span>
+</span><span class='line'><span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="c1">//...</span>
+</span><span class='line'><span class="k">return</span> <span class="n">ApolloAPI</span><span class="p">.</span><span class="n">sx_FieldName</span><span class="p">(</span><span class="n">fieldNum</span><span class="p">);</span>
+</span><span class='line'><span class="c1">//...</span>
+</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Let's find <code>ApolloAPI.sx_FieldName(fieldNum);</code></p>
 
-<p>{% codeblock lang:csharp %}
-[DllImport("SDE7.dll", CharSet=CharSet.Ansi, ExactSpelling=true)]
-public static extern string sx_FieldName(short uiFieldNum);
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="na">[DllImport(&quot;SDE7.dll&quot;, CharSet=CharSet.Ansi, ExactSpelling=true)]</span>
+</span><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">extern</span> <span class="kt">string</span> <span class="nf">sx_FieldName</span><span class="p">(</span><span class="kt">short</span> <span class="n">uiFieldNum</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Now, knowing that SDE7.dll is written in C++, I guessed it might be having trouble with the return value being a <code>string</code>. The C++ memory management of the returned string might be getting in the way. <a href="http://stackoverflow.com/a/8242828/1077279">A bit of StackOverflow</a> gave me this trick: declare the return type as <code>IntPtr</code> and use <code>Marshal.PtrToStringAnsi()</code> to get a C# <code>string</code> from the pointer. (It seems that .NET 4.5 is stricter about marshalling than earlier frameworks. Perhaps someone can enlighten me why the error did not occur with .NET 4.0?) I wrote a new extension method for <code>ApolloTable</code> and changed the code to use <code>apolloTable.SafeFieldName(i)</code> instead.</p>
 
-<p>{% codeblock lang:csharp %}</p>
-
-<pre><code>public static class TApolloTableExtensions
-{
-    [DllImport("SDE7.dll", CharSet = CharSet.Ansi, ExactSpelling = true)]
-    public static extern IntPtr sx_FieldName(short uiFieldNum);
-
-    public static string SafeFieldName(this ApolloTable apolloTable, short fieldNum)
-    {
-        //...
-        IntPtr strPtr = sx_FieldName(fieldNum);
-        return Marshal.PtrToStringAnsi(strPtr);
-        //...
-    }
-}
-</code></pre>
-
-<p>{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="p">&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">TApolloTableExtensions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'><span class="na">    [DllImport(&quot;SDE7.dll&quot;, CharSet = CharSet.Ansi, ExactSpelling = true)]</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="k">extern</span> <span class="n">IntPtr</span> <span class="nf">sx_FieldName</span><span class="p">(</span><span class="kt">short</span> <span class="n">uiFieldNum</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="kt">string</span> <span class="nf">SafeFieldName</span><span class="p">(</span><span class="k">this</span> <span class="n">ApolloTable</span> <span class="n">apolloTable</span><span class="p">,</span> <span class="kt">short</span> <span class="n">fieldNum</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="c1">//...</span>
+</span><span class='line'>        <span class="n">IntPtr</span> <span class="n">strPtr</span> <span class="p">=</span> <span class="n">sx_FieldName</span><span class="p">(</span><span class="n">fieldNum</span><span class="p">);</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">Marshal</span><span class="p">.</span><span class="n">PtrToStringAnsi</span><span class="p">(</span><span class="n">strPtr</span><span class="p">);</span>
+</span><span class='line'>        <span class="c1">//...</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>And bingo! The application now runs without error.</p>
 ]]></content>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: mathematics | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/mathematics/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-02-09T12:46:43+00:00</updated>
+  <updated>2016-03-04T18:17:32+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -18,13 +18,13 @@
     <link href="http://ZeroSharp.github.com/an-afternoon-with-two-fields-medallists/"/>
     <updated>2012-06-05T08:30:00+01:00</updated>
     <id>http://ZeroSharp.github.com/an-afternoon-with-two-fields-medallists</id>
-    <content type="html"><![CDATA[<p>{% img right /images/blog/an-afternoon-with-two-fields-medallists-001.jpg %}</p>
+    <content type="html"><![CDATA[<p><img class="right" src="/images/blog/an-afternoon-with-two-fields-medallists-001.jpg"></p>
 
 <p>On Saturday I attended an excellent discussion at the Tate modern which was part of <a href="http://www.tate.org.uk/whats-on/tate-modern/eventseries/topology">a series of lectures on Topology</a>.  The first part was a screening of <em>Au Bonheur des Maths</em>, a film by Raymond Depardon and Claudine Nougaret which is a collection of portraits of famous mathematicians describing beauty in mathematics.  The second part was a discussion on the same topic between Sir Michael Atiyah and Cédric Villani, both winners of the <a href="http://en.wikipedia.org/wiki/Fields_Medal">Fields Medal</a>.  You can read a review of the event at <a href="http://tonysmaths.blogspot.co.uk/2012/06/atiyah-and-villani-at-tate-modern-value.html">Tony Mann's maths blog</a>.</p>
 
 <p>I particularly enjoyed witnessing world-class mathematicians in the flesh and learning a little about their day-to-day work.  <a href="http://en.wikipedia.org/wiki/Michael_Atiyah">Sir Michael Atiyah</a> is a jovial fellow in his 80s who speaks extremely quickly as if his mouth is trying to keep up with his thoughts.  His passion for mathematics is infectious.</p>
 
-<p>{% img left /images/blog/an-afternoon-with-two-fields-medallists-002.jpg %}</p>
+<p><img class="left" src="/images/blog/an-afternoon-with-two-fields-medallists-002.jpg"></p>
 
 <p>In stark comparison <a href="http://en.wikipedia.org/wiki/C%C3%A9dric_Villani">Cédric Villani</a> is a flamboyant Frenchman who was dressed in a three-piece suit and a cravat.  He looks more like a musketeer than a mathematician.  He was wearing an ornate and sparkly jewel in the shape of a spider on his lapel (and apparently always does).  He speaks very good English but with quite a thick French accent.  He has a mischevous sense of humour and an endless enthusiasm.  Check out his great <a href="http://www.youtube.com/watch?v=U3kKjGKp9rA#!">TEDx talk</a>.</p>
 
@@ -36,13 +36,11 @@
 
 <p>If you have a few minutes, you can learn how to turn a sphere inside-out in the following amazing video.</p>
 
-<p>{% youtube wO61D9x6lNY %}</p>
+<p><iframe width="640" height="390" src="http://www.youtube.com/embed/wO61D9x6lNY " frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe></p>
 
 <p>Sir Michael closed the discussion with the following quotation:</p>
 
-<p>{% blockquote Hermann Weyl %}
-My work always tried to unite the truth with the beautiful, but when I had to choose one or the other, I usually chose the beautiful.
-{% endblockquote %}</p>
+<p><blockquote><p>My work always tried to unite the truth with the beautiful, but when I had to choose one or the other, I usually chose the beautiful.</p><footer><strong>Hermann Weyl</strong></footer></blockquote></p>
 
 <h5>References</h5>
 

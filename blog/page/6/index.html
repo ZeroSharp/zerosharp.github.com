@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="This is the second post in a series about iOS development from the perspective of a C# developer. In the previous post in the series we got started &hellip;">
+  <meta name="description" content="For Valentine&#8217;s Day, why not make your git command line a little more colourful. git config --global color.ui true ">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,47 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/colourful-git-command-line/">Colourful Git Command Line</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-14T05:10:00+00:00" pubdate data-updated="true">Feb 14<span>th</span>, 2013</time>
+        
+         | <a href="/colourful-git-command-line/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>For Valentine&#8217;s Day, why not make your git command line a little more colourful.</p>
+
+<pre><code>git config --global color.ui true
+</code></pre>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1282,81 +1323,6 @@ bundle install
 <p>And then the same change would be logged as follows.</p>
 
 <p><img src="/images/blog/audit-trail-002.jpg"></p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/">How to Remove the Trailing Zeros of Precision From a C# Decimal</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-09T17:45:00+00:00" pubdate data-updated="true">Jan 9<span>th</span>, 2013</time>
-        
-         | <a href="/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>You may know that the C# <code>Decimal</code> type remembers any trailing zeros. So for instance:</p>
-
-<pre><code>Console.WriteLine(123.45m);
-Console.WriteLine(123.45000m);
-Console.WriteLine(123.4500000m);
-</code></pre>
-
-<p>results in</p>
-
-<pre><code>123.45
-123.45000
-123.4500000
-</code></pre>
-
-<p>This is because the <code>Decimal</code> type is designed for representing a number including its accuracy.</p>
-
-<p>It is tricky to find a good way of controlling this accuracy. If I have <code>x = 123.45000</code>, how can I easily remove the trailing zeros so that <code>x.ToString()</code> outputs <code>123.45</code>?</p>
-
-<p>For a while it looked like I&#8217;d have to perform some <a href="http://stackoverflow.com/a/4298787/1077279">Jon Skeet wizardry</a>, but there is a simpler solution. The following extension method will remove all the trailing zeros.</p>
-
-<pre><code>public static class DecimalExtensions
-{
-    public static Decimal Normalize(this Decimal value)
-    {
-        return value / 1.000000000000000000000000000000000m;
-    }
-}
-</code></pre>
-
-<p>And if you need an exact number of trailing zeros, you can first <code>Normalize()</code> and then multiply.</p>
-
-<pre><code>Console.WriteLine(123.45m.Normalize() * 1.000m); 
-</code></pre>
-
-<p>will output the following.</p>
-
-<pre><code>123.45000
-</code></pre>
 </div>
   
   

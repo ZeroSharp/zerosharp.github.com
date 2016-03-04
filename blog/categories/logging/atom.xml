@@ -4,7 +4,7 @@
   <title><![CDATA[Category: logging | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/logging/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-02-09T12:46:43+00:00</updated>
+  <updated>2016-03-04T18:17:32+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -34,7 +34,7 @@
 
 <p>First, get the ELMAH package via NuGet into the MainDemo.Web project. ELMAH provides dozens of different methods of persisting the error log. For this example we'll choose one of the simplest. Make sure you select the <em>ELMAH on XML Log</em> package.</p>
 
-<p>{% img /images/blog/xaf-with-elmah-001.png %}</p>
+<p><img src="/images/blog/xaf-with-elmah-001.png"></p>
 
 <p>NuGet makes several automatic modifications to the <em>web.config</em>. Unfortunately, these are not quite accurate enough for XAF. The changes you need to make are detailed below:</p>
 
@@ -173,15 +173,15 @@ public class ElmahErrorHandling : ErrorHandling
 
 <p>Now run the application and trigger an unhandled exception. Change the URL to something that does not exist. Or open any detail view and modify the URL so that the Guid in the <em>ShortcutObjectKey</em> is invalid (replace a digit with an 'X'). Then the application error page appears.</p>
 
-<p>{% img /images/blog/xaf-with-elmah-002.png %}</p>
+<p><img src="/images/blog/xaf-with-elmah-002.png"></p>
 
 <p>Then return to the application and change the URL to <code>Elmah.axd</code>. You are looking at the log of all unhandled exceptions.</p>
 
-<p>{% img /images/blog/xaf-with-elmah-003.png %}</p>
+<p><img src="/images/blog/xaf-with-elmah-003.png"></p>
 
 <p>And for each exception, you can view the full details of any logged exception including coloured stack trace and full server variables.</p>
 
-<p>{% img /images/blog/xaf-with-elmah-004.png %}</p>
+<p><img src="/images/blog/xaf-with-elmah-004.png"></p>
 
 <h2>ELMAH options</h2>
 
@@ -191,7 +191,7 @@ public class ElmahErrorHandling : ErrorHandling
 
 <p>One of the advantages of using XML files is that the files can be copied to another machine. If you look in <em>MainDemo.Web\App_Data\Elmah.Errors</em>, you will find the resulting xml files.</p>
 
-<p>{% img /images/blog/xaf-with-elmah-005.png %}</p>
+<p><img src="/images/blog/xaf-with-elmah-005.png"></p>
 
 <p>You can just copy these files to another installation's <em>Elmah.Errors</em> folder and the log will show up when you visit <em>Elmah.axd</em>.</p>
 

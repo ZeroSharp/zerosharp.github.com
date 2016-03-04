@@ -1,0 +1,340 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>A basic Chrome extension - analyze your chess.com games on lichess.org - ZeroSharp</title>
+  <meta name="author" content="Robert Anderson">
+
+  
+  <meta name="description" content="How I wrote my first Chrome extension to analyze finished chess.com games on lichess.org.">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ZeroSharp.github.com/a-basic-chrome-extension-analyze-your-chess-dot-com-games-on-lichess-dot-org/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="http://feeds.feedburner.com/zerosharp" rel="alternate" title="ZeroSharp" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> 
+
+<!-- <ra+> -->
+<link href="http://fonts.googleapis.com/css?family=Ubuntu:500" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
+
+<link href="/stylesheets/custom/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+<!-- </ra+> -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-30564687-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <!--<h1><a href="/">ZeroSharp</a></h1>-->
+  <a href="http://www.zerosharp.com/"><h1>ZeroSharp</h1></a>
+  
+    <h2>Robert Anderson's ones and zeros</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">  
+
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ZeroSharp.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/license/">License</a></li>  
+</ul>
+<ul class="subscription">
+    <li><a rel="me" href="https://plus.google.com/112685056596124127572?rel=author">
+      <img src="/images/asides/googleplus.png" width="24" height="24" alt="Rob on Google+">
+    </a></li>    
+    <li><a rel="me" href="http://twitter.com/8ctopus">
+      <img src="/images/asides/twitter.png" width="24" height="24" alt="Rob on Twitter" />
+    </a></li>
+    <!--<li><a rel="me" href="http://stackoverflow.com/users/1077279/shamp00">
+      <img src="/images/asides/stackoverflow.png" width="24" height="24" alt="Rob on StackOverflow" />
+    </a></li>
+    <li><a rel="me" href="https://github.com/zerosharp">
+      <img src="/images/asides/github.png" width="24" height="24" alt="Rob on GitHub" />
+    </a></li>
+    <li><a rel="me" href="http://www.linkedin.com/profile/view?id=926740"  class ="googleplus-hidden" >
+      <img src="/images/asides/linkedin.png" width="24" height="24" alt="Rob on LinkedIn" />
+    </a></li>
+    <li><a rel="me" href="http://springpad.com/#!/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/springpad.png" width="24" height="24" alt="Rob on SpringPad" />
+    </a></li>    
+    <li><a rel="me" href="http://pinterest.com/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/pinterest.png" width="24" height="24" alt="Rob on Pinterest" />
+    </a></li>
+    <li><a rel="me" href="http://www.last.fm/user/nosredna"  class ="googleplus-hidden" >
+      <img src="/images/asides/lastfm.png" width="24" height="24" alt="Rob on Last.fm" />
+    </a></li>-->
+    <li><a href="http://feeds.feedburner.com/zerosharp">
+      <img src="/images/asides/rss.png" rel="subscribe-rss" width="24" height="24" alt="RSS Feed" />
+    </a></li>
+</ul>
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">A Basic Chrome Extension - Analyze Your chess.com Games on lichess.org</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-03-04T17:41:00+00:00" pubdate data-updated="true">Mar 4<span>th</span>, 2016</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>I&#8217;ve been trying to get better at chess by playing on <a href="http://www.chess.com">chess.com</a>. I often analyse my games with the help of a computer to see where I made mistakes. My favourite way of doing this is to make use of <a href="http://lichess.org">Lichess.org</a>&#8217;s import functionality. The latest version of chess.com has greatly improved its own post game analysis, but I still much prefer Lichess&#8217;s. So I would often download the finished game in pgn and upload it to Lichess.</p>
+
+<p>Somewhere along the way I came across a Chrome extension written by Allan Rempel which would do this in one step. Unfortunately it stopped working when chess.com upgraded its site and Allan does not seem to be maintaining it any longer. I decided to jump in and try to fix it and maybe add a couple of features myself.</p>
+
+<h2>The extension</h2>
+
+<p>When a chess.com game is finished, you can click on a little knight icon and jump straight to the analysis of the game in Lichess.</p>
+
+<p><img src="/images/blog/chrome-extension-chessCom.png"></p>
+
+<p>It takes a few seconds to process but then you can see all your mistakes and blunders.</p>
+
+<p><img src="/images/blog/chrome-extension-lichessOrg.png"></p>
+
+<p>You can play through the game and experiment with different variations. Chess.com&#8217;s new v3 has greatly improved its own post-game analysis but it still lacks many of the features of the Lichess one.</p>
+
+<p>Try it out! The extension is available <a href="https://chrome.google.com/webstore/detail/chesscom-v3-analysis/bhjlkimpkkgkmfjlcfngmakenalgleap">here</a>.</p>
+
+<h2>How to modify an existing extension</h2>
+
+<p>First thing was to find the code of the existing broken extension. A bit of googling lead me to:</p>
+
+<pre><code>$ cd ~/Library/Application\ Support/Google/Chrome/Default/Extensions/
+$ ls
+
+total 0
+drwx------+ 30 ra  staff  1020 29 Feb 20:39 .
+drwx------+ 66 ra  staff  2244 29 Feb 20:56 ..
+drwx------+  2 ra  staff    68 29 Feb 20:39 Temp
+drwx------+  3 ra  staff   102 14 Sep  2012 allibancfngcpjmjnnboebggipbaalhn
+drwx------+  3 ra  staff   102 28 Mar  2013 anfemphbgknehemmbbajjcmakfijiohp
+drwx------+  3 ra  staff   102 25 Oct 08:15 apdfllckaahabafndbhieahigkjlhalf
+drwx------+  3 ra  staff   102  5 Mar  2015 bepbmhgboaologfdajaanbcjmnhjmhfn
+drwx------+  3 ra  staff   102  5 Jun  2014 bfbameneiokkgbdmiekhjnmfkcnldhhm
+drwx------+  3 ra  staff   102 22 Feb 20:09 bhjlkimpkkgkmfjlcfngmakenalgleap
+drwx------+  3 ra  staff   102 24 Sep 20:33 blpcfgokakmgnkcojhhkbfbldkacnbeo
+drwx------+  3 ra  staff   102 29 Jul  2013 bmihblnpomgpjkfddepdpdafhhepdbek
+drwx------+  3 ra  staff   102 13 Sep  2012 boeajhmfdjldchidhphikilcgdacljfm
+... etc.
+</code></pre>
+
+<p>Each extension is in a not very helpfully named folder. If you open <code>chrome://extensions/</code>, you can find the id of any installed extension and work out which directory corresponds to which extension.</p>
+
+<p>So then I dug around in the folder and found <code>ext/background.js</code> where the bulk of the code lies. There is also a <code>manifest.json</code> file which is specifies various parameters such as what permissions are required and which websites will be affected by the extension. I copied all the important files into a development folder.</p>
+
+<h2>Loading the extension from the development folder.</h2>
+
+<ul>
+<li>Navigate to chrome://extensions</li>
+<li>Expand the developer dropdown menu and click &#8220;Load Unpacked Extension&#8221;</li>
+<li>Navigate to development folder</li>
+</ul>
+
+
+<p>Assuming there are no errors, the extension should load into your browser. Don&#8217;t forget to disable any conflicting versions you&#8217;ve installed from the Chrome Web Store.</p>
+
+<p><img src="/images/blog/chrome-extension-load.png"></p>
+
+<p>I used the Chrome&#8217;s built-in Developer Tools and peppered the code with <code>console.log()</code> to explore how it worked. There are plenty of good <a href="https://developer.chrome.com/extensions/tut_debugging">resources</a> on the Chrome developer site. I managed to fix the broken parts and added support for analysis from chess.com&#8217;s game archive. Then I posted the link on <a href="https://redd.it/47cdew">reddit/r/chess</a>.</p>
+
+<p>The source code for the extension is on <a href="https://github.com/ZeroSharp/Chess.com_Analysis_Chrome_extension">GitHub</a>.</p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-03-04T17:41:00+00:00" pubdate data-updated="true">Mar 4<span>th</span>, 2016</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/chess/'>chess</a>, <a class='category' href='/blog/categories/chrome/'>chrome</a>, <a class='category' href='/blog/categories/extension/'>extension</a>, <a class='category' href='/blog/categories/javascript/'>javascript</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/a-basic-chrome-extension-analyze-your-chess-dot-com-games-on-lichess-dot-org/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/a-basic-chrome-extension-analyze-your-chess-dot-com-games-on-lichess-dot-org/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/serverless-framework-part-5-pulling-in-a-node-package/" title="Previous Post: Serverless Framework Part 5: Pulling in a node package">&laquo; Serverless Framework Part 5: Pulling in a node package</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - Robert Anderson
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'zerosharp';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/a-basic-chrome-extension-analyze-your-chess-dot-com-games-on-lichess-dot-org/';
+        var disqus_url = 'http://ZeroSharp.github.com/a-basic-chrome-extension-analyze-your-chess-dot-com-games-on-lichess-dot-org/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

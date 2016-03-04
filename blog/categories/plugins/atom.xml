@@ -4,7 +4,7 @@
   <title><![CDATA[Category: plugins | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/plugins/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-02-09T12:46:43+00:00</updated>
+  <updated>2016-03-04T18:17:32+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -463,15 +463,15 @@ public class PluginOtherwiseDefaultBindingCreator : IBindingCreator
 
 <p>So here's the Hello World page in production:</p>
 
-<p>{% img /images/blog/roslyn-plugins-001.png %}.</p>
+<p><img src="/images/blog/roslyn-plugins-001.png">.</p>
 
 <p>We navigate to the plugins view and create a new replacement for the HelloWorldGenerator:</p>
 
-<p>{% img /images/blog/roslyn-plugins-002.png %}.</p>
+<p><img src="/images/blog/roslyn-plugins-002.png">.</p>
 
 <p>Without restarting, we can return to the HelloWorld page and see that the new class is being used because the output has changed.</p>
 
-<p>{% img /images/blog/roslyn-plugins-003.png %}.</p>
+<p><img src="/images/blog/roslyn-plugins-003.png">.</p>
 
 <p>If you delete the row from the plugins page, the behaviour reverts to the original implementation (the code that was originally shipped with production).</p>
 
@@ -509,9 +509,9 @@ public class PluginOtherwiseDefaultBindingCreator : IBindingCreator
     <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1</id>
     <content type="html"><![CDATA[<h2>The goal</h2>
 
-<p>{% pullquote %}
-{"How can we replace a given class's code with new code at runtime?"} In particular, how we can we do this while allowing dependency injection and  sidestepping assembly versioning issues.
-{% endpullquote %}</p>
+<p><span class='pullquote-right' data-pullquote='How can we replace a given class&#8217;s code with new code at runtime?'>
+How can we replace a given class's code with new code at runtime? In particular, how we can we do this while allowing dependency injection and  sidestepping assembly versioning issues.
+</span></p>
 
 <p>Let's say you have bunch of classes like this:</p>
 

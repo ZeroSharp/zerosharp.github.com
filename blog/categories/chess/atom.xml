@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: chess | ZeroSharp]]></title>
+  <link href="http://ZeroSharp.github.com/blog/categories/chess/atom.xml" rel="self"/>
+  <link href="http://ZeroSharp.github.com/"/>
+  <updated>2016-03-04T18:17:32+00:00</updated>
+  <id>http://ZeroSharp.github.com/</id>
+  <author>
+    <name><![CDATA[Robert Anderson]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[A basic Chrome extension - analyze your chess.com games on lichess.org]]></title>
+    <link href="http://ZeroSharp.github.com/a-basic-chrome-extension-analyze-your-chess-dot-com-games-on-lichess-dot-org/"/>
+    <updated>2016-03-04T17:41:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/a-basic-chrome-extension-analyze-your-chess-dot-com-games-on-lichess-dot-org</id>
+    <content type="html"><![CDATA[<p>I've been trying to get better at chess by playing on <a href="http://www.chess.com">chess.com</a>. I often analyse my games with the help of a computer to see where I made mistakes. My favourite way of doing this is to make use of <a href="http://lichess.org">Lichess.org</a>'s import functionality. The latest version of chess.com has greatly improved its own post game analysis, but I still much prefer Lichess's. So I would often download the finished game in pgn and upload it to Lichess.</p>
+
+<p>Somewhere along the way I came across a Chrome extension written by Allan Rempel which would do this in one step. Unfortunately it stopped working when chess.com upgraded its site and Allan does not seem to be maintaining it any longer. I decided to jump in and try to fix it and maybe add a couple of features myself.</p>
+
+<h2>The extension</h2>
+
+<p>When a chess.com game is finished, you can click on a little knight icon and jump straight to the analysis of the game in Lichess.</p>
+
+<p><img src="/images/blog/chrome-extension-chessCom.png"></p>
+
+<p>It takes a few seconds to process but then you can see all your mistakes and blunders.</p>
+
+<p><img src="/images/blog/chrome-extension-lichessOrg.png"></p>
+
+<p>You can play through the game and experiment with different variations. Chess.com's new v3 has greatly improved its own post-game analysis but it still lacks many of the features of the Lichess one.</p>
+
+<p>Try it out! The extension is available <a href="https://chrome.google.com/webstore/detail/chesscom-v3-analysis/bhjlkimpkkgkmfjlcfngmakenalgleap">here</a>.</p>
+
+<h2>How to modify an existing extension</h2>
+
+<p>First thing was to find the code of the existing broken extension. A bit of googling lead me to:</p>
+
+<pre><code>$ cd ~/Library/Application\ Support/Google/Chrome/Default/Extensions/
+$ ls
+
+total 0
+drwx------+ 30 ra  staff  1020 29 Feb 20:39 .
+drwx------+ 66 ra  staff  2244 29 Feb 20:56 ..
+drwx------+  2 ra  staff    68 29 Feb 20:39 Temp
+drwx------+  3 ra  staff   102 14 Sep  2012 allibancfngcpjmjnnboebggipbaalhn
+drwx------+  3 ra  staff   102 28 Mar  2013 anfemphbgknehemmbbajjcmakfijiohp
+drwx------+  3 ra  staff   102 25 Oct 08:15 apdfllckaahabafndbhieahigkjlhalf
+drwx------+  3 ra  staff   102  5 Mar  2015 bepbmhgboaologfdajaanbcjmnhjmhfn
+drwx------+  3 ra  staff   102  5 Jun  2014 bfbameneiokkgbdmiekhjnmfkcnldhhm
+drwx------+  3 ra  staff   102 22 Feb 20:09 bhjlkimpkkgkmfjlcfngmakenalgleap
+drwx------+  3 ra  staff   102 24 Sep 20:33 blpcfgokakmgnkcojhhkbfbldkacnbeo
+drwx------+  3 ra  staff   102 29 Jul  2013 bmihblnpomgpjkfddepdpdafhhepdbek
+drwx------+  3 ra  staff   102 13 Sep  2012 boeajhmfdjldchidhphikilcgdacljfm
+... etc.
+</code></pre>
+
+<p>Each extension is in a not very helpfully named folder. If you open <code>chrome://extensions/</code>, you can find the id of any installed extension and work out which directory corresponds to which extension.</p>
+
+<p>So then I dug around in the folder and found <code>ext/background.js</code> where the bulk of the code lies. There is also a <code>manifest.json</code> file which is specifies various parameters such as what permissions are required and which websites will be affected by the extension. I copied all the important files into a development folder.</p>
+
+<h2>Loading the extension from the development folder.</h2>
+
+<ul>
+<li>Navigate to chrome://extensions</li>
+<li>Expand the developer dropdown menu and click "Load Unpacked Extension"</li>
+<li>Navigate to development folder</li>
+</ul>
+
+
+<p>Assuming there are no errors, the extension should load into your browser. Don't forget to disable any conflicting versions you've installed from the Chrome Web Store.</p>
+
+<p><img src="/images/blog/chrome-extension-load.png"></p>
+
+<p>I used the Chrome's built-in Developer Tools and peppered the code with <code>console.log()</code> to explore how it worked. There are plenty of good <a href="https://developer.chrome.com/extensions/tut_debugging">resources</a> on the Chrome developer site. I managed to fix the broken parts and added support for analysis from chess.com's game archive. Then I posted the link on <a href="https://redd.it/47cdew">reddit/r/chess</a>.</p>
+
+<p>The source code for the extension is on <a href="https://github.com/ZeroSharp/Chess.com_Analysis_Chrome_extension">GitHub</a>.</p>
+]]></content>
+  </entry>
+  
+</feed>

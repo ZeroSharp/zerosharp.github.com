@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="How can I force a full garbage collection easily within an ASP.NET application? The method here is for XAF web applications but the same approach &hellip;">
+  <meta name="description" content="I am the principal software architect for a treasury application in use by over 100 large multinational corporates. Upgrades are generally met with &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,65 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1/">Migrating a Large Web Application From XAF 12.1 to 15.1 - Part 1</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-09-14T10:01:00+01:00" pubdate data-updated="true">Sep 14<span>th</span>, 2015</time>
+        
+         | <a href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I am the principal software architect for a treasury application in use by over 100 large multinational corporates. Upgrades are generally met with reluctance in the enterprise world and so we&#8217;ve been somewhat stuck on an old version of the expressAppFramework.</p>
+
+<p>Recently I&#8217;ve been pushing to move to the newer version and I have spent about three weeks migrating the substantial code base to XAF 15.1 and .NET 4.6.</p>
+
+<p>The steps are:</p>
+
+<ul>
+<li>Run the project converter tool.</li>
+<li>Try to compile. Identify the errors which are easily fixable (check with the &#8216;breaking changes&#8217; documents from DevExpress.)</li>
+<li>When in doubt, compare the libraries with a decompiler like .NET Reflector.</li>
+<li>Refactor where necessary (ensure you have unit tests for the behaviour you are changing).</li>
+</ul>
+
+
+<p>On this last point, my whole approach to refactoring has been shaped by Michael C. Feather&#8217;s book <a href="http://amzn.com/0131177052"><em>Working Effectively with Legacy Code</em></a>. Highly recommended for anyone maintaining complex applications regardless of whether the code is legacy or not&#8230;</p>
+
+<p>I was pleasantly surprised that I was very quickly able to get everything to compile and even run. The layout was not correct, but a lot of things worked straight away.</p>
+
+<p>I then had to spend some time restoring the customisations we&#8217;d made to the default ASP.NET layout. In XAF 12.1 these were applied directly to <em>default.aspx.cs</em> and <em>dialog.aspx.cs</em>, but in 15.1 these no longer exist. Instead, you can customise layout by providing your own alternate templates. I was expecting this to be much harder, but by <a href="https://documentation.devexpress.com/#eXpressAppFramework/CustomDocument112696">following the instructions in the documentation</a> I managed to restore our layout quite easily.</p>
+
+<p>I still had a lot of failing unit tests. One seemingly minor change to XAF validation proved to be a lot of work to fix in our code.
+Since 13.1, the XAF <code>Validator</code> class now requires an <code>IObjectSpace</code> parameter in the constructor. This was by far the biggest problem to fix and is the subject of the next blog post.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1533,127 +1592,6 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
 <p>The <em>Microsoft.CodeAnalysis.CSharp</em> is the &#8216;Roslyn&#8217; package. It is still in beta, so you have to switch to the pre-release.</p>
 
 <p>Next we&#8217;ll look at <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/">the dependency injection part</a> in more detail.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/">Replacing a Class at Runtime Using Ninject and Roslyn - Part 1: The Goal</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-09-09T10:47:00+01:00" pubdate data-updated="true">Sep 9<span>th</span>, 2014</time>
-        
-         | <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>The goal</h2>
-
-<p><span class='pullquote-right' data-pullquote='How can we replace a given class&#8217;s code with new code at runtime?'>
-How can we replace a given class&#8217;s code with new code at runtime? In particular, how we can we do this while allowing dependency injection and  sidestepping assembly versioning issues.
-</span></p>
-
-<p>Let&#8217;s say you have bunch of classes like this:</p>
-
-<figure class='code'><figcaption><span>SomeGenerator.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">SomeGenerator</span> <span class="p">:</span> <span class="n">IGenerator</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="nf">SomeGenerator</span><span class="p">(</span><span class="n">ISomeDependency</span> <span class="n">dependency</span><span class="p">,</span> <span class="n">IAnotherDependency</span> <span class="n">another</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="p">...</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">public</span> <span class="k">void</span> <span class="nf">Generate</span><span class="p">()</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="p">...</span>
-</span><span class='line'>        <span class="c1">// generate some output</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now let&#8217;s assume that you need the ability to modify the behaviour of these classes at runtime without upgrading. And change the dependencies. Without restarting the application.</p>
-
-<h4>Old school - The MEF approach (and most other plug-in frameworks)</h4>
-
-<p>One approach would be to place each generator in a separate assembly and then you could load them at runtime. (This was my first effort - <em>oh how I struggled</em>).</p>
-
-<p>You can make use of something like <a href="http://msdn.microsoft.com/en-us/library/dd460648.aspx">MEF</a> to help with the grunt work, but can still be very complex.</p>
-
-<p>One difficulty is the dependencies. The dependencies are often defined in other assemblies and you have to be very careful to avoid &#8216;dll hell&#8217;. It is very easy to get message like:</p>
-
-<pre><code>Could not load file or assembly 'SomeAssembly, Version=1.2.9.1, Culture=neutral, PublicKeyToken=ad2d246d2bace800' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference.
-</code></pre>
-
-<p>Or even exceptions like</p>
-
-<pre><code>Object (of type 'SomeGenerator') is not of type 'SomeGenerator'.
-</code></pre>
-
-<p>You either have to write your plug-in code so that it is totally independent (i.e., has no dependencies), or you need to resort to a heap of <code>&lt;bindingRedirect&gt;</code> tags in your web.config.</p>
-
-<p>Also, with one assembly per format, you can end up with a huge proliferation of assemblies. If you have 50 different formats, that would be 50 assemblies.</p>
-
-<h4>New school - The Rosyln approach</h4>
-
-<p>An alternative is to use the compiler-as-a-service features of <a href="http://msdn.microsoft.com/en-gb/vstudio/roslyn.aspx">Roslyn</a>.</p>
-
-<p>Can we upload a modified <em>SomeGenerator.cs</em> and get it to reference the deployed assemblies and thereby avoid dll hell? With Roslyn we can do this.</p>
-
-<p>If the compilation fails, we can immediately inform the user that the file is not compatible. If it succeeds, we can use it in lieu of the version that was originally deployed.</p>
-
-<p>Also, you do <strong>not</strong> need separate assemblies for the plug-ins. Your production code contains, within it somewhere a class named <code>SomeGenerator</code>. At runtime, we are going to create an in-memory assembly which contains only a single class (still named <code>SomeGenerator</code>), but which can nevertheless reference any other class available to the original implementation. Then we will get the dependency injection container to &#8216;replace&#8217; the old generator with the new one.</p>
-
-<h2>The plan</h2>
-
-<ul>
-<li>Build an ASP.NET MVC 5 web application. It will use an instance of <code>HelloWorldGenerator</code> to generate some output. (This is the <em>original implementation</em>).</li>
-<li>Allow a replacement for the <code>HelloWorldGenerator</code> class to be uploaded into the application as raw C# code. (This is the <em>plug-in implementation</em>.)</li>
-<li>Store the C# code in a database. If the application is restarted, the plug-in code will be reloaded.</li>
-<li>When the output is next requested, compile the new C# class. Any dependencies will be instantiated by the IoC container. If there are any compilation errors, these will be displayed.</li>
-<li>Show that the plug-in class is now being used and the output has changed. The originally shipped <code>HelloWorldGenerator</code> class has been replaced by our plug-in.</li>
-<li>Delete the plug-in from the table and show the output has reverted to the default (the originally implementation code).</li>
-</ul>
-
-
-<p>Over next few posts I&#8217;ll guide you through building the application and demonstrate the runtime replacement of the generator class.</p>
-
-<p>See <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/">Part 2</a> for screen shots of the working application and an overview of the basic project set up.</p>
 </div>
   
   

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: neustar | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/neustar/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-02-09T12:46:43+00:00</updated>
+  <updated>2016-03-04T18:17:32+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -37,7 +37,7 @@
 
 <h2>The Performance Graphs</h2>
 
-<p>{% img /images/blog/load-testing/load-testing-006.png %}</p>
+<p><img src="/images/blog/load-testing/load-testing-006.png"></p>
 
 <p>The above graph shows the basic information about the test. We can see there were 649 transactions (the Selenium script was run 649 times) and there were 17 errors.</p>
 
@@ -47,13 +47,13 @@
 
 <p>Here we see information pertaining to the script we chose to run. Had we run multiple different scripts, we would be able to isolate each one.</p>
 
-<p>{% img /images/blog/load-testing/load-testing-009.png %}</p>
+<p><img src="/images/blog/load-testing/load-testing-009.png"></p>
 
 <p>It is clear that the transaction time rises quite slowly with the load until about 12:17 when there is a jump. More on that later.</p>
 
 <p>First, I have removed the plot of the total transaction time, so that we can see more detail from the remaining steps. Two things seem to be clear: the response time for each individual step does not seem to be much affected by the load, but the login step rises gradually.</p>
 
-<p>{% img /images/blog/load-testing/load-testing-010.png %}</p>
+<p><img src="/images/blog/load-testing/load-testing-010.png"></p>
 
 <p>Now back to the spike at 12:17, if you look at the transaction data more closely (not shown here but available on the <a href="https://load.wpm.neustar.biz/load/test/share/e0f547d711624168bc7fa0a69ddd8283">NeuStar results page</a>, it looks like several transactions finished at the same time and that the jump coincides with several simultaneous logins.</p>
 
@@ -63,15 +63,15 @@
 
 <p>Lets look more closely at the errors.</p>
 
-<p>{% img /images/blog/load-testing/load-testing-007.png %}</p>
+<p><img src="/images/blog/load-testing/load-testing-007.png"></p>
 
 <p>The first type of error we can see from the screen-shot occurred at the login page. This error happened 6 times and was very similar to another error which occurred once. In fact, all 6 of these errors happened at the very end of the test. As such, they can be ignored, because it is likely that the load test was scaling down and interrupting sessions at this point.</p>
 
-<p>{% img /images/blog/load-testing/load-testing-008.png %}</p>
+<p><img src="/images/blog/load-testing/load-testing-008.png"></p>
 
 <p>One of the very nice features of NeuStar's load testing solution is that you not only get a screenshot, but also a video which shows you exactly what the user experienced when an error occurs. By clicking on the second error, it looks like there may be a problem  when the system is under load. There were 6 errors and it is clear in the video that the errors occur when attempting to navigate away from the <em>Scheduler Event</em> view to the <em>My Details</em> view. The screen-shot gives us some useful information. DevExpress? Any ideas?</p>
 
-<p>{% img /images/blog/load-testing/load-testing-011.jpg %}</p>
+<p><img src="/images/blog/load-testing/load-testing-011.jpg"></p>
 
 <p>There are a couple of other errors, but I think these are most likely a result of problems with the Selenium script rather than XAF. The AJAX update panels make it quite hard to detect when the page is fully ready and although we try to accommodate this with <code>selenium.waitForCondition()</code> my feeling is that the <code>click()</code> occurred before everything was properly wired up.</p>
 
@@ -135,7 +135,7 @@
 
 <p>From the script validation screen, click on <em>Schedule a load test with this script</em>. The defaults are good, but you can specify in detail how to run your load test. For instance, you can coordinate multiple Selenium scripts to simulate different types of activity on your site.</p>
 
-<p>{% img /images/blog/load-testing/load-testing-005.png %}</p>
+<p><img src="/images/blog/load-testing/load-testing-005.png"></p>
 
 <p>Notice that the load test cost for 25 users for an hour will be only $3.75.</p>
 
@@ -171,7 +171,7 @@
 
 <p>Now change the <code>targetHost</code> variable near the top of the file to point to the location of your MainDemo installation. You can then validate the script. This will actually run through the Selenium test on a newly provisioned Amazon instance to ensure that it passes.</p>
 
-<p>{% img /images/blog/load-testing/load-testing-004.png %}</p>
+<p><img src="/images/blog/load-testing/load-testing-004.png"></p>
 
 <p>If you get a green icon, you can proceed with setting up a load test, otherwise you can see what went wrong in a video of the user session.</p>
 
@@ -214,19 +214,29 @@
 
 <p>The sample script I have written assumes the MainDemo is running with <em>Horizontal Navigation</em> rather than vertical. You can modify the script to add support for vertical navigation or you can change Global.asax.cs Application_Start as follows:</p>
 
-<p>{% codeblock lang:diff %}
-protected void Application_Start(object sender, EventArgs e)
-{</p>
-
-<pre><code>RenderHelper.RenderMode = DevExpress.Web.ASPxClasses.ControlRenderMode.Lightweight;
-ASPxWebControl.CallbackError += new EventHandler(Application_Error);
-</code></pre>
-
-<ul>
-<li> // Add the following line to default to horizontal layout</li>
-<li> WebWindowTemplateHttpHandler.PreferredApplicationWindowTemplateType = DevExpress.ExpressApp.Web.Templates.TemplateType.Horizontal;
-}
-{% endcodeblock %}</li>
+<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>protected void Application_Start(object sender, EventArgs e)
+</span><span class='line'>{&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;RenderHelper.RenderMode = DevExpress.Web.ASPxClasses.ControlRenderMode.Lightweight;
+</span><span class='line'>ASPxWebControl.CallbackError += new EventHandler(Application_Error);
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;ul&gt;
+</span><span class='line'>&lt;li&gt; // Add the following line to default to horizontal layout&lt;/li&gt;
+</span><span class='line'>&lt;li&gt; WebWindowTemplateHttpHandler.PreferredApplicationWindowTemplateType = DevExpress.ExpressApp.Web.Templates.TemplateType.Horizontal;
+</span><span class='line'>}
+</span></code></pre></td></tr></table></div></figure></notextile></div></li>
 </ul>
 
 
@@ -238,150 +248,296 @@ ASPxWebControl.CallbackError += new EventHandler(Application_Error);
 
 <p>Create a \scripts subdirectory and populate it with the following code:</p>
 
-<p>{% codeblock MainDemo_CycleThroughTabs.js lang:js %}</p>
-
-<p>/<em> global test </em>/</p>
-
-<p>// Settings for Neustar:
-// replace the following with the public address of the application server,
-var targetHost = "http://zerosharp-maindemo.elasticbeanstalk.com/";
-var virtualShare = "MainDemo.Web_deploy";</p>
-
-<p>// Settings for debug webserver:
-// (local script validator doesn't always work against localhost,
-// so we use the excellent localtest.me instead.)
-//var targetHost = "http://localtest.me:58404";
-//var virtualShare = "";</p>
-
-<p>// Settings for the build server or IIS:
-//var targetHost = "http://localtest.me/";
-//var virtualShare = "MainDemo.Web";</p>
-
-<p>// Test parameters
-var thinkTimeInSeconds = 3;
-var timeout = 60000;
-var step = 0;</p>
-
-<p>// You an optionally set the simulated bandwidth for the script
-// (max of 100KB/sec). A value of -1 means do not limit.
-// E.g.,
-// var bandwidthLimit = 50 * 1024 * 8; // 50KB/sec
-var bandwidthLimit = -1;</p>
-
-<p>var driver = test.openBrowser();
-var selenium = driver.getSelenium();</p>
-
-<p>// Support functions
-function think() {</p>
-
-<pre><code>if (thinkTimeInSeconds &gt; 0) {
-    if (!test.isValidation()) {
-        test.pause(thinkTimeInSeconds * 1000);
-    }
-}
-</code></pre>
-
-<p>}</p>
-
-<p>function waitForCallbacks() {</p>
-
-<pre><code>selenium.waitForCondition("(typeof selenium.browserbot.getUserWindow().xafHasPendingCallbacks === 'function') &amp;&amp; (selenium.browserbot.getUserWindow().xafHasPendingCallbacks() === false);", timeout);
-</code></pre>
-
-<p>}</p>
-
-<p>function stepLogin(username) {</p>
-
-<pre><code>step = step + 1;
-test.beginStep("Step " + step.toString() + " - Login");
-selenium.open(targetHost + virtualShare + "/Default.aspx");
-think();
-selenium.type("xpath=//input[contains(@id,'_xaf_dviUserName_Edit_I')]", username);
-selenium.type("xpath=//input[contains(@id,'_xaf_dviPassword_Edit_I')]", "");
-selenium.click("Logon_PopupActions_Menu_DXI0_T");
-selenium.waitForPageToLoad(timeout);
-waitForCallbacks();
-selenium.assertElementPresent("Horizontal_VCC_VSL");
-selenium.waitForText("Horizontal_VCC_VSL", "Contact");
-test.endStep();
-think();
-</code></pre>
-
-<p>}</p>
-
-<p>function stepLogoff() {</p>
-
-<pre><code>var expectedSubstring;
-step = step + 1;
-test.beginStep("Step " + step.toString() + " - Logoff");
-selenium.click("//li[@class='dxm-item']/div[@class='dxm-content dxm-hasText']//a[@class='dx dxalink' and text()='Log Off']/..");
-selenium.waitForPageToLoad(timeout);
-expectedSubstring = "Logout.html";
-test.endStep();
-</code></pre>
-
-<p>}</p>
-
-<p>function stepNavigateToTab(maintabCaption, tabCaption, viewCaption) {</p>
-
-<pre><code>// viewCaption is optional
-viewCaption = (typeof viewCaption === "undefined") ? tabCaption : viewCaption;
-step = step + 1;
-test.beginStep("Step " + step.toString() + " - " + tabCaption);
-selenium.waitForElementPresent("//td[@class='dxtc' and text()='" + maintabCaption + "']");
-if (selenium.isVisible("//td[@class='dxtc' and text()='" + maintabCaption + "']")) {
-    selenium.click("//td[@class='dxtc' and text()='" + maintabCaption + "']");
-}
-selenium.waitForElementPresent("//div[@class='dxm-content dxm-hasText' and starts-with(@id, 'Horizontal_NTAC_PC_M')]//a[@class='dx dxalink' and contains(text(), '" + tabCaption + "')]/..");
-selenium.click("//div[@class='dxm-content dxm-hasText' and starts-with(@id, 'Horizontal_NTAC_PC_M')]//a[@class='dx dxalink' and contains(text(), '" + tabCaption + "')]/..");
-waitForCallbacks();
-selenium.assertElementPresent("Horizontal_VCC_VSL");
-selenium.assertText("Horizontal_VCC_VSL", viewCaption);
-test.endStep();
-think();
-</code></pre>
-
-<p>}</p>
-
-<p>function initializetest() {</p>
-
-<pre><code>selenium.setTimeout(timeout);
-if (bandwidthLimit &gt; 0) {
-    test.setSimulatedBps(bandwidthLimit);
-}
-</code></pre>
-
-<p>}</p>
-
-<p>(function main() {</p>
-
-<pre><code>initializetest();
-
-test.beginTransaction();
-
-stepLogin("Sam");
-//stepNavigateToTab("Default", "Contact");
-stepNavigateToTab("Default", "Task");
-stepNavigateToTab("Default", "Department");
-stepNavigateToTab("Default", "Scheduler Event");
-stepNavigateToTab("Default", "My Details", "User - Sam");
-stepNavigateToTab("Default", "Note");
-stepNavigateToTab("Default", "Payment");
-stepNavigateToTab("Default", "Position");
-stepNavigateToTab("Default", "Resume");
-stepNavigateToTab("Default", "Role");
-stepNavigateToTab("Default", "User");
-stepNavigateToTab("Reports", "Analysis");
-stepNavigateToTab("Reports", "Reports");
-stepLogoff();
-test.closeBrowser();
-
-test.endTransaction();
-</code></pre>
-
-<p>}());</p>
-
-<p>{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>MainDemo_CycleThroughTabs.js  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+<span class='line-number'>142</span>
+<span class='line-number'>143</span>
+<span class='line-number'>144</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="err">/&lt;em&gt; global test &lt;/em&gt;/&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="c1">// Settings for Neustar:</span>
+</span><span class='line'><span class="c1">// replace the following with the public address of the application server,</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">targetHost</span> <span class="o">=</span> <span class="s2">&quot;http://zerosharp-maindemo.elasticbeanstalk.com/&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">virtualShare</span> <span class="o">=</span> <span class="s2">&quot;MainDemo.Web_deploy&quot;</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="c1">// Settings for debug webserver:</span>
+</span><span class='line'><span class="c1">// (local script validator doesn&#39;t always work against localhost,</span>
+</span><span class='line'><span class="c1">// so we use the excellent localtest.me instead.)</span>
+</span><span class='line'><span class="c1">//var targetHost = &quot;http://localtest.me:58404&quot;;</span>
+</span><span class='line'><span class="c1">//var virtualShare = &quot;&quot;;&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="c1">// Settings for the build server or IIS:</span>
+</span><span class='line'><span class="c1">//var targetHost = &quot;http://localtest.me/&quot;;</span>
+</span><span class='line'><span class="c1">//var virtualShare = &quot;MainDemo.Web&quot;;&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="c1">// Test parameters</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">thinkTimeInSeconds</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">timeout</span> <span class="o">=</span> <span class="mi">60000</span><span class="p">;</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">step</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="c1">// You an optionally set the simulated bandwidth for the script</span>
+</span><span class='line'><span class="c1">// (max of 100KB/sec). A value of -1 means do not limit.</span>
+</span><span class='line'><span class="c1">// E.g.,</span>
+</span><span class='line'><span class="c1">// var bandwidthLimit = 50 * 1024 * 8; // 50KB/sec</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">bandwidthLimit</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">driver</span> <span class="o">=</span> <span class="nx">test</span><span class="p">.</span><span class="nx">openBrowser</span><span class="p">();</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">selenium</span> <span class="o">=</span> <span class="nx">driver</span><span class="p">.</span><span class="nx">getSelenium</span><span class="p">();</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="c1">// Support functions</span>
+</span><span class='line'><span class="kd">function</span> <span class="nx">think</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="k">if</span> <span class="p">(</span><span class="nx">thinkTimeInSeconds</span> <span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">test</span><span class="p">.</span><span class="nx">isValidation</span><span class="p">())</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">test</span><span class="p">.</span><span class="nx">pause</span><span class="p">(</span><span class="nx">thinkTimeInSeconds</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">waitForCallbacks</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForCondition</span><span class="p">(</span><span class="s2">&quot;(typeof selenium.browserbot.getUserWindow().xafHasPendingCallbacks === &#39;function&#39;) &amp;amp;&amp;amp; (selenium.browserbot.getUserWindow().xafHasPendingCallbacks() === false);&quot;</span><span class="p">,</span> <span class="nx">timeout</span><span class="p">);</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">stepLogin</span><span class="p">(</span><span class="nx">username</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">step</span> <span class="o">=</span> <span class="nx">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'><span class="nx">test</span><span class="p">.</span><span class="nx">beginStep</span><span class="p">(</span><span class="s2">&quot;Step &quot;</span> <span class="o">+</span> <span class="nx">step</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; - Login&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">selenium</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="nx">targetHost</span> <span class="o">+</span> <span class="nx">virtualShare</span> <span class="o">+</span> <span class="s2">&quot;/Default.aspx&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">think</span><span class="p">();</span>
+</span><span class='line'><span class="nx">selenium</span><span class="p">.</span><span class="nx">type</span><span class="p">(</span><span class="s2">&quot;xpath=//input[contains(@id,&#39;_xaf_dviUserName_Edit_I&#39;)]&quot;</span><span class="p">,</span> <span class="nx">username</span><span class="p">);</span>
+</span><span class='line'><span class="nx">selenium</span><span class="p">.</span><span class="nx">type</span><span class="p">(</span><span class="s2">&quot;xpath=//input[contains(@id,&#39;_xaf_dviPassword_Edit_I&#39;)]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">selenium</span><span class="p">.</span><span class="nx">click</span><span class="p">(</span><span class="s2">&quot;Logon_PopupActions_Menu_DXI0_T&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForPageToLoad</span><span class="p">(</span><span class="nx">timeout</span><span class="p">);</span>
+</span><span class='line'><span class="nx">waitForCallbacks</span><span class="p">();</span>
+</span><span class='line'><span class="nx">selenium</span><span class="p">.</span><span class="nx">assertElementPresent</span><span class="p">(</span><span class="s2">&quot;Horizontal_VCC_VSL&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForText</span><span class="p">(</span><span class="s2">&quot;Horizontal_VCC_VSL&quot;</span><span class="p">,</span> <span class="s2">&quot;Contact&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">test</span><span class="p">.</span><span class="nx">endStep</span><span class="p">();</span>
+</span><span class='line'><span class="nx">think</span><span class="p">();</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">stepLogoff</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="kd">var</span> <span class="nx">expectedSubstring</span><span class="p">;</span>
+</span><span class='line'><span class="nx">step</span> <span class="o">=</span> <span class="nx">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'><span class="nx">test</span><span class="p">.</span><span class="nx">beginStep</span><span class="p">(</span><span class="s2">&quot;Step &quot;</span> <span class="o">+</span> <span class="nx">step</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; - Logoff&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">selenium</span><span class="p">.</span><span class="nx">click</span><span class="p">(</span><span class="s2">&quot;//li[@class=&#39;dxm-item&#39;]/div[@class=&#39;dxm-content dxm-hasText&#39;]//a[@class=&#39;dx dxalink&#39; and text()=&#39;Log Off&#39;]/..&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForPageToLoad</span><span class="p">(</span><span class="nx">timeout</span><span class="p">);</span>
+</span><span class='line'><span class="nx">expectedSubstring</span> <span class="o">=</span> <span class="s2">&quot;Logout.html&quot;</span><span class="p">;</span>
+</span><span class='line'><span class="nx">test</span><span class="p">.</span><span class="nx">endStep</span><span class="p">();</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="nx">maintabCaption</span><span class="p">,</span> <span class="nx">tabCaption</span><span class="p">,</span> <span class="nx">viewCaption</span><span class="p">)</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="c1">// viewCaption is optional</span>
+</span><span class='line'><span class="nx">viewCaption</span> <span class="o">=</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">viewCaption</span> <span class="o">===</span> <span class="s2">&quot;undefined&quot;</span><span class="p">)</span> <span class="o">?</span> <span class="nx">tabCaption</span> <span class="o">:</span> <span class="nx">viewCaption</span><span class="p">;</span>
+</span><span class='line'><span class="nx">step</span> <span class="o">=</span> <span class="nx">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+</span><span class='line'><span class="nx">test</span><span class="p">.</span><span class="nx">beginStep</span><span class="p">(</span><span class="s2">&quot;Step &quot;</span> <span class="o">+</span> <span class="nx">step</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; - &quot;</span> <span class="o">+</span> <span class="nx">tabCaption</span><span class="p">);</span>
+</span><span class='line'><span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForElementPresent</span><span class="p">(</span><span class="s2">&quot;//td[@class=&#39;dxtc&#39; and text()=&#39;&quot;</span> <span class="o">+</span> <span class="nx">maintabCaption</span> <span class="o">+</span> <span class="s2">&quot;&#39;]&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">selenium</span><span class="p">.</span><span class="nx">isVisible</span><span class="p">(</span><span class="s2">&quot;//td[@class=&#39;dxtc&#39; and text()=&#39;&quot;</span> <span class="o">+</span> <span class="nx">maintabCaption</span> <span class="o">+</span> <span class="s2">&quot;&#39;]&quot;</span><span class="p">))</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">selenium</span><span class="p">.</span><span class="nx">click</span><span class="p">(</span><span class="s2">&quot;//td[@class=&#39;dxtc&#39; and text()=&#39;&quot;</span> <span class="o">+</span> <span class="nx">maintabCaption</span> <span class="o">+</span> <span class="s2">&quot;&#39;]&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="nx">selenium</span><span class="p">.</span><span class="nx">waitForElementPresent</span><span class="p">(</span><span class="s2">&quot;//div[@class=&#39;dxm-content dxm-hasText&#39; and starts-with(@id, &#39;Horizontal_NTAC_PC_M&#39;)]//a[@class=&#39;dx dxalink&#39; and contains(text(), &#39;&quot;</span> <span class="o">+</span> <span class="nx">tabCaption</span> <span class="o">+</span> <span class="s2">&quot;&#39;)]/..&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">selenium</span><span class="p">.</span><span class="nx">click</span><span class="p">(</span><span class="s2">&quot;//div[@class=&#39;dxm-content dxm-hasText&#39; and starts-with(@id, &#39;Horizontal_NTAC_PC_M&#39;)]//a[@class=&#39;dx dxalink&#39; and contains(text(), &#39;&quot;</span> <span class="o">+</span> <span class="nx">tabCaption</span> <span class="o">+</span> <span class="s2">&quot;&#39;)]/..&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">waitForCallbacks</span><span class="p">();</span>
+</span><span class='line'><span class="nx">selenium</span><span class="p">.</span><span class="nx">assertElementPresent</span><span class="p">(</span><span class="s2">&quot;Horizontal_VCC_VSL&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">selenium</span><span class="p">.</span><span class="nx">assertText</span><span class="p">(</span><span class="s2">&quot;Horizontal_VCC_VSL&quot;</span><span class="p">,</span> <span class="nx">viewCaption</span><span class="p">);</span>
+</span><span class='line'><span class="nx">test</span><span class="p">.</span><span class="nx">endStep</span><span class="p">();</span>
+</span><span class='line'><span class="nx">think</span><span class="p">();</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="kd">function</span> <span class="nx">initializetest</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">selenium</span><span class="p">.</span><span class="nx">setTimeout</span><span class="p">(</span><span class="nx">timeout</span><span class="p">);</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">bandwidthLimit</span> <span class="o">&amp;</span><span class="nx">gt</span><span class="p">;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">test</span><span class="p">.</span><span class="nx">setSimulatedBps</span><span class="p">(</span><span class="nx">bandwidthLimit</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">(</span><span class="kd">function</span> <span class="nx">main</span><span class="p">()</span> <span class="p">{</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">pre</span><span class="o">&gt;&lt;</span><span class="nx">code</span><span class="o">&gt;</span><span class="nx">initializetest</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">test</span><span class="p">.</span><span class="nx">beginTransaction</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">stepLogin</span><span class="p">(</span><span class="s2">&quot;Sam&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="c1">//stepNavigateToTab(&quot;Default&quot;, &quot;Contact&quot;);</span>
+</span><span class='line'><span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;Task&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;Department&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;Scheduler Event&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;My Details&quot;</span><span class="p">,</span> <span class="s2">&quot;User - Sam&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;Note&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;Payment&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;Position&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;Resume&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;Role&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Default&quot;</span><span class="p">,</span> <span class="s2">&quot;User&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Reports&quot;</span><span class="p">,</span> <span class="s2">&quot;Analysis&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">stepNavigateToTab</span><span class="p">(</span><span class="s2">&quot;Reports&quot;</span><span class="p">,</span> <span class="s2">&quot;Reports&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="nx">stepLogoff</span><span class="p">();</span>
+</span><span class='line'><span class="nx">test</span><span class="p">.</span><span class="nx">closeBrowser</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">test</span><span class="p">.</span><span class="nx">endTransaction</span><span class="p">();</span>
+</span><span class='line'><span class="o">&lt;</span><span class="err">/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span><span class="p">}());</span><span class="o">&lt;</span><span class="err">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="o">&lt;</span><span class="nx">p</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <h2>Neustar</h2>
 
@@ -412,9 +568,10 @@ test.endTransaction();
 
 <p>You need to modify your <code>C:\Users\&lt;Username&gt;\.wpm\config.properties</code> file as follows:</p>
 
-<p>{% codeblock config.properties %}
-FF=C:\Program Files (x86)\Mozilla Firefox\firefox.exe
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>config.properties </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='properties'><span class='line'><span class="na">FF</span><span class="o">=</span><span class="s">C:\Program Files (x86)\Mozilla Firefox\firefox.exe</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Also, for some reason, I could not get the local script validator to run against localhost. I kept getting the error:</p>
 
@@ -463,11 +620,11 @@ ttp://localhost:58404/Default.aspx' (CycleThroughTabs.js#50)
 </ul>
 
 
-<p>{% img /images/blog/load-testing/load-testing-001.png %}</p>
+<p><img src="/images/blog/load-testing/load-testing-001.png"></p>
 
 <p>For the load test, it is also important to disable the automatic health checks performed by the load balancer.</p>
 
-<p>{% img /images/blog/load-testing/load-testing-002.png %}</p>
+<p><img src="/images/blog/load-testing/load-testing-002.png"></p>
 
 <p>The reason for this is that we are trying to determine the breaking point of our application. If the elastic load balancer detects that a system is struggling, it might automatically flag it as unhealthy and replace it with a newly launched instance. While this behaviour might be desirable for a production system, it doesn't make sense for a load test.</p>
 

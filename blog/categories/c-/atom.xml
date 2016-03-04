@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c# | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/c-/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-02-09T12:46:43+00:00</updated>
+  <updated>2016-03-04T18:17:32+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -28,15 +28,15 @@
 
 <p>First I modified the edit mode of the Tasks grid to <code>Batch</code> via the model.</p>
 
-<p>{% img /images/blog/devexpress-15-2-review-001.png %}</p>
+<p><img src="/images/blog/devexpress-15-2-review-001.png"></p>
 
 <p>Then I added a new <code>RuleRequiredField</code> validation rule via the model.</p>
 
-<p>{% img /images/blog/devexpress-15-2-review-002.png %}</p>
+<p><img src="/images/blog/devexpress-15-2-review-002.png"></p>
 
 <p>I started up the MainDemo application and navigated to the Tasks view and tried to delete the subject of multiple rows at the same time.</p>
 
-<p>{% img /images/blog/devexpress-15-2-review-003.png %}</p>
+<p><img src="/images/blog/devexpress-15-2-review-003.png"></p>
 
 <p>I never even got to press Save because of another new 15.2 feature: <a href="https://community.devexpress.com/blogs/eaf/archive/2015/11/24/xaf-validation-module-enhancements-for-windows-and-the-web-coming-soon-in-v15-2.aspx">inplace validation</a>! The rules are being validated <em>without</em> a round trip to the server!</p>
 
@@ -66,7 +66,7 @@ SkipNullOrEmptyValues = false)]
 
 <p>Now we go back to the list view for Task and try to set multiple subjects to empty.</p>
 
-<p>{% img /images/blog/devexpress-15-2-review-004.png %}</p>
+<p><img src="/images/blog/devexpress-15-2-review-004.png"></p>
 
 <p>Fantastic! This time the broken rules appear for each row and it is quite clear which message belongs to which object.</p>
 
@@ -99,11 +99,11 @@ Today I'll cover the new XML serialisation in the report designer. Tomorrow's po
 
 <h2>Reports</h2>
 
-<p>{% pullquote %}
+<p><span class='pullquote-right' data-pullquote='I&#8217;m happy to report that v1 reports are still very much present.'>
 Reporting is definitely one of the areas where XAF has progressed the most in recent versions. There is now an in-browser report designer (since 14.2) and an alternative implementation of the reports (reports v2, since 13.2).</p>
 
-<p>In this release, I was a little worried that the support for Reports v1 would be deprecated, since our production system has over 100 custom reports and we have not yet looked for an easy way to migrate these to v2. {"I'm happy to report that v1 reports are still very much present."}
-{% endpullquote %}</p>
+<p>In this release, I was a little worried that the support for Reports v1 would be deprecated, since our production system has over 100 custom reports and we have not yet looked for an easy way to migrate these to v2. I'm happy to report that v1 reports are still very much present.
+</span></p>
 
 <p>However there are also a number of new features in v2 Reports, not least of which is the ability to store the report's layout in XML. There's currently not a lot of documentation about the XML serialization, so let's dig in and see what we can discover.</p>
 
@@ -137,7 +137,9 @@ report.SaveLayout(@"C:\Temp\ContactsReport.repx");
 
 <p>The contents of the XML file is displayed below and is 77 lines long.</p>
 
-<p>{% gist f085bf10dd65ace5d229 ContactReport.xml %}</p>
+<p><div><script src='https://gist.github.com/f085bf10dd65ace5d229.js?file=ContactReport.xml'></script>
+<noscript><pre><code></code></pre></noscript></div>
+</p>
 
 <p>By comparison, the <a href="https://gist.github.com/shamp00/f085bf10dd65ace5d229#file-contactsreport-repx">ContactReport.repx</a> is 408 lines long and much harder to read.</p>
 
@@ -192,21 +194,21 @@ this.reportsModuleV2.ReportStoreMode = DevExpress.ExpressApp.ReportsV2.ReportSto
     <link href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3/"/>
     <updated>2015-09-16T09:39:00+01:00</updated>
     <id>http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3</id>
-    <content type="html"><![CDATA[<p>{% pullquote %}
+    <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='I&#8217;m happy to report there is a considerable improvement under load in version 15.1.'>
 This is the third part of a <a href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2">series</a> about migrating a large application from XAF 12.1 to XAF 15.1. In this part I will compare the results of a simple stress test between the versions.</p>
 
-<p>I have described in previous posts how to <a href="/load-testing-xaf-overview/">stress test XAF applications</a>. One of our most basic tests is to simulate 25 users cycling through all the navigation tabs for an hour. {"I'm happy to report there is a considerable improvement under load in version 15.1."}</p>
+<p>I have described in previous posts how to <a href="/load-testing-xaf-overview/">stress test XAF applications</a>. One of our most basic tests is to simulate 25 users cycling through all the navigation tabs for an hour. I'm happy to report there is a considerable improvement under load in version 15.1.</p>
 
 <p>(Note that we purposefully stress test against a single web application so that we can compare apples with apples. In production we have multiple instances load-balanced.)</p>
 
 <p>Here is an interactive summary of the 15.1 results:
-{% endpullquote %}</p>
+</span></p>
 
 <p>Here is version 15.1. There were zero errors and 382 completed scripts.</p>
 
 <p>By comparison, the same test against DevExpress 12.1 yielded only 258 completions. So 15.1 shows a 48% performance improvement over 12.1.</p>
 
-<p>{% iframe cmd https://load.wpm.neustar.biz/load/test/share/e4c5e109f8f04ceebd72cdb5c93eb1c2 1024 512 %}</p>
+<p><iframe class="cmd" src="https://load.wpm.neustar.biz/load/test/share/e4c5e109f8f04ceebd72cdb5c93eb1c2" width="1024" height="512"></p>
 ]]></content>
   </entry>
   
@@ -231,9 +233,9 @@ This is the third part of a <a href="/migrating-a-large-web-application-from-xaf
 
 <p>But there were several situations where we need the validator where we don't have an <code>IObjectSpace</code>. For instance we sometimes need to validate from within <a href="https://documentation.devexpress.com/#eXpressAppFramework/clsDevExpressPersistentBaseActionAttributetopic">method actions</a> (decorated with the <code>ActionAttribute</code>). For performance reasons, we pass criteria to our middleware and it uses a <code>UnitOfWork</code> to run the method on each object. So in this case, there was no <code>IObjectSpace</code> to pass to the XAF <code>Validator</code>.</p>
 
-<p>{% pullquote %}
-Here I had a refactoring dilemma to solve. Either I need to rewrite all of the affected rules so that they no longer make use of the <code>IObjectSpace</code>. For instance, I could use <code>RuleFromBoolProperty</code> instead. In our application, this would mean rewriting about 50 rules. Or alternatively, I could go through the entire code base looking for <code>new UnitOfWork()</code> and <code>new Session()</code> and try to use an <code>IObjectSpace</code> instead. {"When writing code I often find myself having to decide between the 'quick' fix and the 'right' fix."} Here, moving to <code>IObjectSpace</code> throughout is clearly the right fix and although it would take more time to implement, the system will be more in-line with best XAF practices throughout.
-{% endpullquote %}</p>
+<p><span class='pullquote-right' data-pullquote='When writing code I often find myself having to decide between the &#8216;quick&#8217; fix and the &#8216;right&#8217; fix.'>
+Here I had a refactoring dilemma to solve. Either I need to rewrite all of the affected rules so that they no longer make use of the <code>IObjectSpace</code>. For instance, I could use <code>RuleFromBoolProperty</code> instead. In our application, this would mean rewriting about 50 rules. Or alternatively, I could go through the entire code base looking for <code>new UnitOfWork()</code> and <code>new Session()</code> and try to use an <code>IObjectSpace</code> instead. When writing code I often find myself having to decide between the 'quick' fix and the 'right' fix. Here, moving to <code>IObjectSpace</code> throughout is clearly the right fix and although it would take more time to implement, the system will be more in-line with best XAF practices throughout.
+</span></p>
 
 <p> Eventually, the refactoring was complete and all unit tests are passing. I was eager to run a multi-user load stress test against the 15.1 version to compare performance under load. I have described in previous posts how to <a href="/load-testing-xaf-overview/">stress test XAF applications</a>. I'll be sharing the results in the next post.</p>
 ]]></content>

@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="This is the final part of an ongoing series about the Serverless framework. In the previous posts, the PasswordGenerator always returned &#8216; &hellip;">
+  <meta name="description" content="I&#8217;ve been trying to get better at chess by playing on chess.com. I often analyse my games with the help of a computer to see where I made &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,104 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/a-basic-chrome-extension-analyze-your-chess-dot-com-games-on-lichess-dot-org/">A Basic Chrome Extension - Analyze Your chess.com Games on lichess.org</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-03-04T17:41:00+00:00" pubdate data-updated="true">Mar 4<span>th</span>, 2016</time>
+        
+         | <a href="/a-basic-chrome-extension-analyze-your-chess-dot-com-games-on-lichess-dot-org/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I&#8217;ve been trying to get better at chess by playing on <a href="http://www.chess.com">chess.com</a>. I often analyse my games with the help of a computer to see where I made mistakes. My favourite way of doing this is to make use of <a href="http://lichess.org">Lichess.org</a>&#8217;s import functionality. The latest version of chess.com has greatly improved its own post game analysis, but I still much prefer Lichess&#8217;s. So I would often download the finished game in pgn and upload it to Lichess.</p>
+
+<p>Somewhere along the way I came across a Chrome extension written by Allan Rempel which would do this in one step. Unfortunately it stopped working when chess.com upgraded its site and Allan does not seem to be maintaining it any longer. I decided to jump in and try to fix it and maybe add a couple of features myself.</p>
+
+<h2>The extension</h2>
+
+<p>When a chess.com game is finished, you can click on a little knight icon and jump straight to the analysis of the game in Lichess.</p>
+
+<p><img src="/images/blog/chrome-extension-chessCom.png"></p>
+
+<p>It takes a few seconds to process but then you can see all your mistakes and blunders.</p>
+
+<p><img src="/images/blog/chrome-extension-lichessOrg.png"></p>
+
+<p>You can play through the game and experiment with different variations. Chess.com&#8217;s new v3 has greatly improved its own post-game analysis but it still lacks many of the features of the Lichess one.</p>
+
+<p>Try it out! The extension is available <a href="https://chrome.google.com/webstore/detail/chesscom-v3-analysis/bhjlkimpkkgkmfjlcfngmakenalgleap">here</a>.</p>
+
+<h2>How to modify an existing extension</h2>
+
+<p>First thing was to find the code of the existing broken extension. A bit of googling lead me to:</p>
+
+<pre><code>$ cd ~/Library/Application\ Support/Google/Chrome/Default/Extensions/
+$ ls
+
+total 0
+drwx------+ 30 ra  staff  1020 29 Feb 20:39 .
+drwx------+ 66 ra  staff  2244 29 Feb 20:56 ..
+drwx------+  2 ra  staff    68 29 Feb 20:39 Temp
+drwx------+  3 ra  staff   102 14 Sep  2012 allibancfngcpjmjnnboebggipbaalhn
+drwx------+  3 ra  staff   102 28 Mar  2013 anfemphbgknehemmbbajjcmakfijiohp
+drwx------+  3 ra  staff   102 25 Oct 08:15 apdfllckaahabafndbhieahigkjlhalf
+drwx------+  3 ra  staff   102  5 Mar  2015 bepbmhgboaologfdajaanbcjmnhjmhfn
+drwx------+  3 ra  staff   102  5 Jun  2014 bfbameneiokkgbdmiekhjnmfkcnldhhm
+drwx------+  3 ra  staff   102 22 Feb 20:09 bhjlkimpkkgkmfjlcfngmakenalgleap
+drwx------+  3 ra  staff   102 24 Sep 20:33 blpcfgokakmgnkcojhhkbfbldkacnbeo
+drwx------+  3 ra  staff   102 29 Jul  2013 bmihblnpomgpjkfddepdpdafhhepdbek
+drwx------+  3 ra  staff   102 13 Sep  2012 boeajhmfdjldchidhphikilcgdacljfm
+... etc.
+</code></pre>
+
+<p>Each extension is in a not very helpfully named folder. If you open <code>chrome://extensions/</code>, you can find the id of any installed extension and work out which directory corresponds to which extension.</p>
+
+<p>So then I dug around in the folder and found <code>ext/background.js</code> where the bulk of the code lies. There is also a <code>manifest.json</code> file which is specifies various parameters such as what permissions are required and which websites will be affected by the extension. I copied all the important files into a development folder.</p>
+
+<h2>Loading the extension from the development folder.</h2>
+
+<ul>
+<li>Navigate to chrome://extensions</li>
+<li>Expand the developer dropdown menu and click &#8220;Load Unpacked Extension&#8221;</li>
+<li>Navigate to development folder</li>
+</ul>
+
+
+<p>Assuming there are no errors, the extension should load into your browser. Don&#8217;t forget to disable any conflicting versions you&#8217;ve installed from the Chrome Web Store.</p>
+
+<p><img src="/images/blog/chrome-extension-load.png"></p>
+
+<p>I used the Chrome&#8217;s built-in Developer Tools and peppered the code with <code>console.log()</code> to explore how it worked. There are plenty of good <a href="https://developer.chrome.com/extensions/tut_debugging">resources</a> on the Chrome developer site. I managed to fix the broken parts and added support for analysis from chess.com&#8217;s game archive. Then I posted the link on <a href="https://redd.it/47cdew">reddit/r/chess</a>.</p>
+
+<p>The source code for the extension is on <a href="https://github.com/ZeroSharp/Chess.com_Analysis_Chrome_extension">GitHub</a>.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -541,6 +639,8 @@ cryptojs
 
 
 <p>Mission accomplished! Notice that using a node package did not require any special steps on the AWS side. In fact we have not had to login to AWS since the very beginning when we created an IAM user for the project. And yet we&#8217;ve managed to build and deploy a cheap and scalable cloud-based service.</p>
+
+<p>The <a href="https://github.com/ZeroSharp/ServerlessPotd">source code</a> is on GitHub. Note the default <em>.gitignore</em> file skips the <em>admin.env</em> file which contains the (sensitive) AWS keys in it so don&#8217;t forget to add your own.</p>
 
 <p>That wraps up my series on building a small, but real-world Serverless application. In a future post, I&#8217;d like to look at providing a secured &#8216;generate&#8217; service to allow authorized users to get today&#8217;s password. Stay tuned.</p>
 </div>
@@ -1984,65 +2084,6 @@ Here I had a refactoring dilemma to solve. Either I need to rewrite all of the a
 </span></p>
 
 <p> Eventually, the refactoring was complete and all unit tests are passing. I was eager to run a multi-user load stress test against the 15.1 version to compare performance under load. I have described in previous posts how to <a href="/load-testing-xaf-overview/">stress test XAF applications</a>. I&#8217;ll be sharing the results in the next post.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1/">Migrating a Large Web Application From XAF 12.1 to 15.1 - Part 1</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-09-14T10:01:00+01:00" pubdate data-updated="true">Sep 14<span>th</span>, 2015</time>
-        
-         | <a href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I am the principal software architect for a treasury application in use by over 100 large multinational corporates. Upgrades are generally met with reluctance in the enterprise world and so we&#8217;ve been somewhat stuck on an old version of the expressAppFramework.</p>
-
-<p>Recently I&#8217;ve been pushing to move to the newer version and I have spent about three weeks migrating the substantial code base to XAF 15.1 and .NET 4.6.</p>
-
-<p>The steps are:</p>
-
-<ul>
-<li>Run the project converter tool.</li>
-<li>Try to compile. Identify the errors which are easily fixable (check with the &#8216;breaking changes&#8217; documents from DevExpress.)</li>
-<li>When in doubt, compare the libraries with a decompiler like .NET Reflector.</li>
-<li>Refactor where necessary (ensure you have unit tests for the behaviour you are changing).</li>
-</ul>
-
-
-<p>On this last point, my whole approach to refactoring has been shaped by Michael C. Feather&#8217;s book <a href="http://amzn.com/0131177052"><em>Working Effectively with Legacy Code</em></a>. Highly recommended for anyone maintaining complex applications regardless of whether the code is legacy or not&#8230;</p>
-
-<p>I was pleasantly surprised that I was very quickly able to get everything to compile and even run. The layout was not correct, but a lot of things worked straight away.</p>
-
-<p>I then had to spend some time restoring the customisations we&#8217;d made to the default ASP.NET layout. In XAF 12.1 these were applied directly to <em>default.aspx.cs</em> and <em>dialog.aspx.cs</em>, but in 15.1 these no longer exist. Instead, you can customise layout by providing your own alternate templates. I was expecting this to be much harder, but by <a href="https://documentation.devexpress.com/#eXpressAppFramework/CustomDocument112696">following the instructions in the documentation</a> I managed to restore our layout quite easily.</p>
-
-<p>I still had a lot of failing unit tests. One seemingly minor change to XAF validation proved to be a lot of work to fix in our code.
-Since 13.1, the XAF <code>Validator</code> class now requires an <code>IObjectSpace</code> parameter in the constructor. This was by far the biggest problem to fix and is the subject of the next blog post.</p>
 </div>
   
   

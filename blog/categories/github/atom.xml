@@ -4,7 +4,7 @@
   <title><![CDATA[Category: github | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/github/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-02-09T12:46:43+00:00</updated>
+  <updated>2016-03-04T18:17:32+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -32,7 +32,7 @@
 
 <h3>Installing Octopress</h3>
 
-<p>{% img right /images/blog/octopress_logo.png %}</p>
+<p><img class="right" src="/images/blog/octopress_logo.png"></p>
 
 <h4>Use yari instead of RVM/rbenv</h4>
 
@@ -112,27 +112,48 @@ bundle install
 
 <p>At the top of pythonexec.rb, modify the file as follows:</p>
 
-<p>{% codeblock pythonexec.rb lang:diff %}
-class RubyPython::PythonExec
-  def initialize(python_executable)</p>
-
-<pre><code>@python = python_executable || "python"
-</code></pre>
-
-<ul>
-<li> if (@python.include? 'python2.7')</li>
-<li>   @python = "python"</li>
-<li><p> end</p>
-
-<p>@python = %x(#{@python} -c "import sys; print sys.executable").chomp</p>
-
-<p>@version = run_command "import sys; print '%d.%d' % sys.version_info[:2]"</p></li>
-<li><p> @dirname = File.dirname(@python)</p></li>
-<li> @dirname = "C:/Python27"</li>
-</ul>
-
-
-<p>{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>pythonexec.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>class RubyPython::PythonExec
+</span><span class='line'>  def initialize(python_executable)&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;@python = python_executable || &quot;python&quot;
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;ul&gt;
+</span><span class='line'>&lt;li&gt; if (@python.include? &#39;python2.7&#39;)&lt;/li&gt;
+</span><span class='line'>&lt;li&gt;   @python = &quot;python&quot;&lt;/li&gt;
+</span><span class='line'>&lt;li&gt;&lt;p&gt; end&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;@python = %x(#{@python} -c &quot;import sys; print sys.executable&quot;).chomp&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;@version = run_command &quot;import sys; print &#39;%d.%d&#39; % sys.version_info[:2]&quot;&lt;/p&gt;&lt;/li&gt;
+</span><span class='line'>&lt;li&gt;&lt;p&gt; @dirname = File.dirname(@python)&lt;/p&gt;&lt;/li&gt;
+</span><span class='line'>&lt;li&gt; @dirname = &quot;C:/Python27&quot;&lt;/li&gt;
+</span><span class='line'>&lt;/ul&gt;
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 ]]></content>
   </entry>
   
@@ -141,12 +162,7 @@ class RubyPython::PythonExec
     <link href="http://ZeroSharp.github.com/setting-up-octopress-on-windows/"/>
     <updated>2012-04-06T17:11:00+01:00</updated>
     <id>http://ZeroSharp.github.com/setting-up-octopress-on-windows</id>
-    <content type="html"><![CDATA[<p>{% blockquote January 2013 update: http://blog.zerosharp.com/setting-up-octopress-on-windows-again Setting up Octopress on Windows again %}</p>
-
-<div STYLE="color:red">There is a more recent version of this post which covers ruby 1.9.3, python 2.7.3.</div>
-
-
-<p>{% endblockquote %}</p>
+    <content type="html"><![CDATA[<p><blockquote><p></p></p><p><div STYLE="color:red">There is a more recent version of this post which covers ruby 1.9.3, python 2.7.3.</div></p><p><br/><p></p><footer><strong>January 2013 update:</strong> <cite><a href='http://blog.zerosharp.com/setting-up-octopress-on-windows-again'>Setting Up Octopress on Windows Again</a></cite></footer></blockquote></p>
 
 <div><BR></div>
 
@@ -168,7 +184,7 @@ class RubyPython::PythonExec
 
 <h3>Installing Octopress</h3>
 
-<p>{% img right /images/blog/octopress_logo.png %}</p>
+<p><img class="right" src="/images/blog/octopress_logo.png"></p>
 
 <h4>Use yari instead of RVM/rbenv</h4>
 
@@ -248,27 +264,46 @@ bundle install
 
 <p>At the top of pythonexec.rb, modify the file as follows:</p>
 
-<p>{% codeblock pythonexec.rb lang:diff %}
-class RubyPython::PythonExec
-  # Based on the name of or path to the \Python executable provided, will
-  # determine:
-  #
-  # * The full path to the \Python executable.
-  # * The version of \Python being run.
-  # * The system prefix.
-  # * The main loadable \Python library for this version.
-  def initialize(python_executable)</p>
-
-<pre><code>@python = python_executable || "python"
-</code></pre>
-
-<ul>
-<li> if (@python.include? 'python2.7')</li>
-<li>   @python = "python"</li>
-<li><p> end</p>
-
-<p>@python = %x(#{@python} -c "import sys; print sys.executable").chomp
-{% endcodeblock %}</p></li>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>pythonexec.rb  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='diff'><span class='line'>class RubyPython::PythonExec
+</span><span class='line'>  # Based on the name of or path to the \Python executable provided, will
+</span><span class='line'>  # determine:
+</span><span class='line'>  #
+</span><span class='line'>  # * The full path to the \Python executable.
+</span><span class='line'>  # * The version of \Python being run.
+</span><span class='line'>  # * The system prefix.
+</span><span class='line'>  # * The main loadable \Python library for this version.
+</span><span class='line'>  def initialize(python_executable)&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;@python = python_executable || &quot;python&quot;
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;ul&gt;
+</span><span class='line'>&lt;li&gt; if (@python.include? &#39;python2.7&#39;)&lt;/li&gt;
+</span><span class='line'>&lt;li&gt;   @python = &quot;python&quot;&lt;/li&gt;
+</span><span class='line'>&lt;li&gt;&lt;p&gt; end&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;@python = %x(#{@python} -c &quot;import sys; print sys.executable&quot;).chomp
+</span></code></pre></td></tr></table></div></figure></notextile></div></p></li>
 </ul>
 
 

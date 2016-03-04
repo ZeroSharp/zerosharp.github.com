@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-02-09T12:46:34+00:00</updated>
+  <updated>2016-03-04T18:17:32+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,75 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[A basic Chrome extension - analyze your chess.com games on lichess.org]]></title>
+    <link href="http://ZeroSharp.github.com/a-basic-chrome-extension-analyze-your-chess-dot-com-games-on-lichess-dot-org/"/>
+    <updated>2016-03-04T17:41:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/a-basic-chrome-extension-analyze-your-chess-dot-com-games-on-lichess-dot-org</id>
+    <content type="html"><![CDATA[<p>I&#8217;ve been trying to get better at chess by playing on <a href="http://www.chess.com">chess.com</a>. I often analyse my games with the help of a computer to see where I made mistakes. My favourite way of doing this is to make use of <a href="http://lichess.org">Lichess.org</a>&#8217;s import functionality. The latest version of chess.com has greatly improved its own post game analysis, but I still much prefer Lichess&#8217;s. So I would often download the finished game in pgn and upload it to Lichess.</p>
+
+<p>Somewhere along the way I came across a Chrome extension written by Allan Rempel which would do this in one step. Unfortunately it stopped working when chess.com upgraded its site and Allan does not seem to be maintaining it any longer. I decided to jump in and try to fix it and maybe add a couple of features myself.</p>
+
+<h2>The extension</h2>
+
+<p>When a chess.com game is finished, you can click on a little knight icon and jump straight to the analysis of the game in Lichess.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/chrome-extension-chessCom.png"></p>
+
+<p>It takes a few seconds to process but then you can see all your mistakes and blunders.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/chrome-extension-lichessOrg.png"></p>
+
+<p>You can play through the game and experiment with different variations. Chess.com&#8217;s new v3 has greatly improved its own post-game analysis but it still lacks many of the features of the Lichess one.</p>
+
+<p>Try it out! The extension is available <a href="https://chrome.google.com/webstore/detail/chesscom-v3-analysis/bhjlkimpkkgkmfjlcfngmakenalgleap">here</a>.</p>
+
+<h2>How to modify an existing extension</h2>
+
+<p>First thing was to find the code of the existing broken extension. A bit of googling lead me to:</p>
+
+<pre><code>$ cd ~/Library/Application\ Support/Google/Chrome/Default/Extensions/
+$ ls
+
+total 0
+drwx------+ 30 ra  staff  1020 29 Feb 20:39 .
+drwx------+ 66 ra  staff  2244 29 Feb 20:56 ..
+drwx------+  2 ra  staff    68 29 Feb 20:39 Temp
+drwx------+  3 ra  staff   102 14 Sep  2012 allibancfngcpjmjnnboebggipbaalhn
+drwx------+  3 ra  staff   102 28 Mar  2013 anfemphbgknehemmbbajjcmakfijiohp
+drwx------+  3 ra  staff   102 25 Oct 08:15 apdfllckaahabafndbhieahigkjlhalf
+drwx------+  3 ra  staff   102  5 Mar  2015 bepbmhgboaologfdajaanbcjmnhjmhfn
+drwx------+  3 ra  staff   102  5 Jun  2014 bfbameneiokkgbdmiekhjnmfkcnldhhm
+drwx------+  3 ra  staff   102 22 Feb 20:09 bhjlkimpkkgkmfjlcfngmakenalgleap
+drwx------+  3 ra  staff   102 24 Sep 20:33 blpcfgokakmgnkcojhhkbfbldkacnbeo
+drwx------+  3 ra  staff   102 29 Jul  2013 bmihblnpomgpjkfddepdpdafhhepdbek
+drwx------+  3 ra  staff   102 13 Sep  2012 boeajhmfdjldchidhphikilcgdacljfm
+... etc.
+</code></pre>
+
+<p>Each extension is in a not very helpfully named folder. If you open <code>chrome://extensions/</code>, you can find the id of any installed extension and work out which directory corresponds to which extension.</p>
+
+<p>So then I dug around in the folder and found <code>ext/background.js</code> where the bulk of the code lies. There is also a <code>manifest.json</code> file which is specifies various parameters such as what permissions are required and which websites will be affected by the extension. I copied all the important files into a development folder.</p>
+
+<h2>Loading the extension from the development folder.</h2>
+
+<ul>
+<li>Navigate to chrome://extensions</li>
+<li>Expand the developer dropdown menu and click &#8220;Load Unpacked Extension&#8221;</li>
+<li>Navigate to development folder</li>
+</ul>
+
+
+<p>Assuming there are no errors, the extension should load into your browser. Don&#8217;t forget to disable any conflicting versions you&#8217;ve installed from the Chrome Web Store.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/chrome-extension-load.png"></p>
+
+<p>I used the Chrome&#8217;s built-in Developer Tools and peppered the code with <code>console.log()</code> to explore how it worked. There are plenty of good <a href="https://developer.chrome.com/extensions/tut_debugging">resources</a> on the Chrome developer site. I managed to fix the broken parts and added support for analysis from chess.com&#8217;s game archive. Then I posted the link on <a href="https://redd.it/47cdew">reddit/r/chess</a>.</p>
+
+<p>The source code for the extension is on <a href="https://github.com/ZeroSharp/Chess.com_Analysis_Chrome_extension">GitHub</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Serverless Framework Part 5: Pulling in a node package]]></title>
@@ -415,6 +484,8 @@ cryptojs
 
 
 <p>Mission accomplished! Notice that using a node package did not require any special steps on the AWS side. In fact we have not had to login to AWS since the very beginning when we created an IAM user for the project. And yet we&#8217;ve managed to build and deploy a cheap and scalable cloud-based service.</p>
+
+<p>The <a href="https://github.com/ZeroSharp/ServerlessPotd">source code</a> is on GitHub. Note the default <em>.gitignore</em> file skips the <em>admin.env</em> file which contains the (sensitive) AWS keys in it so don&#8217;t forget to add your own.</p>
 
 <p>That wraps up my series on building a small, but real-world Serverless application. In a future post, I&#8217;d like to look at providing a secured &#8216;generate&#8217; service to allow authorized users to get today&#8217;s password. Stay tuned.</p>
 ]]></content>
@@ -2821,98 +2892,6 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
 <p>The <em>Microsoft.CodeAnalysis.CSharp</em> is the &#8216;Roslyn&#8217; package. It is still in beta, so you have to switch to the pre-release.</p>
 
 <p>Next we&#8217;ll look at <a href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/">the dependency injection part</a> in more detail.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 1: The Goal]]></title>
-    <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/"/>
-    <updated>2014-09-09T10:47:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1</id>
-    <content type="html"><![CDATA[<h2>The goal</h2>
-
-<p><span class='pullquote-right' data-pullquote='How can we replace a given class&#8217;s code with new code at runtime?'>
-How can we replace a given class&#8217;s code with new code at runtime? In particular, how we can we do this while allowing dependency injection and  sidestepping assembly versioning issues.
-</span></p>
-
-<p>Let&#8217;s say you have bunch of classes like this:</p>
-
-<figure class='code'><figcaption><span>SomeGenerator.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">SomeGenerator</span> <span class="p">:</span> <span class="n">IGenerator</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="nf">SomeGenerator</span><span class="p">(</span><span class="n">ISomeDependency</span> <span class="n">dependency</span><span class="p">,</span> <span class="n">IAnotherDependency</span> <span class="n">another</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="p">...</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">public</span> <span class="k">void</span> <span class="nf">Generate</span><span class="p">()</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="p">...</span>
-</span><span class='line'>        <span class="c1">// generate some output</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now let&#8217;s assume that you need the ability to modify the behaviour of these classes at runtime without upgrading. And change the dependencies. Without restarting the application.</p>
-
-<h4>Old school - The MEF approach (and most other plug-in frameworks)</h4>
-
-<p>One approach would be to place each generator in a separate assembly and then you could load them at runtime. (This was my first effort - <em>oh how I struggled</em>).</p>
-
-<p>You can make use of something like <a href="http://msdn.microsoft.com/en-us/library/dd460648.aspx">MEF</a> to help with the grunt work, but can still be very complex.</p>
-
-<p>One difficulty is the dependencies. The dependencies are often defined in other assemblies and you have to be very careful to avoid &#8216;dll hell&#8217;. It is very easy to get message like:</p>
-
-<pre><code>Could not load file or assembly 'SomeAssembly, Version=1.2.9.1, Culture=neutral, PublicKeyToken=ad2d246d2bace800' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference.
-</code></pre>
-
-<p>Or even exceptions like</p>
-
-<pre><code>Object (of type 'SomeGenerator') is not of type 'SomeGenerator'.
-</code></pre>
-
-<p>You either have to write your plug-in code so that it is totally independent (i.e., has no dependencies), or you need to resort to a heap of <code>&lt;bindingRedirect&gt;</code> tags in your web.config.</p>
-
-<p>Also, with one assembly per format, you can end up with a huge proliferation of assemblies. If you have 50 different formats, that would be 50 assemblies.</p>
-
-<h4>New school - The Rosyln approach</h4>
-
-<p>An alternative is to use the compiler-as-a-service features of <a href="http://msdn.microsoft.com/en-gb/vstudio/roslyn.aspx">Roslyn</a>.</p>
-
-<p>Can we upload a modified <em>SomeGenerator.cs</em> and get it to reference the deployed assemblies and thereby avoid dll hell? With Roslyn we can do this.</p>
-
-<p>If the compilation fails, we can immediately inform the user that the file is not compatible. If it succeeds, we can use it in lieu of the version that was originally deployed.</p>
-
-<p>Also, you do <strong>not</strong> need separate assemblies for the plug-ins. Your production code contains, within it somewhere a class named <code>SomeGenerator</code>. At runtime, we are going to create an in-memory assembly which contains only a single class (still named <code>SomeGenerator</code>), but which can nevertheless reference any other class available to the original implementation. Then we will get the dependency injection container to &#8216;replace&#8217; the old generator with the new one.</p>
-
-<h2>The plan</h2>
-
-<ul>
-<li>Build an ASP.NET MVC 5 web application. It will use an instance of <code>HelloWorldGenerator</code> to generate some output. (This is the <em>original implementation</em>).</li>
-<li>Allow a replacement for the <code>HelloWorldGenerator</code> class to be uploaded into the application as raw C# code. (This is the <em>plug-in implementation</em>.)</li>
-<li>Store the C# code in a database. If the application is restarted, the plug-in code will be reloaded.</li>
-<li>When the output is next requested, compile the new C# class. Any dependencies will be instantiated by the IoC container. If there are any compilation errors, these will be displayed.</li>
-<li>Show that the plug-in class is now being used and the output has changed. The originally shipped <code>HelloWorldGenerator</code> class has been replaced by our plug-in.</li>
-<li>Delete the plug-in from the table and show the output has reverted to the default (the originally implementation code).</li>
-</ul>
-
-
-<p>Over next few posts I&#8217;ll guide you through building the application and demonstrate the runtime replacement of the generator class.</p>
-
-<p>See <a href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/">Part 2</a> for screen shots of the working application and an overview of the basic project set up.</p>
 ]]></content>
   </entry>
   
