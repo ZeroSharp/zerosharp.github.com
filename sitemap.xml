@@ -391,6 +391,12 @@
         <lastmod>2016-03-04T18:16:56+00:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://ZeroSharp.github.com/an-xaf-workaround-for-prevent-this-page-from-creating-additional-dialogs-dot/
+        </loc>
+        <lastmod>2016-05-16T14:15:54+01:00</lastmod>
+    </url>
+    <url>
         <loc>http://ZeroSharp.github.com/about/</loc>
         <lastmod>2016-01-28T17:04:21+00:00</lastmod>
     </url>
@@ -404,11 +410,11 @@
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/blog/archives/</loc>
-        <lastmod>2016-03-04T18:16:56+00:00</lastmod>
+        <lastmod>2016-05-16T14:15:54+01:00</lastmod>
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/</loc>
-        <lastmod>2016-03-04T18:16:56+00:00</lastmod>
+        <lastmod>2016-05-16T14:15:54+01:00</lastmod>
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/license/</loc>
