@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Both Chrome and Firefox have a &#8216;feature&#8217; which allows a user to ignore future calls to confirm(). Once this has been checked, any &hellip;">
+  <meta name="description" content="I&#8217;ve blogged before about using BoxStarter to efficiently provision a new development machine. This is working very well for our developers. &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,141 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/boxstarter-and-checksums/">Boxstarter and Checksums</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-09-22T21:04:00+01:00" pubdate data-updated="true">Sep 22<span>nd</span>, 2016</time>
+        
+         | <a href="/boxstarter-and-checksums/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="/provisioning-a-new-development-machine-with-boxstarter/">I&#8217;ve blogged before</a> about using BoxStarter to efficiently provision a new development machine.</p>
+
+<p>This is working very well for our developers. Maintaining the installation script takes a bit of effort but the benefits are worth it.</p>
+
+<p>Recently, the chocolatey developers have been making things more secure and recent versions now require a checksum with any downloaded package. For now, there seems to be some difficulty using <code>Install-ChocolateyVsixPackage</code> within BoxStarter scripts.</p>
+
+<p>If I try to run a script with</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='powershell'><span class='line'><span class="n">Install-ChocolateyVsixPackage</span>
+</span><span class='line'>  <span class="n">StopOnFirstBuildError</span>
+</span><span class='line'>  <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">91aaa139</span><span class="p">-</span><span class="n">5d3c</span><span class="p">-</span><span class="n">43a7-b39f</span><span class="p">-</span><span class="n">369196a84fa5</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">44205</span><span class="p">/</span><span class="n">7</span><span class="p">/</span><span class="n">StopOnFirstBuildError</span><span class="p">.</span><span class="n">vsix</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I get the following error message:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='powershell'><span class='line'> <span class="n">WARNING</span><span class="err">:</span> <span class="n">Missing</span> <span class="n">package</span> <span class="n">checksums</span> <span class="n">are</span> <span class="n">not</span> <span class="n">allowed</span> <span class="p">(</span><span class="n">by</span> <span class="k">default</span> <span class="k">for</span> <span class="n">HTTP</span><span class="p">/</span><span class="n">FTP</span><span class="p">,</span>
+</span><span class='line'>  <span class="n">HTTPS</span> <span class="n">when</span> <span class="n">feature</span> <span class="s1">&#39;allowEmptyChecksumsSecure&#39;</span> <span class="n">is</span> <span class="n">disabled</span><span class="p">)</span> <span class="k">for</span>
+</span><span class='line'>  <span class="n">safety</span> <span class="n">and</span> <span class="n">security</span> <span class="n">reasons</span><span class="p">.</span> <span class="n">Although</span> <span class="n">we</span> <span class="n">strongly</span> <span class="n">advise</span> <span class="n">against</span> <span class="n">it</span><span class="p">,</span>
+</span><span class='line'>  <span class="k">if</span> <span class="n">you</span> <span class="n">need</span> <span class="n">this</span> <span class="n">functionality</span><span class="p">,</span> <span class="n">please</span> <span class="n">set</span> <span class="n">the</span> <span class="n">feature</span>
+</span><span class='line'>  <span class="s1">&#39;allowEmptyChecksums&#39;</span> <span class="p">(</span><span class="s1">&#39;choco feature enable -n</span>
+</span><span class='line'><span class="s1">  allowEmptyChecksums&#39;</span><span class="p">)</span>
+</span><span class='line'> <span class="n">There</span> <span class="n">were</span> <span class="n">errors</span> <span class="n">attempting</span> <span class="n">to</span> <span class="n">retrieve</span> <span class="n">the</span> <span class="n">vsix</span> <span class="n">from</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">91aaa139</span><span class="p">-</span><span class="n">5d3c</span><span class="p">-</span><span class="n">43a</span>
+</span><span class='line'>  <span class="n">or</span> <span class="n">pass</span> <span class="k">in</span> <span class="n">the</span> <span class="n">option</span> <span class="s1">&#39;--allow-empty-checksums&#39;</span><span class="p">.</span>
+</span><span class='line'> <span class="n">7-b39f</span><span class="p">-</span><span class="n">369196a84fa5</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">44205</span><span class="p">/</span><span class="n">7</span><span class="p">/</span><span class="n">StopOnFirstBuildError</span><span class="p">.</span><span class="n">vsix</span><span class="p">.</span> <span class="n">The</span> <span class="n">error</span> <span class="n">message</span> <span class="n">was</span> <span class="s1">&#39;Empty checksums are no longer</span>
+</span><span class='line'><span class="s1"> allowed by default for non-secure sources. Please ask the maintainer to add checksums to this package. In the meantime </span>
+</span><span class='line'><span class="s1"> if you need this package to work correctly, please enable the feature allowEmptyChecksums or provide the runtime</span>
+</span><span class='line'><span class="s1"> switch &#39;</span><span class="p">-</span><span class="n">-allowEmptyChecksums</span><span class="s1">&#39;. We strongly advise against allowing empty checksums for HTTP/FTP sources.&#39;</span><span class="p">.</span>
+</span><span class='line'> <span class="n">At</span> <span class="n">C</span><span class="err">:</span><span class="p">\</span><span class="n">ProgramData</span><span class="p">\</span><span class="n">chocolatey</span><span class="p">\</span><span class="n">helpers</span><span class="p">\</span><span class="n">functions</span><span class="p">\</span><span class="n">Install-ChocolateyVsixPackage</span><span class="p">.</span><span class="n">ps1</span><span class="err">:</span><span class="n">173</span> <span class="n">char</span><span class="err">:</span><span class="n">13</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">etc</span><span class="p">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I tried the suggested <code>allowEmptyChecksums</code> but it was still raising an error. After some experimentation it seems that the combination of (temporarily) disabling the <code>checksumFiles</code> feature and enabling <code>allowEmptyChecksums</code> works. Here is the relevant section of my boxstarter script.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='powershell'><span class='line'><span class="c"># temporarily enable/disable features to bypass checksums</span>
+</span><span class='line'><span class="n">choco</span> <span class="n">feature</span> <span class="n">disable</span> <span class="n">-n</span><span class="p">=</span><span class="n">checksumFiles</span>
+</span><span class='line'><span class="n">choco</span> <span class="n">feature</span> <span class="n">enable</span> <span class="n">-n</span><span class="p">=</span><span class="n">allowEmptyChecksums</span>
+</span><span class='line'><span class="k">try</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c"># VS extensions for all versions of Visual Studio</span>
+</span><span class='line'>    <span class="n">Install-ChocolateyVsixPackage</span> <span class="n">StopOnFirstBuildError</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">91aaa139</span><span class="p">-</span><span class="n">5d3c</span><span class="p">-</span><span class="n">43a7-b39f</span><span class="p">-</span><span class="n">369196a84fa5</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">44205</span><span class="p">/</span><span class="n">7</span><span class="p">/</span><span class="n">StopOnFirstBuildError</span><span class="p">.</span><span class="n">vsix</span>
+</span><span class='line'>    <span class="n">Install-ChocolateyVsixPackage</span> <span class="n">VisualHG</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">visualhg</span><span class="p">.</span><span class="n">codeplex</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">downloads</span><span class="p">/</span><span class="n">get</span><span class="p">/</span><span class="n">1475782</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># VS extensions for VS2015</span>
+</span><span class='line'>    <span class="n">Install-ChocolateyVsixPackage</span> <span class="n">WebEssentials2015</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">ee6e6d8c-c837</span><span class="p">-</span><span class="n">41fb</span><span class="p">-</span><span class="n">886a</span><span class="p">-</span><span class="n">6b50ae2d06a2</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">146119</span><span class="p">/</span><span class="n">19</span><span class="p">/</span><span class="n">WebEssentials2015</span><span class="p">.</span><span class="n">vsix</span>
+</span><span class='line'>    <span class="n">Install-ChocolateyVsixPackage</span> <span class="n">WebExtensionPack</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">f3b504c6</span><span class="p">-</span><span class="n">0095</span><span class="p">-</span><span class="n">42f1-a989</span><span class="p">-</span><span class="n">51d5fc2a8459</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">186606</span><span class="p">/</span><span class="n">23</span><span class="p">/</span><span class="n">Web</span><span class="k">%</span><span class="n">20Extension</span><span class="k">%</span><span class="n">20Pack</span><span class="k">%</span><span class="n">20v1</span><span class="p">.</span><span class="n">5</span><span class="p">.</span><span class="n">50</span><span class="p">.</span><span class="n">vsix</span>
+</span><span class='line'>    <span class="n">Install-ChocolateyVsixPackage</span> <span class="n">T4Toolbox2015</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">34b6d489-afbc</span><span class="p">-</span><span class="n">4d7b</span><span class="p">-</span><span class="n">82c3-dded2b726dbc</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">165481</span><span class="p">/</span><span class="n">2</span><span class="p">/</span><span class="n">T4Toolbox</span><span class="p">.</span><span class="n">14</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">71</span><span class="p">.</span><span class="n">vsix</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># CodeRush for Roslyn Preview</span>
+</span><span class='line'>    <span class="n">Install-ChocolateyVsixPackage</span> <span class="n">CodeRushForRoslyn</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">8a8390ae</span><span class="p">-</span><span class="n">1f71</span><span class="p">-</span><span class="n">4659</span><span class="p">-</span><span class="n">9d8d</span><span class="p">-</span><span class="n">5dd56fd8a72e</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">163212</span><span class="p">/</span><span class="n">15</span><span class="p">/</span><span class="n">DevExpress</span><span class="p">.</span><span class="n">CodeRush</span><span class="p">.</span><span class="n">Roslyn</span><span class="p">-</span><span class="n">16</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">6</span><span class="p">.</span><span class="n">vsix</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">finally</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">choco</span> <span class="n">feature</span> <span class="n">enable</span> <span class="n">-n</span><span class="p">=</span><span class="n">checksumFiles</span>
+</span><span class='line'>    <span class="n">choco</span> <span class="n">feature</span> <span class="n">disable</span> <span class="n">-n</span><span class="p">=</span><span class="n">allowEmptyChecksums</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And then everything works as expected.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -2177,59 +2312,6 @@ Reporting is definitely one of the areas where XAF has progressed the most in re
 <h2>Coming up</h2>
 
 <p>Tomorrow I&#8217;ll be looking at the new <a href="https://community.devexpress.com/blogs/eaf/archive/2015/11/24/xaf-validation-module-enhancements-for-windows-and-the-web-coming-soon-in-v15-2.aspx">batch editing in grids</a> in more detail.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3/">Migrating a Large Web Application From XAF 12.1 to 15.1 - Part 3</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-09-16T09:39:00+01:00" pubdate data-updated="true">Sep 16<span>th</span>, 2015</time>
-        
-         | <a href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><span class='pullquote-right' data-pullquote='I&#8217;m happy to report there is a considerable improvement under load in version 15.1.'>
-This is the third part of a <a href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2">series</a> about migrating a large application from XAF 12.1 to XAF 15.1. In this part I will compare the results of a simple stress test between the versions.</p>
-
-<p>I have described in previous posts how to <a href="/load-testing-xaf-overview/">stress test XAF applications</a>. One of our most basic tests is to simulate 25 users cycling through all the navigation tabs for an hour. I&#8217;m happy to report there is a considerable improvement under load in version 15.1.</p>
-
-<p>(Note that we purposefully stress test against a single web application so that we can compare apples with apples. In production we have multiple instances load-balanced.)</p>
-
-<p>Here is an interactive summary of the 15.1 results:
-</span></p>
-
-<p>Here is version 15.1. There were zero errors and 382 completed scripts.</p>
-
-<p>By comparison, the same test against DevExpress 12.1 yielded only 258 completions. So 15.1 shows a 48% performance improvement over 12.1.</p>
-
-<iframe class="cmd" src="https://load.wpm.neustar.biz/load/test/share/e4c5e109f8f04ceebd72cdb5c93eb1c2" width="1024" height="512">
-
 </div>
   
   

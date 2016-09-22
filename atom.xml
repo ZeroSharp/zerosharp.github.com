@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-05-16T14:17:13+01:00</updated>
+  <updated>2016-09-22T21:16:59+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,112 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Boxstarter and checksums]]></title>
+    <link href="http://ZeroSharp.github.com/boxstarter-and-checksums/"/>
+    <updated>2016-09-22T21:04:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/boxstarter-and-checksums</id>
+    <content type="html"><![CDATA[<p><a href="http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter/">I&#8217;ve blogged before</a> about using BoxStarter to efficiently provision a new development machine.</p>
+
+<p>This is working very well for our developers. Maintaining the installation script takes a bit of effort but the benefits are worth it.</p>
+
+<p>Recently, the chocolatey developers have been making things more secure and recent versions now require a checksum with any downloaded package. For now, there seems to be some difficulty using <code>Install-ChocolateyVsixPackage</code> within BoxStarter scripts.</p>
+
+<p>If I try to run a script with</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='powershell'><span class='line'><span class="n">Install-ChocolateyVsixPackage</span>
+</span><span class='line'>  <span class="n">StopOnFirstBuildError</span>
+</span><span class='line'>  <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">91aaa139</span><span class="p">-</span><span class="n">5d3c</span><span class="p">-</span><span class="n">43a7-b39f</span><span class="p">-</span><span class="n">369196a84fa5</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">44205</span><span class="p">/</span><span class="n">7</span><span class="p">/</span><span class="n">StopOnFirstBuildError</span><span class="p">.</span><span class="n">vsix</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I get the following error message:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='powershell'><span class='line'> <span class="n">WARNING</span><span class="err">:</span> <span class="n">Missing</span> <span class="n">package</span> <span class="n">checksums</span> <span class="n">are</span> <span class="n">not</span> <span class="n">allowed</span> <span class="p">(</span><span class="n">by</span> <span class="k">default</span> <span class="k">for</span> <span class="n">HTTP</span><span class="p">/</span><span class="n">FTP</span><span class="p">,</span>
+</span><span class='line'>  <span class="n">HTTPS</span> <span class="n">when</span> <span class="n">feature</span> <span class="s1">&#39;allowEmptyChecksumsSecure&#39;</span> <span class="n">is</span> <span class="n">disabled</span><span class="p">)</span> <span class="k">for</span>
+</span><span class='line'>  <span class="n">safety</span> <span class="n">and</span> <span class="n">security</span> <span class="n">reasons</span><span class="p">.</span> <span class="n">Although</span> <span class="n">we</span> <span class="n">strongly</span> <span class="n">advise</span> <span class="n">against</span> <span class="n">it</span><span class="p">,</span>
+</span><span class='line'>  <span class="k">if</span> <span class="n">you</span> <span class="n">need</span> <span class="n">this</span> <span class="n">functionality</span><span class="p">,</span> <span class="n">please</span> <span class="n">set</span> <span class="n">the</span> <span class="n">feature</span>
+</span><span class='line'>  <span class="s1">&#39;allowEmptyChecksums&#39;</span> <span class="p">(</span><span class="s1">&#39;choco feature enable -n</span>
+</span><span class='line'><span class="s1">  allowEmptyChecksums&#39;</span><span class="p">)</span>
+</span><span class='line'> <span class="n">There</span> <span class="n">were</span> <span class="n">errors</span> <span class="n">attempting</span> <span class="n">to</span> <span class="n">retrieve</span> <span class="n">the</span> <span class="n">vsix</span> <span class="n">from</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">91aaa139</span><span class="p">-</span><span class="n">5d3c</span><span class="p">-</span><span class="n">43a</span>
+</span><span class='line'>  <span class="n">or</span> <span class="n">pass</span> <span class="k">in</span> <span class="n">the</span> <span class="n">option</span> <span class="s1">&#39;--allow-empty-checksums&#39;</span><span class="p">.</span>
+</span><span class='line'> <span class="n">7-b39f</span><span class="p">-</span><span class="n">369196a84fa5</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">44205</span><span class="p">/</span><span class="n">7</span><span class="p">/</span><span class="n">StopOnFirstBuildError</span><span class="p">.</span><span class="n">vsix</span><span class="p">.</span> <span class="n">The</span> <span class="n">error</span> <span class="n">message</span> <span class="n">was</span> <span class="s1">&#39;Empty checksums are no longer</span>
+</span><span class='line'><span class="s1"> allowed by default for non-secure sources. Please ask the maintainer to add checksums to this package. In the meantime </span>
+</span><span class='line'><span class="s1"> if you need this package to work correctly, please enable the feature allowEmptyChecksums or provide the runtime</span>
+</span><span class='line'><span class="s1"> switch &#39;</span><span class="p">-</span><span class="n">-allowEmptyChecksums</span><span class="s1">&#39;. We strongly advise against allowing empty checksums for HTTP/FTP sources.&#39;</span><span class="p">.</span>
+</span><span class='line'> <span class="n">At</span> <span class="n">C</span><span class="err">:</span><span class="p">\</span><span class="n">ProgramData</span><span class="p">\</span><span class="n">chocolatey</span><span class="p">\</span><span class="n">helpers</span><span class="p">\</span><span class="n">functions</span><span class="p">\</span><span class="n">Install-ChocolateyVsixPackage</span><span class="p">.</span><span class="n">ps1</span><span class="err">:</span><span class="n">173</span> <span class="n">char</span><span class="err">:</span><span class="n">13</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">etc</span><span class="p">...</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>I tried the suggested <code>allowEmptyChecksums</code> but it was still raising an error. After some experimentation it seems that the combination of (temporarily) disabling the <code>checksumFiles</code> feature and enabling <code>allowEmptyChecksums</code> works. Here is the relevant section of my boxstarter script.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='powershell'><span class='line'><span class="c"># temporarily enable/disable features to bypass checksums</span>
+</span><span class='line'><span class="n">choco</span> <span class="n">feature</span> <span class="n">disable</span> <span class="n">-n</span><span class="p">=</span><span class="n">checksumFiles</span>
+</span><span class='line'><span class="n">choco</span> <span class="n">feature</span> <span class="n">enable</span> <span class="n">-n</span><span class="p">=</span><span class="n">allowEmptyChecksums</span>
+</span><span class='line'><span class="k">try</span> <span class="p">{</span>
+</span><span class='line'>    <span class="c"># VS extensions for all versions of Visual Studio</span>
+</span><span class='line'>    <span class="n">Install-ChocolateyVsixPackage</span> <span class="n">StopOnFirstBuildError</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">91aaa139</span><span class="p">-</span><span class="n">5d3c</span><span class="p">-</span><span class="n">43a7-b39f</span><span class="p">-</span><span class="n">369196a84fa5</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">44205</span><span class="p">/</span><span class="n">7</span><span class="p">/</span><span class="n">StopOnFirstBuildError</span><span class="p">.</span><span class="n">vsix</span>
+</span><span class='line'>    <span class="n">Install-ChocolateyVsixPackage</span> <span class="n">VisualHG</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">visualhg</span><span class="p">.</span><span class="n">codeplex</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">downloads</span><span class="p">/</span><span class="n">get</span><span class="p">/</span><span class="n">1475782</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># VS extensions for VS2015</span>
+</span><span class='line'>    <span class="n">Install-ChocolateyVsixPackage</span> <span class="n">WebEssentials2015</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">ee6e6d8c-c837</span><span class="p">-</span><span class="n">41fb</span><span class="p">-</span><span class="n">886a</span><span class="p">-</span><span class="n">6b50ae2d06a2</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">146119</span><span class="p">/</span><span class="n">19</span><span class="p">/</span><span class="n">WebEssentials2015</span><span class="p">.</span><span class="n">vsix</span>
+</span><span class='line'>    <span class="n">Install-ChocolateyVsixPackage</span> <span class="n">WebExtensionPack</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">f3b504c6</span><span class="p">-</span><span class="n">0095</span><span class="p">-</span><span class="n">42f1-a989</span><span class="p">-</span><span class="n">51d5fc2a8459</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">186606</span><span class="p">/</span><span class="n">23</span><span class="p">/</span><span class="n">Web</span><span class="k">%</span><span class="n">20Extension</span><span class="k">%</span><span class="n">20Pack</span><span class="k">%</span><span class="n">20v1</span><span class="p">.</span><span class="n">5</span><span class="p">.</span><span class="n">50</span><span class="p">.</span><span class="n">vsix</span>
+</span><span class='line'>    <span class="n">Install-ChocolateyVsixPackage</span> <span class="n">T4Toolbox2015</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">34b6d489-afbc</span><span class="p">-</span><span class="n">4d7b</span><span class="p">-</span><span class="n">82c3-dded2b726dbc</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">165481</span><span class="p">/</span><span class="n">2</span><span class="p">/</span><span class="n">T4Toolbox</span><span class="p">.</span><span class="n">14</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">0</span><span class="p">.</span><span class="n">71</span><span class="p">.</span><span class="n">vsix</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c"># CodeRush for Roslyn Preview</span>
+</span><span class='line'>    <span class="n">Install-ChocolateyVsixPackage</span> <span class="n">CodeRushForRoslyn</span> <span class="n">https</span><span class="err">:</span><span class="p">//</span><span class="n">visualstudiogallery</span><span class="p">.</span><span class="n">msdn</span><span class="p">.</span><span class="n">microsoft</span><span class="p">.</span><span class="n">com</span><span class="p">/</span><span class="n">8a8390ae</span><span class="p">-</span><span class="n">1f71</span><span class="p">-</span><span class="n">4659</span><span class="p">-</span><span class="n">9d8d</span><span class="p">-</span><span class="n">5dd56fd8a72e</span><span class="p">/</span><span class="n">file</span><span class="p">/</span><span class="n">163212</span><span class="p">/</span><span class="n">15</span><span class="p">/</span><span class="n">DevExpress</span><span class="p">.</span><span class="n">CodeRush</span><span class="p">.</span><span class="n">Roslyn</span><span class="p">-</span><span class="n">16</span><span class="p">.</span><span class="n">1</span><span class="p">.</span><span class="n">6</span><span class="p">.</span><span class="n">vsix</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'><span class="k">finally</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">choco</span> <span class="n">feature</span> <span class="n">enable</span> <span class="n">-n</span><span class="p">=</span><span class="n">checksumFiles</span>
+</span><span class='line'>    <span class="n">choco</span> <span class="n">feature</span> <span class="n">disable</span> <span class="n">-n</span><span class="p">=</span><span class="n">allowEmptyChecksums</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And then everything works as expected.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[An XAF workaround for 'Prevent this page from creating additional dialogs.']]></title>
@@ -2842,177 +2948,6 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
 <p>In the example we replaced an existing class, but it would be straightforward to add the concept of <em>discovery</em> and use the same Roslyn features to make any <em>new</em> plug-in classes available to your application. Ninject, makes it easy to instantiate, say, every implementor of <code>IGenerator</code>, so you could enumerate all available plug-ins instead of replacing a single one.</p>
 
 <p>So here&#8217;s a basic plug-in framework which is very flexible and very powerful without many of the versioning headaches of MEF or MAF. It&#8217;s also easy to maintain, since the plug-in code is identical to the &#8216;normal&#8217; code in staging (just packaged, delivered and compiled in a different way to production).</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Replacing a class at runtime using Ninject and Roslyn - Part 3: Dependency Injection]]></title>
-    <link href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/"/>
-    <updated>2014-09-15T08:01:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3</id>
-    <content type="html"><![CDATA[<p>This is the third part of a series about using Roslyn with dependency injection to create a flexible and powerful plug-in framework. Here I review the parts of the solution that deal with dependency injection. Check out <a href="https://github.com/ZeroSharp/RoslynPlugins">the working example on GitHub</a>.</p>
-
-<p>Previously</p>
-
-<ul>
-<li><a href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/">Part 1: The Goal</a></li>
-<li><a href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/">Part 2: The Solution</a></li>
-</ul>
-
-
-<h2>Dependency injection</h2>
-
-<p>The first trick is to use dependency injection to create any instance of the <code>HelloWorldGenerator</code> class. Then if we need to add a new dependency to the class, we can just add it to the constructor without breaking anything.</p>
-
-<figure class='code'><figcaption><span>HelloWorldGenerator.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">HelloWorldGenerator</span> <span class="p">:</span> <span class="n">IGenerator</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="nf">HelloWorldGenerator</span><span class="p">(</span>
-</span><span class='line'>        <span class="n">ISomeDependency</span> <span class="n">dependency</span><span class="p">,</span>
-</span><span class='line'>        <span class="n">IAnotherDependency</span> <span class="n">another</span><span class="p">,</span>
-</span><span class='line'>        <span class="n">INewDependency</span> <span class="k">new</span> <span class="c1">// a new dependency!!!)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="p">...</span>
-</span><span class='line'>    <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>We&#8217;ll use Ninject here, but you ought to be able to achieve the same with any dependency injection framework.</p>
-
-<p>So normally, we&#8217;d have a binding something like:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Bind</span><span class="p">&lt;</span><span class="n">IGenerator</span><span class="p">&gt;().</span><span class="n">To</span><span class="p">&lt;</span><span class="n">HelloWorldGenerator</span><span class="p">&gt;();</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Instead we&#8217;ll replace this with a binding to a factory method instead.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">Bind</span><span class="p">&lt;</span><span class="n">IGenerator</span><span class="p">&gt;().</span><span class="n">ToMethod</span><span class="p">(</span><span class="n">context</span> <span class="p">=&gt;</span> <span class="n">CreatePluginInstance</span><span class="p">(</span><span class="n">context</span><span class="p">));</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The <code>CreatePluginInstance(context)</code> method will try to find an <code>IGenerator</code> class within any available plug-ins. If it finds one, it will ask the Ninject framework to create an instance of the plug-in class. Otherwise it falls back to the default type (the original implementation of the generator). The <code>PluginLocator</code> it is responsible for searching any runtime-compiled assemblies for candidate plug-ins. We&#8217;ll look at it in more detail later.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">private</span> <span class="n">IGenerator</span> <span class="nf">CreatePluginInstance</span><span class="p">(</span><span class="n">IContext</span> <span class="n">context</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">var</span> <span class="n">pluginLocator</span> <span class="p">=</span> <span class="n">context</span><span class="p">.</span><span class="n">Kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">&lt;</span><span class="n">PluginLocator</span><span class="p">&gt;();</span>
-</span><span class='line'>    <span class="n">Type</span> <span class="n">roslynPluginType</span> <span class="p">=</span> <span class="n">pluginLocator</span><span class="p">.</span><span class="n">Locate</span><span class="p">&lt;</span><span class="n">IGenerator</span><span class="p">&gt;();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c1">/// if we found a plug-in, create an instance of it</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">roslynPluginType</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
-</span><span class='line'>        <span class="k">return</span> <span class="p">(</span><span class="n">IGenerator</span><span class="p">)</span><span class="n">context</span><span class="p">.</span><span class="n">Kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">(</span><span class="n">roslynPluginType</span><span class="p">);</span>
-</span><span class='line'>    <span class="k">else</span> <span class="c1">///otherwise create an instance of the original implementation</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">context</span><span class="p">.</span><span class="n">Kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">&lt;</span><span class="n">HelloWorldGenerator</span><span class="p">&gt;();</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h4>By convention</h4>
-
-<p>Of course, you might have dozens of <code>IGenerator</code> descendants, in which case you can use <a href="https://github.com/ninject/ninject.extensions.conventions">Ninject&#8217;s convention-based binding module</a>. (Don&#8217;t forget to add it with NuGet). My version looks something like the following.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">/// If you have a lot of IGenerator subclasses, you can use Ninject&#39;s</span>
-</span><span class='line'><span class="c1">/// convention based module.</span>
-</span><span class='line'><span class="c1">/// </span>
-</span><span class='line'><span class="c1">///   For each Generator, bind to IGenerator. </span>
-</span><span class='line'><span class="c1">///   For example, Bind&lt;IGenerator&gt;.To&lt;SomeGenerator&gt;();</span>
-</span><span class='line'><span class="c1">/// </span>
-</span><span class='line'><span class="n">Kernel</span><span class="p">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">scanner</span> <span class="p">=&gt;</span> <span class="n">scanner</span>
-</span><span class='line'>    <span class="p">.</span><span class="n">FromThisAssembly</span><span class="p">()</span>
-</span><span class='line'>    <span class="p">.</span><span class="n">SelectAllClasses</span><span class="p">()</span>
-</span><span class='line'>    <span class="p">.</span><span class="n">InheritedFrom</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">IGenerator</span><span class="p">))</span>
-</span><span class='line'>    <span class="p">.</span><span class="n">BindToPluginOtherwiseDefaultInterfaces</span><span class="p">());</span> <span class="c1">//This is a custom extension method (see below)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">ConventionSyntaxExtensions</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="n">IConfigureSyntax</span> <span class="nf">BindToPluginOtherwiseDefaultInterfaces</span><span class="p">(</span><span class="k">this</span> <span class="n">IJoinFilterWhereExcludeIncludeBindSyntax</span> <span class="n">syntax</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">syntax</span><span class="p">.</span><span class="n">BindWith</span><span class="p">(</span><span class="k">new</span> <span class="n">DefaultInterfacesBindingGenerator</span><span class="p">(</span><span class="k">new</span> <span class="n">BindableTypeSelector</span><span class="p">(),</span> <span class="k">new</span> <span class="n">PluginOtherwiseDefaultBindingCreator</span><span class="p">()));</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">/// &lt;summary&gt;</span>
-</span><span class='line'><span class="c1">/// Returns a Ninject binding to a method which returns the plug-in type if one exists, otherwise returns the default type.</span>
-</span><span class='line'><span class="c1">/// &lt;/summary&gt;</span>
-</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">PluginOtherwiseDefaultBindingCreator</span> <span class="p">:</span> <span class="n">IBindingCreator</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">IBindingWhenInNamedWithOrOnSyntax</span><span class="p">&lt;</span><span class="kt">object</span><span class="p">&gt;&gt;</span> <span class="n">CreateBindings</span><span class="p">(</span><span class="n">IBindingRoot</span> <span class="n">bindingRoot</span><span class="p">,</span> <span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">Type</span><span class="p">&gt;</span> <span class="n">serviceTypes</span><span class="p">,</span> <span class="n">Type</span> <span class="n">implementationType</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">bindingRoot</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="k">throw</span> <span class="k">new</span> <span class="nf">ArgumentNullException</span><span class="p">(</span><span class="s">&quot;bindingRoot&quot;</span><span class="p">);</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">return</span> <span class="p">!</span><span class="n">serviceTypes</span><span class="p">.</span><span class="n">Any</span><span class="p">()</span>
-</span><span class='line'>         <span class="p">?</span> <span class="n">Enumerable</span><span class="p">.</span><span class="n">Empty</span><span class="p">&lt;</span><span class="n">IBindingWhenInNamedWithOrOnSyntax</span><span class="p">&lt;</span><span class="kt">object</span><span class="p">&gt;&gt;()</span>
-</span><span class='line'>         <span class="p">:</span> <span class="k">new</span><span class="p">[]</span> <span class="p">{</span> <span class="n">bindingRoot</span><span class="p">.</span><span class="n">Bind</span><span class="p">(</span><span class="n">serviceTypes</span><span class="p">.</span><span class="n">ToArray</span><span class="p">()).</span><span class="n">ToMethod</span><span class="p">(</span><span class="n">context</span> <span class="p">=&gt;</span> <span class="n">context</span><span class="p">.</span><span class="n">Kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">(</span><span class="n">context</span><span class="p">.</span><span class="n">Kernel</span><span class="p">.</span><span class="n">Get</span><span class="p">&lt;</span><span class="n">PluginLocator</span><span class="p">&gt;().</span><span class="n">Locate</span><span class="p">(</span><span class="n">serviceTypes</span><span class="p">)</span> <span class="p">??</span> <span class="n">implementationType</span><span class="p">))</span> <span class="p">};</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Next we&#8217;ll look at <a href="http://ZeroSharp.github.com/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-4/">the Roslyn part</a> in more detail.</p>
 ]]></content>
   </entry>
   

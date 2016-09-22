@@ -4,7 +4,7 @@
   <title><![CDATA[Category: visualstudio | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/visualstudio/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-05-16T14:17:13+01:00</updated>
+  <updated>2016-09-22T21:17:10+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -89,11 +89,11 @@
 
 <p>I always had a problem when an update to an extension or tool tried to open the browser. For instance, I would see this notification in the system tray.</p>
 
-<p><img src="/images/blog/visual-studio-updates-001.png"></p>
+<p>{% img /images/blog/visual-studio-updates-001.png %}</p>
 
 <p>And then when I went to <em>Tools/Extensions and Updates...</em> in Visual Studio, I'd get to something like this:</p>
 
-<p><img src="/images/blog/visual-studio-updates-002.png"></p>
+<p>{% img /images/blog/visual-studio-updates-002.png %}</p>
 
 <p>But the <em>Update</em> button was not responding to any clicks. The only workaround I found was to restart Visual Studio under my normal user account and then the button would work.</p>
 

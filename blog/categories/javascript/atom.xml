@@ -4,7 +4,7 @@
   <title><![CDATA[Category: javascript | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/javascript/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-05-16T14:17:13+01:00</updated>
+  <updated>2016-09-22T21:17:10+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -26,11 +26,11 @@
 
 <p>When a chess.com game is finished, you can click on a little knight icon and jump straight to the analysis of the game in Lichess.</p>
 
-<p><img src="/images/blog/chrome-extension-chessCom.png"></p>
+<p>{% img /images/blog/chrome-extension-chessCom.png %}</p>
 
 <p>It takes a few seconds to process but then you can see all your mistakes and blunders.</p>
 
-<p><img src="/images/blog/chrome-extension-lichessOrg.png"></p>
+<p>{% img /images/blog/chrome-extension-lichessOrg.png %}</p>
 
 <p>You can play through the game and experiment with different variations. Chess.com's new v3 has greatly improved its own post-game analysis but it still lacks many of the features of the Lichess one.</p>
 
@@ -74,7 +74,7 @@ drwx------+  3 ra  staff   102 13 Sep  2012 boeajhmfdjldchidhphikilcgdacljfm
 
 <p>Assuming there are no errors, the extension should load into your browser. Don't forget to disable any conflicting versions you've installed from the Chrome Web Store.</p>
 
-<p><img src="/images/blog/chrome-extension-load.png"></p>
+<p>{% img /images/blog/chrome-extension-load.png %}</p>
 
 <p>I used the Chrome's built-in Developer Tools and peppered the code with <code>console.log()</code> to explore how it worked. There are plenty of good <a href="https://developer.chrome.com/extensions/tut_debugging">resources</a> on the Chrome developer site. I managed to fix the broken parts and added support for analysis from chess.com's game archive. Then I posted the link on <a href="https://redd.it/47cdew">reddit/r/chess</a>.</p>
 

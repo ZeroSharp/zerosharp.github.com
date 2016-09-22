@@ -4,7 +4,7 @@
   <title><![CDATA[Category: chrome | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/chrome/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-05-16T14:17:13+01:00</updated>
+  <updated>2016-09-22T21:17:10+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -22,182 +22,97 @@
 
 <p>In XAF, this behaviour prevents the application from working correctly. For instance, it becomes impossible to confirm a deletion.</p>
 
-<p><img src="/images/blog/prevent-this-page-001.png"></p>
+<p>{% img /images/blog/prevent-this-page-001.png %}</p>
 
 <p>The following controller provides a work around. It injects some javascript into the page wrapping the call to <code>confirm()</code>. The new code detects when the <strong>Prevent this page from creating additional dialogs</strong> checkbox has been checked and returns true instead. The confirmation window still does not appear, but the XAF application works as if the user had pressed confirm instead of cancel.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span># HandleDisabledConfirmationsController.cs </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-<span class='line-number'>59</span>
-<span class='line-number'>60</span>
-<span class='line-number'>61</span>
-<span class='line-number'>62</span>
-<span class='line-number'>63</span>
-<span class='line-number'>64</span>
-<span class='line-number'>65</span>
-<span class='line-number'>66</span>
-<span class='line-number'>67</span>
-<span class='line-number'>68</span>
-<span class='line-number'>69</span>
-<span class='line-number'>70</span>
-<span class='line-number'>71</span>
-<span class='line-number'>72</span>
-<span class='line-number'>73</span>
-<span class='line-number'>74</span>
-<span class='line-number'>75</span>
-<span class='line-number'>76</span>
-<span class='line-number'>77</span>
-<span class='line-number'>78</span>
-<span class='line-number'>79</span>
-<span class='line-number'>80</span>
-<span class='line-number'>81</span>
-<span class='line-number'>82</span>
-<span class='line-number'>83</span>
-<span class='line-number'>84</span>
-<span class='line-number'>85</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">using</span> <span class="n">DevExpress</span><span class="p">.</span><span class="n">ExpressApp</span><span class="p">;</span>
-</span><span class='line'><span class="n">using</span> <span class="n">DevExpress</span><span class="p">.</span><span class="n">ExpressApp</span><span class="p">.</span><span class="n">Web</span><span class="p">;</span>
-</span><span class='line'><span class="n">using</span> <span class="n">DevExpress</span><span class="p">.</span><span class="n">Web</span><span class="p">.</span><span class="n">Internal</span><span class="p">;</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="n">namespace</span> <span class="n">NetModule</span><span class="p">.</span><span class="n">Web</span><span class="p">.</span><span class="n">Controllers</span>
-</span><span class='line'><span class="p">{</span><span class="o">&lt;/</span><span class="n">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span><span class="n">public</span> <span class="n">class</span> <span class="n">HandleDisabledConfirmationsController</span> <span class="o">:</span> <span class="n">Controller</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">public</span> <span class="k">static</span> <span class="n">bool</span> <span class="n">IsChrome</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">get</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="k">return</span> <span class="n">RenderUtils</span><span class="p">.</span><span class="n">Browser</span><span class="p">.</span><span class="n">IsChrome</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">public</span> <span class="k">static</span> <span class="n">bool</span> <span class="n">IsFirefox</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">get</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="k">return</span> <span class="n">RenderUtils</span><span class="p">.</span><span class="n">Browser</span><span class="p">.</span><span class="n">IsFirefox</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">protected</span> <span class="n">override</span> <span class="kt">void</span> <span class="n">OnFrameAssigned</span><span class="p">()</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">base</span><span class="p">.</span><span class="n">OnFrameAssigned</span><span class="p">();</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">IsChrome</span> <span class="o">||</span> <span class="n">IsFirefox</span><span class="p">)</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="n">WebWindow</span> <span class="n">window</span> <span class="o">=</span> <span class="n">Frame</span> <span class="n">as</span> <span class="n">WebWindow</span><span class="p">;</span>
-</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">window</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
-</span><span class='line'>            <span class="p">{</span>
-</span><span class='line'>                <span class="n">window</span><span class="p">.</span><span class="n">CustomRegisterTemplateDependentScripts</span> <span class="o">+=</span> <span class="n">window_CustomRegisterTemplateDependentScripts</span><span class="p">;</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">private</span> <span class="kt">void</span> <span class="n">window_CustomRegisterTemplateDependentScripts</span><span class="p">(</span><span class="n">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">CustomRegisterTemplateDependentScriptsEventArgs</span> <span class="n">e</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="c1">// wrapper for &#39;confirm&#39;</span>
-</span><span class='line'>        <span class="n">WebWindow</span> <span class="n">window</span> <span class="o">=</span> <span class="p">(</span><span class="n">WebWindow</span><span class="p">)</span><span class="n">sender</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="c1">// Detect the user has checked the &#39;prevent this page from creating additional dialogs&#39;.</span>
-</span><span class='line'>        <span class="c1">// In which case assume all confirmations are accepted, rather than the default rejected</span>
-</span><span class='line'>        <span class="n">var</span> <span class="n">confirmWrapper</span> <span class="o">=</span> <span class="err">@</span><span class="s">&quot;</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">script</span><span class="o">&gt;</span>
-</span><span class='line'><span class="n">window</span><span class="p">.</span><span class="n">nativeConfirm</span> <span class="o">=</span> <span class="n">window</span><span class="p">.</span><span class="n">confirm</span><span class="p">;</span>
-</span><span class='line'><span class="n">window</span><span class="p">.</span><span class="n">confirm</span> <span class="o">=</span> <span class="n">function</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="n">var</span> <span class="n">timeBefore</span> <span class="o">=</span> <span class="n">new</span> <span class="n">Date</span><span class="p">();</span>
-</span><span class='line'>    <span class="n">var</span> <span class="n">confirmBool</span> <span class="o">=</span> <span class="n">nativeConfirm</span><span class="p">(</span><span class="n">message</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">var</span> <span class="n">timeAfter</span> <span class="o">=</span> <span class="n">new</span> <span class="n">Date</span><span class="p">();</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">((</span><span class="n">timeAfter</span> <span class="o">-</span> <span class="n">timeBefore</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">350</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">confirmBool</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">confirmBool</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">script</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="s">&quot;;&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">pre</span><span class="o">&gt;&lt;</span><span class="n">code</span><span class="o">&gt;</span>        <span class="n">e</span><span class="p">.</span><span class="n">Page</span><span class="p">.</span><span class="n">ClientScript</span><span class="p">.</span><span class="n">RegisterClientScriptBlock</span><span class="p">(</span><span class="n">GetType</span><span class="p">(),</span> <span class="s">&quot;WrapConfirmations&quot;</span><span class="p">,</span> <span class="n">confirmWrapper</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">protected</span> <span class="n">override</span> <span class="kt">void</span> <span class="n">OnDeactivated</span><span class="p">()</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">IsChrome</span> <span class="o">||</span> <span class="n">IsFirefox</span><span class="p">)</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="n">WebWindow</span> <span class="n">window</span> <span class="o">=</span> <span class="n">Frame</span> <span class="n">as</span> <span class="n">WebWindow</span><span class="p">;</span>
-</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">window</span> <span class="o">!=</span> <span class="n">null</span><span class="p">)</span>
-</span><span class='line'>            <span class="p">{</span>
-</span><span class='line'>                <span class="n">window</span><span class="p">.</span><span class="n">CustomRegisterTemplateDependentScripts</span> <span class="o">-=</span> <span class="n">window_CustomRegisterTemplateDependentScripts</span><span class="p">;</span>
-</span><span class='line'>            <span class="p">}</span>
-</span><span class='line'>            <span class="n">base</span><span class="p">.</span><span class="n">OnDeactivated</span><span class="p">();</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="o">&lt;/</span><span class="n">code</span><span class="o">&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">p</span><span class="o">&gt;</span><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:c# HandleDisabledConfirmationsController.cs %}
+using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.Web;
+using DevExpress.Web.Internal;</p>
+
+<p>namespace NetModule.Web.Controllers
+{</p>
+
+<pre><code>public class HandleDisabledConfirmationsController : Controller
+{
+    public static bool IsChrome
+    {
+        get
+        {
+            return RenderUtils.Browser.IsChrome;
+        }
+    }
+
+    public static bool IsFirefox
+    {
+        get
+        {
+            return RenderUtils.Browser.IsFirefox;
+        }
+    }
+
+    protected override void OnFrameAssigned()
+    {
+        base.OnFrameAssigned();
+        if (IsChrome || IsFirefox)
+        {
+            WebWindow window = Frame as WebWindow;
+            if (window != null)
+            {
+                window.CustomRegisterTemplateDependentScripts += window_CustomRegisterTemplateDependentScripts;
+            }
+        }
+    }
+
+    private void window_CustomRegisterTemplateDependentScripts(object sender, CustomRegisterTemplateDependentScriptsEventArgs e)
+    {
+        // wrapper for 'confirm'
+        WebWindow window = (WebWindow)sender;
+
+        // Detect the user has checked the 'prevent this page from creating additional dialogs'.
+        // In which case assume all confirmations are accepted, rather than the default rejected
+        var confirmWrapper = @"
+</code></pre>
+
+<script>
+window.nativeConfirm = window.confirm;
+window.confirm = function(message)
+{
+    var timeBefore = new Date();
+    var confirmBool = nativeConfirm(message);
+    var timeAfter = new Date();
+    if ((timeAfter - timeBefore) < 350) 
+    {
+        confirmBool = true; 
+    }
+    return confirmBool;
+}
+</script>
+
+
+<p>";</p>
+
+<pre><code>        e.Page.ClientScript.RegisterClientScriptBlock(GetType(), "WrapConfirmations", confirmWrapper);
+    }
+
+    protected override void OnDeactivated()
+    {
+        if (IsChrome || IsFirefox)
+        {
+            WebWindow window = Frame as WebWindow;
+            if (window != null)
+            {
+                window.CustomRegisterTemplateDependentScripts -= window_CustomRegisterTemplateDependentScripts;
+            }
+            base.OnDeactivated();
+        }
+    }
+}
+</code></pre>
+
+<p>}
+{% endcodeblock %}</p>
 
 <p>The controller works by timing the milliseconds to close the confirmation window. If it is less than 350 milliseconds we can assume the confirmation window never opened owing to the checkbox. In this scenario, it returns true (confirm) rather than false (cancel) in order for XAF to function correctly.</p>
 ]]></content>
@@ -216,11 +131,11 @@
 
 <p>When a chess.com game is finished, you can click on a little knight icon and jump straight to the analysis of the game in Lichess.</p>
 
-<p><img src="/images/blog/chrome-extension-chessCom.png"></p>
+<p>{% img /images/blog/chrome-extension-chessCom.png %}</p>
 
 <p>It takes a few seconds to process but then you can see all your mistakes and blunders.</p>
 
-<p><img src="/images/blog/chrome-extension-lichessOrg.png"></p>
+<p>{% img /images/blog/chrome-extension-lichessOrg.png %}</p>
 
 <p>You can play through the game and experiment with different variations. Chess.com's new v3 has greatly improved its own post-game analysis but it still lacks many of the features of the Lichess one.</p>
 
@@ -264,7 +179,7 @@ drwx------+  3 ra  staff   102 13 Sep  2012 boeajhmfdjldchidhphikilcgdacljfm
 
 <p>Assuming there are no errors, the extension should load into your browser. Don't forget to disable any conflicting versions you've installed from the Chrome Web Store.</p>
 
-<p><img src="/images/blog/chrome-extension-load.png"></p>
+<p>{% img /images/blog/chrome-extension-load.png %}</p>
 
 <p>I used the Chrome's built-in Developer Tools and peppered the code with <code>console.log()</code> to explore how it worked. There are plenty of good <a href="https://developer.chrome.com/extensions/tut_debugging">resources</a> on the Chrome developer site. I managed to fix the broken parts and added support for analysis from chess.com's game archive. Then I posted the link on <a href="https://redd.it/47cdew">reddit/r/chess</a>.</p>
 

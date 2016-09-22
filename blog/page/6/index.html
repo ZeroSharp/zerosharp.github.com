@@ -9,11 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="I recently ran into some file ownership trouble after cloning a bitbucket repository. The following script saved my bacon. FixOwnership.ps1 1
-2
-3
-4
-5 &hellip;">
+  <meta name="description" content="Over the next few posts, I will demonstrate how to load test XAF web applications. History Performance testing has traditionally been difficult and &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -117,6 +113,79 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/load-testing-xaf-overview/">Load Testing XAF: Overview</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-03-12T18:20:00+00:00" pubdate data-updated="true">Mar 12<span>th</span>, 2013</time>
+        
+         | <a href="/load-testing-xaf-overview/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Over the next few posts, I will demonstrate how to load test XAF web applications.</p>
+
+<h2>History</h2>
+
+<p>Performance testing has traditionally been difficult and expensive. A few years ago, to do it well required a powerful piece of dedicated load testing software such as HP LoadRunner (typical cost back in 2007: USD 50,000-100,000 or more per year!). This software was capable of simulating multiple virtual users via the use of recorded scripts and providing detailed performance statistics. Usually the cost was increased further increased by the need for powerful hardware to be able to run the application.</p>
+
+<p>In 2007 we were required by a big customer (a global bank) to provide load testing statistics for our expressApp Framework application. We could not afford anything as sophisticated as LoadRunner so we went with a cheaper alternative (NeoLoad, which was still several thousand per year). It was extremely painstaking work to produce a test. The approach was to record the http requests (as a stream of text values) and write a script to check the http response. Since there was no real browser involved, it was very difficult to determine if our test was really representative. Several machines in the office had to be dedicated to simulating virtual users. Nobody was allowed to use the internet for fear of skewing the results during a test. If an error occurred, it was almost impossible to determine what went wrong. We wrestled with it and managed to fulfill our requirements, but it was all a lot of effort for no real return.</p>
+
+<p>Part of the problem was certainly that XAF is complex to test. The user interface is rich and makes use of complex controls. Most of these load testing tools work better when targetting a simple <code>&lt;INPUT type="button"&gt;</code> rather than an image of a button that sometimes is not even clickable until the mouse has hovered over it. DevExpress have made it easy to run tests via their EasyTests, but no load testing tool supports them yet. (They have informed me it&#8217;s in their plans&#8230;)</p>
+
+<h2>Enter the cloud</h2>
+
+<p><span class='pullquote-right' data-pullquote='The increased availability of cheap cloud-based virtualised machines has revolutionised load testing.'></p>
+
+<p>The basic idea is this: instead of simulating users with specialised software, why not fire up a virtual machine and test with a real browser instance which is &#8216;remote controlled&#8217; via a script.</p>
+
+<p>The increased availability of cheap cloud-based virtualised machines has revolutionised load testing. The rental of the virtualised machines is not free, but it is very cheap.  In about 2008, I started using the Amazon cloud to perform load tests. Our basic test costs us about USD 10.00 per run. We probably run this a dozen times a year, so our total cost is about USD 120.00 per year.
+</span></p>
+
+<p>We get better statistics than we ever got out of NeoLoad. We are confident that the test is realistic and we can compare with the actual performance of our production environments. We have been able to find and solve memory leak problems and various tricky multi-user problems with these tests.</p>
+
+<p>Load testing is still a complex business. There are a lot of pieces to put together, but with the cloud, each piece is relatively simple and cheap.</p>
+
+<h2>The solution</h2>
+
+<ul>
+<li>In <a href="/load-testing-xaf-part-1-deploying/">Part 1</a>, we install the DevExpress MainDemo on an Amazon EC2 instance.</li>
+<li>In <a href="/load-testing-xaf-part-2-selenium/">Part 2</a>, we use Selenium to write a script which will run on the client machines to control a real browser instance.</li>
+<li>In <a href="/load-testing-xaf-part-3-uploading-and-validating-the-virtual-user-script/">Part 3</a>, we create a NeuStar Web Performance test and validate the script.</li>
+<li>In <a href="/load-testing-xaf-part-4-launching-the-load-test/">Part 4</a>, we launch a performance test and monitor the server.</li>
+<li>In <a href="/load-testing-xaf-part-5-analysis/">Part 5</a>, we analyse the results of the clients.</li>
+<li>In <a href="/load-testing-xaf-bonus-simultaneous-easytests/">a bonus part</a>, we learn how to run multiple simultaneous EasyTests as an alternative method of isolating performance and concurrency problems.</li>
+</ul>
+
+
+<p>If you follow all the steps, expect to pay a handful of dollars in Amazon EC2 costs and a few more in Neustar costs. You could alternatively skip step 1 and target one of your own development machines instead.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1019,170 +1088,6 @@ ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-darwin12.2.1]
 
 
 <p>Regenerate your Octopress site and you can start using <code>imgcap</code> instead of <code>img</code>.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/setting-up-octopress-on-windows-again/">Setting Up Octopress on Windows Again</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-17T11:20:00+00:00" pubdate data-updated="true">Jan 17<span>th</span>, 2013</time>
-        
-         | <a href="/setting-up-octopress-on-windows-again/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>My <a href="/setting-up-octopress-on-windows/">very first blog post</a> was about setting up Octopress. The following is an updated version of those instructions for setting up Octopress with Windows, ruby 1.9.3, python 2.7.3.</p>
-
-<p>This is quick guide to setting up <a href="http://octopress.org/">Octopress</a> to publish to GitHub pages. I&#8217;m using Windows 8 64-bit, but the instructions should work with other versions of Windows.</p>
-
-<h3>Get with GitHub</h3>
-
-<p>First, get an account on GitHub and follow the excellent instructions for Windows here.  <a href="http://help.github.com/win-set-up-git/">here</a>.</p>
-
-<p>Once you are set up with GitHub, get <a href="https://github.com/scottmuc/yari">yari</a> by opening a command prompt:</p>
-
-<p>Then create a directory for all your github projects.  You could put this anywhere, e.g., <code>%USERPROFILE%\github</code>.  I chose to create a directory <code>C:\projects\github\</code>.</p>
-
-<h3>Installing Octopress</h3>
-
-<p><img class="right" src="/images/blog/octopress_logo.png"></p>
-
-<h4>Use yari instead of RVM/rbenv</h4>
-
-<p>Scott Muc has written <a href="https://github.com/scottmuc/yari">yari</a> which lets you switch between Windows Ruby versions.  Get it with the following command.</p>
-
-<pre><code>cd C:\projects\github\
-git clone git://github.com/scottmuc/yari.git yari
-</code></pre>
-
-<p>Once this has completed you can setup the required Ruby environment with the command:</p>
-
-<pre><code>yari 1.9.3
-</code></pre>
-
-<p>Then follow the rest of the instructions from <a href="http://octopress.org/docs/setup/">the Octopress setup instructions</a>.</p>
-
-<pre><code>git clone git://github.com/imathis/octopress.git octopress
-cd octopress
-ruby --version  # Should report Ruby 1.9.3 thanks to yari
-</code></pre>
-
-<p>Next install dependencies</p>
-
-<pre><code>gem install bundler
-bundle install
-</code></pre>
-
-<p>Install the default Octopress theme.</p>
-
-<pre><code>rake install
-</code></pre>
-
-<h3>Deploying to GitHub</h3>
-
-<p>The instructions are <a href="http://octopress.org/docs/deploying/github/">here</a>.  The only difficulty I had was working out which URL to use after:</p>
-
-<pre><code>rake setup_github_pages
-</code></pre>
-
-<p>This will ask you for your Github Pages repository url, but it is not clear that this is the SSH one, e.g., <code>git@github.com:ZeroSharp/zerosharp.github.com.git</code>.  You can find it near the top of <a href="https://github.com/ZeroSharp/zerosharp.github.com">the repository page</a>.</p>
-
-<h3>Configuring your blog</h3>
-
-<p>Follow the instructions <a href="http://octopress.org/docs/configuring/">here</a> to configure your blog.</p>
-
-<h4>Markdown</h4>
-
-<p>It is quite difficult to find good help on the markdown syntax other than for the codeblocks section.  For instance, it is not clear how to generate a codeblock with no line numbers, like this one:</p>
-
-<pre><code>How do I output a codeblock with no line numbers?
-</code></pre>
-
-<p>It turns out it either requires a <code>&lt;pre&gt;</code> tag instead of a <code>{ codeblock }</code> tag, or alternatively, start the line with four spaces.  The official syntax is <a href="http://daringfireball.net/projects/markdown/syntax">here</a>, but I also found <a href="http://warpedvisions.org/projects/markdown-cheat-sheet/">this cheat sheet</a>.</p>
-
-<h4>Fonts and Styles</h4>
-
-<p>See <a href="http://blog.bigdinosaur.org/changing-octopresss-header/">Lee&#8217;s Bigdinosaur blog</a>.</p>
-
-<h4>Problem with CodeBlocks</h4>
-
-<p>I had a problem with codeblocks which seems to be specific to Windows.  It seems that whenever you include a <code>lang</code> parameter in a <code>codeblock</code>, you get:</p>
-
-<pre><code>Liquid error: No such file or directory - python2.7 -c “import sys; print sys.executable”
-</code></pre>
-
-<p>There are two issues:</p>
-
-<ul>
-<li>Syntax highlighting requires Python which is not automatically installed.</li>
-<li>There is a problem with pythonexec.rb which does not seem to support Windows Python installations very well.</li>
-</ul>
-
-
-<p>Luckily we can fix them both.  Install <a href="http://www.python.org/getit/releases/2.7.3/">Python 2.7.3</a>.  Actually I used <a href="http://ninite.com/">ninite.com</a> to install it.</p>
-
-<p>Then modify the pythonrubyexec.rb which is in the depths of the yari subdirectory.  Try here: <code>.\yari\ruby-1.9.3-p194-i386-mingw32\lib\ruby\gems\1.9.3\gems\rubypython-0.5.3\lib\rubypython\pythonexec.rb</code></p>
-
-<p>At the top of pythonexec.rb, modify the file as follows:</p>
-
-<figure class='code'><figcaption><span>pythonexec.rb  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='diff'><span class='line'>class RubyPython::PythonExec
-</span><span class='line'>  def initialize(python_executable)
-</span><span class='line'>    @python = python_executable || &quot;python&quot;
-</span><span class='line'>
-</span><span class='line'><span class="gi">+    if (@python.include? &#39;python2.7&#39;)</span>
-</span><span class='line'><span class="gi">+      @python = &quot;python&quot;</span>
-</span><span class='line'><span class="gi">+    end</span>
-</span><span class='line'>
-</span><span class='line'>    @python = %x(#{@python} -c &quot;import sys; print sys.executable&quot;).chomp
-</span><span class='line'>
-</span><span class='line'>    @version = run_command &quot;import sys; print &#39;%d.%d&#39; % sys.version_info[:2]&quot;
-</span><span class='line'>
-</span><span class='line'><span class="gd">-    @dirname = File.dirname(@python)</span>
-</span><span class='line'><span class="gi">+    @dirname = &quot;C:/Python27&quot;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
 </div>
   
   
