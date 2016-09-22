@@ -1,0 +1,67 @@
+---
+layout: post
+title: "Boxstarter and checksums"
+date: 2016-09-22 21:04
+comments: true
+categories: [boxstarter, chocolatey, powershell]
+---
+[I've blogged before](/provisioning-a-new-development-machine-with-boxstarter/) about using BoxStarter to efficiently provision a new development machine. 
+
+This is working very well for our developers. Maintaining the installation script takes a bit of effort but the benefits are worth it.
+
+Recently, the chocolatey developers have been making things more secure and recent versions now require a checksum with any downloaded package. For now, there seems to be some difficulty using `Install-ChocolateyVsixPackage` within BoxStarter scripts.
+
+If I try to run a script with 
+
+```powershell
+Install-ChocolateyVsixPackage 
+  StopOnFirstBuildError 
+  https://visualstudiogallery.msdn.microsoft.com/91aaa139-5d3c-43a7-b39f-369196a84fa5/file/44205/7/StopOnFirstBuildError.vsix 
+```
+
+I get the following error message:
+
+```
+ WARNING: Missing package checksums are not allowed (by default for HTTP/FTP,
+  HTTPS when feature 'allowEmptyChecksumsSecure' is disabled) for
+  safety and security reasons. Although we strongly advise against it,
+  if you need this functionality, please set the feature
+  'allowEmptyChecksums' ('choco feature enable -n
+  allowEmptyChecksums')
+ There were errors attempting to retrieve the vsix from https://visualstudiogallery.msdn.microsoft.com/91aaa139-5d3c-43a
+  or pass in the option '--allow-empty-checksums'.
+ 7-b39f-369196a84fa5/file/44205/7/StopOnFirstBuildError.vsix. The error message was 'Empty checksums are no longer
+ allowed by default for non-secure sources. Please ask the maintainer to add checksums to this package. In the meantime 
+ if you need this package to work correctly, please enable the feature allowEmptyChecksums or provide the runtime
+ switch '--allowEmptyChecksums'. We strongly advise against allowing empty checksums for HTTP/FTP sources.'.
+ At C:\ProgramData\chocolatey\helpers\functions\Install-ChocolateyVsixPackage.ps1:173 char:13
+
+etc...
+```
+
+I tried the suggested `allowEmptyChecksums` but it was still raising an error. After some experimentation it seems that the combination of (temporarily) disabling the `checksumFiles` feature and enabling `allowEmptyChecksums` works. Here is the relevant section of my boxstarter script.
+
+```powershell
+    # temporarily enable/disable features to bypass checksums
+    choco feature disable -n=checksumFiles
+    choco feature enable -n=allowEmptyChecksums
+    try {
+        # VS extensions for all versions of Visual Studio
+        Install-ChocolateyVsixPackage StopOnFirstBuildError https://visualstudiogallery.msdn.microsoft.com/91aaa139-5d3c-43a7-b39f-369196a84fa5/file/44205/7/StopOnFirstBuildError.vsix 
+        Install-ChocolateyVsixPackage VisualHG https://visualhg.codeplex.com/downloads/get/1475782
+
+        # VS extensions for VS2015
+        Install-ChocolateyVsixPackage WebEssentials2015 https://visualstudiogallery.msdn.microsoft.com/ee6e6d8c-c837-41fb-886a-6b50ae2d06a2/file/146119/19/WebEssentials2015.vsix
+        Install-ChocolateyVsixPackage WebExtensionPack https://visualstudiogallery.msdn.microsoft.com/f3b504c6-0095-42f1-a989-51d5fc2a8459/file/186606/23/Web%20Extension%20Pack%20v1.5.50.vsix 
+        Install-ChocolateyVsixPackage T4Toolbox2015 https://visualstudiogallery.msdn.microsoft.com/34b6d489-afbc-4d7b-82c3-dded2b726dbc/file/165481/2/T4Toolbox.14.0.0.71.vsix
+
+        # CodeRush for Roslyn Preview
+        Install-ChocolateyVsixPackage CodeRushForRoslyn https://visualstudiogallery.msdn.microsoft.com/8a8390ae-1f71-4659-9d8d-5dd56fd8a72e/file/163212/15/DevExpress.CodeRush.Roslyn-16.1.6.vsix            
+    }
+    finally {
+        choco feature enable -n=checksumFiles
+        choco feature disable -n=allowEmptyChecksums
+    }
+```
+
+And then everything works as expected.
