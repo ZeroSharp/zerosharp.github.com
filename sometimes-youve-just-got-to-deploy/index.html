@@ -5,11 +5,11 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Category: nunit - ZeroSharp</title>
+  <title>Sometimes you've just got to deploy - ZeroSharp</title>
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Category: nunit">
+  <meta name="description" content="A technique for temporarily skipping a unit test.">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -18,7 +18,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   
-  <link rel="canonical" href="http://ZeroSharp.github.comblog/categories/nunit/">
+  <link rel="canonical" href="http://ZeroSharp.github.com/sometimes-youve-just-got-to-deploy/">
   <link href="/favicon.png" rel="icon">
   <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
   <script src="/javascripts/modernizr-2.0.js"></script>
@@ -112,53 +112,137 @@
   <div id="main">
     <div id="content">
       <div>
-<article role="article">
+<article class="hentry" role="article">
   
   <header>
-    <h1 class="entry-title">Category: Nunit</h1>
+    
+      <h1 class="entry-title">Sometimes You've Just Got to Deploy</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-10-16T18:44:00+01:00" pubdate data-updated="true">Oct 16<span>th</span>, 2016</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
     
   </header>
-  
-  <div id="blog-archives" class="category">
 
 
+<div class="entry-content"><p>Sometimes the deadline has arrived and you still have some failing tests. After a discussion with the dev team, you decide to deploy anyway and fix the bugs for the next release. You need to get the build server to ignore the tests.</p>
 
-  
-  <h2>2016</h2>
+<p>One way is just to mark the test with the <code>[Ignore]</code> attribute.</p>
 
-<article>
-  
-<h1><a href="/sometimes-youve-just-got-to-deploy/">Sometimes you've just got to deploy</a></h1>
-<time datetime="2016-10-16T18:44:00+01:00" pubdate><span class='month'>Oct</span> <span class='day'>16</span> <span class='year'>2016</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/nunit/'>nunit</a>, <a class='category' href='/blog/categories/testing/'>testing</a></span>
-</footer>
-
-
-</article>
-
-
-
-  
-  <h2>2012</h2>
-
-<article>
-  
-<h1><a href="/testing-the-property-signatures-of-devexpress-validation-rules-using-nunit-and-linq/">Testing the property signatures of DevExpress validation rules using NUnit and LINQ</a></h1>
-<time datetime="2012-05-24T16:39:00+01:00" pubdate><span class='month'>May</span> <span class='day'>24</span> <span class='year'>2012</span></time>
-
-<footer>
-  <span class="categories">posted in <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/linq/'>linq</a>, <a class='category' href='/blog/categories/nunit/'>nunit</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a></span>
-</footer>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[Test]</span>
+</span><span class='line'><span class="na">[Ignore]</span> <span class="c1">// TODO: Fix this test before the next release!</span>
+</span><span class='line'><span class="k">public</span> <span class="k">void</span> <span class="nf">Test</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">// Some failing test code...</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
-</article>
+<p>After the weekend, everyone forgets about the ignored tests and they never get fixed.</p>
 
+<p>Instead, I like to do this.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[Test]</span>
+</span><span class='line'><span class="k">public</span> <span class="k">void</span> <span class="nf">Test</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span> <span class="p">&lt;</span> <span class="k">new</span> <span class="n">DateTime</span><span class="p">(</span><span class="m">2016</span><span class="p">,</span> <span class="m">10</span><span class="p">,</span> <span class="m">17</span><span class="p">))</span>
+</span><span class='line'>        <span class="n">Assert</span><span class="p">.</span><span class="n">Ignore</span><span class="p">(</span><span class="s">&quot;Temporarily ignored until October 17.&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">// Some failing test code...</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is a fairly rare occurrence for my team, so the above approach is sufficient and works with all test frameworks. But if you want to go further <a href="https://www.amido.com/code/conditional-ignore-nunit-and-the-ability-to-conditionally-ignore-a-test/">Richard Slater shows how to create an NUnit attribute</a>.</p>
 </div>
 
+
+  <footer>
+    <p class="meta">
+      
   
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-10-16T18:44:00+01:00" pubdate data-updated="true">Oct 16<span>th</span>, 2016</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/nunit/'>nunit</a>, <a class='category' href='/blog/categories/testing/'>testing</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/sometimes-youve-just-got-to-deploy/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/sometimes-youve-just-got-to-deploy/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/boxstarter-and-checksums/" title="Previous Post: Boxstarter and checksums">&laquo; Boxstarter and checksums</a>
+      
+      
+    </p>
+  </footer>
 </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
 
 </div>
 
@@ -183,7 +267,10 @@
       var disqus_shortname = 'zerosharp';
       
         
-        var disqus_script = 'count.js';
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/sometimes-youve-just-got-to-deploy/';
+        var disqus_url = 'http://ZeroSharp.github.com/sometimes-youve-just-got-to-deploy/';
+        var disqus_script = 'embed.js';
       
     (function () {
       var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;

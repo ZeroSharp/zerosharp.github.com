@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: testing | ZeroSharp]]></title>
+  <link href="http://ZeroSharp.github.com/blog/categories/testing/atom.xml" rel="self"/>
+  <link href="http://ZeroSharp.github.com/"/>
+  <updated>2016-10-16T19:03:50+01:00</updated>
+  <id>http://ZeroSharp.github.com/</id>
+  <author>
+    <name><![CDATA[Robert Anderson]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Sometimes you've just got to deploy]]></title>
+    <link href="http://ZeroSharp.github.com/sometimes-youve-just-got-to-deploy/"/>
+    <updated>2016-10-16T18:44:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/sometimes-youve-just-got-to-deploy</id>
+    <content type="html"><![CDATA[<p>Sometimes the deadline has arrived and you still have some failing tests. After a discussion with the dev team, you decide to deploy anyway and fix the bugs for the next release. You need to get the build server to ignore the tests.</p>
+
+<p>One way is just to mark the test with the <code>[Ignore]</code> attribute.</p>
+
+<p>```c#
+[Test]
+[Ignore] // TODO: Fix this test before the next release!
+public void Test()
+{</p>
+
+<pre><code>// Some failing test code...
+</code></pre>
+
+<p>}
+```</p>
+
+<p>After the weekend, everyone forgets about the ignored tests and they never get fixed.</p>
+
+<p>Instead, I like to do this.
+```c#
+[Test]
+public void Test()
+{</p>
+
+<pre><code>if (DateTime.Now &lt; new DateTime(2016, 10, 17))
+    Assert.Ignore("Temporarily ignored until October 17.");
+// Some failing test code...
+</code></pre>
+
+<p>}
+```</p>
+
+<p>This is a fairly rare occurrence for my team, so the above approach is sufficient and works with all test frameworks. But if you want to go further <a href="https://www.amido.com/code/conditional-ignore-nunit-and-the-ability-to-conditionally-ignore-a-test/">Richard Slater shows how to create an NUnit attribute</a>.</p>
+]]></content>
+  </entry>
+  
+</feed>

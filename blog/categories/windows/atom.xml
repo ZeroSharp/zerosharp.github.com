@@ -4,7 +4,7 @@
   <title><![CDATA[Category: windows | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/windows/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-09-22T21:17:10+01:00</updated>
+  <updated>2016-10-16T19:03:50+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -20,7 +20,7 @@
     <id>http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter</id>
     <content type="html"><![CDATA[<p>I've been playing around with <a href="http://boxstarter.org/">Boxstarter</a> to configure my entire development environment with hardly any user intervention.</p>
 
-<p>{% img right /images/blog/boxstarter-001.png 300 %}</p>
+<p><img class="right" src="/images/blog/boxstarter-001.png" width="300"></p>
 
 <p>Here are the steps:</p>
 
@@ -185,19 +185,32 @@ $pathToDevExpressComponentsSetup = "\somewhere\DevExpressCodeRush-13.2.7.exe"</p
 
 <p>The following script saved my bacon.</p>
 
-<p>{% codeblock lang:powershell FixOwnership.ps1 %}</p>
-
-<h1>This script recursively fixes the ownership on the files in the</h1>
-
-<h1>current and subdirectories.</h1>
-
-<p>$acct1 = New-Object System.Security.Principal.NTAccount('Administrators')
-$profilefolder = Get-Item .
-$acl1 = $profilefolder.GetAccessControl()
-$acl1.SetOwner($acct1)
-dir -r . | set-acl -aclobject $acl1
-pause
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>FixOwnership.ps1 </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='powershell'><span class='line'><span class="p">&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">h1</span><span class="p">&gt;</span><span class="n">This</span> <span class="n">script</span> <span class="n">recursively</span> <span class="n">fixes</span> <span class="n">the</span> <span class="n">ownership</span> <span class="n">on</span> <span class="n">the</span> <span class="n">files</span> <span class="k">in</span> <span class="n">the</span><span class="p">&lt;/</span><span class="n">h1</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">h1</span><span class="p">&gt;</span><span class="n">current</span> <span class="n">and</span> <span class="n">subdirectories</span><span class="p">.&lt;/</span><span class="n">h1</span><span class="p">&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;</span><span class="nv">$acct1</span> <span class="p">=</span> <span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="n">Security</span><span class="p">.</span><span class="n">Principal</span><span class="p">.</span><span class="n">NTAccount</span><span class="p">(</span><span class="s1">&#39;Administrators&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="nv">$profilefolder</span> <span class="p">=</span> <span class="nb">Get-Item</span> <span class="p">.</span>
+</span><span class='line'><span class="nv">$acl1</span> <span class="p">=</span> <span class="nv">$profilefolder</span><span class="p">.</span><span class="n">GetAccessControl</span><span class="p">()</span>
+</span><span class='line'><span class="nv">$acl1</span><span class="p">.</span><span class="n">SetOwner</span><span class="p">(</span><span class="nv">$acct1</span><span class="p">)</span>
+</span><span class='line'><span class="n">dir</span> <span class="n">-r</span> <span class="p">.</span> <span class="p">|</span> <span class="nb">set-acl</span> <span class="n">-aclobject</span> <span class="nv">$acl1</span>
+</span><span class='line'><span class="n">pause</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 ]]></content>
   </entry>
   
