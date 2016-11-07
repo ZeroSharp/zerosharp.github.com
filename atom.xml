@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-10-16T19:03:50+01:00</updated>
+  <updated>2016-11-07T10:55:51+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,333 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Smart hiding of the selection boxes in XAF web applications]]></title>
+    <link href="http://ZeroSharp.github.com/smart-hiding-of-the-selection-boxes-in-xaf-web-applications/"/>
+    <updated>2016-11-06T18:39:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/smart-hiding-of-the-selection-boxes-in-xaf-web-applications</id>
+    <content type="html"><![CDATA[<p>When an <a href="https://www.devexpress.com/products/net/application_framework/">XAF</a> list view has no selection-based actions available, the selection box still appears in the grid. Users get confused. In this post, we&#8217;ll look at a workaround.</p>
+
+<h2>The problem</h2>
+
+<p>In the XAF MainDemo, lets make Departments read-only for the User role.</p>
+
+<figure class='code'><figcaption><span>Updater.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">userRole</span><span class="p">.</span><span class="n">AddTypePermissionsRecursively</span><span class="p">&lt;</span><span class="n">Department</span><span class="p">&gt;(</span><span class="n">SecurityOperations</span><span class="p">.</span><span class="n">Create</span><span class="p">,</span> <span class="n">SecurityPermissionState</span><span class="p">.</span><span class="n">Deny</span><span class="p">);</span>
+</span><span class='line'><span class="n">userRole</span><span class="p">.</span><span class="n">AddTypePermissionsRecursively</span><span class="p">&lt;</span><span class="n">Department</span><span class="p">&gt;(</span><span class="n">SecurityOperations</span><span class="p">.</span><span class="n">Write</span><span class="p">,</span> <span class="n">SecurityPermissionState</span><span class="p">.</span><span class="n">Deny</span><span class="p">);</span>
+</span><span class='line'><span class="n">userRole</span><span class="p">.</span><span class="n">AddTypePermissionsRecursively</span><span class="p">&lt;</span><span class="n">Department</span><span class="p">&gt;(</span><span class="n">SecurityOperations</span><span class="p">.</span><span class="n">Delete</span><span class="p">,</span> <span class="n">SecurityPermissionState</span><span class="p">.</span><span class="n">Deny</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then start the web application, login as John and navigate to the Departments list view. There is a column selection box, but it serves no purpose. There are no actions that depend on a grid selection.</p>
+
+<p><span class='caption-wrapper'><img class='caption' src='http://ZeroSharp.github.com/images/blog/selection-visibility-controller-001.png' width='' height='' title='Without the SelectionColumnVisibilityController'><span class='caption-text'>Without the SelectionColumnVisibilityController</span></span></p>
+
+<h2>The fix</h2>
+
+<p>Here is a controller which calculates whether there are any available actions which require one or more rows to be selected. If there are none, the selection box will not appear.</p>
+
+<p>Add the following controller to the MainDemo.Module.Web project. It hides the selection box if there are no actions which depend on a grid selection.</p>
+
+<figure class='code'><figcaption><span>SelectionColumnVisibilityController.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+</span><span class='line'><span class="k">using</span> <span class="nn">DevExpress.ExpressApp</span><span class="p">;</span>
+</span><span class='line'><span class="k">using</span> <span class="nn">DevExpress.ExpressApp.Actions</span><span class="p">;</span>
+</span><span class='line'><span class="k">using</span> <span class="nn">DevExpress.ExpressApp.Editors</span><span class="p">;</span>
+</span><span class='line'><span class="k">using</span> <span class="nn">DevExpress.ExpressApp.SystemModule</span><span class="p">;</span>
+</span><span class='line'><span class="k">using</span> <span class="nn">DevExpress.Web</span><span class="p">;</span>
+</span><span class='line'><span class="k">using</span> <span class="nn">System.Linq</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">namespace</span> <span class="nn">MainDemo.Module.Web.Controllers</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">class</span> <span class="nc">SelectionColumnVisibilityController</span> <span class="p">:</span> <span class="n">ViewController</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">public</span> <span class="nf">SelectionColumnVisibilityController</span><span class="p">()</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">TargetViewType</span> <span class="p">=</span> <span class="n">ViewType</span><span class="p">.</span><span class="n">ListView</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">private</span> <span class="kt">bool</span> <span class="nf">IsSelectionColumnVisible</span><span class="p">()</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="kt">bool</span> <span class="n">isSelectionColumnRequired</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'>            <span class="c1">// remove checkbox if there are no available actions</span>
+</span><span class='line'>            <span class="k">foreach</span> <span class="p">(</span><span class="n">Controller</span> <span class="n">controller</span> <span class="k">in</span> <span class="n">Frame</span><span class="p">.</span><span class="n">Controllers</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="k">if</span> <span class="p">(!</span><span class="n">controller</span><span class="p">.</span><span class="n">Active</span><span class="p">)</span>
+</span><span class='line'>                    <span class="k">continue</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="k">if</span> <span class="p">(</span><span class="n">controller</span><span class="p">.</span><span class="n">Actions</span><span class="p">.</span><span class="n">Count</span> <span class="p">==</span> <span class="m">0</span><span class="p">)</span>
+</span><span class='line'>                    <span class="k">continue</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="kt">bool</span> <span class="n">allowEdit</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>                <span class="k">if</span> <span class="p">((</span><span class="n">Frame</span> <span class="k">is</span> <span class="n">NestedFrame</span><span class="p">)</span> <span class="p">&amp;&amp;</span> <span class="p">(((</span><span class="n">NestedFrame</span><span class="p">)</span><span class="n">Frame</span><span class="p">).</span><span class="n">ViewItem</span> <span class="k">is</span> <span class="n">PropertyEditor</span><span class="p">))</span>
+</span><span class='line'>                    <span class="n">allowEdit</span> <span class="p">=</span> <span class="p">(</span><span class="kt">bool</span><span class="p">)((</span><span class="n">PropertyEditor</span><span class="p">)((</span><span class="n">NestedFrame</span><span class="p">)</span><span class="n">Frame</span><span class="p">).</span><span class="n">ViewItem</span><span class="p">).</span><span class="n">AllowEdit</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="k">foreach</span> <span class="p">(</span><span class="n">ActionBase</span> <span class="n">action</span> <span class="k">in</span> <span class="n">controller</span><span class="p">.</span><span class="n">Actions</span><span class="p">)</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="p">(</span><span class="n">action</span><span class="p">.</span><span class="n">SelectionDependencyType</span> <span class="p">==</span> <span class="n">SelectionDependencyType</span><span class="p">.</span><span class="n">RequireMultipleObjects</span><span class="p">)</span>
+</span><span class='line'>                    <span class="p">{</span>
+</span><span class='line'>                        <span class="k">if</span> <span class="p">(</span><span class="n">action</span><span class="p">.</span><span class="n">Active</span> <span class="p">||</span> <span class="n">IsActionInactiveBySelectionContext</span><span class="p">(</span><span class="n">action</span><span class="p">))</span>
+</span><span class='line'>                        <span class="p">{</span>
+</span><span class='line'>                            <span class="k">if</span> <span class="p">(</span><span class="n">action</span><span class="p">.</span><span class="n">Enabled</span> <span class="p">||</span> <span class="n">IsActionDisabledBySelectionContext</span><span class="p">(</span><span class="n">action</span><span class="p">))</span>
+</span><span class='line'>                            <span class="p">{</span>
+</span><span class='line'>                                <span class="n">isSelectionColumnRequired</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>                                <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>                            <span class="p">}</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>                <span class="k">if</span> <span class="p">(</span><span class="n">isSelectionColumnRequired</span><span class="p">)</span>
+</span><span class='line'>                    <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">isSelectionColumnRequired</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">private</span> <span class="kt">bool</span> <span class="nf">IsActionInactiveBySelectionContext</span><span class="p">(</span><span class="n">ActionBase</span> <span class="n">action</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">action</span><span class="p">.</span><span class="n">Active</span><span class="p">)</span>
+</span><span class='line'>                <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">else</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="k">foreach</span> <span class="p">(</span><span class="kt">string</span> <span class="n">item</span> <span class="k">in</span> <span class="n">action</span><span class="p">.</span><span class="n">Active</span><span class="p">.</span><span class="n">GetKeys</span><span class="p">())</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="p">(</span><span class="n">item</span> <span class="p">==</span> <span class="n">ActionBase</span><span class="p">.</span><span class="n">RequireMultipleObjectsContext</span> <span class="p">||</span> <span class="n">item</span> <span class="p">==</span> <span class="n">ActionBase</span><span class="p">.</span><span class="n">RequireSingleObjectContext</span><span class="p">)</span>
+</span><span class='line'>                        <span class="k">continue</span><span class="p">;</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="p">(!</span><span class="n">action</span><span class="p">.</span><span class="n">Active</span><span class="p">[</span><span class="n">item</span><span class="p">])</span>
+</span><span class='line'>                        <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>                <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">private</span> <span class="kt">bool</span> <span class="nf">IsActionDisabledBySelectionContext</span><span class="p">(</span><span class="n">ActionBase</span> <span class="n">action</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">action</span><span class="p">.</span><span class="n">Enabled</span><span class="p">)</span>
+</span><span class='line'>                <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">else</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="k">foreach</span> <span class="p">(</span><span class="kt">string</span> <span class="n">item</span> <span class="k">in</span> <span class="n">action</span><span class="p">.</span><span class="n">Enabled</span><span class="p">.</span><span class="n">GetKeys</span><span class="p">())</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="p">(</span><span class="n">item</span> <span class="p">==</span> <span class="n">ActionBase</span><span class="p">.</span><span class="n">RequireMultipleObjectsContext</span> <span class="p">||</span>
+</span><span class='line'>                        <span class="n">item</span> <span class="p">==</span> <span class="n">ActionBase</span><span class="p">.</span><span class="n">RequireSingleObjectContext</span> <span class="p">||</span>
+</span><span class='line'>                        <span class="n">item</span> <span class="p">==</span> <span class="n">ActionsCriteriaViewController</span><span class="p">.</span><span class="n">EnabledByCriteriaKey</span><span class="p">)</span>
+</span><span class='line'>                        <span class="k">continue</span><span class="p">;</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="p">(!</span><span class="n">action</span><span class="p">.</span><span class="n">Enabled</span><span class="p">[</span><span class="n">item</span><span class="p">])</span>
+</span><span class='line'>                        <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>                <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnViewControlsCreated</span><span class="p">()</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">base</span><span class="p">.</span><span class="n">OnViewControlsCreated</span><span class="p">();</span>
+</span><span class='line'>            <span class="n">ASPxGridView</span> <span class="n">grid</span> <span class="p">=</span> <span class="p">((</span><span class="n">ListView</span><span class="p">)</span><span class="k">this</span><span class="p">.</span><span class="n">View</span><span class="p">).</span><span class="n">Editor</span><span class="p">.</span><span class="n">Control</span> <span class="k">as</span> <span class="n">ASPxGridView</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">grid</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="n">grid</span><span class="p">.</span><span class="n">Load</span> <span class="p">+=</span> <span class="n">grid_Load</span><span class="p">;</span>
+</span><span class='line'>                <span class="n">grid</span><span class="p">.</span><span class="n">DataBound</span> <span class="p">+=</span> <span class="n">grid_DataBound</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnDeactivated</span><span class="p">()</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">base</span><span class="p">.</span><span class="n">OnDeactivated</span><span class="p">();</span>
+</span><span class='line'>            <span class="n">ASPxGridView</span> <span class="n">grid</span> <span class="p">=</span> <span class="p">((</span><span class="n">ListView</span><span class="p">)</span><span class="k">this</span><span class="p">.</span><span class="n">View</span><span class="p">).</span><span class="n">Editor</span><span class="p">.</span><span class="n">Control</span> <span class="k">as</span> <span class="n">ASPxGridView</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">grid</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="n">grid</span><span class="p">.</span><span class="n">DataBound</span> <span class="p">-=</span> <span class="n">grid_DataBound</span><span class="p">;</span>
+</span><span class='line'>                <span class="n">grid</span><span class="p">.</span><span class="n">Load</span> <span class="p">-=</span> <span class="n">grid_Load</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">void</span> <span class="nf">grid_Load</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">SetSelectionColumnVisibility</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">void</span> <span class="nf">grid_DataBound</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">SetSelectionColumnVisibility</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">private</span> <span class="k">void</span> <span class="nf">SetSelectionColumnVisibility</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="kt">bool</span> <span class="n">isSelectionColumnVisible</span> <span class="p">=</span> <span class="n">IsSelectionColumnVisible</span><span class="p">();</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(!</span><span class="n">isSelectionColumnVisible</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="kt">var</span> <span class="n">grid</span> <span class="p">=</span> <span class="p">(</span><span class="n">ASPxGridView</span><span class="p">)</span><span class="n">sender</span><span class="p">;</span>
+</span><span class='line'>                <span class="kt">var</span> <span class="n">selectionBoxColumn</span> <span class="p">=</span>
+</span><span class='line'>                    <span class="n">grid</span><span class="p">.</span><span class="n">Columns</span>
+</span><span class='line'>                        <span class="p">.</span><span class="n">OfType</span><span class="p">&lt;</span><span class="n">GridViewCommandColumn</span><span class="p">&gt;()</span>
+</span><span class='line'>                        <span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">ShowSelectCheckbox</span><span class="p">)</span>
+</span><span class='line'>                        <span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="k">if</span> <span class="p">(</span><span class="n">selectionBoxColumn</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="n">selectionBoxColumn</span><span class="p">.</span><span class="n">Visible</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Run the application again and see the difference. Now the grid looks like this. Notice, there is no longer a selection box on the row.</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/selection-visibility-controller-002.png" title="With the SelectionColumnVisibilityController" ></p>
+
+<p>By the way, this is how it looks with old-style XAF web apps.</p>
+
+<p><span class='caption-wrapper'><img class='caption' src='http://ZeroSharp.github.com/images/blog/selection-visibility-controller-003.png' width='' height='' title='Without the SelectionColumnVisibilityController'><span class='caption-text'>Without the SelectionColumnVisibilityController</span></span></p>
+
+<p><span class='caption-wrapper'><img class='caption' src='http://ZeroSharp.github.com/images/blog/selection-visibility-controller-004.png' width='' height='' title='With the SelectionColumnVisibilityController'><span class='caption-text'>With the SelectionColumnVisibilityController</span></span></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Sometimes you've just got to deploy]]></title>
@@ -2242,242 +2569,6 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
 <h2>Other new features in XAF 14.2</h2>
 
 <p>The new 14.2 includes several other new features. These include the ability to store user settings in the data store as well as improvements to the speed of the grids. For a full list of the new features and improvements see <a href="https://community.devexpress.com/blogs/eaf/archive/2014/11/18/xaf-brand-new-module-amp-features-for-both-windows-and-the-web-coming-soon-in-v14-2.aspx">here</a> and <a href="https://community.devexpress.com/blogs/eaf/archive/2014/11/20/xaf-enhancements-to-existing-features-amp-performance-tuning-coming-soon-in-v14-2.aspx">here</a>.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[ELMAH with DevExpress XAF]]></title>
-    <link href="http://ZeroSharp.github.com/elmah-with-devexpress-xaf/"/>
-    <updated>2014-10-08T15:45:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/elmah-with-devexpress-xaf</id>
-    <content type="html"><![CDATA[<p><a href="https://code.google.com/p/elmah/">ELMAH (Error Logging Modules and Handlers)</a> is an open source library for logging unhandled exceptions. This post explains how to get it running with the <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a> main demo.</p>
-
-<p>A couple of amazing facts about ELMAH.</p>
-
-<ul>
-<li>It has been around since 2004!</li>
-<li>It was written by <a href="http://www.raboof.com/">Atif Aziz</a> who happens to be an old school-friend from the International School of Geneva.</li>
-</ul>
-
-
-<p>XAF provides <a href="https://documentation.devexpress.com/#xaf/CustomDocument2704">quite extensive error handling options</a> out of the box, but I have found Elmah better suited to production environments because of the ability to remotely view the full error log.</p>
-
-<h2>Setting up</h2>
-
-<p>First, get the ELMAH package via NuGet into the MainDemo.Web project. ELMAH provides dozens of different methods of persisting the error log. For this example we&#8217;ll choose one of the simplest. Make sure you select the <em>ELMAH on XML Log</em> package.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-elmah-001.png"></p>
-
-<p>NuGet makes several automatic modifications to the <em>web.config</em>. Unfortunately, these are not quite accurate enough for XAF. The changes you need to make are detailed below:</p>
-
-<p>Add a <code>&lt;configSection&gt;</code> for ELMAH as alongside the existing devExpress one.</p>
-
-<figure class='code'><figcaption><span>web.config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;configSections&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;sectionGroup</span> <span class="na">name=</span><span class="s">&quot;devExpress&quot;</span><span class="nt">&gt;</span>...<span class="nt">&lt;/sectionGroup&gt;</span> <span class="c">&lt;!-- this should already exist--&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;sectionGroup</span> <span class="na">name=</span><span class="s">&quot;elmah&quot;</span><span class="nt">&gt;</span> <span class="c">&lt;!-- this is new--&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;section</span> <span class="na">name=</span><span class="s">&quot;security&quot;</span> <span class="na">requirePermission=</span><span class="s">&quot;false&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.SecuritySectionHandler, Elmah&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;section</span> <span class="na">name=</span><span class="s">&quot;errorLog&quot;</span> <span class="na">requirePermission=</span><span class="s">&quot;false&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogSectionHandler, Elmah&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;section</span> <span class="na">name=</span><span class="s">&quot;errorMail&quot;</span> <span class="na">requirePermission=</span><span class="s">&quot;false&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorMailSectionHandler, Elmah&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;section</span> <span class="na">name=</span><span class="s">&quot;errorFilter&quot;</span> <span class="na">requirePermission=</span><span class="s">&quot;false&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorFilterSectionHandler, Elmah&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>     <span class="nt">&lt;/sectionGroup&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/configSections&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Your <code>&lt;system.webServer&gt;</code> section should look like this:</p>
-
-<figure class='code'><figcaption><span>web.config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;system.webServer&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;handlers&gt;</span>...<span class="nt">&lt;/handlers&gt;</span> <span class="c">&lt;!-- This is unchanged --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;validation</span> <span class="na">validateIntegratedModeConfiguration=</span><span class="s">&quot;false&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;modules&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ASPxHttpHandlerModule&quot;</span> <span class="na">type=</span><span class="s">&quot;DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v14.1, Version=14.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorLog&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogModule, Elmah&quot;</span> <span class="na">preCondition=</span><span class="s">&quot;managedHandler&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorMail&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorMailModule, Elmah&quot;</span> <span class="na">preCondition=</span><span class="s">&quot;managedHandler&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorFilter&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorFilterModule, Elmah&quot;</span> <span class="na">preCondition=</span><span class="s">&quot;managedHandler&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/modules&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/system.webServer&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Add a <code>&lt;location&gt;</code> for the path <em>elmah.axd</em> (alongside the existing <code>&lt;location&gt;</code> tags).</p>
-
-<figure class='code'><figcaption><span>web.config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;location</span> <span class="na">path=</span><span class="s">&quot;elmah.axd&quot;</span> <span class="na">inheritInChildApplications=</span><span class="s">&quot;false&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;system.web&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;httpHandlers&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;add</span> <span class="na">verb=</span><span class="s">&quot;POST,GET,HEAD&quot;</span> <span class="na">path=</span><span class="s">&quot;elmah.axd&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogPageFactory, Elmah&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/httpHandlers&gt;</span>
-</span><span class='line'>      <span class="c">&lt;!-- </span>
-</span><span class='line'><span class="c">        See http://code.google.com/p/elmah/wiki/SecuringErrorLogPages for </span>
-</span><span class='line'><span class="c">        more information on using ASP.NET authorization securing ELMAH.</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">      &lt;authorization&gt;</span>
-</span><span class='line'><span class="c">        &lt;allow roles=&quot;admin&quot; /&gt;</span>
-</span><span class='line'><span class="c">        &lt;deny users=&quot;*&quot; /&gt;  </span>
-</span><span class='line'><span class="c">      &lt;/authorization&gt;</span>
-</span><span class='line'><span class="c">      --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/system.web&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;system.webServer&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;handlers&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ELMAH&quot;</span> <span class="na">verb=</span><span class="s">&quot;POST,GET,HEAD&quot;</span> <span class="na">path=</span><span class="s">&quot;elmah.axd&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogPageFactory, Elmah&quot;</span> <span class="na">preCondition=</span><span class="s">&quot;integratedMode&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/handlers&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/system.webServer&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/location&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Add a new <code>&lt;elmah&gt;</code> section. I put mine just before the final <code>&lt;/configuration&gt;</code> tag.</p>
-
-<figure class='code'><figcaption><span>web.config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;elmah&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;errorLog</span> <span class="na">type=</span><span class="s">&quot;Elmah.XmlFileErrorLog, Elmah&quot;</span> <span class="na">logPath=</span><span class="s">&quot;~/App_Data/Elmah.Errors&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="c">&lt;!--</span>
-</span><span class='line'><span class="c">        See http://code.google.com/p/elmah/wiki/SecuringErrorLogPages for </span>
-</span><span class='line'><span class="c">        more information on remote access and securing ELMAH.</span>
-</span><span class='line'><span class="c">    --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;security</span> <span class="na">allowRemoteAccess=</span><span class="s">&quot;false&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/elmah&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now modify <em>HttpModules.Web.Config</em> to look like this:</p>
-
-<figure class='code'><figcaption><span>HttpModules.Web.Config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;httpModules&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ASPxHttpHandlerModule&quot;</span> <span class="na">type=</span><span class="s">&quot;DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v14.1, Version=14.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorLog&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogModule, Elmah&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorMail&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorMailModule, Elmah&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorFilter&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorFilterModule, Elmah&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'><span class="nt">&lt;/httpModules&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now we need to extend XAF&#8217;s standard error handling. Create a new class in the web application.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">ElmahErrorHandling</span> <span class="p">:</span> <span class="n">ErrorHandling</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">LogException</span><span class="p">(</span><span class="n">ErrorInfo</span> <span class="n">errorInfo</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">base</span><span class="p">.</span><span class="n">LogException</span><span class="p">(</span><span class="n">errorInfo</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">errorInfo</span><span class="p">.</span><span class="n">Exception</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
-</span><span class='line'>            <span class="n">Elmah</span><span class="p">.</span><span class="n">ErrorSignal</span><span class="p">.</span><span class="n">FromCurrentContext</span><span class="p">().</span><span class="n">Raise</span><span class="p">(</span><span class="n">errorInfo</span><span class="p">.</span><span class="n">Exception</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And then modify <em>Global.asax.cs</em> to instantiate the new class</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'>    <span class="k">protected</span> <span class="k">void</span> <span class="nf">Application_Start</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">ErrorHandling</span><span class="p">.</span><span class="n">Instance</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ElmahErrorHandling</span><span class="p">();</span> <span class="c1">// &lt;---this line is new</span>
-</span><span class='line'>        <span class="n">ASPxWebControl</span><span class="p">.</span><span class="n">CallbackError</span> <span class="p">+=</span> <span class="k">new</span> <span class="n">EventHandler</span><span class="p">(</span><span class="n">Application_Error</span><span class="p">);</span>
-</span><span class='line'><span class="cp">#if DEBUG</span>
-</span><span class='line'>        <span class="n">TestScriptsManager</span><span class="p">.</span><span class="n">EasyTestEnabled</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
-</span><span class='line'><span class="cp">#endif</span>
-</span><span class='line'>    <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The complete files are available with the <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Elmah">source code</a>.</p>
-
-<p>Now run the application and trigger an unhandled exception. Change the URL to something that does not exist. Or open any detail view and modify the URL so that the Guid in the <em>ShortcutObjectKey</em> is invalid (replace a digit with an &#8216;X&#8217;). Then the application error page appears.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-elmah-002.png"></p>
-
-<p>Then return to the application and change the URL to <code>Elmah.axd</code>. You are looking at the log of all unhandled exceptions.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-elmah-003.png"></p>
-
-<p>And for each exception, you can view the full details of any logged exception including coloured stack trace and full server variables.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-elmah-004.png"></p>
-
-<h2>ELMAH options</h2>
-
-<p>By default, ELMAH is configured to disallow remote access to the error logs -  only a local user can get to <em>elmah.axd</em>. If you take care of the security implications it can be very useful to enable remote access and  monitor the logs on your production servers.</p>
-
-<p>We chose to use an XML file for each error but ELMAH is entirely pluggable. There are dozens of alternatives for persisting the error log including Sql Server, an RSS feeds, to Twitter, even to <a href="http://code.google.com/p/elmah/wiki/ProwlingErrors">an iPhone app</a>. There are even third party sites such as <a href="http://elmah.io">elmah.io</a> who will host your error logs for you.</p>
-
-<p>One of the advantages of using XML files is that the files can be copied to another machine. If you look in <em>MainDemo.Web\App_Data\Elmah.Errors</em>, you will find the resulting xml files.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/xaf-with-elmah-005.png"></p>
-
-<p>You can just copy these files to another installation&#8217;s <em>Elmah.Errors</em> folder and the log will show up when you visit <em>Elmah.axd</em>.</p>
-
-<p>One final note. ELMAH was developed for ASP.NET applications and web services, but it is possible to get it to work with other types of applications such as Windows Forms, Windows Service or console applications. Check out <a href="https://stackoverflow.com/questions/841451/using-elmah-in-a-console-application">this StackOverflow question</a>.</p>
-
-<p>The source code for this example is <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Elmah">on GitHub</a>.</p>
 ]]></content>
   </entry>
   

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: c# | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/c-/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-10-16T19:03:50+01:00</updated>
+  <updated>2016-11-07T10:55:51+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,192 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Smart hiding of the selection boxes in XAF web applications]]></title>
+    <link href="http://ZeroSharp.github.com/smart-hiding-of-the-selection-boxes-in-xaf-web-applications/"/>
+    <updated>2016-11-06T18:39:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/smart-hiding-of-the-selection-boxes-in-xaf-web-applications</id>
+    <content type="html"><![CDATA[<p>When an <a href="https://www.devexpress.com/products/net/application_framework/">XAF</a> list view has no selection-based actions available, the selection box still appears in the grid. Users get confused. In this post, we'll look at a workaround.</p>
+
+<h2>The problem</h2>
+
+<p>In the XAF MainDemo, lets make Departments read-only for the User role.</p>
+
+<p><code>c# Updater.cs
+userRole.AddTypePermissionsRecursively&lt;Department&gt;(SecurityOperations.Create, SecurityPermissionState.Deny);
+userRole.AddTypePermissionsRecursively&lt;Department&gt;(SecurityOperations.Write, SecurityPermissionState.Deny);
+userRole.AddTypePermissionsRecursively&lt;Department&gt;(SecurityOperations.Delete, SecurityPermissionState.Deny);
+</code></p>
+
+<p>Then start the web application, login as John and navigate to the Departments list view. There is a column selection box, but it serves no purpose. There are no actions that depend on a grid selection.</p>
+
+<p><span class='caption-wrapper'><img class='caption' src='/images/blog/selection-visibility-controller-001.png' width='' height='' title='Without the SelectionColumnVisibilityController'><span class='caption-text'>Without the SelectionColumnVisibilityController</span></span></p>
+
+<h2>The fix</h2>
+
+<p>Here is a controller which calculates whether there are any available actions which require one or more rows to be selected. If there are none, the selection box will not appear.</p>
+
+<p>Add the following controller to the MainDemo.Module.Web project. It hides the selection box if there are no actions which depend on a grid selection.</p>
+
+<p>```c# SelectionColumnVisibilityController.cs
+using System;
+using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.Actions;
+using DevExpress.ExpressApp.Editors;
+using DevExpress.ExpressApp.SystemModule;
+using DevExpress.Web;
+using System.Linq;</p>
+
+<p>namespace MainDemo.Module.Web.Controllers
+{</p>
+
+<pre><code>public class SelectionColumnVisibilityController : ViewController
+{
+    public SelectionColumnVisibilityController()
+    {
+        TargetViewType = ViewType.ListView;
+    }
+
+    private bool IsSelectionColumnVisible()
+    {
+        bool isSelectionColumnRequired = false;
+        // remove checkbox if there are no available actions
+        foreach (Controller controller in Frame.Controllers)
+        {
+            if (!controller.Active)
+                continue;
+
+            if (controller.Actions.Count == 0)
+                continue;
+
+            bool allowEdit = true;
+            if ((Frame is NestedFrame) &amp;&amp; (((NestedFrame)Frame).ViewItem is PropertyEditor))
+                allowEdit = (bool)((PropertyEditor)((NestedFrame)Frame).ViewItem).AllowEdit;
+
+            foreach (ActionBase action in controller.Actions)
+            {
+                if (action.SelectionDependencyType == SelectionDependencyType.RequireMultipleObjects)
+                {
+                    if (action.Active || IsActionInactiveBySelectionContext(action))
+                    {
+                        if (action.Enabled || IsActionDisabledBySelectionContext(action))
+                        {
+                            isSelectionColumnRequired = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (isSelectionColumnRequired)
+                break;
+        }
+        return isSelectionColumnRequired;
+    }
+
+    private bool IsActionInactiveBySelectionContext(ActionBase action)
+    {
+        if (action.Active)
+            return true;
+        else
+        {
+            foreach (string item in action.Active.GetKeys())
+            {
+                if (item == ActionBase.RequireMultipleObjectsContext || item == ActionBase.RequireSingleObjectContext)
+                    continue;
+                if (!action.Active[item])
+                    return false;
+            }
+            return true;
+        }
+    }
+
+    private bool IsActionDisabledBySelectionContext(ActionBase action)
+    {
+        if (action.Enabled)
+            return true;
+        else
+        {
+            foreach (string item in action.Enabled.GetKeys())
+            {
+                if (item == ActionBase.RequireMultipleObjectsContext ||
+                    item == ActionBase.RequireSingleObjectContext ||
+                    item == ActionsCriteriaViewController.EnabledByCriteriaKey)
+                    continue;
+                if (!action.Enabled[item])
+                    return false;
+            }
+            return true;
+        }
+    }
+
+    protected override void OnViewControlsCreated()
+    {
+        base.OnViewControlsCreated();
+        ASPxGridView grid = ((ListView)this.View).Editor.Control as ASPxGridView;
+        if (grid != null)
+        {
+            grid.Load += grid_Load;
+            grid.DataBound += grid_DataBound;
+        }
+    }
+
+    protected override void OnDeactivated()
+    {
+        base.OnDeactivated();
+        ASPxGridView grid = ((ListView)this.View).Editor.Control as ASPxGridView;
+        if (grid != null)
+        {
+            grid.DataBound -= grid_DataBound;
+            grid.Load -= grid_Load;
+        }
+    }
+
+    void grid_Load(object sender, EventArgs e)
+    {
+        SetSelectionColumnVisibility(sender, e);
+    }
+
+    void grid_DataBound(object sender, EventArgs e)
+    {
+        SetSelectionColumnVisibility(sender, e);
+    }
+
+    private void SetSelectionColumnVisibility(object sender, EventArgs e)
+    {
+        bool isSelectionColumnVisible = IsSelectionColumnVisible();
+        if (!isSelectionColumnVisible)
+        {
+            var grid = (ASPxGridView)sender;
+            var selectionBoxColumn =
+                grid.Columns
+                    .OfType&lt;GridViewCommandColumn&gt;()
+                    .Where(x =&gt; x.ShowSelectCheckbox)
+                    .FirstOrDefault();
+
+            if (selectionBoxColumn != null)
+            {
+                selectionBoxColumn.Visible = false;
+            }
+        }
+    }
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Run the application again and see the difference. Now the grid looks like this. Notice, there is no longer a selection box on the row.</p>
+
+<p><img src="/images/blog/selection-visibility-controller-002.png" title="With the SelectionColumnVisibilityController" ></p>
+
+<p>By the way, this is how it looks with old-style XAF web apps.</p>
+
+<p><span class='caption-wrapper'><img class='caption' src='/images/blog/selection-visibility-controller-003.png' width='' height='' title='Without the SelectionColumnVisibilityController'><span class='caption-text'>Without the SelectionColumnVisibilityController</span></span></p>
+
+<p><span class='caption-wrapper'><img class='caption' src='/images/blog/selection-visibility-controller-004.png' width='' height='' title='With the SelectionColumnVisibilityController'><span class='caption-text'>With the SelectionColumnVisibilityController</span></span></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Sometimes you've just got to deploy]]></title>
@@ -417,29 +603,6 @@ this.reportsModuleV2.ReportStoreMode = DevExpress.ExpressApp.ReportsV2.ReportSto
 <h2>Coming up</h2>
 
 <p>Tomorrow I'll be looking at the new <a href="https://community.devexpress.com/blogs/eaf/archive/2015/11/24/xaf-validation-module-enhancements-for-windows-and-the-web-coming-soon-in-v15-2.aspx">batch editing in grids</a> in more detail.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 3]]></title>
-    <link href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3/"/>
-    <updated>2015-09-16T09:39:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3</id>
-    <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='I&#8217;m happy to report there is a considerable improvement under load in version 15.1.'>
-This is the third part of a <a href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2">series</a> about migrating a large application from XAF 12.1 to XAF 15.1. In this part I will compare the results of a simple stress test between the versions.</p>
-
-<p>I have described in previous posts how to <a href="/load-testing-xaf-overview/">stress test XAF applications</a>. One of our most basic tests is to simulate 25 users cycling through all the navigation tabs for an hour. I'm happy to report there is a considerable improvement under load in version 15.1.</p>
-
-<p>(Note that we purposefully stress test against a single web application so that we can compare apples with apples. In production we have multiple instances load-balanced.)</p>
-
-<p>Here is an interactive summary of the 15.1 results:
-</span></p>
-
-<p>Here is version 15.1. There were zero errors and 382 completed scripts.</p>
-
-<p>By comparison, the same test against DevExpress 12.1 yielded only 258 completions. So 15.1 shows a 48% performance improvement over 12.1.</p>
-
-<p><iframe class="cmd" src="https://load.wpm.neustar.biz/load/test/share/e4c5e109f8f04ceebd72cdb5c93eb1c2" width="1024" height="512"></p>
 ]]></content>
   </entry>
   

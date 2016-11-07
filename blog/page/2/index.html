@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Last week, DevExpress released 2015.2.3, their second major version of the year. There are already some good blog posts about the changes: Michael &hellip;">
+  <meta name="description" content="This is the second and final dive into some of the new DevExpress XAF 2015.2 features. The first part covers the Report Designer and the new XML &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,107 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/devexpress-15-dot-2-review-part-2/">DevExpress 2015.2 Review Part 2</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-12-10T09:43:00+00:00" pubdate data-updated="true">Dec 10<span>th</span>, 2015</time>
+        
+         | <a href="/devexpress-15-dot-2-review-part-2/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This is the second and final dive into some of the new DevExpress XAF 2015.2 features. The <a href="/devexpress-15-dot-2-review-part-1/">first part</a> covers the Report Designer and the new XML serialisation.</p>
+
+<h2>Batch editing</h2>
+
+<p>Another feature I&#8217;m excited about is the support for batch editing within the web application grids.</p>
+
+<p>Let&#8217;s see what happens when combined with the validation rules. What happens if I edit two rows but only one has a validation problem - does the whole batch get rejected? Or just the row with the problem?</p>
+
+<p>First I modified the edit mode of the Tasks grid to <code>Batch</code> via the model.</p>
+
+<p><img src="/images/blog/devexpress-15-2-review-001.png"></p>
+
+<p>Then I added a new <code>RuleRequiredField</code> validation rule via the model.</p>
+
+<p><img src="/images/blog/devexpress-15-2-review-002.png"></p>
+
+<p>I started up the MainDemo application and navigated to the Tasks view and tried to delete the subject of multiple rows at the same time.</p>
+
+<p><img src="/images/blog/devexpress-15-2-review-003.png"></p>
+
+<p>I never even got to press Save because of another new 15.2 feature: <a href="https://community.devexpress.com/blogs/eaf/archive/2015/11/24/xaf-validation-module-enhancements-for-windows-and-the-web-coming-soon-in-v15-2.aspx">inplace validation</a>! The rules are being validated <em>without</em> a round trip to the server!</p>
+
+<p>So let&#8217;s try another way. <em>Inplace Validation</em> does not work with all rule types, so I deleted my <code>RuleRequiredField</code> from the model and instead added a new <code>RuleFromBoolProperty</code> to the <code>DemoTask</code> object as follows:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[MemberDesignTimeVisibility(false)]</span>
+</span><span class='line'><span class="na">[RuleFromBoolProperty(&quot;SubjectIsRequired&quot;, </span>
+</span><span class='line'><span class="na">    DefaultContexts.Save, </span>
+</span><span class='line'><span class="na">    &quot;Subject is required.&quot;, </span>
+</span><span class='line'><span class="na">    UsedProperties = &quot;Subject&quot;, </span>
+</span><span class='line'><span class="na">    SkipNullOrEmptyValues = false)]</span>
+</span><span class='line'><span class="k">public</span> <span class="kt">bool</span> <span class="n">IsSubjectRequired</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">get</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="p">!</span><span class="n">String</span><span class="p">.</span><span class="n">IsNullOrWhiteSpace</span><span class="p">(</span><span class="n">Subject</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we go back to the list view for Task and try to set multiple subjects to empty.</p>
+
+<p><img src="/images/blog/devexpress-15-2-review-004.png"></p>
+
+<p>Fantastic! This time the broken rules appear for each row and it is quite clear which message belongs to which object.</p>
+
+<p>So the batch editing makes use of inplace validation when it can, but handles more complex validation rules well too. This is an excellent combination because the inpalce validation will help to make the client seem very quick and responsive.</p>
+
+<h2>Conclusion</h2>
+
+<p>This concludes my review of DevExpress 2015.2. We&#8217;ve looked in some detail at two of the most impressive new features - the way reports are serialised and the improvements to client-side validation. These changes help with performance and ease of maintenance and I&#8217;m very happy to see that the DevExpress team has focused on these areas. Looking forward to the 2016 releases!</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -764,271 +865,6 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
 <h2>Other new features in XAF 14.2</h2>
 
 <p>The new 14.2 includes several other new features. These include the ability to store user settings in the data store as well as improvements to the speed of the grids. For a full list of the new features and improvements see <a href="https://community.devexpress.com/blogs/eaf/archive/2014/11/18/xaf-brand-new-module-amp-features-for-both-windows-and-the-web-coming-soon-in-v14-2.aspx">here</a> and <a href="https://community.devexpress.com/blogs/eaf/archive/2014/11/20/xaf-enhancements-to-existing-features-amp-performance-tuning-coming-soon-in-v14-2.aspx">here</a>.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/elmah-with-devexpress-xaf/">ELMAH With DevExpress XAF</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-10-08T15:45:00+01:00" pubdate data-updated="true">Oct 8<span>th</span>, 2014</time>
-        
-         | <a href="/elmah-with-devexpress-xaf/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><a href="https://code.google.com/p/elmah/">ELMAH (Error Logging Modules and Handlers)</a> is an open source library for logging unhandled exceptions. This post explains how to get it running with the <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a> main demo.</p>
-
-<p>A couple of amazing facts about ELMAH.</p>
-
-<ul>
-<li>It has been around since 2004!</li>
-<li>It was written by <a href="http://www.raboof.com/">Atif Aziz</a> who happens to be an old school-friend from the International School of Geneva.</li>
-</ul>
-
-
-<p>XAF provides <a href="https://documentation.devexpress.com/#xaf/CustomDocument2704">quite extensive error handling options</a> out of the box, but I have found Elmah better suited to production environments because of the ability to remotely view the full error log.</p>
-
-<h2>Setting up</h2>
-
-<p>First, get the ELMAH package via NuGet into the MainDemo.Web project. ELMAH provides dozens of different methods of persisting the error log. For this example we&#8217;ll choose one of the simplest. Make sure you select the <em>ELMAH on XML Log</em> package.</p>
-
-<p><img src="/images/blog/xaf-with-elmah-001.png"></p>
-
-<p>NuGet makes several automatic modifications to the <em>web.config</em>. Unfortunately, these are not quite accurate enough for XAF. The changes you need to make are detailed below:</p>
-
-<p>Add a <code>&lt;configSection&gt;</code> for ELMAH as alongside the existing devExpress one.</p>
-
-<figure class='code'><figcaption><span>web.config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;configSections&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;sectionGroup</span> <span class="na">name=</span><span class="s">&quot;devExpress&quot;</span><span class="nt">&gt;</span>...<span class="nt">&lt;/sectionGroup&gt;</span> <span class="c">&lt;!-- this should already exist--&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;sectionGroup</span> <span class="na">name=</span><span class="s">&quot;elmah&quot;</span><span class="nt">&gt;</span> <span class="c">&lt;!-- this is new--&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;section</span> <span class="na">name=</span><span class="s">&quot;security&quot;</span> <span class="na">requirePermission=</span><span class="s">&quot;false&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.SecuritySectionHandler, Elmah&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;section</span> <span class="na">name=</span><span class="s">&quot;errorLog&quot;</span> <span class="na">requirePermission=</span><span class="s">&quot;false&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogSectionHandler, Elmah&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;section</span> <span class="na">name=</span><span class="s">&quot;errorMail&quot;</span> <span class="na">requirePermission=</span><span class="s">&quot;false&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorMailSectionHandler, Elmah&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;section</span> <span class="na">name=</span><span class="s">&quot;errorFilter&quot;</span> <span class="na">requirePermission=</span><span class="s">&quot;false&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorFilterSectionHandler, Elmah&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>     <span class="nt">&lt;/sectionGroup&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/configSections&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Your <code>&lt;system.webServer&gt;</code> section should look like this:</p>
-
-<figure class='code'><figcaption><span>web.config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;system.webServer&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;handlers&gt;</span>...<span class="nt">&lt;/handlers&gt;</span> <span class="c">&lt;!-- This is unchanged --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;validation</span> <span class="na">validateIntegratedModeConfiguration=</span><span class="s">&quot;false&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;modules&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ASPxHttpHandlerModule&quot;</span> <span class="na">type=</span><span class="s">&quot;DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v14.1, Version=14.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorLog&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogModule, Elmah&quot;</span> <span class="na">preCondition=</span><span class="s">&quot;managedHandler&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorMail&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorMailModule, Elmah&quot;</span> <span class="na">preCondition=</span><span class="s">&quot;managedHandler&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorFilter&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorFilterModule, Elmah&quot;</span> <span class="na">preCondition=</span><span class="s">&quot;managedHandler&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/modules&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/system.webServer&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Add a <code>&lt;location&gt;</code> for the path <em>elmah.axd</em> (alongside the existing <code>&lt;location&gt;</code> tags).</p>
-
-<figure class='code'><figcaption><span>web.config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;location</span> <span class="na">path=</span><span class="s">&quot;elmah.axd&quot;</span> <span class="na">inheritInChildApplications=</span><span class="s">&quot;false&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;system.web&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;httpHandlers&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;add</span> <span class="na">verb=</span><span class="s">&quot;POST,GET,HEAD&quot;</span> <span class="na">path=</span><span class="s">&quot;elmah.axd&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogPageFactory, Elmah&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/httpHandlers&gt;</span>
-</span><span class='line'>      <span class="c">&lt;!-- </span>
-</span><span class='line'><span class="c">        See http://code.google.com/p/elmah/wiki/SecuringErrorLogPages for </span>
-</span><span class='line'><span class="c">        more information on using ASP.NET authorization securing ELMAH.</span>
-</span><span class='line'>
-</span><span class='line'><span class="c">      &lt;authorization&gt;</span>
-</span><span class='line'><span class="c">        &lt;allow roles=&quot;admin&quot; /&gt;</span>
-</span><span class='line'><span class="c">        &lt;deny users=&quot;*&quot; /&gt;  </span>
-</span><span class='line'><span class="c">      &lt;/authorization&gt;</span>
-</span><span class='line'><span class="c">      --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/system.web&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;system.webServer&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;handlers&gt;</span>
-</span><span class='line'>        <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ELMAH&quot;</span> <span class="na">verb=</span><span class="s">&quot;POST,GET,HEAD&quot;</span> <span class="na">path=</span><span class="s">&quot;elmah.axd&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogPageFactory, Elmah&quot;</span> <span class="na">preCondition=</span><span class="s">&quot;integratedMode&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>      <span class="nt">&lt;/handlers&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;/system.webServer&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/location&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Add a new <code>&lt;elmah&gt;</code> section. I put mine just before the final <code>&lt;/configuration&gt;</code> tag.</p>
-
-<figure class='code'><figcaption><span>web.config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;elmah&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;errorLog</span> <span class="na">type=</span><span class="s">&quot;Elmah.XmlFileErrorLog, Elmah&quot;</span> <span class="na">logPath=</span><span class="s">&quot;~/App_Data/Elmah.Errors&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="c">&lt;!--</span>
-</span><span class='line'><span class="c">        See http://code.google.com/p/elmah/wiki/SecuringErrorLogPages for </span>
-</span><span class='line'><span class="c">        more information on remote access and securing ELMAH.</span>
-</span><span class='line'><span class="c">    --&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;security</span> <span class="na">allowRemoteAccess=</span><span class="s">&quot;false&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/elmah&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now modify <em>HttpModules.Web.Config</em> to look like this:</p>
-
-<figure class='code'><figcaption><span>HttpModules.Web.Config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;httpModules&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ASPxHttpHandlerModule&quot;</span> <span class="na">type=</span><span class="s">&quot;DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v14.1, Version=14.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorLog&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogModule, Elmah&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorMail&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorMailModule, Elmah&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorFilter&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorFilterModule, Elmah&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'><span class="nt">&lt;/httpModules&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now we need to extend XAF&#8217;s standard error handling. Create a new class in the web application.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">ElmahErrorHandling</span> <span class="p">:</span> <span class="n">ErrorHandling</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">LogException</span><span class="p">(</span><span class="n">ErrorInfo</span> <span class="n">errorInfo</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">base</span><span class="p">.</span><span class="n">LogException</span><span class="p">(</span><span class="n">errorInfo</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">errorInfo</span><span class="p">.</span><span class="n">Exception</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
-</span><span class='line'>            <span class="n">Elmah</span><span class="p">.</span><span class="n">ErrorSignal</span><span class="p">.</span><span class="n">FromCurrentContext</span><span class="p">().</span><span class="n">Raise</span><span class="p">(</span><span class="n">errorInfo</span><span class="p">.</span><span class="n">Exception</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And then modify <em>Global.asax.cs</em> to instantiate the new class</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'>    <span class="k">protected</span> <span class="k">void</span> <span class="nf">Application_Start</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="n">ErrorHandling</span><span class="p">.</span><span class="n">Instance</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ElmahErrorHandling</span><span class="p">();</span> <span class="c1">// &lt;---this line is new</span>
-</span><span class='line'>        <span class="n">ASPxWebControl</span><span class="p">.</span><span class="n">CallbackError</span> <span class="p">+=</span> <span class="k">new</span> <span class="n">EventHandler</span><span class="p">(</span><span class="n">Application_Error</span><span class="p">);</span>
-</span><span class='line'><span class="cp">#if DEBUG</span>
-</span><span class='line'>        <span class="n">TestScriptsManager</span><span class="p">.</span><span class="n">EasyTestEnabled</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
-</span><span class='line'><span class="cp">#endif</span>
-</span><span class='line'>    <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The complete files are available with the <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Elmah">source code</a>.</p>
-
-<p>Now run the application and trigger an unhandled exception. Change the URL to something that does not exist. Or open any detail view and modify the URL so that the Guid in the <em>ShortcutObjectKey</em> is invalid (replace a digit with an &#8216;X&#8217;). Then the application error page appears.</p>
-
-<p><img src="/images/blog/xaf-with-elmah-002.png"></p>
-
-<p>Then return to the application and change the URL to <code>Elmah.axd</code>. You are looking at the log of all unhandled exceptions.</p>
-
-<p><img src="/images/blog/xaf-with-elmah-003.png"></p>
-
-<p>And for each exception, you can view the full details of any logged exception including coloured stack trace and full server variables.</p>
-
-<p><img src="/images/blog/xaf-with-elmah-004.png"></p>
-
-<h2>ELMAH options</h2>
-
-<p>By default, ELMAH is configured to disallow remote access to the error logs -  only a local user can get to <em>elmah.axd</em>. If you take care of the security implications it can be very useful to enable remote access and  monitor the logs on your production servers.</p>
-
-<p>We chose to use an XML file for each error but ELMAH is entirely pluggable. There are dozens of alternatives for persisting the error log including Sql Server, an RSS feeds, to Twitter, even to <a href="http://code.google.com/p/elmah/wiki/ProwlingErrors">an iPhone app</a>. There are even third party sites such as <a href="http://elmah.io">elmah.io</a> who will host your error logs for you.</p>
-
-<p>One of the advantages of using XML files is that the files can be copied to another machine. If you look in <em>MainDemo.Web\App_Data\Elmah.Errors</em>, you will find the resulting xml files.</p>
-
-<p><img src="/images/blog/xaf-with-elmah-005.png"></p>
-
-<p>You can just copy these files to another installation&#8217;s <em>Elmah.Errors</em> folder and the log will show up when you visit <em>Elmah.axd</em>.</p>
-
-<p>One final note. ELMAH was developed for ASP.NET applications and web services, but it is possible to get it to work with other types of applications such as Windows Forms, Windows Service or console applications. Check out <a href="https://stackoverflow.com/questions/841451/using-elmah-in-a-console-application">this StackOverflow question</a>.</p>
-
-<p>The source code for this example is <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Elmah">on GitHub</a>.</p>
 </div>
   
   

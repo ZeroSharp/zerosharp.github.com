@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="This is the fourth and final part of a series about using Roslyn with dependency injection to create a flexible and powerful plug-in framework. Here &hellip;">
+  <meta name="description" content="ELMAH (Error Logging Modules and Handlers) is an open source library for logging unhandled exceptions. This post explains how to get it running with &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,271 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/elmah-with-devexpress-xaf/">ELMAH With DevExpress XAF</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-10-08T15:45:00+01:00" pubdate data-updated="true">Oct 8<span>th</span>, 2014</time>
+        
+         | <a href="/elmah-with-devexpress-xaf/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p><a href="https://code.google.com/p/elmah/">ELMAH (Error Logging Modules and Handlers)</a> is an open source library for logging unhandled exceptions. This post explains how to get it running with the <a href="https://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a> main demo.</p>
+
+<p>A couple of amazing facts about ELMAH.</p>
+
+<ul>
+<li>It has been around since 2004!</li>
+<li>It was written by <a href="http://www.raboof.com/">Atif Aziz</a> who happens to be an old school-friend from the International School of Geneva.</li>
+</ul>
+
+
+<p>XAF provides <a href="https://documentation.devexpress.com/#xaf/CustomDocument2704">quite extensive error handling options</a> out of the box, but I have found Elmah better suited to production environments because of the ability to remotely view the full error log.</p>
+
+<h2>Setting up</h2>
+
+<p>First, get the ELMAH package via NuGet into the MainDemo.Web project. ELMAH provides dozens of different methods of persisting the error log. For this example we&#8217;ll choose one of the simplest. Make sure you select the <em>ELMAH on XML Log</em> package.</p>
+
+<p><img src="/images/blog/xaf-with-elmah-001.png"></p>
+
+<p>NuGet makes several automatic modifications to the <em>web.config</em>. Unfortunately, these are not quite accurate enough for XAF. The changes you need to make are detailed below:</p>
+
+<p>Add a <code>&lt;configSection&gt;</code> for ELMAH as alongside the existing devExpress one.</p>
+
+<figure class='code'><figcaption><span>web.config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;configSections&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;sectionGroup</span> <span class="na">name=</span><span class="s">&quot;devExpress&quot;</span><span class="nt">&gt;</span>...<span class="nt">&lt;/sectionGroup&gt;</span> <span class="c">&lt;!-- this should already exist--&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;sectionGroup</span> <span class="na">name=</span><span class="s">&quot;elmah&quot;</span><span class="nt">&gt;</span> <span class="c">&lt;!-- this is new--&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;section</span> <span class="na">name=</span><span class="s">&quot;security&quot;</span> <span class="na">requirePermission=</span><span class="s">&quot;false&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.SecuritySectionHandler, Elmah&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;section</span> <span class="na">name=</span><span class="s">&quot;errorLog&quot;</span> <span class="na">requirePermission=</span><span class="s">&quot;false&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogSectionHandler, Elmah&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;section</span> <span class="na">name=</span><span class="s">&quot;errorMail&quot;</span> <span class="na">requirePermission=</span><span class="s">&quot;false&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorMailSectionHandler, Elmah&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;section</span> <span class="na">name=</span><span class="s">&quot;errorFilter&quot;</span> <span class="na">requirePermission=</span><span class="s">&quot;false&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorFilterSectionHandler, Elmah&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>     <span class="nt">&lt;/sectionGroup&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/configSections&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Your <code>&lt;system.webServer&gt;</code> section should look like this:</p>
+
+<figure class='code'><figcaption><span>web.config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;system.webServer&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;handlers&gt;</span>...<span class="nt">&lt;/handlers&gt;</span> <span class="c">&lt;!-- This is unchanged --&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;validation</span> <span class="na">validateIntegratedModeConfiguration=</span><span class="s">&quot;false&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;modules&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ASPxHttpHandlerModule&quot;</span> <span class="na">type=</span><span class="s">&quot;DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v14.1, Version=14.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorLog&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogModule, Elmah&quot;</span> <span class="na">preCondition=</span><span class="s">&quot;managedHandler&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorMail&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorMailModule, Elmah&quot;</span> <span class="na">preCondition=</span><span class="s">&quot;managedHandler&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorFilter&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorFilterModule, Elmah&quot;</span> <span class="na">preCondition=</span><span class="s">&quot;managedHandler&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/modules&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/system.webServer&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Add a <code>&lt;location&gt;</code> for the path <em>elmah.axd</em> (alongside the existing <code>&lt;location&gt;</code> tags).</p>
+
+<figure class='code'><figcaption><span>web.config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;location</span> <span class="na">path=</span><span class="s">&quot;elmah.axd&quot;</span> <span class="na">inheritInChildApplications=</span><span class="s">&quot;false&quot;</span><span class="nt">&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;system.web&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;httpHandlers&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;add</span> <span class="na">verb=</span><span class="s">&quot;POST,GET,HEAD&quot;</span> <span class="na">path=</span><span class="s">&quot;elmah.axd&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogPageFactory, Elmah&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/httpHandlers&gt;</span>
+</span><span class='line'>      <span class="c">&lt;!-- </span>
+</span><span class='line'><span class="c">        See http://code.google.com/p/elmah/wiki/SecuringErrorLogPages for </span>
+</span><span class='line'><span class="c">        more information on using ASP.NET authorization securing ELMAH.</span>
+</span><span class='line'>
+</span><span class='line'><span class="c">      &lt;authorization&gt;</span>
+</span><span class='line'><span class="c">        &lt;allow roles=&quot;admin&quot; /&gt;</span>
+</span><span class='line'><span class="c">        &lt;deny users=&quot;*&quot; /&gt;  </span>
+</span><span class='line'><span class="c">      &lt;/authorization&gt;</span>
+</span><span class='line'><span class="c">      --&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/system.web&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;system.webServer&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;handlers&gt;</span>
+</span><span class='line'>        <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ELMAH&quot;</span> <span class="na">verb=</span><span class="s">&quot;POST,GET,HEAD&quot;</span> <span class="na">path=</span><span class="s">&quot;elmah.axd&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogPageFactory, Elmah&quot;</span> <span class="na">preCondition=</span><span class="s">&quot;integratedMode&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>      <span class="nt">&lt;/handlers&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;/system.webServer&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/location&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Add a new <code>&lt;elmah&gt;</code> section. I put mine just before the final <code>&lt;/configuration&gt;</code> tag.</p>
+
+<figure class='code'><figcaption><span>web.config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;elmah&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;errorLog</span> <span class="na">type=</span><span class="s">&quot;Elmah.XmlFileErrorLog, Elmah&quot;</span> <span class="na">logPath=</span><span class="s">&quot;~/App_Data/Elmah.Errors&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>    <span class="c">&lt;!--</span>
+</span><span class='line'><span class="c">        See http://code.google.com/p/elmah/wiki/SecuringErrorLogPages for </span>
+</span><span class='line'><span class="c">        more information on remote access and securing ELMAH.</span>
+</span><span class='line'><span class="c">    --&gt;</span>
+</span><span class='line'>    <span class="nt">&lt;security</span> <span class="na">allowRemoteAccess=</span><span class="s">&quot;false&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;/elmah&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now modify <em>HttpModules.Web.Config</em> to look like this:</p>
+
+<figure class='code'><figcaption><span>HttpModules.Web.Config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+</span><span class='line'><span class="nt">&lt;httpModules&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ASPxHttpHandlerModule&quot;</span> <span class="na">type=</span><span class="s">&quot;DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v14.1, Version=14.1.7.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorLog&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorLogModule, Elmah&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorMail&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorMailModule, Elmah&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ErrorFilter&quot;</span> <span class="na">type=</span><span class="s">&quot;Elmah.ErrorFilterModule, Elmah&quot;</span> <span class="nt">/&gt;</span>
+</span><span class='line'><span class="nt">&lt;/httpModules&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now we need to extend XAF&#8217;s standard error handling. Create a new class in the web application.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">ElmahErrorHandling</span> <span class="p">:</span> <span class="n">ErrorHandling</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">LogException</span><span class="p">(</span><span class="n">ErrorInfo</span> <span class="n">errorInfo</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">base</span><span class="p">.</span><span class="n">LogException</span><span class="p">(</span><span class="n">errorInfo</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">errorInfo</span><span class="p">.</span><span class="n">Exception</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="n">Elmah</span><span class="p">.</span><span class="n">ErrorSignal</span><span class="p">.</span><span class="n">FromCurrentContext</span><span class="p">().</span><span class="n">Raise</span><span class="p">(</span><span class="n">errorInfo</span><span class="p">.</span><span class="n">Exception</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And then modify <em>Global.asax.cs</em> to instantiate the new class</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'>    <span class="k">protected</span> <span class="k">void</span> <span class="nf">Application_Start</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">ErrorHandling</span><span class="p">.</span><span class="n">Instance</span> <span class="p">=</span> <span class="k">new</span> <span class="n">ElmahErrorHandling</span><span class="p">();</span> <span class="c1">// &lt;---this line is new</span>
+</span><span class='line'>        <span class="n">ASPxWebControl</span><span class="p">.</span><span class="n">CallbackError</span> <span class="p">+=</span> <span class="k">new</span> <span class="n">EventHandler</span><span class="p">(</span><span class="n">Application_Error</span><span class="p">);</span>
+</span><span class='line'><span class="cp">#if DEBUG</span>
+</span><span class='line'>        <span class="n">TestScriptsManager</span><span class="p">.</span><span class="n">EasyTestEnabled</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span><span class='line'>    <span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The complete files are available with the <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Elmah">source code</a>.</p>
+
+<p>Now run the application and trigger an unhandled exception. Change the URL to something that does not exist. Or open any detail view and modify the URL so that the Guid in the <em>ShortcutObjectKey</em> is invalid (replace a digit with an &#8216;X&#8217;). Then the application error page appears.</p>
+
+<p><img src="/images/blog/xaf-with-elmah-002.png"></p>
+
+<p>Then return to the application and change the URL to <code>Elmah.axd</code>. You are looking at the log of all unhandled exceptions.</p>
+
+<p><img src="/images/blog/xaf-with-elmah-003.png"></p>
+
+<p>And for each exception, you can view the full details of any logged exception including coloured stack trace and full server variables.</p>
+
+<p><img src="/images/blog/xaf-with-elmah-004.png"></p>
+
+<h2>ELMAH options</h2>
+
+<p>By default, ELMAH is configured to disallow remote access to the error logs -  only a local user can get to <em>elmah.axd</em>. If you take care of the security implications it can be very useful to enable remote access and  monitor the logs on your production servers.</p>
+
+<p>We chose to use an XML file for each error but ELMAH is entirely pluggable. There are dozens of alternatives for persisting the error log including Sql Server, an RSS feeds, to Twitter, even to <a href="http://code.google.com/p/elmah/wiki/ProwlingErrors">an iPhone app</a>. There are even third party sites such as <a href="http://elmah.io">elmah.io</a> who will host your error logs for you.</p>
+
+<p>One of the advantages of using XML files is that the files can be copied to another machine. If you look in <em>MainDemo.Web\App_Data\Elmah.Errors</em>, you will find the resulting xml files.</p>
+
+<p><img src="/images/blog/xaf-with-elmah-005.png"></p>
+
+<p>You can just copy these files to another installation&#8217;s <em>Elmah.Errors</em> folder and the log will show up when you visit <em>Elmah.axd</em>.</p>
+
+<p>One final note. ELMAH was developed for ASP.NET applications and web services, but it is possible to get it to work with other types of applications such as Windows Forms, Windows Service or console applications. Check out <a href="https://stackoverflow.com/questions/841451/using-elmah-in-a-console-application">this StackOverflow question</a>.</p>
+
+<p>The source code for this example is <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Elmah">on GitHub</a>.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1565,216 +1830,6 @@ The biggest XAF project I work with has one very complex business object. The la
 <p>Whenever I need to check whether I&#8217;ve broken the build, I can just <em>pull to refresh</em>.</p>
 
 <p>When I first discovered the application it had a problem with CruiseControl.NET&#8217;s <a href="http://cruisecontrolnet.org/projects/ccnet/wiki/RemoteServices">remote services</a> (which we needed because the actual build server is on a network machine not visible from the internet). I contacted <em>SixAfter</em> and was very impressed with the helpful response from Michael Primeaux. Within a couple of weeks there was a new version of the app with support for the remote services configuration. Hats off.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/glimpse-with-devexpress-xaf/">Glimpse With DevExpress XAF</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-17T12:41:00+00:00" pubdate data-updated="true">Dec 17<span>th</span>, 2013</time>
-        
-         | <a href="/glimpse-with-devexpress-xaf/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I have finally got around to getting Glimpse working with XAF. Glimpse is an amazing extensible ASP.NET plug-in which gives you valuable information about what is going on within your server in production. It&#8217;s also very pretty.</p>
-
-<p>Let&#8217;s jump right in and have a look at what XAF looks like with Glimpse running.</p>
-
-<p><img src="/images/blog/xaf-with-glimpse-016.png"></p>
-
-<p>That banner along the bottom of the screen is the Glimpse heads up display (HUD). Hovering over various sections of it pops up more information:</p>
-
-<p><img src="/images/blog/xaf-with-glimpse-019.png"></p>
-
-<p><img src="/images/blog/xaf-with-glimpse-018.png"></p>
-
-<p><img src="/images/blog/xaf-with-glimpse-017.png"></p>
-
-<p>If you click on the Glimpse icon in the bottom right, you get even more goodies. Here&#8217;s the <em>Timeline</em> view.</p>
-
-<p><img src="/images/blog/xaf-with-glimpse-011.png"></p>
-
-<p>And there are many other tabs available. The <em>Configuration</em> tab shows the contents of the <em>web.config</em> file.
-<img src="/images/blog/xaf-with-glimpse-009.png">
-Here&#8217;s the <em>Control Tree</em> tab:
-<img src="/images/blog/xaf-with-glimpse-010.png">
-The <em>Page Life Cycle</em> tab:
-<img src="/images/blog/xaf-with-glimpse-005.png">
-The <em>Request</em> tab:
-<img src="/images/blog/xaf-with-glimpse-004.png">
-The <em>Session</em> tab:
-<img src="/images/blog/xaf-with-glimpse-003.png">
-And the <em>Trace</em> tab including the DevExpress log items that were added to the trace during this page load:
-<img src="/images/blog/xaf-with-glimpse-002.png">
-As you can see, this is a very valuable glimpse into the server which can be turned on as needed in production.</p>
-
-<h2>Adding Glimpse to an XAF application</h2>
-
-<p>First install the Glimpse Nuget package into the project.</p>
-
-<p><img src="/images/blog/xaf-with-glimpse-001.png"></p>
-
-<p>The Nuget installation will make various incorrect changes to the web.config. The corrected sections are below:</p>
-
-<p>First, add Glimpse to the <code>&lt;configSections&gt;</code>.</p>
-
-<figure class='code'><figcaption><span>web.config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='diff'><span class='line'>  &lt;configSections&gt;
-</span><span class='line'>    &lt;sectionGroup name=&quot;devExpress&quot;&gt;
-</span><span class='line'>      &lt;section name=&quot;compression&quot; requirePermission=&quot;false&quot; type=&quot;DevExpress.Web.ASPxClasses.CompressionConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'>      &lt;section name=&quot;themes&quot; type=&quot;DevExpress.Web.ASPxClasses.ThemesConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'>      &lt;section name=&quot;settings&quot; type=&quot;DevExpress.Web.ASPxClasses.SettingsConfigurationSection, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'>    &lt;/sectionGroup&gt;
-</span><span class='line'><span class="gi">+   &lt;section name=&quot;glimpse&quot; type=&quot;Glimpse.Core.Configuration.Section, Glimpse.Core&quot; /&gt;</span>
-</span><span class='line'>  &lt;/configSections&gt;
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Next, <code>&lt;system.webserver&gt;</code> should look like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='diff'><span class='line'>  &lt;system.webServer&gt;
-</span><span class='line'>    &lt;handlers&gt;
-</span><span class='line'>      &lt;add name=&quot;TestControls.axd_*&quot; path=&quot;TestControls.axd&quot; verb=&quot;*&quot; type=&quot;DevExpress.ExpressApp.Web.TestScripts.TestScriptsManager, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; preCondition=&quot;integratedMode&quot; /&gt;
-</span><span class='line'>      &lt;add name=&quot;ImageResource.axd_*&quot; path=&quot;ImageResource.axd&quot; verb=&quot;*&quot; type=&quot;DevExpress.ExpressApp.Web.ImageResourceHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; preCondition=&quot;integratedMode&quot; /&gt;
-</span><span class='line'>      &lt;add name=&quot;SessionKeepAliveReconnectHttpHandler&quot; verb=&quot;*&quot; path=&quot;SessionKeepAliveReconnect.aspx*&quot; type=&quot;DevExpress.ExpressApp.Web.SessionKeepAliveReconnectHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; preCondition=&quot;integratedMode&quot; /&gt;
-</span><span class='line'>      &lt;add name=&quot;WebWindowTemplateHttpHandler&quot; verb=&quot;*&quot; path=&quot;*.aspx&quot; type=&quot;DevExpress.ExpressApp.Web.WebWindowTemplateHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; preCondition=&quot;integratedMode&quot; /&gt;
-</span><span class='line'>      &lt;add name=&quot;ASPxUploadProgressHandler&quot; verb=&quot;GET,POST&quot; path=&quot;ASPxUploadProgressHandlerPage.ashx&quot; type=&quot;DevExpress.Web.ASPxUploadControl.ASPxUploadProgressHttpHandler, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; preCondition=&quot;integratedMode&quot; /&gt;
-</span><span class='line'>      &lt;add name=&quot;ReportExportResource.axd_*&quot; preCondition=&quot;integratedMode&quot; verb=&quot;*&quot; path=&quot;ReportExportResource.axd&quot; type=&quot;DevExpress.ExpressApp.Reports.Web.ReportExportHttpHandler, DevExpress.ExpressApp.Reports.Web.v13.2, Version=13.2.5.0, culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'> +    &lt;add name=&quot;Glimpse&quot; path=&quot;glimpse.axd&quot; verb=&quot;GET&quot; type=&quot;Glimpse.AspNet.HttpHandler, Glimpse.AspNet&quot; preCondition=&quot;integratedMode&quot; /&gt;
-</span><span class='line'>    &lt;/handlers&gt;
-</span><span class='line'>    &lt;validation validateIntegratedModeConfiguration=&quot;false&quot; /&gt;
-</span><span class='line'>    &lt;modules&gt;
-</span><span class='line'>      &lt;add name=&quot;ASPxHttpHandlerModule&quot; type=&quot;DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'> +    &lt;add name=&quot;Glimpse&quot; type=&quot;Glimpse.AspNet.HttpModule, Glimpse.AspNet&quot; preCondition=&quot;integratedMode&quot; /&gt;
-</span><span class='line'>    &lt;/modules&gt;
-</span><span class='line'>  &lt;/system.webServer&gt;
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>NuGet added some incorrect definitions to <code>system.web</code>. Make sure to restore this section to the DevExpress default:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;system.web&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;httpRuntime</span> <span class="na">requestValidationMode=</span><span class="s">&quot;2.0&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;sessionState</span> <span class="na">mode=</span><span class="s">&quot;InProc&quot;</span> <span class="na">timeout=</span><span class="s">&quot;2&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;httpHandlers</span> <span class="na">configSource=</span><span class="s">&quot;HttpHandlers.Web.Config&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;httpModules</span> <span class="na">configSource=</span><span class="s">&quot;HttpModules.Web.Config&quot;</span> <span class="nt">/&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And now we&#8217;ll add the corrected changes to <code>HttpHandlers.Web.Config</code> and <code>HttpModule.Web.Config</code></p>
-
-<figure class='code'><figcaption><span>HttpHandlers.Web.Config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='diff'><span class='line'>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-</span><span class='line'>&lt;httpHandlers&gt;
-</span><span class='line'><span class="gi">+ &lt;add verb=&quot;GET&quot; path=&quot;glimpse.axd&quot; type=&quot;Glimpse.AspNet.HttpHandler, Glimpse.AspNet&quot; /&gt;</span>
-</span><span class='line'>  &lt;add verb=&quot;*&quot; path=&quot;TestControls.axd&quot; type=&quot;DevExpress.ExpressApp.Web.TestScripts.TestScriptsManager, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'>  &lt;add verb=&quot;*&quot; path=&quot;ImageResource.axd&quot; type=&quot;DevExpress.ExpressApp.Web.ImageResourceHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'>  &lt;add verb=&quot;*&quot; path=&quot;SessionKeepAliveReconnect.aspx*&quot; type=&quot;DevExpress.ExpressApp.Web.SessionKeepAliveReconnectHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'>  &lt;add verb=&quot;*&quot; path=&quot;*.aspx&quot; type=&quot;DevExpress.ExpressApp.Web.WebWindowTemplateHttpHandler, DevExpress.ExpressApp.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'>  &lt;add verb=&quot;GET,POST&quot; path=&quot;ASPxUploadProgressHandlerPage.ashx&quot; validate=&quot;false&quot; type=&quot;DevExpress.Web.ASPxUploadControl.ASPxUploadProgressHttpHandler, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'>  &lt;add verb=&quot;*&quot; path=&quot;ReportExportResource.axd&quot; type=&quot;DevExpress.ExpressApp.Reports.Web.ReportExportHttpHandler, DevExpress.ExpressApp.Reports.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot; /&gt;
-</span><span class='line'>&lt;/httpHandlers&gt;
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span>HttpModules.Web.Config</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;httpModules&gt;</span>
-</span><span class='line'>+ <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;Glimpse&quot;</span> <span class="na">type=</span><span class="s">&quot;Glimpse.AspNet.HttpModule, Glimpse.AspNet&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">&quot;ASPxHttpHandlerModule&quot;</span> <span class="na">type=</span><span class="s">&quot;DevExpress.Web.ASPxClasses.ASPxHttpHandlerModule, DevExpress.Web.v13.2, Version=13.2.5.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'><span class="nt">&lt;/httpModules&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Next, there is <a href="https://github.com/Glimpse/Glimpse/issues/632">an outstanding problem</a> with the current release version of the Glimpse ASP.NET NuGet package (1.6.0) which prevents it from working with the development webserver. (Apparently it&#8217;s fixed in 1.7.0 which should be released soon). If you try to run MainDemo.Web you will get the following error:</p>
-
-<pre><code>Type 'System.Web.HttpContextWrapper' in assembly 'System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' is not marked as serializable.
-</code></pre>
-
-<p>However it works fine against IIS Express (or full IIS). Go to the MainDemo.Web and change the debug properties as follows:</p>
-
-<p><img src="/images/blog/xaf-with-glimpse-015.png"></p>
-
-<p>Then run the web application. Glimpse is off by default. In order to turn it on, you need to set a cookie, which you can do by navigating to <code>Glimpse.axd</code>. This is the Glimpse configuration screen.</p>
-
-<p><img src="/images/blog/xaf-with-glimpse-014.png"></p>
-
-<h2>Additional Glimpse extensions</h2>
-
-<p>Glimpse is extensible and there are <a href="http://getglimpse.com/Packages">many additional plugins</a> available. Many of these take the form of additional tabs with details about a particular aspect of your application: SQL Queries, Elmah errors, ASP.NET caching, logging, dependency injection, <em>etc.</em></p>
-
-<h2>MainDemo Sample Project</h2>
-
-<p>I have uploaded a modified XAF MainDemo to this <a href="https://github.com/ZeroSharp/Xaf_MainDemo_Glimpse">GitHub repository</a> with all the above changes. (Don&#8217;t forget to debug against IIS Express).</p>
 </div>
   
   

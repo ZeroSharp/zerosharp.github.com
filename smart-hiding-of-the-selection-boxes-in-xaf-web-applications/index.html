@@ -1,0 +1,598 @@
+
+<!DOCTYPE html>
+<!--[if IEMobile 7 ]><html class="no-js iem7"><![endif]-->
+<!--[if lt IE 9]><html class="no-js lte-ie8"><![endif]-->
+<!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <title>Smart hiding of the selection boxes in XAF web applications - ZeroSharp</title>
+  <meta name="author" content="Robert Anderson">
+
+  
+  <meta name="description" content="How to hide the selection box in expressAppFramework web applications when there are no selection-dependent actions available.">
+  
+
+  <!-- http://t.co/dKP3o1e -->
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+  <link rel="canonical" href="http://ZeroSharp.github.com/smart-hiding-of-the-selection-boxes-in-xaf-web-applications/">
+  <link href="/favicon.png" rel="icon">
+  <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+  <script src="/javascripts/modernizr-2.0.js"></script>
+  <script src="/javascripts/ender.js"></script>
+  <script src="/javascripts/octopress.js" type="text/javascript"></script>
+  <link href="http://feeds.feedburner.com/zerosharp" rel="alternate" title="ZeroSharp" type="application/atom+xml">
+  <!--Fonts from Google"s Web font directory at http://google.com/webfonts -->
+<link href="http://fonts.googleapis.com/css?family=PT+Serif:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=PT+Sans:regular,italic,bold,bolditalic" rel="stylesheet" type="text/css"> 
+
+<!-- <ra+> -->
+<link href="http://fonts.googleapis.com/css?family=Ubuntu:500" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+<link href="http://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" type="text/css">
+
+<link href="/stylesheets/custom/data-table.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+<!-- </ra+> -->
+
+  
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-30564687-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+
+
+</head>
+
+<body    class="collapse-sidebar sidebar-footer" >
+  <header role="banner"><hgroup>
+  <!--<h1><a href="/">ZeroSharp</a></h1>-->
+  <a href="http://www.zerosharp.com/"><h1>ZeroSharp</h1></a>
+  
+    <h2>Robert Anderson's ones and zeros</h2>
+  
+</hgroup>
+
+</header>
+  <nav role="navigation">  
+
+<form action="http://google.com/search" method="get">
+  <fieldset role="search">
+    <input type="hidden" name="q" value="site:ZeroSharp.github.com" />
+    <input class="search" type="text" name="q" results="0" placeholder="Search"/>
+  </fieldset>
+</form>
+
+<ul class="main-navigation">
+  <li><a href="/">Blog</a></li>
+  <li><a href="/blog/archives">Archives</a></li>
+  <li><a href="/about/">About</a></li>
+  <li><a href="/license/">License</a></li>  
+</ul>
+<ul class="subscription">
+    <li><a rel="me" href="https://plus.google.com/112685056596124127572?rel=author">
+      <img src="/images/asides/googleplus.png" width="24" height="24" alt="Rob on Google+">
+    </a></li>    
+    <li><a rel="me" href="http://twitter.com/8ctopus">
+      <img src="/images/asides/twitter.png" width="24" height="24" alt="Rob on Twitter" />
+    </a></li>
+    <!--<li><a rel="me" href="http://stackoverflow.com/users/1077279/shamp00">
+      <img src="/images/asides/stackoverflow.png" width="24" height="24" alt="Rob on StackOverflow" />
+    </a></li>
+    <li><a rel="me" href="https://github.com/zerosharp">
+      <img src="/images/asides/github.png" width="24" height="24" alt="Rob on GitHub" />
+    </a></li>
+    <li><a rel="me" href="http://www.linkedin.com/profile/view?id=926740"  class ="googleplus-hidden" >
+      <img src="/images/asides/linkedin.png" width="24" height="24" alt="Rob on LinkedIn" />
+    </a></li>
+    <li><a rel="me" href="http://springpad.com/#!/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/springpad.png" width="24" height="24" alt="Rob on SpringPad" />
+    </a></li>    
+    <li><a rel="me" href="http://pinterest.com/shamp00"  class ="googleplus-hidden" >
+      <img src="/images/asides/pinterest.png" width="24" height="24" alt="Rob on Pinterest" />
+    </a></li>
+    <li><a rel="me" href="http://www.last.fm/user/nosredna"  class ="googleplus-hidden" >
+      <img src="/images/asides/lastfm.png" width="24" height="24" alt="Rob on Last.fm" />
+    </a></li>-->
+    <li><a href="http://feeds.feedburner.com/zerosharp">
+      <img src="/images/asides/rss.png" rel="subscribe-rss" width="24" height="24" alt="RSS Feed" />
+    </a></li>
+</ul>
+</nav>
+  <div id="main">
+    <div id="content">
+      <div>
+<article class="hentry" role="article">
+  
+  <header>
+    
+      <h1 class="entry-title">Smart Hiding of the Selection Boxes in XAF Web Applications</h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-11-06T18:39:00+00:00" pubdate data-updated="true">Nov 6<span>th</span>, 2016</time>
+        
+         | <a href="#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+<div class="entry-content"><p>When an <a href="https://www.devexpress.com/products/net/application_framework/">XAF</a> list view has no selection-based actions available, the selection box still appears in the grid. Users get confused. In this post, we&#8217;ll look at a workaround.</p>
+
+<h2>The problem</h2>
+
+<p>In the XAF MainDemo, lets make Departments read-only for the User role.</p>
+
+<figure class='code'><figcaption><span>Updater.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="n">userRole</span><span class="p">.</span><span class="n">AddTypePermissionsRecursively</span><span class="p">&lt;</span><span class="n">Department</span><span class="p">&gt;(</span><span class="n">SecurityOperations</span><span class="p">.</span><span class="n">Create</span><span class="p">,</span> <span class="n">SecurityPermissionState</span><span class="p">.</span><span class="n">Deny</span><span class="p">);</span>
+</span><span class='line'><span class="n">userRole</span><span class="p">.</span><span class="n">AddTypePermissionsRecursively</span><span class="p">&lt;</span><span class="n">Department</span><span class="p">&gt;(</span><span class="n">SecurityOperations</span><span class="p">.</span><span class="n">Write</span><span class="p">,</span> <span class="n">SecurityPermissionState</span><span class="p">.</span><span class="n">Deny</span><span class="p">);</span>
+</span><span class='line'><span class="n">userRole</span><span class="p">.</span><span class="n">AddTypePermissionsRecursively</span><span class="p">&lt;</span><span class="n">Department</span><span class="p">&gt;(</span><span class="n">SecurityOperations</span><span class="p">.</span><span class="n">Delete</span><span class="p">,</span> <span class="n">SecurityPermissionState</span><span class="p">.</span><span class="n">Deny</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then start the web application, login as John and navigate to the Departments list view. There is a column selection box, but it serves no purpose. There are no actions that depend on a grid selection.</p>
+
+<p><span class='caption-wrapper'><img class='caption' src='/images/blog/selection-visibility-controller-001.png' width='' height='' title='Without the SelectionColumnVisibilityController'><span class='caption-text'>Without the SelectionColumnVisibilityController</span></span></p>
+
+<h2>The fix</h2>
+
+<p>Here is a controller which calculates whether there are any available actions which require one or more rows to be selected. If there are none, the selection box will not appear.</p>
+
+<p>Add the following controller to the MainDemo.Module.Web project. It hides the selection box if there are no actions which depend on a grid selection.</p>
+
+<figure class='code'><figcaption><span>SelectionColumnVisibilityController.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+<span class='line-number'>68</span>
+<span class='line-number'>69</span>
+<span class='line-number'>70</span>
+<span class='line-number'>71</span>
+<span class='line-number'>72</span>
+<span class='line-number'>73</span>
+<span class='line-number'>74</span>
+<span class='line-number'>75</span>
+<span class='line-number'>76</span>
+<span class='line-number'>77</span>
+<span class='line-number'>78</span>
+<span class='line-number'>79</span>
+<span class='line-number'>80</span>
+<span class='line-number'>81</span>
+<span class='line-number'>82</span>
+<span class='line-number'>83</span>
+<span class='line-number'>84</span>
+<span class='line-number'>85</span>
+<span class='line-number'>86</span>
+<span class='line-number'>87</span>
+<span class='line-number'>88</span>
+<span class='line-number'>89</span>
+<span class='line-number'>90</span>
+<span class='line-number'>91</span>
+<span class='line-number'>92</span>
+<span class='line-number'>93</span>
+<span class='line-number'>94</span>
+<span class='line-number'>95</span>
+<span class='line-number'>96</span>
+<span class='line-number'>97</span>
+<span class='line-number'>98</span>
+<span class='line-number'>99</span>
+<span class='line-number'>100</span>
+<span class='line-number'>101</span>
+<span class='line-number'>102</span>
+<span class='line-number'>103</span>
+<span class='line-number'>104</span>
+<span class='line-number'>105</span>
+<span class='line-number'>106</span>
+<span class='line-number'>107</span>
+<span class='line-number'>108</span>
+<span class='line-number'>109</span>
+<span class='line-number'>110</span>
+<span class='line-number'>111</span>
+<span class='line-number'>112</span>
+<span class='line-number'>113</span>
+<span class='line-number'>114</span>
+<span class='line-number'>115</span>
+<span class='line-number'>116</span>
+<span class='line-number'>117</span>
+<span class='line-number'>118</span>
+<span class='line-number'>119</span>
+<span class='line-number'>120</span>
+<span class='line-number'>121</span>
+<span class='line-number'>122</span>
+<span class='line-number'>123</span>
+<span class='line-number'>124</span>
+<span class='line-number'>125</span>
+<span class='line-number'>126</span>
+<span class='line-number'>127</span>
+<span class='line-number'>128</span>
+<span class='line-number'>129</span>
+<span class='line-number'>130</span>
+<span class='line-number'>131</span>
+<span class='line-number'>132</span>
+<span class='line-number'>133</span>
+<span class='line-number'>134</span>
+<span class='line-number'>135</span>
+<span class='line-number'>136</span>
+<span class='line-number'>137</span>
+<span class='line-number'>138</span>
+<span class='line-number'>139</span>
+<span class='line-number'>140</span>
+<span class='line-number'>141</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+</span><span class='line'><span class="k">using</span> <span class="nn">DevExpress.ExpressApp</span><span class="p">;</span>
+</span><span class='line'><span class="k">using</span> <span class="nn">DevExpress.ExpressApp.Actions</span><span class="p">;</span>
+</span><span class='line'><span class="k">using</span> <span class="nn">DevExpress.ExpressApp.Editors</span><span class="p">;</span>
+</span><span class='line'><span class="k">using</span> <span class="nn">DevExpress.ExpressApp.SystemModule</span><span class="p">;</span>
+</span><span class='line'><span class="k">using</span> <span class="nn">DevExpress.Web</span><span class="p">;</span>
+</span><span class='line'><span class="k">using</span> <span class="nn">System.Linq</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">namespace</span> <span class="nn">MainDemo.Module.Web.Controllers</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">class</span> <span class="nc">SelectionColumnVisibilityController</span> <span class="p">:</span> <span class="n">ViewController</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">public</span> <span class="nf">SelectionColumnVisibilityController</span><span class="p">()</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">TargetViewType</span> <span class="p">=</span> <span class="n">ViewType</span><span class="p">.</span><span class="n">ListView</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">private</span> <span class="kt">bool</span> <span class="nf">IsSelectionColumnVisible</span><span class="p">()</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="kt">bool</span> <span class="n">isSelectionColumnRequired</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'>            <span class="c1">// remove checkbox if there are no available actions</span>
+</span><span class='line'>            <span class="k">foreach</span> <span class="p">(</span><span class="n">Controller</span> <span class="n">controller</span> <span class="k">in</span> <span class="n">Frame</span><span class="p">.</span><span class="n">Controllers</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="k">if</span> <span class="p">(!</span><span class="n">controller</span><span class="p">.</span><span class="n">Active</span><span class="p">)</span>
+</span><span class='line'>                    <span class="k">continue</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="k">if</span> <span class="p">(</span><span class="n">controller</span><span class="p">.</span><span class="n">Actions</span><span class="p">.</span><span class="n">Count</span> <span class="p">==</span> <span class="m">0</span><span class="p">)</span>
+</span><span class='line'>                    <span class="k">continue</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="kt">bool</span> <span class="n">allowEdit</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>                <span class="k">if</span> <span class="p">((</span><span class="n">Frame</span> <span class="k">is</span> <span class="n">NestedFrame</span><span class="p">)</span> <span class="p">&amp;&amp;</span> <span class="p">(((</span><span class="n">NestedFrame</span><span class="p">)</span><span class="n">Frame</span><span class="p">).</span><span class="n">ViewItem</span> <span class="k">is</span> <span class="n">PropertyEditor</span><span class="p">))</span>
+</span><span class='line'>                    <span class="n">allowEdit</span> <span class="p">=</span> <span class="p">(</span><span class="kt">bool</span><span class="p">)((</span><span class="n">PropertyEditor</span><span class="p">)((</span><span class="n">NestedFrame</span><span class="p">)</span><span class="n">Frame</span><span class="p">).</span><span class="n">ViewItem</span><span class="p">).</span><span class="n">AllowEdit</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="k">foreach</span> <span class="p">(</span><span class="n">ActionBase</span> <span class="n">action</span> <span class="k">in</span> <span class="n">controller</span><span class="p">.</span><span class="n">Actions</span><span class="p">)</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="p">(</span><span class="n">action</span><span class="p">.</span><span class="n">SelectionDependencyType</span> <span class="p">==</span> <span class="n">SelectionDependencyType</span><span class="p">.</span><span class="n">RequireMultipleObjects</span><span class="p">)</span>
+</span><span class='line'>                    <span class="p">{</span>
+</span><span class='line'>                        <span class="k">if</span> <span class="p">(</span><span class="n">action</span><span class="p">.</span><span class="n">Active</span> <span class="p">||</span> <span class="n">IsActionInactiveBySelectionContext</span><span class="p">(</span><span class="n">action</span><span class="p">))</span>
+</span><span class='line'>                        <span class="p">{</span>
+</span><span class='line'>                            <span class="k">if</span> <span class="p">(</span><span class="n">action</span><span class="p">.</span><span class="n">Enabled</span> <span class="p">||</span> <span class="n">IsActionDisabledBySelectionContext</span><span class="p">(</span><span class="n">action</span><span class="p">))</span>
+</span><span class='line'>                            <span class="p">{</span>
+</span><span class='line'>                                <span class="n">isSelectionColumnRequired</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>                                <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>                            <span class="p">}</span>
+</span><span class='line'>                        <span class="p">}</span>
+</span><span class='line'>                    <span class="p">}</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>                <span class="k">if</span> <span class="p">(</span><span class="n">isSelectionColumnRequired</span><span class="p">)</span>
+</span><span class='line'>                    <span class="k">break</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">isSelectionColumnRequired</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">private</span> <span class="kt">bool</span> <span class="nf">IsActionInactiveBySelectionContext</span><span class="p">(</span><span class="n">ActionBase</span> <span class="n">action</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">action</span><span class="p">.</span><span class="n">Active</span><span class="p">)</span>
+</span><span class='line'>                <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">else</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="k">foreach</span> <span class="p">(</span><span class="kt">string</span> <span class="n">item</span> <span class="k">in</span> <span class="n">action</span><span class="p">.</span><span class="n">Active</span><span class="p">.</span><span class="n">GetKeys</span><span class="p">())</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="p">(</span><span class="n">item</span> <span class="p">==</span> <span class="n">ActionBase</span><span class="p">.</span><span class="n">RequireMultipleObjectsContext</span> <span class="p">||</span> <span class="n">item</span> <span class="p">==</span> <span class="n">ActionBase</span><span class="p">.</span><span class="n">RequireSingleObjectContext</span><span class="p">)</span>
+</span><span class='line'>                        <span class="k">continue</span><span class="p">;</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="p">(!</span><span class="n">action</span><span class="p">.</span><span class="n">Active</span><span class="p">[</span><span class="n">item</span><span class="p">])</span>
+</span><span class='line'>                        <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>                <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">private</span> <span class="kt">bool</span> <span class="nf">IsActionDisabledBySelectionContext</span><span class="p">(</span><span class="n">ActionBase</span> <span class="n">action</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">action</span><span class="p">.</span><span class="n">Enabled</span><span class="p">)</span>
+</span><span class='line'>                <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">else</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="k">foreach</span> <span class="p">(</span><span class="kt">string</span> <span class="n">item</span> <span class="k">in</span> <span class="n">action</span><span class="p">.</span><span class="n">Enabled</span><span class="p">.</span><span class="n">GetKeys</span><span class="p">())</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="p">(</span><span class="n">item</span> <span class="p">==</span> <span class="n">ActionBase</span><span class="p">.</span><span class="n">RequireMultipleObjectsContext</span> <span class="p">||</span>
+</span><span class='line'>                        <span class="n">item</span> <span class="p">==</span> <span class="n">ActionBase</span><span class="p">.</span><span class="n">RequireSingleObjectContext</span> <span class="p">||</span>
+</span><span class='line'>                        <span class="n">item</span> <span class="p">==</span> <span class="n">ActionsCriteriaViewController</span><span class="p">.</span><span class="n">EnabledByCriteriaKey</span><span class="p">)</span>
+</span><span class='line'>                        <span class="k">continue</span><span class="p">;</span>
+</span><span class='line'>                    <span class="k">if</span> <span class="p">(!</span><span class="n">action</span><span class="p">.</span><span class="n">Enabled</span><span class="p">[</span><span class="n">item</span><span class="p">])</span>
+</span><span class='line'>                        <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>                <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnViewControlsCreated</span><span class="p">()</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">base</span><span class="p">.</span><span class="n">OnViewControlsCreated</span><span class="p">();</span>
+</span><span class='line'>            <span class="n">ASPxGridView</span> <span class="n">grid</span> <span class="p">=</span> <span class="p">((</span><span class="n">ListView</span><span class="p">)</span><span class="k">this</span><span class="p">.</span><span class="n">View</span><span class="p">).</span><span class="n">Editor</span><span class="p">.</span><span class="n">Control</span> <span class="k">as</span> <span class="n">ASPxGridView</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">grid</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="n">grid</span><span class="p">.</span><span class="n">Load</span> <span class="p">+=</span> <span class="n">grid_Load</span><span class="p">;</span>
+</span><span class='line'>                <span class="n">grid</span><span class="p">.</span><span class="n">DataBound</span> <span class="p">+=</span> <span class="n">grid_DataBound</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnDeactivated</span><span class="p">()</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">base</span><span class="p">.</span><span class="n">OnDeactivated</span><span class="p">();</span>
+</span><span class='line'>            <span class="n">ASPxGridView</span> <span class="n">grid</span> <span class="p">=</span> <span class="p">((</span><span class="n">ListView</span><span class="p">)</span><span class="k">this</span><span class="p">.</span><span class="n">View</span><span class="p">).</span><span class="n">Editor</span><span class="p">.</span><span class="n">Control</span> <span class="k">as</span> <span class="n">ASPxGridView</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">grid</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="n">grid</span><span class="p">.</span><span class="n">DataBound</span> <span class="p">-=</span> <span class="n">grid_DataBound</span><span class="p">;</span>
+</span><span class='line'>                <span class="n">grid</span><span class="p">.</span><span class="n">Load</span> <span class="p">-=</span> <span class="n">grid_Load</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">void</span> <span class="nf">grid_Load</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">SetSelectionColumnVisibility</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">void</span> <span class="nf">grid_DataBound</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">SetSelectionColumnVisibility</span><span class="p">(</span><span class="n">sender</span><span class="p">,</span> <span class="n">e</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">private</span> <span class="k">void</span> <span class="nf">SetSelectionColumnVisibility</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="kt">bool</span> <span class="n">isSelectionColumnVisible</span> <span class="p">=</span> <span class="n">IsSelectionColumnVisible</span><span class="p">();</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(!</span><span class="n">isSelectionColumnVisible</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="kt">var</span> <span class="n">grid</span> <span class="p">=</span> <span class="p">(</span><span class="n">ASPxGridView</span><span class="p">)</span><span class="n">sender</span><span class="p">;</span>
+</span><span class='line'>                <span class="kt">var</span> <span class="n">selectionBoxColumn</span> <span class="p">=</span>
+</span><span class='line'>                    <span class="n">grid</span><span class="p">.</span><span class="n">Columns</span>
+</span><span class='line'>                        <span class="p">.</span><span class="n">OfType</span><span class="p">&lt;</span><span class="n">GridViewCommandColumn</span><span class="p">&gt;()</span>
+</span><span class='line'>                        <span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">ShowSelectCheckbox</span><span class="p">)</span>
+</span><span class='line'>                        <span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>                <span class="k">if</span> <span class="p">(</span><span class="n">selectionBoxColumn</span> <span class="p">!=</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>                <span class="p">{</span>
+</span><span class='line'>                    <span class="n">selectionBoxColumn</span><span class="p">.</span><span class="n">Visible</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Run the application again and see the difference. Now the grid looks like this. Notice, there is no longer a selection box on the row.</p>
+
+<p><img src="/images/blog/selection-visibility-controller-002.png" title="With the SelectionColumnVisibilityController" ></p>
+
+<p>By the way, this is how it looks with old-style XAF web apps.</p>
+
+<p><span class='caption-wrapper'><img class='caption' src='/images/blog/selection-visibility-controller-003.png' width='' height='' title='Without the SelectionColumnVisibilityController'><span class='caption-text'>Without the SelectionColumnVisibilityController</span></span></p>
+
+<p><span class='caption-wrapper'><img class='caption' src='/images/blog/selection-visibility-controller-004.png' width='' height='' title='With the SelectionColumnVisibilityController'><span class='caption-text'>With the SelectionColumnVisibilityController</span></span></p>
+</div>
+
+
+  <footer>
+    <p class="meta">
+      
+  
+
+<span class="byline author vcard">Posted by <span class="fn">Robert Anderson</span></span>
+
+      
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-11-06T18:39:00+00:00" pubdate data-updated="true">Nov 6<span>th</span>, 2016</time>
+      
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/c-/'>c#</a>, <a class='category' href='/blog/categories/devexpress/'>devexpress</a>, <a class='category' href='/blog/categories/xaf/'>xaf</a>
+  
+</span>
+
+
+    </p>
+    
+      <div class="sharing">
+  
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://ZeroSharp.github.com/smart-hiding-of-the-selection-boxes-in-xaf-web-applications/" data-via="8ctopus" data-counturl="http://ZeroSharp.github.com/smart-hiding-of-the-selection-boxes-in-xaf-web-applications/" >Tweet</a>
+  
+  
+  <div class="g-plusone" data-size="medium"></div>
+  
+  
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  
+</div>
+
+    
+    <p class="meta">
+      
+        <a class="basic-alignment left" href="/sometimes-youve-just-got-to-deploy/" title="Previous Post: Sometimes you've just got to deploy">&laquo; Sometimes you've just got to deploy</a>
+      
+      
+    </p>
+  </footer>
+</article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+  </section>
+
+</div>
+
+<aside class="sidebar">
+  
+    
+  
+</aside>
+
+
+    </div>
+  </div>
+  <footer role="contentinfo"><p>
+  Copyright &copy; 2016 - Robert Anderson
+  <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
+</p>
+
+</footer>
+  
+
+<script type="text/javascript">
+      var disqus_shortname = 'zerosharp';
+      
+        
+        // var disqus_developer = 1;
+        var disqus_identifier = 'http://ZeroSharp.github.com/smart-hiding-of-the-selection-boxes-in-xaf-web-applications/';
+        var disqus_url = 'http://ZeroSharp.github.com/smart-hiding-of-the-selection-boxes-in-xaf-web-applications/';
+        var disqus_script = 'embed.js';
+      
+    (function () {
+      var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+      dsq.src = 'http://' + disqus_shortname + '.disqus.com/' + disqus_script;
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    }());
+</script>
+
+
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) {return;}
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#appId=212934732101925&xfbml=1";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var script = document.createElement('script'); script.type = 'text/javascript'; script.async = true;
+      script.src = 'https://apis.google.com/js/plusone.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(script, s);
+    })();
+  </script>
+
+
+
+  <script type="text/javascript">
+    (function(){
+      var twitterWidgets = document.createElement('script');
+      twitterWidgets.type = 'text/javascript';
+      twitterWidgets.async = true;
+      twitterWidgets.src = 'http://platform.twitter.com/widgets.js';
+      document.getElementsByTagName('head')[0].appendChild(twitterWidgets);
+    })();
+  </script>
+
+
+
+
+
+</body>
+</html>

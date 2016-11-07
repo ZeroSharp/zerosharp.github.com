@@ -4,7 +4,7 @@
   <title><![CDATA[Category: devexpress | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/devexpress/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-10-16T19:03:50+01:00</updated>
+  <updated>2016-11-07T10:55:51+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,192 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Smart hiding of the selection boxes in XAF web applications]]></title>
+    <link href="http://ZeroSharp.github.com/smart-hiding-of-the-selection-boxes-in-xaf-web-applications/"/>
+    <updated>2016-11-06T18:39:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/smart-hiding-of-the-selection-boxes-in-xaf-web-applications</id>
+    <content type="html"><![CDATA[<p>When an <a href="https://www.devexpress.com/products/net/application_framework/">XAF</a> list view has no selection-based actions available, the selection box still appears in the grid. Users get confused. In this post, we'll look at a workaround.</p>
+
+<h2>The problem</h2>
+
+<p>In the XAF MainDemo, lets make Departments read-only for the User role.</p>
+
+<p><code>c# Updater.cs
+userRole.AddTypePermissionsRecursively&lt;Department&gt;(SecurityOperations.Create, SecurityPermissionState.Deny);
+userRole.AddTypePermissionsRecursively&lt;Department&gt;(SecurityOperations.Write, SecurityPermissionState.Deny);
+userRole.AddTypePermissionsRecursively&lt;Department&gt;(SecurityOperations.Delete, SecurityPermissionState.Deny);
+</code></p>
+
+<p>Then start the web application, login as John and navigate to the Departments list view. There is a column selection box, but it serves no purpose. There are no actions that depend on a grid selection.</p>
+
+<p><span class='caption-wrapper'><img class='caption' src='/images/blog/selection-visibility-controller-001.png' width='' height='' title='Without the SelectionColumnVisibilityController'><span class='caption-text'>Without the SelectionColumnVisibilityController</span></span></p>
+
+<h2>The fix</h2>
+
+<p>Here is a controller which calculates whether there are any available actions which require one or more rows to be selected. If there are none, the selection box will not appear.</p>
+
+<p>Add the following controller to the MainDemo.Module.Web project. It hides the selection box if there are no actions which depend on a grid selection.</p>
+
+<p>```c# SelectionColumnVisibilityController.cs
+using System;
+using DevExpress.ExpressApp;
+using DevExpress.ExpressApp.Actions;
+using DevExpress.ExpressApp.Editors;
+using DevExpress.ExpressApp.SystemModule;
+using DevExpress.Web;
+using System.Linq;</p>
+
+<p>namespace MainDemo.Module.Web.Controllers
+{</p>
+
+<pre><code>public class SelectionColumnVisibilityController : ViewController
+{
+    public SelectionColumnVisibilityController()
+    {
+        TargetViewType = ViewType.ListView;
+    }
+
+    private bool IsSelectionColumnVisible()
+    {
+        bool isSelectionColumnRequired = false;
+        // remove checkbox if there are no available actions
+        foreach (Controller controller in Frame.Controllers)
+        {
+            if (!controller.Active)
+                continue;
+
+            if (controller.Actions.Count == 0)
+                continue;
+
+            bool allowEdit = true;
+            if ((Frame is NestedFrame) &amp;&amp; (((NestedFrame)Frame).ViewItem is PropertyEditor))
+                allowEdit = (bool)((PropertyEditor)((NestedFrame)Frame).ViewItem).AllowEdit;
+
+            foreach (ActionBase action in controller.Actions)
+            {
+                if (action.SelectionDependencyType == SelectionDependencyType.RequireMultipleObjects)
+                {
+                    if (action.Active || IsActionInactiveBySelectionContext(action))
+                    {
+                        if (action.Enabled || IsActionDisabledBySelectionContext(action))
+                        {
+                            isSelectionColumnRequired = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (isSelectionColumnRequired)
+                break;
+        }
+        return isSelectionColumnRequired;
+    }
+
+    private bool IsActionInactiveBySelectionContext(ActionBase action)
+    {
+        if (action.Active)
+            return true;
+        else
+        {
+            foreach (string item in action.Active.GetKeys())
+            {
+                if (item == ActionBase.RequireMultipleObjectsContext || item == ActionBase.RequireSingleObjectContext)
+                    continue;
+                if (!action.Active[item])
+                    return false;
+            }
+            return true;
+        }
+    }
+
+    private bool IsActionDisabledBySelectionContext(ActionBase action)
+    {
+        if (action.Enabled)
+            return true;
+        else
+        {
+            foreach (string item in action.Enabled.GetKeys())
+            {
+                if (item == ActionBase.RequireMultipleObjectsContext ||
+                    item == ActionBase.RequireSingleObjectContext ||
+                    item == ActionsCriteriaViewController.EnabledByCriteriaKey)
+                    continue;
+                if (!action.Enabled[item])
+                    return false;
+            }
+            return true;
+        }
+    }
+
+    protected override void OnViewControlsCreated()
+    {
+        base.OnViewControlsCreated();
+        ASPxGridView grid = ((ListView)this.View).Editor.Control as ASPxGridView;
+        if (grid != null)
+        {
+            grid.Load += grid_Load;
+            grid.DataBound += grid_DataBound;
+        }
+    }
+
+    protected override void OnDeactivated()
+    {
+        base.OnDeactivated();
+        ASPxGridView grid = ((ListView)this.View).Editor.Control as ASPxGridView;
+        if (grid != null)
+        {
+            grid.DataBound -= grid_DataBound;
+            grid.Load -= grid_Load;
+        }
+    }
+
+    void grid_Load(object sender, EventArgs e)
+    {
+        SetSelectionColumnVisibility(sender, e);
+    }
+
+    void grid_DataBound(object sender, EventArgs e)
+    {
+        SetSelectionColumnVisibility(sender, e);
+    }
+
+    private void SetSelectionColumnVisibility(object sender, EventArgs e)
+    {
+        bool isSelectionColumnVisible = IsSelectionColumnVisible();
+        if (!isSelectionColumnVisible)
+        {
+            var grid = (ASPxGridView)sender;
+            var selectionBoxColumn =
+                grid.Columns
+                    .OfType&lt;GridViewCommandColumn&gt;()
+                    .Where(x =&gt; x.ShowSelectCheckbox)
+                    .FirstOrDefault();
+
+            if (selectionBoxColumn != null)
+            {
+                selectionBoxColumn.Visible = false;
+            }
+        }
+    }
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Run the application again and see the difference. Now the grid looks like this. Notice, there is no longer a selection box on the row.</p>
+
+<p><img src="/images/blog/selection-visibility-controller-002.png" title="With the SelectionColumnVisibilityController" ></p>
+
+<p>By the way, this is how it looks with old-style XAF web apps.</p>
+
+<p><span class='caption-wrapper'><img class='caption' src='/images/blog/selection-visibility-controller-003.png' width='' height='' title='Without the SelectionColumnVisibilityController'><span class='caption-text'>Without the SelectionColumnVisibilityController</span></span></p>
+
+<p><span class='caption-wrapper'><img class='caption' src='/images/blog/selection-visibility-controller-004.png' width='' height='' title='With the SelectionColumnVisibilityController'><span class='caption-text'>With the SelectionColumnVisibilityController</span></span></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[An XAF workaround for 'Prevent this page from creating additional dialogs.']]></title>
@@ -399,35 +585,6 @@ This is the third part of a <a href="/migrating-a-large-web-application-from-xaf
 <p>By comparison, the same test against DevExpress 12.1 yielded only 258 completions. So 15.1 shows a 48% performance improvement over 12.1.</p>
 
 <p><iframe class="cmd" src="https://load.wpm.neustar.biz/load/test/share/e4c5e109f8f04ceebd72cdb5c93eb1c2" width="1024" height="512"></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 2]]></title>
-    <link href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2/"/>
-    <updated>2015-09-15T10:37:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2</id>
-    <content type="html"><![CDATA[<p>This is the second part of a <a href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1">series</a> about migrating a large application from XAF 12.1 to XAF 15.1.</p>
-
-<p>In the 13.1 release, DevExpress made a change to the way XAF <code>Validator</code> class is used. It now requires an <code>IObjectSpace</code> parameter corresponding to the object. It is needed to correctly evaluate any rules which are descendants of the <code>RuleSearchObjectProperties</code>. These include:</p>
-
-<ul>
-<li><code>RuleCombinationOfPropertiesIsUnique</code></li>
-<li><code>RuleIsReferenced</code></li>
-<li><code>RuleObjectExists</code></li>
-<li><code>RuleUniqueValue</code></li>
-</ul>
-
-
-<p>A lot of our code has been around for years now and the older parts rely heavily on <code>Session</code> and <code>UnitOfWork</code> instead of <code>IObjectSpace</code> For the most part our application used <code>IObjectSpace</code> only within <code>ViewControllers</code>.</p>
-
-<p>But there were several situations where we need the validator where we don't have an <code>IObjectSpace</code>. For instance we sometimes need to validate from within <a href="https://documentation.devexpress.com/#eXpressAppFramework/clsDevExpressPersistentBaseActionAttributetopic">method actions</a> (decorated with the <code>ActionAttribute</code>). For performance reasons, we pass criteria to our middleware and it uses a <code>UnitOfWork</code> to run the method on each object. So in this case, there was no <code>IObjectSpace</code> to pass to the XAF <code>Validator</code>.</p>
-
-<p><span class='pullquote-right' data-pullquote='When writing code I often find myself having to decide between the &#8216;quick&#8217; fix and the &#8216;right&#8217; fix.'>
-Here I had a refactoring dilemma to solve. Either I need to rewrite all of the affected rules so that they no longer make use of the <code>IObjectSpace</code>. For instance, I could use <code>RuleFromBoolProperty</code> instead. In our application, this would mean rewriting about 50 rules. Or alternatively, I could go through the entire code base looking for <code>new UnitOfWork()</code> and <code>new Session()</code> and try to use an <code>IObjectSpace</code> instead. When writing code I often find myself having to decide between the 'quick' fix and the 'right' fix. Here, moving to <code>IObjectSpace</code> throughout is clearly the right fix and although it would take more time to implement, the system will be more in-line with best XAF practices throughout.
-</span></p>
-
-<p> Eventually, the refactoring was complete and all unit tests are passing. I was eager to run a multi-user load stress test against the 15.1 version to compare performance under load. I have described in previous posts how to <a href="/load-testing-xaf-overview/">stress test XAF applications</a>. I'll be sharing the results in the next post.</p>
 ]]></content>
   </entry>
   
