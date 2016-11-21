@@ -82,7 +82,7 @@ export class PasswordGenerator
 
 We expect the tests to fail now since we are no longer returning the same password.
 
-```
+```sh
 $ npm test
 > @0.0.1 pretest /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
 > tsc
@@ -116,7 +116,7 @@ npm ERR! Test failed.  See above for more details.
 
 It's getting a little more complicated so let's pull in [chai](http://chaijs.com/) which is a pretty assertions library.
 
-```
+```sh
 $ npm install chai --save-dev
 chai@3.5.0 node_modules/chai
 ├── assertion-error@1.0.1
@@ -126,7 +126,7 @@ chai@3.5.0 node_modules/chai
 And the Typescript definitions for chai.
 
 
-```
+```sh
 $ typings install chai --save --ambient
 ? Found chai typings for DefinitelyTyped. Continue? Yes
 Installing chai@~3.4.0 (DefinitelyTyped)...
@@ -200,7 +200,7 @@ describe("Generator", () => {
 
 Run our tests:
 
-```
+```sh
 $ npm test
 > @0.0.1 pretest /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
 > tsc
