@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="This is the second and final dive into some of the new DevExpress XAF 2015.2 features. The first part covers the Report Designer and the new XML &hellip;">
+  <meta name="description" content="New version 0.3.1 Edit: since the original version of this post, a new version 0.3.1 of Serverless was released. I have updated the tutorial below to &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,248 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/serverless-framework-part-1-up-and-running/">Serverless Framework - Part 1: Up and Running</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-12-22T20:26:00+00:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2015</time>
+        
+         | <a href="/serverless-framework-part-1-up-and-running/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>New version 0.3.1</h2>
+
+<p><span class="fluo">Edit: since the original version of this post, a new version 0.3.1 of Serverless was released. I have updated the tutorial below to reflect the newer version. </span></p>
+
+<p>I was in the middle of a blog post about the JAWS framework and before I had finished it changed its name to <a href="https://github.com/serverless/serverless">the Serverless framework</a>. It is a very clever way to build apps without worrying about provisioning server or whether it will scale. This is because it uses Amazon Web Services and in particular the Amazon lambda compute service. It&#8217;s currently in beta.</p>
+
+<p>Follow <a href="http://docs.serverless.com/docs/configuring-aws">the instructions</a> for setting up an administrative IAM user for use with the framework.</p>
+
+<p>Make sure you have node and npm installed. You need node 4.0 or greater.</p>
+
+<pre><code>$ node -v
+v4.2.3
+$ npm -v
+2.14.7
+</code></pre>
+
+<p>Install the Serverless framework.</p>
+
+<pre><code>$ npm install serverless -g 
+</code></pre>
+
+<p>Create a new project</p>
+
+<pre><code>$ serverless project create
+</code></pre>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> _______                             __
+</span><span class='line'>|   _   .-----.----.--.--.-----.----|  .-----.-----.-----.
+</span><span class='line'>|   |___|  -__|   _|  |  |  -__|   _|  |  -__|__ --|__ --|
+</span><span class='line'>|____   |_____|__|  \___/|_____|__| |__|_____|_____|_____|
+</span><span class='line'>|   |   |             The Serverless Application Framework
+</span><span class='line'>|       |                           serverless.com, v0.3.1
+</span><span class='line'>`-------'
+</span><span class='line'>
+</span><span class='line'>Serverless: Initializing Serverless Project...  
+</span><span class='line'>Serverless: Enter a name for this project:  (serverless-vyedql) serverlessPotd
+</span><span class='line'>Serverless: Enter a universally unique project bucket name:  (serverless-vyedql-4jboce.com) potd-zerosharp.com
+</span><span class='line'>Serverless: Enter an email to use for AWS alarms:  (me@serverless-vyedql.com) potd@nosredna.com
+</span><span class='line'>Serverless: Select a region for your project: 
+</span><span class='line'>    us-east-1
+</span><span class='line'>    us-west-2
+</span><span class='line'>  &gt; eu-west-1
+</span><span class='line'>    ap-northeast-1
+</span><span class='line'>Serverless: Select an AWS profile for your project: 
+</span><span class='line'>  &gt; default
+</span><span class='line'>Serverless: Creating stage "dev"...  
+</span><span class='line'>Serverless: Creating region "eu-west-1" in stage "dev"...  
+</span><span class='line'>Serverless: Creating your project bucket on S3: serverless.eu-west-1.potd-zerosharp.com...  
+</span><span class='line'>Serverless: Deploying resources to stage "dev" in region "eu-west-1" via Cloudformation (~3 minutes)...  
+</span><span class='line'>Serverless: Successfully deployed "dev" resources to "eu-west-1"  
+</span><span class='line'>Serverless: Successfully created region "eu-west-1" within stage "dev"  
+</span><span class='line'>Serverless: Successfully created stage "dev"  
+</span><span class='line'>Serverless: Successfully initialized project "serverlessPotd"  </span></code></pre></td></tr></table></div></figure>
+
+
+<p>It takes about 3 minutes to setup the necessary CloudFormation stack for your project. Change directory to the newly created project.</p>
+
+<pre><code>$ cd serverlessPotd
+</code></pre>
+
+<p>Create a new component.</p>
+
+<pre><code>$ serverless component create
+</code></pre>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>Serverless: Enter a name for your new component:  (nodejscomponent) 
+</span><span class='line'>Serverless: Enter a name for your component's first module:  (resource) potd
+</span><span class='line'>Serverless: Enter a name for your module's first function:  (show) check
+</span><span class='line'>Serverless: Successfully created function: "check"  
+</span><span class='line'>Serverless: Successfully created new serverless module "potd" inside the component "nodejscomponent"  
+</span><span class='line'>Serverless: Installing "serverless-helpers" for this component via NPM...  
+</span><span class='line'>Serverless: -----------------  
+</span><span class='line'>serverless-helpers-js@0.0.3 node_modules/serverless-helpers-js
+</span><span class='line'>└── dotenv@1.2.0
+</span><span class='line'>Serverless: -----------------  
+</span><span class='line'>Serverless: Successfully created new serverless component: nodejscomponent  </span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>This has created the javascript code for a basic lambda function which we can immediately deploy.</p>
+
+<pre><code>$ serverless dash deploy
+</code></pre>
+
+<p>At the prompt select both the function and the endpoint and then select <em>Deploy</em>.</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'> _______                             __
+</span><span class='line'>|   _   .-----.----.--.--.-----.----|  .-----.-----.-----.
+</span><span class='line'>|   |___|  -__|   _|  |  |  -__|   _|  |  -__|__ --|__ --|
+</span><span class='line'>|____   |_____|__|  \___/|_____|__| |__|_____|_____|_____|
+</span><span class='line'>|   |   |             The Serverless Application Framework
+</span><span class='line'>|       |                           serverless.com, v0.3.1
+</span><span class='line'>`-------'
+</span><span class='line'>
+</span><span class='line'>Use the &lt;up&gt;, &lt;down&gt;, &lt;pageup&gt;, &lt;pagedown&gt;, &lt;home&gt;, and &lt;end&gt; keys to navigate.
+</span><span class='line'>Press &lt;enter&gt; to select/deselect, or &lt;space&gt; to select/deselect and move down.
+</span><span class='line'>Press &lt;ctrl&gt; + &lt;enter&gt; to immediately deploy selected.
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>Serverless: Select the assets you wish to deploy:
+</span><span class='line'>    nodejscomponent - potd - check
+</span><span class='line'>      function - nodejscomponent/potd/check
+</span><span class='line'>      endpoint - nodejscomponent/potd/check@potd/check~GET
+</span><span class='line'>    - - - - -
+</span><span class='line'>  &gt; Deploy
+</span><span class='line'>
+</span><span class='line'>Serverless: Deploying functions in "dev" to the following regions: eu-west-1  
+</span><span class='line'>Serverless: ------------------------  
+</span><span class='line'>Serverless: Successfully deployed functions in "dev" to the following regions:   
+</span><span class='line'>Serverless: eu-west-1 ------------------------  
+</span><span class='line'>Serverless:   nodejscomponent/potd/check: arn:aws:lambda:eu-west-1:962613113552:function:serverlessPotd-nodejscomponent-potd-check:dev  
+</span><span class='line'>
+</span><span class='line'>Serverless: Deploying endpoints in "dev" to the following regions: eu-west-1  
+</span><span class='line'>Serverless: Successfully deployed endpoints in "dev" to the following regions:  
+</span><span class='line'>Serverless: eu-west-1 ------------------------  
+</span><span class='line'>Serverless:   GET - potd/check - https://rhnjv4ms2b.execute-api.eu-west-1.amazonaws.com/dev/potd/check  </span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now open a browser and navigate to the URL in the last line. You should see the following JSON response.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="err">message:</span> <span class="nt">&quot;Your Serverless function ran successfully!&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>Now that&#8217;s already fantastic. With a handful of commands we have deployed an arbitrary javascript function to a URL endpoint very cheaply and with automatic scaling. We never had to consider instance size or memory or operating system.</p>
+
+<p>And it&#8217;s extremely extensible too - thanks to the other AWS services, we can easily make it secure (with Amazon Cognito) kick off emails (SES), store files (S3), add persistence (DynamoDB), etc.</p>
+
+<p>In the next post, I&#8217;ll be applying it to a real life scenario to replace an existing web service.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -782,89 +1024,6 @@ First up: Never mess with the .NET garbage collector.</p>
 <p>This will override system setting for list separator character and Excel will open the file correctly.</p>
 
 <p><sup>Note: Excel expects the separator to match the one defined in the <em>Control Panel/Region/Formats/Additional settings/List Separator</em>. On a French system, it expects a semi-colon.</sup></p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/devexpress-14-dot-2-review/">DevExpress 14.2 Review</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-01-20T08:35:00+00:00" pubdate data-updated="true">Jan 20<span>th</span>, 2015</time>
-        
-         | <a href="/devexpress-14-dot-2-review/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p><span class='pullquote-right' data-pullquote='The truly outstanding new feature is the ASP.NET report writer'>
-This post is an overview of the brand new version XAF 14.2. The truly outstanding new feature is the ASP.NET report writer which is now available in all XAF applications.</p>
-
-<p>A few months ago, we lost a potential sale because the customer wanted the ability to create custom reports from within the browser. We told them it was impossible to provide a fully-fledged report designer within our web application - but the DevExpress guys have done it! And how! </span></p>
-
-<h2>The web-based report designer</h2>
-
-<p>Let&#8217;s fire up the MainDemo application and navigate to the reports view. The first thing to notice is that there is a new action <em>Show Report Designer</em>.</p>
-
-<p><img src="/images/blog/devexpress-14-2-review-001.png"></p>
-
-<p>The designer action is disabled because the selected report is <em>predefined</em>. Predefined reports are a feature of Reports v2 which were introduced in version 13.2 (<a href="/devexpress-13-dot-2-review-part-1">see my previous review</a>). So first, we clone the existing predefined report. I renamed the copy (via the edit button) so that we can tell them apart.</p>
-
-<p><img src="/images/blog/devexpress-14-2-review-002.png"></p>
-
-<p>Now the <em>Show Report Designer</em> action is enabled. Let&#8217;s click it. <em>Whoa! That&#8217;s one impressive user interface for a web application!</em></p>
-
-<p><img src="/images/blog/devexpress-14-2-review-003.png"></p>
-
-<p>Let&#8217;s add a chart and a few controls. I thought (incorrectly) that the link to the domain model might be somewhat lacking because the report designer is not designed specifically for XAF (you can also use it with non-XAF ASP.NET or ASP.NET MVC applications) but navigating the available domain objects to select a property seemed very natural and simple.</p>
-
-<p><img src="/images/blog/devexpress-14-2-review-005.png"></p>
-
-<p>I had a few little mouse issues while trying to resize or move controls, and there were a couple of places where the interface seemed slightly sluggish, but these were very minor issues. In general the designer is slick and easy to use. I also had a little difficulty finding the <em>Save</em> button, but here it is:</p>
-
-<p><img src="/images/blog/devexpress-14-2-review-007.png"></p>
-
-<p>And here&#8217;s the live output after my modifications.</p>
-
-<p><img src="/images/blog/devexpress-14-2-review-006.png"></p>
-
-<p>You can also start from scratch with a new blank report.</p>
-
-<p><img src="/images/blog/devexpress-14-2-review-004.png"></p>
-
-<p>This report designer is an <strong>extremely impressive achievement</strong>. I played around with it for over an hour and it did not crash once. I managed to implement everything I tried including a chart, a bar code and a new data field.</p>
-
-<p>There are some features missing from the web-based report designer compared to the Windows Forms version. Most significant is the ability to attach events and scripts to controls. Here is a <a href="https://documentation.devexpress.com/#XtraReports/CustomDocument14651">full feature comparison table</a>.</p>
-
-<p>I had a quick look for the tools they used to implement it. It looks like it uses <a href="https://jquery.com">jQuery</a>, <a href="https://jqueryui.com">jQuery.UI</a> and <a href="https://knockoutjs.com">knockout.js</a> and you can automatically bundle the required libraries via a new setting in the web.config. There is <a href="https://documentation.devexpress.com/#XtraReports/CustomDocument17558">some more information here</a>.</p>
-
-<p>On the whole I am utterly impressed. Hats off to the DevExpress team!</p>
-
-<h2>Other new features in XAF 14.2</h2>
-
-<p>The new 14.2 includes several other new features. These include the ability to store user settings in the data store as well as improvements to the speed of the grids. For a full list of the new features and improvements see <a href="https://community.devexpress.com/blogs/eaf/archive/2014/11/18/xaf-brand-new-module-amp-features-for-both-windows-and-the-web-coming-soon-in-v14-2.aspx">here</a> and <a href="https://community.devexpress.com/blogs/eaf/archive/2014/11/20/xaf-enhancements-to-existing-features-amp-performance-tuning-coming-soon-in-v14-2.aspx">here</a>.</p>
 </div>
   
   

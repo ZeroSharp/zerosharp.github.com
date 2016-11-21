@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: php | ZeroSharp]]></title>
+  <link href="http://ZeroSharp.github.com/blog/categories/php/atom.xml" rel="self"/>
+  <link href="http://ZeroSharp.github.com/"/>
+  <updated>2016-11-21T09:47:49+00:00</updated>
+  <id>http://ZeroSharp.github.com/</id>
+  <author>
+    <name><![CDATA[Robert Anderson]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[The Serverless Framework and PHP]]></title>
+    <link href="http://ZeroSharp.github.com/the-serverless-framework-and-php/"/>
+    <updated>2016-11-21T09:21:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/the-serverless-framework-and-php</id>
+    <content type="html"><![CDATA[<p>The goal of this post is to explain how to call a PHP function from within an AWS lambda using the <a href="https://serverless.com/">Serverless Framework</a>.</p>
+
+<h2>Prerequisites</h2>
+
+<p>First check everything we need is installed.</p>
+
+<pre><code>$ serverless --version
+1.1.0
+$ node --version
+v7.1.0
+</code></pre>
+
+<h2>Install the sample PHP function</h2>
+
+<p>Install my sample <em>Hello</em> function from my github repository.</p>
+
+<pre><code>$ sls install --url https://github.com/ZeroSharp/serverless-php
+</code></pre>
+
+<p><code>sh
+Serverless: Downloading and installing "serverless-php"…
+Serverless: Successfully installed "serverless-php".
+</code></p>
+
+<h2>The code</h2>
+
+<pre><code>$ cd serverless-php
+</code></pre>
+
+<p>Let's have a look at the <code>serverless.yml</code> file.</p>
+
+<p>```yml serverless.yml
+service: serverless-php</p>
+
+<p>provider:
+  name: aws
+  runtime: nodejs4.3
+  # region: eu-west-1</p>
+
+<p>functions:
+  hello:</p>
+
+<pre><code>handler: handler.hello
+events:
+  - http:
+      path: hello
+      method: get
+</code></pre>
+
+<p>```</p>
+
+<p>Now look at the php function <code>index.php</code> that we'd like our lambda to call.</p>
+
+<p>```php index.php
+&lt;?php</p>
+
+<h1>$argv will contain the event object. You can output its contents like this if you like</h1>
+
+<h1>var_export($argv, true);</h1>
+
+<p>printf('Go Serverless v1.0! Your PHP function executed successfully!');
+```</p>
+
+<p>And the <code>handler.js</code> for the hello function looks as follows. It defines a simple lambda which calls the PHP binary, logs any errors and returns the result.</p>
+
+<p>```js handler.js
+'use strict';</p>
+
+<p>var child_process = require('child_process');</p>
+
+<p>module.exports.hello = (event, context, callback) => {</p>
+
+<p>  var strToReturn = '';</p>
+
+<p>  var php = './php';</p>
+
+<p>  // workaround to get 'sls invoke local' to work
+  if (typeof process.env.PWD !== "undefined") {</p>
+
+<pre><code>php = 'php';
+</code></pre>
+
+<p>  }</p>
+
+<p>  var proc = child_process.spawn(php, [ "index.php", JSON.stringify(event), { stdio: 'inherit' } ]);</p>
+
+<p>  proc.stdout.on('data', function (data) {</p>
+
+<pre><code>var dataStr = data.toString()
+// console.log('stdout: ' + dataStr);
+strToReturn += dataStr
+</code></pre>
+
+<p>  });</p>
+
+<p>  // this ensures any error messages raised by the PHP function end up in the logs
+  proc.stderr.on('data', function (data) {</p>
+
+<pre><code>console.log(`stderr: ${data}`);
+</code></pre>
+
+<p>  });</p>
+
+<p>  proc.on('close', function(code) {</p>
+
+<pre><code>if(code !== 0) {
+  return callback(new Error(`Process exited with non-zero status code ${code}`));
+}
+
+const response = {
+  statusCode: 200,
+  body: JSON.stringify({
+    message: strToReturn,
+    //input: event,
+  }),
+};
+
+callback(null, response);
+</code></pre>
+
+<p>  });
+};
+```</p>
+
+<p>Included is the PHP binary to bundle with our serverless function.</p>
+
+<p>(You may need to compile it yourself with different options. See below for help on how to do this.)</p>
+
+<p>Check it works from your shell.</p>
+
+<pre><code>$ php index.php
+</code></pre>
+
+<p><code>sh
+Go Serverless v1.0! Your PHP function executed successfully!
+</code></p>
+
+<p>Run it locally through the Serverless Framework.</p>
+
+<pre><code>$ sls invoke local --function hello
+</code></pre>
+
+<p>```sh
+Serverless: Your function ran successfully.</p>
+
+<p>{</p>
+
+<pre><code>"statusCode": 200,
+"body": "{\"message\":\"Go Serverless v1.0! Your PHP function executed successfully!\"}"
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Looks good. Let's deploy.</p>
+
+<pre><code>$ sls deploy
+</code></pre>
+
+<p>```sh
+Serverless: Packaging service…
+Serverless: Uploading CloudFormation file to S3…
+Serverless: Uploading service .zip file to S3…
+Serverless: Updating Stack…
+Serverless: Checking Stack update progress…
+..........
+Serverless: Stack update finished…</p>
+
+<p>Service Information
+service: serverless-php
+stage: dev
+region: eu-west-1
+api keys:
+  None
+endpoints:
+  GET - https://c1w0hct166.execute-api.eu-west-1.amazonaws.com/dev/hello
+functions:
+  serverless-php-dev-hello: arn:aws:lambda:eu-west-1:962613113552:function:serverless-php-dev-hello
+```</p>
+
+<p>Run the remote function via Serverless.</p>
+
+<pre><code>$ sls invoke --function hello
+</code></pre>
+
+<p>```sh
+{</p>
+
+<pre><code>"statusCode": 200,
+"body": "{\"message\":\"Go Serverless v1.0! Your PHP function executed successfully!\",\"input\":{}}"
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Visit the endpoint in your browser.</p>
+
+<p>```json
+{</p>
+
+<pre><code>"message": "Go Serverless v1.0! Your PHP function executed successfully!"
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Nice. It's all working.</p>
+
+<h2>Rebuilding the PHP binary</h2>
+
+<p>Depending on the PHP function you need to run, it may be necessary to rebuild the php binary with different flags and dependencies. You can do this best with docker.</p>
+
+<pre><code>$ docker --version
+Docker version 1.12.3, build 6b644ec
+</code></pre>
+
+<p>Modify <code>dockerfile.buildphp</code> as necessary.</p>
+
+<p>Then run:</p>
+
+<pre><code>$ sh buildphp.sh
+</code></pre>
+
+<p>This will build a new PHP binary and copy it to the project root. You can immediately deploy for testing with:</p>
+
+<pre><code>$ sls deploy
+</code></pre>
+
+<h2>Thanks</h2>
+
+<p>Shout out to <a href="https://github.com/dannylinden/aws-lambda-php">Danny Linden</a> whose code got me started on this.</p>
+]]></content>
+  </entry>
+  
+</feed>

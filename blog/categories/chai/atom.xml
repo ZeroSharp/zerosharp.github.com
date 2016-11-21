@@ -4,7 +4,7 @@
   <title><![CDATA[Category: chai | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/chai/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-11-07T10:55:51+00:00</updated>
+  <updated>2016-11-21T09:47:49+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -155,7 +155,7 @@ cryptojs
 
 <p>We expect the tests to fail now since we are no longer returning the same password.</p>
 
-<p>```
+<p>```sh
 $ npm test</p>
 
 <blockquote><p>@0.0.1 pretest /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
@@ -196,7 +196,7 @@ mocha ./lib/test</p></blockquote>
 
 <p>It's getting a little more complicated so let's pull in <a href="http://chaijs.com/">chai</a> which is a pretty assertions library.</p>
 
-<p><code>
+<p><code>sh
 $ npm install chai --save-dev
 chai@3.5.0 node_modules/chai
 ├── assertion-error@1.0.1
@@ -205,7 +205,7 @@ chai@3.5.0 node_modules/chai
 </code>
 And the Typescript definitions for chai.</p>
 
-<p>```
+<p>```sh
 $ typings install chai --save --ambient
 ? Found chai typings for DefinitelyTyped. Continue? Yes
 Installing chai@~3.4.0 (DefinitelyTyped)...</p>
@@ -343,7 +343,7 @@ Installing chai@~3.4.0 (DefinitelyTyped)...</p>
 
 <p>Run our tests:</p>
 
-<p>```
+<p>```sh
 $ npm test</p>
 
 <blockquote><p>@0.0.1 pretest /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent

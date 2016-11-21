@@ -262,7 +262,7 @@ cryptojs
 
 <p>We expect the tests to fail now since we are no longer returning the same password.</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -289,65 +289,68 @@ cryptojs
 <span class='line-number'>25</span>
 <span class='line-number'>26</span>
 <span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ npm test
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>npm <span class="nb">test</span>
 </span><span class='line'>&gt; @0.0.1 pretest /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
 </span><span class='line'>&gt; tsc
 </span><span class='line'>
-</span><span class='line'>&gt; @0.0.1 test /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
+</span><span class='line'>&gt; @0.0.1 <span class="nb">test</span> /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
 </span><span class='line'>&gt; mocha ./lib/test
 </span><span class='line'>
 </span><span class='line'>  Generator
-</span><span class='line'>    #generate
-</span><span class='line'>      1) should generate the password
-</span><span class='line'>    #check
-</span><span class='line'>      ✓ should return false when the password is incorrect
-</span><span class='line'>    #check
-</span><span class='line'>      2) should return true when the password is correct
+</span><span class='line'>    <span class="c">#generate</span>
+</span><span class='line'>      1<span class="o">)</span> should generate the password
+</span><span class='line'>    <span class="c">#check</span>
+</span><span class='line'>      ✓ should <span class="k">return </span><span class="nb">false </span>when the password is incorrect
+</span><span class='line'>    <span class="c">#check</span>
+</span><span class='line'>      2<span class="o">)</span> should <span class="k">return </span><span class="nb">true </span>when the password is correct
 </span><span class='line'>
-</span><span class='line'>  1 passing (16ms)
+</span><span class='line'>  1 passing <span class="o">(</span>16ms<span class="o">)</span>
 </span><span class='line'>  2 failing
 </span><span class='line'>
-</span><span class='line'>  1) Generator #generate should generate the password:
-</span><span class='line'>     Error: Expected 'Password' but was bb4bde4d76b055
-</span><span class='line'>      at Context.&lt;anonymous&gt; (lib/test/passwordOfTheDayTest.js:12:23)
+</span><span class='line'>  1<span class="o">)</span> Generator <span class="c">#generate should generate the password:</span>
+</span><span class='line'>     Error: Expected <span class="s1">&#39;Password&#39;</span> but was bb4bde4d76b055
+</span><span class='line'>      at Context.&lt;anonymous&gt; <span class="o">(</span>lib/test/passwordOfTheDayTest.js:12:23<span class="o">)</span>
 </span><span class='line'>
-</span><span class='line'>  2) Generator #check should return true when the password is correct:
-</span><span class='line'>     Error: Expected 'true' but was false
-</span><span class='line'>      at Context.&lt;anonymous&gt; (lib/test/passwordOfTheDayTest.js:28:23)
+</span><span class='line'>  2<span class="o">)</span> Generator <span class="c">#check should return true when the password is correct:</span>
+</span><span class='line'>     Error: Expected <span class="s1">&#39;true&#39;</span> but was <span class="nb">false</span>
+</span><span class='line'><span class="nb">      </span>at Context.&lt;anonymous&gt; <span class="o">(</span>lib/test/passwordOfTheDayTest.js:28:23<span class="o">)</span>
 </span><span class='line'>
-</span><span class='line'>npm ERR! Test failed.  See above for more details.</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>npm ERR! Test failed.  See above <span class="k">for </span>more details.
+</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>Update and improve the tests</h3>
 
 <p>It&#8217;s getting a little more complicated so let&#8217;s pull in <a href="http://chaijs.com/">chai</a> which is a pretty assertions library.</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ npm install chai --save-dev
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>npm install chai --save-dev
 </span><span class='line'>chai@3.5.0 node_modules/chai
 </span><span class='line'>├── assertion-error@1.0.1
-</span><span class='line'>├── type-detect@1.0.0
-</span><span class='line'>└── deep-eql@0.1.3 (type-detect@0.1.1)</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>├── <span class="nb">type</span>-detect@1.0.0
+</span><span class='line'>└── deep-eql@0.1.3 <span class="o">(</span><span class="nb">type</span>-detect@0.1.1<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>And the Typescript definitions for chai.</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ typings install chai --save --ambient
-</span><span class='line'>? Found chai typings for DefinitelyTyped. Continue? Yes
-</span><span class='line'>Installing chai@~3.4.0 (DefinitelyTyped)...
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>typings install chai --save --ambient
+</span><span class='line'>? Found chai typings <span class="k">for </span>DefinitelyTyped. Continue? Yes
+</span><span class='line'>Installing chai@~3.4.0 <span class="o">(</span>DefinitelyTyped<span class="o">)</span>...
 </span><span class='line'>
 </span><span class='line'>chai
-</span><span class='line'>└── (No dependencies)</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>└── <span class="o">(</span>No dependencies<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Now let&#8217;s flesh out the tests for the <code>PasswordGenerator</code> class.</p>
@@ -474,7 +477,7 @@ cryptojs
 
 <p>Run our tests:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -495,27 +498,28 @@ cryptojs
 <span class='line-number'>19</span>
 <span class='line-number'>20</span>
 <span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ npm test
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>npm <span class="nb">test</span>
 </span><span class='line'>&gt; @0.0.1 pretest /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
 </span><span class='line'>&gt; tsc
 </span><span class='line'>
-</span><span class='line'>&gt; @0.0.1 test /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
+</span><span class='line'>&gt; @0.0.1 <span class="nb">test</span> /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
 </span><span class='line'>&gt; mocha ./lib/test
 </span><span class='line'>
 </span><span class='line'>  Generator
-</span><span class='line'>    #generate
+</span><span class='line'>    <span class="c">#generate</span>
 </span><span class='line'>      ✓ should generate the password when the date is 24th July 2010
-</span><span class='line'>    #generate
+</span><span class='line'>    <span class="c">#generate</span>
 </span><span class='line'>      ✓ should generate a different password when the date is 25th July 2010
-</span><span class='line'>    #check
-</span><span class='line'>      ✓ should return false when the password is incorrect
-</span><span class='line'>    #check
-</span><span class='line'>      ✓ should return false when the password is null
-</span><span class='line'>    #check
-</span><span class='line'>      ✓ should return true when the password is correct
+</span><span class='line'>    <span class="c">#check</span>
+</span><span class='line'>      ✓ should <span class="k">return </span><span class="nb">false </span>when the password is incorrect
+</span><span class='line'>    <span class="c">#check</span>
+</span><span class='line'>      ✓ should <span class="k">return </span><span class="nb">false </span>when the password is null
+</span><span class='line'>    <span class="c">#check</span>
+</span><span class='line'>      ✓ should <span class="k">return </span><span class="nb">true </span>when the password is correct
 </span><span class='line'>
 </span><span class='line'>
-</span><span class='line'>  5 passing (20ms)</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>  5 passing <span class="o">(</span>20ms<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>Deploy</h3>

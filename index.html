@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="When an XAF list view has no selection-based actions available, the selection box still appears in the grid. Users get confused. In this post, we&# &hellip;">
+  <meta name="description" content="The goal of this post is to explain how to call a PHP function from within an AWS lambda using the Serverless Framework. Prerequisites First check &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,347 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/the-serverless-framework-and-php/">The Serverless Framework and PHP</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-11-21T09:21:00+00:00" pubdate data-updated="true">Nov 21<span>st</span>, 2016</time>
+        
+         | <a href="/the-serverless-framework-and-php/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>The goal of this post is to explain how to call a PHP function from within an AWS lambda using the <a href="https://serverless.com/">Serverless Framework</a>.</p>
+
+<h2>Prerequisites</h2>
+
+<p>First check everything we need is installed.</p>
+
+<pre><code>$ serverless --version
+1.1.0
+$ node --version
+v7.1.0
+</code></pre>
+
+<h2>Install the sample PHP function</h2>
+
+<p>Install my sample <em>Hello</em> function from my github repository.</p>
+
+<pre><code>$ sls install --url https://github.com/ZeroSharp/serverless-php
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>Serverless: Downloading and installing <span class="s2">&quot;serverless-php&quot;</span>…
+</span><span class='line'>Serverless: Successfully installed <span class="s2">&quot;serverless-php&quot;</span>.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>The code</h2>
+
+<pre><code>$ cd serverless-php
+</code></pre>
+
+<p>Let&#8217;s have a look at the <code>serverless.yml</code> file.</p>
+
+<figure class='code'><figcaption><span>serverless.yml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">service</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">serverless-php</span>
+</span><span class='line'>
+</span><span class='line'><span class="l-Scalar-Plain">provider</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">aws</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">runtime</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">nodejs4.3</span>
+</span><span class='line'>  <span class="c1"># region: eu-west-1</span>
+</span><span class='line'>
+</span><span class='line'><span class="l-Scalar-Plain">functions</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">hello</span><span class="p-Indicator">:</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">handler</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">handler.hello</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">events</span><span class="p-Indicator">:</span>
+</span><span class='line'>      <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">http</span><span class="p-Indicator">:</span>
+</span><span class='line'>          <span class="l-Scalar-Plain">path</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">hello</span>
+</span><span class='line'>          <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">get</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now look at the php function <code>index.php</code> that we&#8217;d like our lambda to call.</p>
+
+<figure class='code'><figcaption><span>index.php</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># $argv will contain the event object. You can output its contents like this if you like</span>
+</span><span class='line'><span class="c1">#var_export($argv, true);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">printf</span><span class="p">(</span><span class="s1">&#39;Go Serverless v1.0! Your PHP function executed successfully!&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And the <code>handler.js</code> for the hello function looks as follows. It defines a simple lambda which calls the PHP binary, logs any errors and returns the result.</p>
+
+<figure class='code'><figcaption><span>handler.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">child_process</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;child_process&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">hello</span> <span class="o">=</span> <span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">context</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">strToReturn</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">php</span> <span class="o">=</span> <span class="s1">&#39;./php&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// workaround to get &#39;sls invoke local&#39; to work</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">PWD</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">php</span> <span class="o">=</span> <span class="s1">&#39;php&#39;</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">proc</span> <span class="o">=</span> <span class="nx">child_process</span><span class="p">.</span><span class="nx">spawn</span><span class="p">(</span><span class="nx">php</span><span class="p">,</span> <span class="p">[</span> <span class="s2">&quot;index.php&quot;</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">event</span><span class="p">),</span> <span class="p">{</span> <span class="nx">stdio</span><span class="o">:</span> <span class="s1">&#39;inherit&#39;</span> <span class="p">}</span> <span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">proc</span><span class="p">.</span><span class="nx">stdout</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">dataStr</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span>
+</span><span class='line'>    <span class="c1">// console.log(&#39;stdout: &#39; + dataStr);</span>
+</span><span class='line'>    <span class="nx">strToReturn</span> <span class="o">+=</span> <span class="nx">dataStr</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// this ensures any error messages raised by the PHP function end up in the logs</span>
+</span><span class='line'>  <span class="nx">proc</span><span class="p">.</span><span class="nx">stderr</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="err">`</span><span class="nx">stderr</span><span class="o">:</span> <span class="nx">$</span><span class="p">{</span><span class="nx">data</span><span class="p">}</span><span class="err">`</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">proc</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;close&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">code</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="nx">code</span> <span class="o">!==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">callback</span><span class="p">(</span><span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="err">`</span><span class="nx">Process</span> <span class="nx">exited</span> <span class="kd">with</span> <span class="nx">non</span><span class="o">-</span><span class="nx">zero</span> <span class="nx">status</span> <span class="nx">code</span> <span class="nx">$</span><span class="p">{</span><span class="nx">code</span><span class="p">}</span><span class="err">`</span><span class="p">));</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kr">const</span> <span class="nx">response</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">statusCode</span><span class="o">:</span> <span class="mi">200</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">body</span><span class="o">:</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+</span><span class='line'>        <span class="nx">message</span><span class="o">:</span> <span class="nx">strToReturn</span><span class="p">,</span>
+</span><span class='line'>        <span class="c1">//input: event,</span>
+</span><span class='line'>      <span class="p">}),</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">callback</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">response</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Included is the PHP binary to bundle with our serverless function.</p>
+
+<p>(You may need to compile it yourself with different options. See below for help on how to do this.)</p>
+
+<p>Check it works from your shell.</p>
+
+<pre><code>$ php index.php
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>Go Serverless v1.0! Your PHP <span class="k">function </span>executed successfully!
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Run it locally through the Serverless Framework.</p>
+
+<pre><code>$ sls invoke local --function hello
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>Serverless: Your <span class="k">function </span>ran successfully.
+</span><span class='line'>
+</span><span class='line'><span class="o">{</span>
+</span><span class='line'>    <span class="s2">&quot;statusCode&quot;</span>: 200,
+</span><span class='line'>    <span class="s2">&quot;body&quot;</span>: <span class="s2">&quot;{\&quot;message\&quot;:\&quot;Go Serverless v1.0! Your PHP function executed successfully!\&quot;}&quot;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Looks good. Let&#8217;s deploy.</p>
+
+<pre><code>$ sls deploy
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>Serverless: Packaging service…
+</span><span class='line'>Serverless: Uploading CloudFormation file to S3…
+</span><span class='line'>Serverless: Uploading service .zip file to S3…
+</span><span class='line'>Serverless: Updating Stack…
+</span><span class='line'>Serverless: Checking Stack update progress…
+</span><span class='line'>..........
+</span><span class='line'>Serverless: Stack update finished…
+</span><span class='line'>
+</span><span class='line'>Service Information
+</span><span class='line'>service: serverless-php
+</span><span class='line'>stage: dev
+</span><span class='line'>region: eu-west-1
+</span><span class='line'>api keys:
+</span><span class='line'>  None
+</span><span class='line'>endpoints:
+</span><span class='line'>  GET - https://c1w0hct166.execute-api.eu-west-1.amazonaws.com/dev/hello
+</span><span class='line'>functions:
+</span><span class='line'>  serverless-php-dev-hello: arn:aws:lambda:eu-west-1:962613113552:function:serverless-php-dev-hello
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Run the remote function via Serverless.</p>
+
+<pre><code>$ sls invoke --function hello
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="o">{</span>
+</span><span class='line'>    <span class="s2">&quot;statusCode&quot;</span>: 200,
+</span><span class='line'>    <span class="s2">&quot;body&quot;</span>: <span class="s2">&quot;{\&quot;message\&quot;:\&quot;Go Serverless v1.0! Your PHP function executed successfully!\&quot;,\&quot;input\&quot;:{}}&quot;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Visit the endpoint in your browser.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Go Serverless v1.0! Your PHP function executed successfully!&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Nice. It&#8217;s all working.</p>
+
+<h2>Rebuilding the PHP binary</h2>
+
+<p>Depending on the PHP function you need to run, it may be necessary to rebuild the php binary with different flags and dependencies. You can do this best with docker.</p>
+
+<pre><code>$ docker --version
+Docker version 1.12.3, build 6b644ec
+</code></pre>
+
+<p>Modify <code>dockerfile.buildphp</code> as necessary.</p>
+
+<p>Then run:</p>
+
+<pre><code>$ sh buildphp.sh
+</code></pre>
+
+<p>This will build a new PHP binary and copy it to the project root. You can immediately deploy for testing with:</p>
+
+<pre><code>$ sls deploy
+</code></pre>
+
+<h2>Thanks</h2>
+
+<p>Shout out to <a href="https://github.com/dannylinden/aws-lambda-php">Danny Linden</a> whose code got me started on this.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1136,7 +1477,7 @@ cryptojs
 
 <p>We expect the tests to fail now since we are no longer returning the same password.</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1163,65 +1504,68 @@ cryptojs
 <span class='line-number'>25</span>
 <span class='line-number'>26</span>
 <span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ npm test
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>npm <span class="nb">test</span>
 </span><span class='line'>&gt; @0.0.1 pretest /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
 </span><span class='line'>&gt; tsc
 </span><span class='line'>
-</span><span class='line'>&gt; @0.0.1 test /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
+</span><span class='line'>&gt; @0.0.1 <span class="nb">test</span> /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
 </span><span class='line'>&gt; mocha ./lib/test
 </span><span class='line'>
 </span><span class='line'>  Generator
-</span><span class='line'>    #generate
-</span><span class='line'>      1) should generate the password
-</span><span class='line'>    #check
-</span><span class='line'>      ✓ should return false when the password is incorrect
-</span><span class='line'>    #check
-</span><span class='line'>      2) should return true when the password is correct
+</span><span class='line'>    <span class="c">#generate</span>
+</span><span class='line'>      1<span class="o">)</span> should generate the password
+</span><span class='line'>    <span class="c">#check</span>
+</span><span class='line'>      ✓ should <span class="k">return </span><span class="nb">false </span>when the password is incorrect
+</span><span class='line'>    <span class="c">#check</span>
+</span><span class='line'>      2<span class="o">)</span> should <span class="k">return </span><span class="nb">true </span>when the password is correct
 </span><span class='line'>
-</span><span class='line'>  1 passing (16ms)
+</span><span class='line'>  1 passing <span class="o">(</span>16ms<span class="o">)</span>
 </span><span class='line'>  2 failing
 </span><span class='line'>
-</span><span class='line'>  1) Generator #generate should generate the password:
-</span><span class='line'>     Error: Expected 'Password' but was bb4bde4d76b055
-</span><span class='line'>      at Context.&lt;anonymous&gt; (lib/test/passwordOfTheDayTest.js:12:23)
+</span><span class='line'>  1<span class="o">)</span> Generator <span class="c">#generate should generate the password:</span>
+</span><span class='line'>     Error: Expected <span class="s1">&#39;Password&#39;</span> but was bb4bde4d76b055
+</span><span class='line'>      at Context.&lt;anonymous&gt; <span class="o">(</span>lib/test/passwordOfTheDayTest.js:12:23<span class="o">)</span>
 </span><span class='line'>
-</span><span class='line'>  2) Generator #check should return true when the password is correct:
-</span><span class='line'>     Error: Expected 'true' but was false
-</span><span class='line'>      at Context.&lt;anonymous&gt; (lib/test/passwordOfTheDayTest.js:28:23)
+</span><span class='line'>  2<span class="o">)</span> Generator <span class="c">#check should return true when the password is correct:</span>
+</span><span class='line'>     Error: Expected <span class="s1">&#39;true&#39;</span> but was <span class="nb">false</span>
+</span><span class='line'><span class="nb">      </span>at Context.&lt;anonymous&gt; <span class="o">(</span>lib/test/passwordOfTheDayTest.js:28:23<span class="o">)</span>
 </span><span class='line'>
-</span><span class='line'>npm ERR! Test failed.  See above for more details.</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>npm ERR! Test failed.  See above <span class="k">for </span>more details.
+</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>Update and improve the tests</h3>
 
 <p>It&#8217;s getting a little more complicated so let&#8217;s pull in <a href="http://chaijs.com/">chai</a> which is a pretty assertions library.</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ npm install chai --save-dev
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>npm install chai --save-dev
 </span><span class='line'>chai@3.5.0 node_modules/chai
 </span><span class='line'>├── assertion-error@1.0.1
-</span><span class='line'>├── type-detect@1.0.0
-</span><span class='line'>└── deep-eql@0.1.3 (type-detect@0.1.1)</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>├── <span class="nb">type</span>-detect@1.0.0
+</span><span class='line'>└── deep-eql@0.1.3 <span class="o">(</span><span class="nb">type</span>-detect@0.1.1<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>And the Typescript definitions for chai.</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ typings install chai --save --ambient
-</span><span class='line'>? Found chai typings for DefinitelyTyped. Continue? Yes
-</span><span class='line'>Installing chai@~3.4.0 (DefinitelyTyped)...
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>typings install chai --save --ambient
+</span><span class='line'>? Found chai typings <span class="k">for </span>DefinitelyTyped. Continue? Yes
+</span><span class='line'>Installing chai@~3.4.0 <span class="o">(</span>DefinitelyTyped<span class="o">)</span>...
 </span><span class='line'>
 </span><span class='line'>chai
-</span><span class='line'>└── (No dependencies)</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>└── <span class="o">(</span>No dependencies<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Now let&#8217;s flesh out the tests for the <code>PasswordGenerator</code> class.</p>
@@ -1348,7 +1692,7 @@ cryptojs
 
 <p>Run our tests:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1369,27 +1713,28 @@ cryptojs
 <span class='line-number'>19</span>
 <span class='line-number'>20</span>
 <span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ npm test
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>npm <span class="nb">test</span>
 </span><span class='line'>&gt; @0.0.1 pretest /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
 </span><span class='line'>&gt; tsc
 </span><span class='line'>
-</span><span class='line'>&gt; @0.0.1 test /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
+</span><span class='line'>&gt; @0.0.1 <span class="nb">test</span> /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
 </span><span class='line'>&gt; mocha ./lib/test
 </span><span class='line'>
 </span><span class='line'>  Generator
-</span><span class='line'>    #generate
+</span><span class='line'>    <span class="c">#generate</span>
 </span><span class='line'>      ✓ should generate the password when the date is 24th July 2010
-</span><span class='line'>    #generate
+</span><span class='line'>    <span class="c">#generate</span>
 </span><span class='line'>      ✓ should generate a different password when the date is 25th July 2010
-</span><span class='line'>    #check
-</span><span class='line'>      ✓ should return false when the password is incorrect
-</span><span class='line'>    #check
-</span><span class='line'>      ✓ should return false when the password is null
-</span><span class='line'>    #check
-</span><span class='line'>      ✓ should return true when the password is correct
+</span><span class='line'>    <span class="c">#check</span>
+</span><span class='line'>      ✓ should <span class="k">return </span><span class="nb">false </span>when the password is incorrect
+</span><span class='line'>    <span class="c">#check</span>
+</span><span class='line'>      ✓ should <span class="k">return </span><span class="nb">false </span>when the password is null
+</span><span class='line'>    <span class="c">#check</span>
+</span><span class='line'>      ✓ should <span class="k">return </span><span class="nb">true </span>when the password is correct
 </span><span class='line'>
 </span><span class='line'>
-</span><span class='line'>  5 passing (20ms)</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>  5 passing <span class="o">(</span>20ms<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>Deploy</h3>
@@ -2246,248 +2591,6 @@ $ mkdir src/test
 <p>The <a href="https://github.com/ZeroSharp/ServerlessPotd">source code so far</a> is on GitHub. Note the default <em>.gitignore</em> file skips the <em>admin.env</em> file which contains the (sensitive) AWS keys in it so don&#8217;t forget to add your own.</p>
 
 <p>In the next post we&#8217;ll create a TypeScript class for the guts of the lambda function which checks the password of the day, along with some corresponding Mocha tests, also written in TypeScript.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/serverless-framework-part-1-up-and-running/">Serverless Framework - Part 1: Up and Running</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-12-22T20:26:00+00:00" pubdate data-updated="true">Dec 22<span>nd</span>, 2015</time>
-        
-         | <a href="/serverless-framework-part-1-up-and-running/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><h2>New version 0.3.1</h2>
-
-<p><span class="fluo">Edit: since the original version of this post, a new version 0.3.1 of Serverless was released. I have updated the tutorial below to reflect the newer version. </span></p>
-
-<p>I was in the middle of a blog post about the JAWS framework and before I had finished it changed its name to <a href="https://github.com/serverless/serverless">the Serverless framework</a>. It is a very clever way to build apps without worrying about provisioning server or whether it will scale. This is because it uses Amazon Web Services and in particular the Amazon lambda compute service. It&#8217;s currently in beta.</p>
-
-<p>Follow <a href="http://docs.serverless.com/docs/configuring-aws">the instructions</a> for setting up an administrative IAM user for use with the framework.</p>
-
-<p>Make sure you have node and npm installed. You need node 4.0 or greater.</p>
-
-<pre><code>$ node -v
-v4.2.3
-$ npm -v
-2.14.7
-</code></pre>
-
-<p>Install the Serverless framework.</p>
-
-<pre><code>$ npm install serverless -g 
-</code></pre>
-
-<p>Create a new project</p>
-
-<pre><code>$ serverless project create
-</code></pre>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'> _______                             __
-</span><span class='line'>|   _   .-----.----.--.--.-----.----|  .-----.-----.-----.
-</span><span class='line'>|   |___|  -__|   _|  |  |  -__|   _|  |  -__|__ --|__ --|
-</span><span class='line'>|____   |_____|__|  \___/|_____|__| |__|_____|_____|_____|
-</span><span class='line'>|   |   |             The Serverless Application Framework
-</span><span class='line'>|       |                           serverless.com, v0.3.1
-</span><span class='line'>`-------'
-</span><span class='line'>
-</span><span class='line'>Serverless: Initializing Serverless Project...  
-</span><span class='line'>Serverless: Enter a name for this project:  (serverless-vyedql) serverlessPotd
-</span><span class='line'>Serverless: Enter a universally unique project bucket name:  (serverless-vyedql-4jboce.com) potd-zerosharp.com
-</span><span class='line'>Serverless: Enter an email to use for AWS alarms:  (me@serverless-vyedql.com) potd@nosredna.com
-</span><span class='line'>Serverless: Select a region for your project: 
-</span><span class='line'>    us-east-1
-</span><span class='line'>    us-west-2
-</span><span class='line'>  &gt; eu-west-1
-</span><span class='line'>    ap-northeast-1
-</span><span class='line'>Serverless: Select an AWS profile for your project: 
-</span><span class='line'>  &gt; default
-</span><span class='line'>Serverless: Creating stage "dev"...  
-</span><span class='line'>Serverless: Creating region "eu-west-1" in stage "dev"...  
-</span><span class='line'>Serverless: Creating your project bucket on S3: serverless.eu-west-1.potd-zerosharp.com...  
-</span><span class='line'>Serverless: Deploying resources to stage "dev" in region "eu-west-1" via Cloudformation (~3 minutes)...  
-</span><span class='line'>Serverless: Successfully deployed "dev" resources to "eu-west-1"  
-</span><span class='line'>Serverless: Successfully created region "eu-west-1" within stage "dev"  
-</span><span class='line'>Serverless: Successfully created stage "dev"  
-</span><span class='line'>Serverless: Successfully initialized project "serverlessPotd"  </span></code></pre></td></tr></table></div></figure>
-
-
-<p>It takes about 3 minutes to setup the necessary CloudFormation stack for your project. Change directory to the newly created project.</p>
-
-<pre><code>$ cd serverlessPotd
-</code></pre>
-
-<p>Create a new component.</p>
-
-<pre><code>$ serverless component create
-</code></pre>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Serverless: Enter a name for your new component:  (nodejscomponent) 
-</span><span class='line'>Serverless: Enter a name for your component's first module:  (resource) potd
-</span><span class='line'>Serverless: Enter a name for your module's first function:  (show) check
-</span><span class='line'>Serverless: Successfully created function: "check"  
-</span><span class='line'>Serverless: Successfully created new serverless module "potd" inside the component "nodejscomponent"  
-</span><span class='line'>Serverless: Installing "serverless-helpers" for this component via NPM...  
-</span><span class='line'>Serverless: -----------------  
-</span><span class='line'>serverless-helpers-js@0.0.3 node_modules/serverless-helpers-js
-</span><span class='line'>└── dotenv@1.2.0
-</span><span class='line'>Serverless: -----------------  
-</span><span class='line'>Serverless: Successfully created new serverless component: nodejscomponent  </span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>This has created the javascript code for a basic lambda function which we can immediately deploy.</p>
-
-<pre><code>$ serverless dash deploy
-</code></pre>
-
-<p>At the prompt select both the function and the endpoint and then select <em>Deploy</em>.</p>
-
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'> _______                             __
-</span><span class='line'>|   _   .-----.----.--.--.-----.----|  .-----.-----.-----.
-</span><span class='line'>|   |___|  -__|   _|  |  |  -__|   _|  |  -__|__ --|__ --|
-</span><span class='line'>|____   |_____|__|  \___/|_____|__| |__|_____|_____|_____|
-</span><span class='line'>|   |   |             The Serverless Application Framework
-</span><span class='line'>|       |                           serverless.com, v0.3.1
-</span><span class='line'>`-------'
-</span><span class='line'>
-</span><span class='line'>Use the &lt;up&gt;, &lt;down&gt;, &lt;pageup&gt;, &lt;pagedown&gt;, &lt;home&gt;, and &lt;end&gt; keys to navigate.
-</span><span class='line'>Press &lt;enter&gt; to select/deselect, or &lt;space&gt; to select/deselect and move down.
-</span><span class='line'>Press &lt;ctrl&gt; + &lt;enter&gt; to immediately deploy selected.
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>Serverless: Select the assets you wish to deploy:
-</span><span class='line'>    nodejscomponent - potd - check
-</span><span class='line'>      function - nodejscomponent/potd/check
-</span><span class='line'>      endpoint - nodejscomponent/potd/check@potd/check~GET
-</span><span class='line'>    - - - - -
-</span><span class='line'>  &gt; Deploy
-</span><span class='line'>
-</span><span class='line'>Serverless: Deploying functions in "dev" to the following regions: eu-west-1  
-</span><span class='line'>Serverless: ------------------------  
-</span><span class='line'>Serverless: Successfully deployed functions in "dev" to the following regions:   
-</span><span class='line'>Serverless: eu-west-1 ------------------------  
-</span><span class='line'>Serverless:   nodejscomponent/potd/check: arn:aws:lambda:eu-west-1:962613113552:function:serverlessPotd-nodejscomponent-potd-check:dev  
-</span><span class='line'>
-</span><span class='line'>Serverless: Deploying endpoints in "dev" to the following regions: eu-west-1  
-</span><span class='line'>Serverless: Successfully deployed endpoints in "dev" to the following regions:  
-</span><span class='line'>Serverless: eu-west-1 ------------------------  
-</span><span class='line'>Serverless:   GET - potd/check - https://rhnjv4ms2b.execute-api.eu-west-1.amazonaws.com/dev/potd/check  </span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now open a browser and navigate to the URL in the last line. You should see the following JSON response.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="err">message:</span> <span class="nt">&quot;Your Serverless function ran successfully!&quot;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>Now that&#8217;s already fantastic. With a handful of commands we have deployed an arbitrary javascript function to a URL endpoint very cheaply and with automatic scaling. We never had to consider instance size or memory or operating system.</p>
-
-<p>And it&#8217;s extremely extensible too - thanks to the other AWS services, we can easily make it secure (with Amazon Cognito) kick off emails (SES), store files (S3), add persistence (DynamoDB), etc.</p>
-
-<p>In the next post, I&#8217;ll be applying it to a real life scenario to replace an existing web service.</p>
 </div>
   
   

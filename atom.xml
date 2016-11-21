@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-11-07T10:55:51+00:00</updated>
+  <updated>2016-11-21T09:47:49+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,318 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[The Serverless Framework and PHP]]></title>
+    <link href="http://ZeroSharp.github.com/the-serverless-framework-and-php/"/>
+    <updated>2016-11-21T09:21:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/the-serverless-framework-and-php</id>
+    <content type="html"><![CDATA[<p>The goal of this post is to explain how to call a PHP function from within an AWS lambda using the <a href="https://serverless.com/">Serverless Framework</a>.</p>
+
+<h2>Prerequisites</h2>
+
+<p>First check everything we need is installed.</p>
+
+<pre><code>$ serverless --version
+1.1.0
+$ node --version
+v7.1.0
+</code></pre>
+
+<h2>Install the sample PHP function</h2>
+
+<p>Install my sample <em>Hello</em> function from my github repository.</p>
+
+<pre><code>$ sls install --url https://github.com/ZeroSharp/serverless-php
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>Serverless: Downloading and installing <span class="s2">&quot;serverless-php&quot;</span>…
+</span><span class='line'>Serverless: Successfully installed <span class="s2">&quot;serverless-php&quot;</span>.
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>The code</h2>
+
+<pre><code>$ cd serverless-php
+</code></pre>
+
+<p>Let&#8217;s have a look at the <code>serverless.yml</code> file.</p>
+
+<figure class='code'><figcaption><span>serverless.yml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">service</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">serverless-php</span>
+</span><span class='line'>
+</span><span class='line'><span class="l-Scalar-Plain">provider</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">aws</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">runtime</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">nodejs4.3</span>
+</span><span class='line'>  <span class="c1"># region: eu-west-1</span>
+</span><span class='line'>
+</span><span class='line'><span class="l-Scalar-Plain">functions</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">hello</span><span class="p-Indicator">:</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">handler</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">handler.hello</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">events</span><span class="p-Indicator">:</span>
+</span><span class='line'>      <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">http</span><span class="p-Indicator">:</span>
+</span><span class='line'>          <span class="l-Scalar-Plain">path</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">hello</span>
+</span><span class='line'>          <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">get</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now look at the php function <code>index.php</code> that we&#8217;d like our lambda to call.</p>
+
+<figure class='code'><figcaption><span>index.php</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='php'><span class='line'><span class="cp">&lt;?php</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1"># $argv will contain the event object. You can output its contents like this if you like</span>
+</span><span class='line'><span class="c1">#var_export($argv, true);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nb">printf</span><span class="p">(</span><span class="s1">&#39;Go Serverless v1.0! Your PHP function executed successfully!&#39;</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And the <code>handler.js</code> for the hello function looks as follows. It defines a simple lambda which calls the PHP binary, logs any errors and returns the result.</p>
+
+<figure class='code'><figcaption><span>handler.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kd">var</span> <span class="nx">child_process</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;child_process&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">hello</span> <span class="o">=</span> <span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">context</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">strToReturn</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">php</span> <span class="o">=</span> <span class="s1">&#39;./php&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// workaround to get &#39;sls invoke local&#39; to work</span>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="k">typeof</span> <span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">PWD</span> <span class="o">!==</span> <span class="s2">&quot;undefined&quot;</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">php</span> <span class="o">=</span> <span class="s1">&#39;php&#39;</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">proc</span> <span class="o">=</span> <span class="nx">child_process</span><span class="p">.</span><span class="nx">spawn</span><span class="p">(</span><span class="nx">php</span><span class="p">,</span> <span class="p">[</span> <span class="s2">&quot;index.php&quot;</span><span class="p">,</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">(</span><span class="nx">event</span><span class="p">),</span> <span class="p">{</span> <span class="nx">stdio</span><span class="o">:</span> <span class="s1">&#39;inherit&#39;</span> <span class="p">}</span> <span class="p">]);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">proc</span><span class="p">.</span><span class="nx">stdout</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kd">var</span> <span class="nx">dataStr</span> <span class="o">=</span> <span class="nx">data</span><span class="p">.</span><span class="nx">toString</span><span class="p">()</span>
+</span><span class='line'>    <span class="c1">// console.log(&#39;stdout: &#39; + dataStr);</span>
+</span><span class='line'>    <span class="nx">strToReturn</span> <span class="o">+=</span> <span class="nx">dataStr</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="c1">// this ensures any error messages raised by the PHP function end up in the logs</span>
+</span><span class='line'>  <span class="nx">proc</span><span class="p">.</span><span class="nx">stderr</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="err">`</span><span class="nx">stderr</span><span class="o">:</span> <span class="nx">$</span><span class="p">{</span><span class="nx">data</span><span class="p">}</span><span class="err">`</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">proc</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;close&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">code</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="nx">code</span> <span class="o">!==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>      <span class="k">return</span> <span class="nx">callback</span><span class="p">(</span><span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="err">`</span><span class="nx">Process</span> <span class="nx">exited</span> <span class="kd">with</span> <span class="nx">non</span><span class="o">-</span><span class="nx">zero</span> <span class="nx">status</span> <span class="nx">code</span> <span class="nx">$</span><span class="p">{</span><span class="nx">code</span><span class="p">}</span><span class="err">`</span><span class="p">));</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="kr">const</span> <span class="nx">response</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>      <span class="nx">statusCode</span><span class="o">:</span> <span class="mi">200</span><span class="p">,</span>
+</span><span class='line'>      <span class="nx">body</span><span class="o">:</span> <span class="nx">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span>
+</span><span class='line'>        <span class="nx">message</span><span class="o">:</span> <span class="nx">strToReturn</span><span class="p">,</span>
+</span><span class='line'>        <span class="c1">//input: event,</span>
+</span><span class='line'>      <span class="p">}),</span>
+</span><span class='line'>    <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nx">callback</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">response</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Included is the PHP binary to bundle with our serverless function.</p>
+
+<p>(You may need to compile it yourself with different options. See below for help on how to do this.)</p>
+
+<p>Check it works from your shell.</p>
+
+<pre><code>$ php index.php
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>Go Serverless v1.0! Your PHP <span class="k">function </span>executed successfully!
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Run it locally through the Serverless Framework.</p>
+
+<pre><code>$ sls invoke local --function hello
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>Serverless: Your <span class="k">function </span>ran successfully.
+</span><span class='line'>
+</span><span class='line'><span class="o">{</span>
+</span><span class='line'>    <span class="s2">&quot;statusCode&quot;</span>: 200,
+</span><span class='line'>    <span class="s2">&quot;body&quot;</span>: <span class="s2">&quot;{\&quot;message\&quot;:\&quot;Go Serverless v1.0! Your PHP function executed successfully!\&quot;}&quot;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Looks good. Let&#8217;s deploy.</p>
+
+<pre><code>$ sls deploy
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>Serverless: Packaging service…
+</span><span class='line'>Serverless: Uploading CloudFormation file to S3…
+</span><span class='line'>Serverless: Uploading service .zip file to S3…
+</span><span class='line'>Serverless: Updating Stack…
+</span><span class='line'>Serverless: Checking Stack update progress…
+</span><span class='line'>..........
+</span><span class='line'>Serverless: Stack update finished…
+</span><span class='line'>
+</span><span class='line'>Service Information
+</span><span class='line'>service: serverless-php
+</span><span class='line'>stage: dev
+</span><span class='line'>region: eu-west-1
+</span><span class='line'>api keys:
+</span><span class='line'>  None
+</span><span class='line'>endpoints:
+</span><span class='line'>  GET - https://c1w0hct166.execute-api.eu-west-1.amazonaws.com/dev/hello
+</span><span class='line'>functions:
+</span><span class='line'>  serverless-php-dev-hello: arn:aws:lambda:eu-west-1:962613113552:function:serverless-php-dev-hello
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Run the remote function via Serverless.</p>
+
+<pre><code>$ sls invoke --function hello
+</code></pre>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="o">{</span>
+</span><span class='line'>    <span class="s2">&quot;statusCode&quot;</span>: 200,
+</span><span class='line'>    <span class="s2">&quot;body&quot;</span>: <span class="s2">&quot;{\&quot;message\&quot;:\&quot;Go Serverless v1.0! Your PHP function executed successfully!\&quot;,\&quot;input\&quot;:{}}&quot;</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Visit the endpoint in your browser.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="nt">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Go Serverless v1.0! Your PHP function executed successfully!&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Nice. It&#8217;s all working.</p>
+
+<h2>Rebuilding the PHP binary</h2>
+
+<p>Depending on the PHP function you need to run, it may be necessary to rebuild the php binary with different flags and dependencies. You can do this best with docker.</p>
+
+<pre><code>$ docker --version
+Docker version 1.12.3, build 6b644ec
+</code></pre>
+
+<p>Modify <code>dockerfile.buildphp</code> as necessary.</p>
+
+<p>Then run:</p>
+
+<pre><code>$ sh buildphp.sh
+</code></pre>
+
+<p>This will build a new PHP binary and copy it to the project root. You can immediately deploy for testing with:</p>
+
+<pre><code>$ sls deploy
+</code></pre>
+
+<h2>Thanks</h2>
+
+<p>Shout out to <a href="https://github.com/dannylinden/aws-lambda-php">Danny Linden</a> whose code got me started on this.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Smart hiding of the selection boxes in XAF web applications]]></title>
@@ -865,7 +1177,7 @@ cryptojs
 
 <p>We expect the tests to fail now since we are no longer returning the same password.</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -892,65 +1204,68 @@ cryptojs
 <span class='line-number'>25</span>
 <span class='line-number'>26</span>
 <span class='line-number'>27</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ npm test
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>npm <span class="nb">test</span>
 </span><span class='line'>&gt; @0.0.1 pretest /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
 </span><span class='line'>&gt; tsc
 </span><span class='line'>
-</span><span class='line'>&gt; @0.0.1 test /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
+</span><span class='line'>&gt; @0.0.1 <span class="nb">test</span> /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
 </span><span class='line'>&gt; mocha ./lib/test
 </span><span class='line'>
 </span><span class='line'>  Generator
-</span><span class='line'>    #generate
-</span><span class='line'>      1) should generate the password
-</span><span class='line'>    #check
-</span><span class='line'>      ✓ should return false when the password is incorrect
-</span><span class='line'>    #check
-</span><span class='line'>      2) should return true when the password is correct
+</span><span class='line'>    <span class="c">#generate</span>
+</span><span class='line'>      1<span class="o">)</span> should generate the password
+</span><span class='line'>    <span class="c">#check</span>
+</span><span class='line'>      ✓ should <span class="k">return </span><span class="nb">false </span>when the password is incorrect
+</span><span class='line'>    <span class="c">#check</span>
+</span><span class='line'>      2<span class="o">)</span> should <span class="k">return </span><span class="nb">true </span>when the password is correct
 </span><span class='line'>
-</span><span class='line'>  1 passing (16ms)
+</span><span class='line'>  1 passing <span class="o">(</span>16ms<span class="o">)</span>
 </span><span class='line'>  2 failing
 </span><span class='line'>
-</span><span class='line'>  1) Generator #generate should generate the password:
-</span><span class='line'>     Error: Expected 'Password' but was bb4bde4d76b055
-</span><span class='line'>      at Context.&lt;anonymous&gt; (lib/test/passwordOfTheDayTest.js:12:23)
+</span><span class='line'>  1<span class="o">)</span> Generator <span class="c">#generate should generate the password:</span>
+</span><span class='line'>     Error: Expected <span class="s1">&#39;Password&#39;</span> but was bb4bde4d76b055
+</span><span class='line'>      at Context.&lt;anonymous&gt; <span class="o">(</span>lib/test/passwordOfTheDayTest.js:12:23<span class="o">)</span>
 </span><span class='line'>
-</span><span class='line'>  2) Generator #check should return true when the password is correct:
-</span><span class='line'>     Error: Expected 'true' but was false
-</span><span class='line'>      at Context.&lt;anonymous&gt; (lib/test/passwordOfTheDayTest.js:28:23)
+</span><span class='line'>  2<span class="o">)</span> Generator <span class="c">#check should return true when the password is correct:</span>
+</span><span class='line'>     Error: Expected <span class="s1">&#39;true&#39;</span> but was <span class="nb">false</span>
+</span><span class='line'><span class="nb">      </span>at Context.&lt;anonymous&gt; <span class="o">(</span>lib/test/passwordOfTheDayTest.js:28:23<span class="o">)</span>
 </span><span class='line'>
-</span><span class='line'>npm ERR! Test failed.  See above for more details.</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>npm ERR! Test failed.  See above <span class="k">for </span>more details.
+</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>Update and improve the tests</h3>
 
 <p>It&#8217;s getting a little more complicated so let&#8217;s pull in <a href="http://chaijs.com/">chai</a> which is a pretty assertions library.</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ npm install chai --save-dev
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>npm install chai --save-dev
 </span><span class='line'>chai@3.5.0 node_modules/chai
 </span><span class='line'>├── assertion-error@1.0.1
-</span><span class='line'>├── type-detect@1.0.0
-</span><span class='line'>└── deep-eql@0.1.3 (type-detect@0.1.1)</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>├── <span class="nb">type</span>-detect@1.0.0
+</span><span class='line'>└── deep-eql@0.1.3 <span class="o">(</span><span class="nb">type</span>-detect@0.1.1<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>And the Typescript definitions for chai.</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ typings install chai --save --ambient
-</span><span class='line'>? Found chai typings for DefinitelyTyped. Continue? Yes
-</span><span class='line'>Installing chai@~3.4.0 (DefinitelyTyped)...
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>typings install chai --save --ambient
+</span><span class='line'>? Found chai typings <span class="k">for </span>DefinitelyTyped. Continue? Yes
+</span><span class='line'>Installing chai@~3.4.0 <span class="o">(</span>DefinitelyTyped<span class="o">)</span>...
 </span><span class='line'>
 </span><span class='line'>chai
-</span><span class='line'>└── (No dependencies)</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>└── <span class="o">(</span>No dependencies<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <p>Now let&#8217;s flesh out the tests for the <code>PasswordGenerator</code> class.</p>
@@ -1077,7 +1392,7 @@ cryptojs
 
 <p>Run our tests:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1098,27 +1413,28 @@ cryptojs
 <span class='line-number'>19</span>
 <span class='line-number'>20</span>
 <span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>$ npm test
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="nv">$ </span>npm <span class="nb">test</span>
 </span><span class='line'>&gt; @0.0.1 pretest /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
 </span><span class='line'>&gt; tsc
 </span><span class='line'>
-</span><span class='line'>&gt; @0.0.1 test /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
+</span><span class='line'>&gt; @0.0.1 <span class="nb">test</span> /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
 </span><span class='line'>&gt; mocha ./lib/test
 </span><span class='line'>
 </span><span class='line'>  Generator
-</span><span class='line'>    #generate
+</span><span class='line'>    <span class="c">#generate</span>
 </span><span class='line'>      ✓ should generate the password when the date is 24th July 2010
-</span><span class='line'>    #generate
+</span><span class='line'>    <span class="c">#generate</span>
 </span><span class='line'>      ✓ should generate a different password when the date is 25th July 2010
-</span><span class='line'>    #check
-</span><span class='line'>      ✓ should return false when the password is incorrect
-</span><span class='line'>    #check
-</span><span class='line'>      ✓ should return false when the password is null
-</span><span class='line'>    #check
-</span><span class='line'>      ✓ should return true when the password is correct
+</span><span class='line'>    <span class="c">#check</span>
+</span><span class='line'>      ✓ should <span class="k">return </span><span class="nb">false </span>when the password is incorrect
+</span><span class='line'>    <span class="c">#check</span>
+</span><span class='line'>      ✓ should <span class="k">return </span><span class="nb">false </span>when the password is null
+</span><span class='line'>    <span class="c">#check</span>
+</span><span class='line'>      ✓ should <span class="k">return </span><span class="nb">true </span>when the password is correct
 </span><span class='line'>
 </span><span class='line'>
-</span><span class='line'>  5 passing (20ms)</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>  5 passing <span class="o">(</span>20ms<span class="o">)</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
 <h3>Deploy</h3>
@@ -2515,60 +2831,6 @@ First up: Never mess with the .NET garbage collector.</p>
 <p>This will override system setting for list separator character and Excel will open the file correctly.</p>
 
 <p><sup>Note: Excel expects the separator to match the one defined in the <em>Control Panel/Region/Formats/Additional settings/List Separator</em>. On a French system, it expects a semi-colon.</sup></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[DevExpress 14.2 review]]></title>
-    <link href="http://ZeroSharp.github.com/devexpress-14-dot-2-review/"/>
-    <updated>2015-01-20T08:35:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/devexpress-14-dot-2-review</id>
-    <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='The truly outstanding new feature is the ASP.NET report writer'>
-This post is an overview of the brand new version XAF 14.2. The truly outstanding new feature is the ASP.NET report writer which is now available in all XAF applications.</p>
-
-<p>A few months ago, we lost a potential sale because the customer wanted the ability to create custom reports from within the browser. We told them it was impossible to provide a fully-fledged report designer within our web application - but the DevExpress guys have done it! And how! </span></p>
-
-<h2>The web-based report designer</h2>
-
-<p>Let&#8217;s fire up the MainDemo application and navigate to the reports view. The first thing to notice is that there is a new action <em>Show Report Designer</em>.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-14-2-review-001.png"></p>
-
-<p>The designer action is disabled because the selected report is <em>predefined</em>. Predefined reports are a feature of Reports v2 which were introduced in version 13.2 (<a href="http://ZeroSharp.github.com/devexpress-13-dot-2-review-part-1">see my previous review</a>). So first, we clone the existing predefined report. I renamed the copy (via the edit button) so that we can tell them apart.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-14-2-review-002.png"></p>
-
-<p>Now the <em>Show Report Designer</em> action is enabled. Let&#8217;s click it. <em>Whoa! That&#8217;s one impressive user interface for a web application!</em></p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-14-2-review-003.png"></p>
-
-<p>Let&#8217;s add a chart and a few controls. I thought (incorrectly) that the link to the domain model might be somewhat lacking because the report designer is not designed specifically for XAF (you can also use it with non-XAF ASP.NET or ASP.NET MVC applications) but navigating the available domain objects to select a property seemed very natural and simple.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-14-2-review-005.png"></p>
-
-<p>I had a few little mouse issues while trying to resize or move controls, and there were a couple of places where the interface seemed slightly sluggish, but these were very minor issues. In general the designer is slick and easy to use. I also had a little difficulty finding the <em>Save</em> button, but here it is:</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-14-2-review-007.png"></p>
-
-<p>And here&#8217;s the live output after my modifications.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-14-2-review-006.png"></p>
-
-<p>You can also start from scratch with a new blank report.</p>
-
-<p><img src="http://ZeroSharp.github.com/images/blog/devexpress-14-2-review-004.png"></p>
-
-<p>This report designer is an <strong>extremely impressive achievement</strong>. I played around with it for over an hour and it did not crash once. I managed to implement everything I tried including a chart, a bar code and a new data field.</p>
-
-<p>There are some features missing from the web-based report designer compared to the Windows Forms version. Most significant is the ability to attach events and scripts to controls. Here is a <a href="https://documentation.devexpress.com/#XtraReports/CustomDocument14651">full feature comparison table</a>.</p>
-
-<p>I had a quick look for the tools they used to implement it. It looks like it uses <a href="https://jquery.com">jQuery</a>, <a href="https://jqueryui.com">jQuery.UI</a> and <a href="https://knockoutjs.com">knockout.js</a> and you can automatically bundle the required libraries via a new setting in the web.config. There is <a href="https://documentation.devexpress.com/#XtraReports/CustomDocument17558">some more information here</a>.</p>
-
-<p>On the whole I am utterly impressed. Hats off to the DevExpress team!</p>
-
-<h2>Other new features in XAF 14.2</h2>
-
-<p>The new 14.2 includes several other new features. These include the ability to store user settings in the data store as well as improvements to the speed of the grids. For a full list of the new features and improvements see <a href="https://community.devexpress.com/blogs/eaf/archive/2014/11/18/xaf-brand-new-module-amp-features-for-both-windows-and-the-web-coming-soon-in-v14-2.aspx">here</a> and <a href="https://community.devexpress.com/blogs/eaf/archive/2014/11/20/xaf-enhancements-to-existing-features-amp-performance-tuning-coming-soon-in-v14-2.aspx">here</a>.</p>
 ]]></content>
   </entry>
   

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: aws | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/aws/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-11-07T10:55:51+00:00</updated>
+  <updated>2016-11-21T09:47:49+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,245 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[The Serverless Framework and PHP]]></title>
+    <link href="http://ZeroSharp.github.com/the-serverless-framework-and-php/"/>
+    <updated>2016-11-21T09:21:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/the-serverless-framework-and-php</id>
+    <content type="html"><![CDATA[<p>The goal of this post is to explain how to call a PHP function from within an AWS lambda using the <a href="https://serverless.com/">Serverless Framework</a>.</p>
+
+<h2>Prerequisites</h2>
+
+<p>First check everything we need is installed.</p>
+
+<pre><code>$ serverless --version
+1.1.0
+$ node --version
+v7.1.0
+</code></pre>
+
+<h2>Install the sample PHP function</h2>
+
+<p>Install my sample <em>Hello</em> function from my github repository.</p>
+
+<pre><code>$ sls install --url https://github.com/ZeroSharp/serverless-php
+</code></pre>
+
+<p><code>sh
+Serverless: Downloading and installing "serverless-php"…
+Serverless: Successfully installed "serverless-php".
+</code></p>
+
+<h2>The code</h2>
+
+<pre><code>$ cd serverless-php
+</code></pre>
+
+<p>Let's have a look at the <code>serverless.yml</code> file.</p>
+
+<p>```yml serverless.yml
+service: serverless-php</p>
+
+<p>provider:
+  name: aws
+  runtime: nodejs4.3
+  # region: eu-west-1</p>
+
+<p>functions:
+  hello:</p>
+
+<pre><code>handler: handler.hello
+events:
+  - http:
+      path: hello
+      method: get
+</code></pre>
+
+<p>```</p>
+
+<p>Now look at the php function <code>index.php</code> that we'd like our lambda to call.</p>
+
+<p>```php index.php
+&lt;?php</p>
+
+<h1>$argv will contain the event object. You can output its contents like this if you like</h1>
+
+<h1>var_export($argv, true);</h1>
+
+<p>printf('Go Serverless v1.0! Your PHP function executed successfully!');
+```</p>
+
+<p>And the <code>handler.js</code> for the hello function looks as follows. It defines a simple lambda which calls the PHP binary, logs any errors and returns the result.</p>
+
+<p>```js handler.js
+'use strict';</p>
+
+<p>var child_process = require('child_process');</p>
+
+<p>module.exports.hello = (event, context, callback) => {</p>
+
+<p>  var strToReturn = '';</p>
+
+<p>  var php = './php';</p>
+
+<p>  // workaround to get 'sls invoke local' to work
+  if (typeof process.env.PWD !== "undefined") {</p>
+
+<pre><code>php = 'php';
+</code></pre>
+
+<p>  }</p>
+
+<p>  var proc = child_process.spawn(php, [ "index.php", JSON.stringify(event), { stdio: 'inherit' } ]);</p>
+
+<p>  proc.stdout.on('data', function (data) {</p>
+
+<pre><code>var dataStr = data.toString()
+// console.log('stdout: ' + dataStr);
+strToReturn += dataStr
+</code></pre>
+
+<p>  });</p>
+
+<p>  // this ensures any error messages raised by the PHP function end up in the logs
+  proc.stderr.on('data', function (data) {</p>
+
+<pre><code>console.log(`stderr: ${data}`);
+</code></pre>
+
+<p>  });</p>
+
+<p>  proc.on('close', function(code) {</p>
+
+<pre><code>if(code !== 0) {
+  return callback(new Error(`Process exited with non-zero status code ${code}`));
+}
+
+const response = {
+  statusCode: 200,
+  body: JSON.stringify({
+    message: strToReturn,
+    //input: event,
+  }),
+};
+
+callback(null, response);
+</code></pre>
+
+<p>  });
+};
+```</p>
+
+<p>Included is the PHP binary to bundle with our serverless function.</p>
+
+<p>(You may need to compile it yourself with different options. See below for help on how to do this.)</p>
+
+<p>Check it works from your shell.</p>
+
+<pre><code>$ php index.php
+</code></pre>
+
+<p><code>sh
+Go Serverless v1.0! Your PHP function executed successfully!
+</code></p>
+
+<p>Run it locally through the Serverless Framework.</p>
+
+<pre><code>$ sls invoke local --function hello
+</code></pre>
+
+<p>```sh
+Serverless: Your function ran successfully.</p>
+
+<p>{</p>
+
+<pre><code>"statusCode": 200,
+"body": "{\"message\":\"Go Serverless v1.0! Your PHP function executed successfully!\"}"
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Looks good. Let's deploy.</p>
+
+<pre><code>$ sls deploy
+</code></pre>
+
+<p>```sh
+Serverless: Packaging service…
+Serverless: Uploading CloudFormation file to S3…
+Serverless: Uploading service .zip file to S3…
+Serverless: Updating Stack…
+Serverless: Checking Stack update progress…
+..........
+Serverless: Stack update finished…</p>
+
+<p>Service Information
+service: serverless-php
+stage: dev
+region: eu-west-1
+api keys:
+  None
+endpoints:
+  GET - https://c1w0hct166.execute-api.eu-west-1.amazonaws.com/dev/hello
+functions:
+  serverless-php-dev-hello: arn:aws:lambda:eu-west-1:962613113552:function:serverless-php-dev-hello
+```</p>
+
+<p>Run the remote function via Serverless.</p>
+
+<pre><code>$ sls invoke --function hello
+</code></pre>
+
+<p>```sh
+{</p>
+
+<pre><code>"statusCode": 200,
+"body": "{\"message\":\"Go Serverless v1.0! Your PHP function executed successfully!\",\"input\":{}}"
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Visit the endpoint in your browser.</p>
+
+<p>```json
+{</p>
+
+<pre><code>"message": "Go Serverless v1.0! Your PHP function executed successfully!"
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Nice. It's all working.</p>
+
+<h2>Rebuilding the PHP binary</h2>
+
+<p>Depending on the PHP function you need to run, it may be necessary to rebuild the php binary with different flags and dependencies. You can do this best with docker.</p>
+
+<pre><code>$ docker --version
+Docker version 1.12.3, build 6b644ec
+</code></pre>
+
+<p>Modify <code>dockerfile.buildphp</code> as necessary.</p>
+
+<p>Then run:</p>
+
+<pre><code>$ sh buildphp.sh
+</code></pre>
+
+<p>This will build a new PHP binary and copy it to the project root. You can immediately deploy for testing with:</p>
+
+<pre><code>$ sls deploy
+</code></pre>
+
+<h2>Thanks</h2>
+
+<p>Shout out to <a href="https://github.com/dannylinden/aws-lambda-php">Danny Linden</a> whose code got me started on this.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Serverless Framework Part 5: Pulling in a node package]]></title>
@@ -155,7 +394,7 @@ cryptojs
 
 <p>We expect the tests to fail now since we are no longer returning the same password.</p>
 
-<p>```
+<p>```sh
 $ npm test</p>
 
 <blockquote><p>@0.0.1 pretest /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
@@ -196,7 +435,7 @@ mocha ./lib/test</p></blockquote>
 
 <p>It's getting a little more complicated so let's pull in <a href="http://chaijs.com/">chai</a> which is a pretty assertions library.</p>
 
-<p><code>
+<p><code>sh
 $ npm install chai --save-dev
 chai@3.5.0 node_modules/chai
 ├── assertion-error@1.0.1
@@ -205,7 +444,7 @@ chai@3.5.0 node_modules/chai
 </code>
 And the Typescript definitions for chai.</p>
 
-<p>```
+<p>```sh
 $ typings install chai --save --ambient
 ? Found chai typings for DefinitelyTyped. Continue? Yes
 Installing chai@~3.4.0 (DefinitelyTyped)...</p>
@@ -343,7 +582,7 @@ Installing chai@~3.4.0 (DefinitelyTyped)...</p>
 
 <p>Run our tests:</p>
 
-<p>```
+<p>```sh
 $ npm test</p>
 
 <blockquote><p>@0.0.1 pretest /Users/ra/Projects/Coprocess/serverlessPotd/nodejscomponent
@@ -1236,162 +1475,6 @@ $ mkdir src/test
 <p>The <a href="https://github.com/ZeroSharp/ServerlessPotd">source code so far</a> is on GitHub. Note the default <em>.gitignore</em> file skips the <em>admin.env</em> file which contains the (sensitive) AWS keys in it so don't forget to add your own.</p>
 
 <p>In the next post we'll create a TypeScript class for the guts of the lambda function which checks the password of the day, along with some corresponding Mocha tests, also written in TypeScript.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Serverless Framework - Part 1: Up and running]]></title>
-    <link href="http://ZeroSharp.github.com/serverless-framework-part-1-up-and-running/"/>
-    <updated>2015-12-22T20:26:00+00:00</updated>
-    <id>http://ZeroSharp.github.com/serverless-framework-part-1-up-and-running</id>
-    <content type="html"><![CDATA[<h2>New version 0.3.1</h2>
-
-<p><span class="fluo">Edit: since the original version of this post, a new version 0.3.1 of Serverless was released. I have updated the tutorial below to reflect the newer version. </span></p>
-
-<p>I was in the middle of a blog post about the JAWS framework and before I had finished it changed its name to <a href="https://github.com/serverless/serverless">the Serverless framework</a>. It is a very clever way to build apps without worrying about provisioning server or whether it will scale. This is because it uses Amazon Web Services and in particular the Amazon lambda compute service. It's currently in beta.</p>
-
-<p>Follow <a href="http://docs.serverless.com/docs/configuring-aws">the instructions</a> for setting up an administrative IAM user for use with the framework.</p>
-
-<p>Make sure you have node and npm installed. You need node 4.0 or greater.</p>
-
-<pre><code>$ node -v
-v4.2.3
-$ npm -v
-2.14.7
-</code></pre>
-
-<p>Install the Serverless framework.</p>
-
-<pre><code>$ npm install serverless -g 
-</code></pre>
-
-<p>Create a new project</p>
-
-<pre><code>$ serverless project create
-</code></pre>
-
-<p>```</p>
-
-<hr />
-
-<p>|   _   .-----.----.--.--.-----.----|  .-----.-----.-----.
-|   |<em><strong>|  -</strong>|   </em>|  |  |  -<strong>|   _|  |  -</strong>|<strong> --|</strong> --|
-|<strong><strong>   |</strong></strong><em>|<strong>|  _</strong>/|</em><em><em><strong>|</strong>| |<strong>|</strong></em></em><em>|</em><strong><strong>|</strong></strong>_|
-|   |   |             The Serverless Application Framework
-|       |                           serverless.com, v0.3.1
-`-------'</p>
-
-<p>Serverless: Initializing Serverless Project...<br/>
-Serverless: Enter a name for this project:  (serverless-vyedql) serverlessPotd
-Serverless: Enter a universally unique project bucket name:  (serverless-vyedql-4jboce.com) potd-zerosharp.com
-Serverless: Enter an email to use for AWS alarms:  (me@serverless-vyedql.com) potd@nosredna.com
-Serverless: Select a region for your project:</p>
-
-<pre><code>us-east-1
-us-west-2
-</code></pre>
-
-<blockquote><p>eu-west-1</p>
-
-<pre><code>ap-northeast-1
-</code></pre>
-
-<p>Serverless: Select an AWS profile for your project:
-default
-Serverless: Creating stage "dev"...<br/>
-Serverless: Creating region "eu-west-1" in stage "dev"...<br/>
-Serverless: Creating your project bucket on S3: serverless.eu-west-1.potd-zerosharp.com...<br/>
-Serverless: Deploying resources to stage "dev" in region "eu-west-1" via Cloudformation (~3 minutes)...<br/>
-Serverless: Successfully deployed "dev" resources to "eu-west-1"<br/>
-Serverless: Successfully created region "eu-west-1" within stage "dev"<br/>
-Serverless: Successfully created stage "dev"<br/>
-Serverless: Successfully initialized project "serverlessPotd"<br/>
-```</p></blockquote>
-
-<p>It takes about 3 minutes to setup the necessary CloudFormation stack for your project. Change directory to the newly created project.</p>
-
-<pre><code>$ cd serverlessPotd
-</code></pre>
-
-<p>Create a new component.</p>
-
-<pre><code>$ serverless component create
-</code></pre>
-
-<p><code>
-Serverless: Enter a name for your new component:  (nodejscomponent)
-Serverless: Enter a name for your component's first module:  (resource) potd
-Serverless: Enter a name for your module's first function:  (show) check
-Serverless: Successfully created function: "check"  
-Serverless: Successfully created new serverless module "potd" inside the component "nodejscomponent"  
-Serverless: Installing "serverless-helpers" for this component via NPM...  
-Serverless: -----------------  
-serverless-helpers-js@0.0.3 node_modules/serverless-helpers-js
-└── dotenv@1.2.0
-Serverless: -----------------  
-Serverless: Successfully created new serverless component: nodejscomponent  
-</code></p>
-
-<p>This has created the javascript code for a basic lambda function which we can immediately deploy.</p>
-
-<pre><code>$ serverless dash deploy
-</code></pre>
-
-<p>At the prompt select both the function and the endpoint and then select <em>Deploy</em>.</p>
-
-<p>```</p>
-
-<hr />
-
-<p>|   _   .-----.----.--.--.-----.----|  .-----.-----.-----.
-|   |<em><strong>|  -</strong>|   </em>|  |  |  -<strong>|   _|  |  -</strong>|<strong> --|</strong> --|
-|<strong><strong>   |</strong></strong><em>|<strong>|  _</strong>/|</em><em><em><strong>|</strong>| |<strong>|</strong></em></em><em>|</em><strong><strong>|</strong></strong>_|
-|   |   |             The Serverless Application Framework
-|       |                           serverless.com, v0.3.1
-`-------'</p>
-
-<p>Use the <up>, <down>, <pageup>, <pagedown>, <home>, and <end> keys to navigate.
-Press <enter> to select/deselect, or <space> to select/deselect and move down.
-Press <ctrl> + <enter> to immediately deploy selected.</p>
-
-<p>Serverless: Select the assets you wish to deploy:</p>
-
-<pre><code>nodejscomponent - potd - check
-  function - nodejscomponent/potd/check
-  endpoint - nodejscomponent/potd/check@potd/check~GET
-- - - - -
-</code></pre>
-
-<blockquote><p>Deploy</p></blockquote>
-
-<p>Serverless: Deploying functions in "dev" to the following regions: eu-west-1<br/>
-Serverless: ------------------------<br/>
-Serverless: Successfully deployed functions in "dev" to the following regions: <br/>
-Serverless: eu-west-1 ------------------------<br/>
-Serverless:   nodejscomponent/potd/check: arn:aws:lambda:eu-west-1:962613113552:function:serverlessPotd-nodejscomponent-potd-check:dev</p>
-
-<p>Serverless: Deploying endpoints in "dev" to the following regions: eu-west-1<br/>
-Serverless: Successfully deployed endpoints in "dev" to the following regions:<br/>
-Serverless: eu-west-1 ------------------------<br/>
-Serverless:   GET - potd/check - https://rhnjv4ms2b.execute-api.eu-west-1.amazonaws.com/dev/potd/check<br/>
-```</p>
-
-<p>Now open a browser and navigate to the URL in the last line. You should see the following JSON response.</p>
-
-<p>```json
-{</p>
-
-<pre><code>message: "Your Serverless function ran successfully!"
-</code></pre>
-
-<p>}
-```</p>
-
-<p>Now that's already fantastic. With a handful of commands we have deployed an arbitrary javascript function to a URL endpoint very cheaply and with automatic scaling. We never had to consider instance size or memory or operating system.</p>
-
-<p>And it's extremely extensible too - thanks to the other AWS services, we can easily make it secure (with Amazon Cognito) kick off emails (SES), store files (S3), add persistence (DynamoDB), etc.</p>
-
-<p>In the next post, I'll be applying it to a real life scenario to replace an existing web service.</p>
 ]]></content>
   </entry>
   
