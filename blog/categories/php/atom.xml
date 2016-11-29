@@ -4,7 +4,7 @@
   <title><![CDATA[Category: php | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/php/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-11-29T16:37:48+00:00</updated>
+  <updated>2016-11-29T17:09:45+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -14,7 +14,7 @@
 
   
   <entry>
-    <title type="html"><![CDATA[A concrete PHP Serverless example]]></title>
+    <title type="html"><![CDATA[A concrete PHP Serverless example - export chess games in PDF]]></title>
     <link href="http://ZeroSharp.github.com/a-concrete-php-serverless-example/"/>
     <updated>2016-11-29T17:37:00+00:00</updated>
     <id>http://ZeroSharp.github.com/a-concrete-php-serverless-example</id>
@@ -22,16 +22,11 @@
 
 <p>The service I'm building connects runs a PHP function for pretty-printing chess games from the <a href="http://lichess.org/">lichess online chess server</a>. <a href="https://github.com/clarkerubber/lichessPDFExporter">James Clarke</a> has written a PHP function to do this using <a href="http://www.fpdf.org/">fpdf17</a>.</p>
 
-<p>The lichess exporter takes the game id of any game that has been played on the lichess server and produced a PDF output. Take for example, Game 8 of the current World Championship which is <a href="https://en.lichess.org/COQChpzH">here</a>. I can get the PDF output by running:</p>
-
-<pre><code>$ php main.php COQChpzH &gt; COQChpzH.pdf
-</code></pre>
-
-<p>Then when I open the file, I see this:</p>
+<p>The lichess exporter takes the game id of any game that has been played on the lichess server and produced a PDF output. Take for example, Game 8 of the current World Championship which is <a href="https://en.lichess.org/COQChpzH">here</a>. When I open the resulting file, I see this:</p>
 
 <p><img src="/images/blog/serverless-lichess-pdf-exporter-001.png"></p>
 
-<p>What we want to do is turn this into a service.</p>
+<p>In this blog post I'll describe how I turned this into a serverless service. The goal is to create:</p>
 
 <ul>
 <li>Add an endpoint which takes the game id as a parameter</li>
