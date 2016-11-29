@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-11-21T09:47:49+00:00</updated>
+  <updated>2016-11-29T16:37:48+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,227 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[A concrete PHP Serverless example]]></title>
+    <link href="http://ZeroSharp.github.com/a-concrete-php-serverless-example/"/>
+    <updated>2016-11-29T17:37:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/a-concrete-php-serverless-example</id>
+    <content type="html"><![CDATA[<p>In the last post I built a PHP capable sample project for <a href="https://serverless.com/">the Serverless Framework</a>. In this post, I&#8217;ll show a concrete use of it.</p>
+
+<p>The service I&#8217;m building connects runs a PHP function for pretty-printing chess games from the <a href="http://lichess.org/">lichess online chess server</a>. <a href="https://github.com/clarkerubber/lichessPDFExporter">James Clarke</a> has written a PHP function to do this using <a href="http://www.fpdf.org/">fpdf17</a>.</p>
+
+<p>The lichess exporter takes the game id of any game that has been played on the lichess server and produced a PDF output. Take for example, Game 8 of the current World Championship which is <a href="https://en.lichess.org/COQChpzH">here</a>. I can get the PDF output by running:</p>
+
+<pre><code>$ php main.php COQChpzH &gt; COQChpzH.pdf
+</code></pre>
+
+<p>Then when I open the file, I see this:</p>
+
+<p><img src="http://ZeroSharp.github.com/images/blog/serverless-lichess-pdf-exporter-001.png"></p>
+
+<p>What we want to do is turn this into a service.</p>
+
+<ul>
+<li>Add an endpoint which takes the game id as a parameter</li>
+<li>Run the PHP function via an AWS lambda function</li>
+<li>Return the result as a stream</li>
+</ul>
+
+
+<h2>Prerequisites</h2>
+
+<p>First check everything we need is installed.</p>
+
+<pre><code>$ serverless --version
+1.2.1
+$ node --version
+v7.1.0
+</code></pre>
+
+<h2>Initial setup</h2>
+
+<pre><code>$ mkdir serverless-lichess-to-pdf
+$ cd serverless-lichess-to-pdf
+$ sls install --url https://github.com/ZeroSharp/serverless-php
+</code></pre>
+
+<p>Next copy in the source from https://github.com/clarkerubber/lichessPDFExporter.</p>
+
+<p>You can check it works by running the following.</p>
+
+<pre><code>$ php main.php COQChpzH &gt; COQChpzH.pdf
+</code></pre>
+
+<p>What&#8217;s going on here? The php binary (from the serverless-php project) is running main.php (from the lichess-pdf-exporter project) with argument <code>COQChpzH</code> (which corresponds to a <a href="https://en.lichess.org/hsXtkVk8">chess game</a> on the lichess server. The main.php function downloads the game from the lichess API and passes it through the fpdf17 library to create a pdf stream which is written out to the <code>COQChpzH.pdf</code> file.</p>
+
+<h2>Lessons learned</h2>
+
+<p>I learned a few things while trying to get this project working. The basic plan is to modify handler.js so that it return the output of the call described above. Turns out there are quite a few gotchas along the way.</p>
+
+<h2>Lesson 1 - Defining a path parameter</h2>
+
+<p>I want my API to look like this:</p>
+
+<pre><code>http://.../serverless-lichess-to-pdf/export/{gameid}
+</code></pre>
+
+<p>I could not find an example in the serverless docs for getting a parameter that is passed in the URL.</p>
+
+<p>Turns out your <code>serverless.yml</code> file should look like this:</p>
+
+<figure class='code'><figcaption><span>serverless.yml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">functions</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">exportToPdf</span><span class="p-Indicator">:</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">handler</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">handler.exportToPdf</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">events</span><span class="p-Indicator">:</span>
+</span><span class='line'>      <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">http</span><span class="p-Indicator">:</span>
+</span><span class='line'>          <span class="l-Scalar-Plain">path</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">export/{gameid}</span>
+</span><span class='line'>          <span class="l-Scalar-Plain">method</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">get</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then, in your handler.js you can retrieve the parameter with:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">exportToPdf</span> <span class="o">=</span> <span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">context</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">gameid</span> <span class="o">=</span> <span class="nx">event</span><span class="p">.</span><span class="nx">pathParameters</span><span class="p">.</span><span class="nx">gameid</span><span class="p">;</span>
+</span><span class='line'>  <span class="c1">// etc...</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<h2>Lesson 2 - API Gateway does not support binary data</h2>
+
+<p>I was hoping I could just do something like this:</p>
+
+<figure class='code'><figcaption><span>handler.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// this does NOT work</span>
+</span><span class='line'><span class="kr">const</span> <span class="nx">response</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">statusCode</span><span class="o">:</span> <span class="mi">200</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">body</span><span class="o">:</span> <span class="nx">outputFromPhpCall</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">content</span><span class="o">-</span><span class="nx">type</span><span class="o">:</span> <span class="s2">&quot;application/pdf&quot;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="nx">callback</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">response</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>At present, you cannot return a binary file. Amazon have just (November 2016) <a href="https://aws.amazon.com/blogs/compute/binary-support-for-api-integrations-with-amazon-api-gateway/">released support for binary types in API Gateway</a> but it&#8217;s currently <a href="https://github.com/serverless/serverless/issues/2797">an open issue</a> in the Serverless Framework.</p>
+
+<h2>Lesson 3 - You can redirect the response to an S3 bucket</h2>
+
+<p>So instead of returning the binary output, I can write the output to an S3 bucket and return a 302 redirection to the S3 resource. Like this:</p>
+
+<figure class='code'><figcaption><span>handler.js</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// body contains the output from the PHP call</span>
+</span><span class='line'><span class="kr">const</span> <span class="nx">params</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">Bucket</span><span class="o">:</span> <span class="nx">bucket</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">Key</span><span class="o">:</span> <span class="nx">key</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">ACL</span><span class="o">:</span> <span class="s1">&#39;public-read-write&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">Body</span><span class="o">:</span> <span class="nx">body</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">ContentType</span><span class="o">:</span> <span class="s1">&#39;application/pdf&#39;</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Save the pdf file to S3    </span>
+</span><span class='line'><span class="nx">s3</span><span class="p">.</span><span class="nx">putObject</span><span class="p">(</span><span class="nx">params</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'><span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">callback</span><span class="p">(</span><span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="err">`</span><span class="nx">Failed</span> <span class="nx">to</span> <span class="nx">put</span> <span class="nx">s3</span> <span class="nx">object</span><span class="o">:</span> <span class="nx">$</span><span class="p">{</span><span class="nx">err</span><span class="p">}</span><span class="err">`</span><span class="p">));</span>
+</span><span class='line'><span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// respond with a 302 redirect to the PDF file</span>
+</span><span class='line'><span class="kr">const</span> <span class="nx">response</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">statusCode</span><span class="o">:</span> <span class="mi">302</span><span class="p">,</span>
+</span><span class='line'>    <span class="nx">headers</span><span class="o">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nx">location</span> <span class="o">:</span> <span class="err">`</span><span class="nx">https</span><span class="o">:</span><span class="c1">//s3-eu-west-1.amazonaws.com/${bucket}/${key}`</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">return</span> <span class="nx">callback</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">response</span><span class="p">);</span>
+</span><span class='line'><span class="p">});</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Lesson 4 - You can automatically delete S3 objects after a number of days</h2>
+
+<p>Each S3 bucket has optional <a href="https://docs.aws.amazon.com/AmazonS3/latest/dev/object-lifecycle-mgmt.html">lifecycle rules</a> where you can specify that files are automatically removed after a time period. I wanted to set this up within the <code>serverless.yml</code> resources section, but the syntax for the lifecycle rules were not very obvious and I could not find any examples online. The following seems to work:</p>
+
+<figure class='code'><figcaption><span>serverless.yml</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">resources</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">Resources</span><span class="p-Indicator">:</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">PackageStorage</span><span class="p-Indicator">:</span>
+</span><span class='line'>      <span class="l-Scalar-Plain">Type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">AWS::S3::Bucket</span>
+</span><span class='line'>      <span class="l-Scalar-Plain">Properties</span><span class="p-Indicator">:</span>
+</span><span class='line'>        <span class="l-Scalar-Plain">AccessControl</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">PublicRead</span>
+</span><span class='line'>        <span class="l-Scalar-Plain">BucketName</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">${self:custom.exportToPdfBucket}</span>
+</span><span class='line'>        <span class="l-Scalar-Plain">LifecycleConfiguration</span><span class="p-Indicator">:</span>
+</span><span class='line'>          <span class="l-Scalar-Plain">Rules</span><span class="p-Indicator">:</span>
+</span><span class='line'>            <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">ExpirationInDays</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">1</span>
+</span><span class='line'>              <span class="l-Scalar-Plain">Status</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Enabled</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>It&#8217;s all working now</h2>
+
+<p>You can check it out by visiting <a href="https://e7tyur4sib.execute-api.eu-west-1.amazonaws.com/dev/export/COQChpzH">this link</a>.</p>
+
+<p>The <a href="https://github.com/ZeroSharp/serverless-lichess-to-pdf">source code is on Github</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[The Serverless Framework and PHP]]></title>
@@ -2808,29 +3029,6 @@ First up: Never mess with the .NET garbage collector.</p>
 </span><span class='line'><span class="nt">&lt;/appSettings&gt;</span>
 </span></code></pre></td></tr></table></div></figure>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Top tip for viewing CSV files in Excel]]></title>
-    <link href="http://ZeroSharp.github.com/top-tip-for-viewing-csv-files-in-excel/"/>
-    <updated>2015-05-08T11:32:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/top-tip-for-viewing-csv-files-in-excel</id>
-    <content type="html"><![CDATA[<p>Here&#8217;s a quick hack when your CSV file has a different separator than Excel is expecting.</p>
-
-<p>Add this on the first line of the CSV file:</p>
-
-<pre><code>sep=;
-</code></pre>
-
-<p>or</p>
-
-<pre><code>sep=,
-</code></pre>
-
-<p>This will override system setting for list separator character and Excel will open the file correctly.</p>
-
-<p><sup>Note: Excel expects the separator to match the one defined in the <em>Control Panel/Region/Formats/Additional settings/List Separator</em>. On a French system, it expects a semi-colon.</sup></p>
 ]]></content>
   </entry>
   

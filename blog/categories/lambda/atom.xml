@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Category: aws | ZeroSharp]]></title>
-  <link href="http://ZeroSharp.github.com/blog/categories/aws/atom.xml" rel="self"/>
+  <title><![CDATA[Category: lambda | ZeroSharp]]></title>
+  <link href="http://ZeroSharp.github.com/blog/categories/lambda/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
   <updated>2016-11-29T16:37:48+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
