@@ -4,7 +4,7 @@
   <title><![CDATA[Category: serverless | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/serverless/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-11-29T17:09:45+00:00</updated>
+  <updated>2016-11-29T17:10:51+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -157,7 +157,6 @@ headers: {
 <p>};</p>
 
 <p>return callback(null, response);
-});
 ```</p>
 
 <h2>Lesson 4 - You can automatically delete S3 objects after a number of days</h2>

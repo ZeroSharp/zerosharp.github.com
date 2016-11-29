@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-11-29T17:09:45+00:00</updated>
+  <updated>2016-11-29T17:10:51+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -162,7 +162,6 @@ $ sls install --url https://github.com/ZeroSharp/serverless-php
 <span class='line-number'>23</span>
 <span class='line-number'>24</span>
 <span class='line-number'>25</span>
-<span class='line-number'>26</span>
 </pre></td><td class='code'><pre><code class='js'><span class='line'><span class="c1">// body contains the output from the PHP call</span>
 </span><span class='line'><span class="kr">const</span> <span class="nx">params</span> <span class="o">=</span> <span class="p">{</span>
 </span><span class='line'>    <span class="nx">Bucket</span><span class="o">:</span> <span class="nx">bucket</span><span class="p">,</span>
@@ -188,7 +187,6 @@ $ sls install --url https://github.com/ZeroSharp/serverless-php
 </span><span class='line'><span class="p">};</span>
 </span><span class='line'>
 </span><span class='line'><span class="k">return</span> <span class="nx">callback</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">response</span><span class="p">);</span>
-</span><span class='line'><span class="p">});</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
