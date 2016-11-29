@@ -3,7 +3,7 @@ layout: post
 title: "Serverless Framework Part 5: Pulling in a node package"
 date: 2016-02-09 11:31
 comments: true
-categories: [serverless, aws, typescript, mocha, chai, crypto-js]
+categories: [serverless, aws, lambda, typescript, mocha, chai, crypto-js]
 description: An introduction to the Serverless framework. Making it easy to use Amazon Lambda to build highly scalable apps cheaply. We flesh out the password generation routine with a call to the crypto-js node package.
 ---
 This is the final part of an ongoing series about the [Serverless framework](https://github.com/serverless/serverless).

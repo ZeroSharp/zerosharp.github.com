@@ -3,7 +3,7 @@ layout: post
 title: "Serverless Framework - Part 2: TypeScript and Mocha"
 date: 2016-01-12 08:08
 comments: true
-categories: [serverless, aws, typescript, mocha]
+categories: [serverless, aws, lambda, typescript, mocha]
 description: An introduction to the Serverless framework. Making it easy to use Amazon Lambda to build highly scalable apps cheaply. Here we configure the project for Typescript and Mocha.
 ---
 

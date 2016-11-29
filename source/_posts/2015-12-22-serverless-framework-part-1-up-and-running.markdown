@@ -3,7 +3,7 @@ layout: post
 title: "Serverless Framework - Part 1: Up and running"
 date: 2015-12-22 20:26
 comments: true
-categories: [aws, serverless]
+categories: [aws, lambda, serverless]
 description: An introduction to the Serverless framework. Making it easy to use Amazon Lambda to build highly scalable apps cheaply.
 ---
 ## New version 0.3.1 ##

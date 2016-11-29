@@ -3,7 +3,7 @@ layout: post
 title: "Serverless Framework - Part 4: Connecting the parts"
 date: 2016-02-01 09:44
 comments: true
-categories: [serverless, aws, typescript, mocha]
+categories: [serverless, aws, lambda, typescript, mocha]
 description: An introduction to the Serverless framework. Making it easy to use Amazon Lambda to build highly scalable apps cheaply. We connect up all the parts, Serverless, Typescript, Mocha and AWS.
 ---
 This is part of an ongoing series about the [Serverless framework](https://github.com/serverless/serverless): [Part 1](/serverless-framework-part-1-up-and-running/), [part 2](/serverless-framework-part-2-typescript-and-mocha/), [part 3](/serverless-framework-part-3-the-guts/). 

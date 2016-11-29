@@ -3,7 +3,7 @@ layout: post
 title: "The Serverless Framework and PHP"
 date: 2016-11-21 09:21
 comments: true
-categories: [aws, serverless, php]
+categories: [aws, lambda, serverless, php]
 description: How to call a PHP function from within an AWS lambda using the Serverless Framework.
 ---
 The goal of this post is to explain how to call a PHP function from within an AWS lambda using the [Serverless Framework](https://serverless.com/). 
