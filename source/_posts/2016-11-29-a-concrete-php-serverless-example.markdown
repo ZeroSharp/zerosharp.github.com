@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "A concrete PHP Serverless example"
+title: "A concrete PHP Serverless example - export chess games in PDF"
 date: 2016-11-29 17:37
 comments: true
 categories: [aws, lambda, serverless, php]
@@ -124,7 +124,6 @@ const response = {
 };
 
 return callback(null, response);
-});
 ```
 
 ## Lesson 4 - You can automatically delete S3 objects after a number of days ##
