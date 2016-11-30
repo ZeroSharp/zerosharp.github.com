@@ -149,3 +149,5 @@ resources:
 You can check it out by visiting [this link](https://e7tyur4sib.execute-api.eu-west-1.amazonaws.com/dev/export/COQChpzH).
 
 The [source code is on Github](https://github.com/ZeroSharp/serverless-lichess-to-pdf).
+
+I also wrote [a Chrome extension](https://chrome.google.com/webstore/detail/lichess-print-friendly-pd/goijhimgdjppmhmjkaglhggoapkgobfg) which injects the link into the lichess page.
