@@ -4,7 +4,7 @@
   <title><![CDATA[Category: hardware | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/hardware/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-11-29T17:10:51+00:00</updated>
+  <updated>2016-11-30T17:13:37+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -25,7 +25,9 @@ I can't even find the on/off switch.</p>
 
 <p>Then there are those fancy new <strong>Macbook Pro</strong>s with retina displays. They seem light and powerful and the screen looks great. I don't know much about Macs, but I'd like to learn.</p>
 
-<p><blockquote><p>But I need Microsoft Windows and Visual Studio. I know theoretically I can run a virtual machine or setup a dual boot, but I'll bet it's all a bit of a hassle and rather clunky...</p></blockquote></p>
+<p>{% blockquote %}
+But I need Microsoft Windows and Visual Studio. I know theoretically I can run a virtual machine or setup a dual boot, but I'll bet it's all a bit of a hassle and rather clunky...
+{% endblockquote %}</p>
 
 <h3>Three hours after my Macbook Pro arrived</h3>
 
@@ -35,7 +37,9 @@ I can't even find the on/off switch.</p>
 
 <h3>Three weeks later</h3>
 
-<p><blockquote><p>This is by far the most pleasant laptop I've ever used for development.</p></blockquote></p>
+<p>{% blockquote %}
+This is by far the most pleasant laptop I've ever used for development.
+{% endblockquote %}</p>
 
 <p>The screen is wonderful - the machine seems very fast and it is no weight to carry around.</p>
 
@@ -111,7 +115,7 @@ There are some keys which you will still not find, for instance, <code>NumLock</
     <link href="http://ZeroSharp.github.com/trying-out-a-new-keyboard-with-no-labels-on-the-keys/"/>
     <updated>2012-07-02T09:35:00+01:00</updated>
     <id>http://ZeroSharp.github.com/trying-out-a-new-keyboard-with-no-labels-on-the-keys</id>
-    <content type="html"><![CDATA[<p> <a href="http://www.daskeyboard.com/model-s-ultimate/"><img class="right" src="/images/blog/trying-out-a-new-keyboard-001.jpg" title="Das Keyboard Model S Ultimate" ></a></p>
+    <content type="html"><![CDATA[<p> <a href="http://www.daskeyboard.com/model-s-ultimate/">{% img right /images/blog/trying-out-a-new-keyboard-001.jpg Das Keyboard Model S Ultimate %}</a></p>
 
 <p> My new <del>keyboarf</del> keyboard <a href="http://www.daskeyboard.com/model-s-ultimate/">has no labels on the keys</a>!</p>
 

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: git | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/git/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-11-29T17:10:51+00:00</updated>
+  <updated>2016-11-30T17:13:37+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -53,57 +53,32 @@
 
 <p>Create a new file .gitignore as follows. You can type <code>nano .gitignore</code> if you don't have a favourite text editor.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>.gitignore </span></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;/p>
-</span><span class='line'>
-</span><span class='line'>&lt;h1>OSX specific&lt;/h1>
-</span><span class='line'>
-</span><span class='line'>&lt;p>.DS_Store
-</span><span class='line'>&lt;em>.lock
-</span><span class='line'>&lt;/em>.swp
-</span><span class='line'>*.lock&lt;/p>
-</span><span class='line'>
-</span><span class='line'>&lt;h1>Build folders&lt;/h1>
-</span><span class='line'>
-</span><span class='line'>&lt;p>[Bb]in/
-</span><span class='line'>[Oo]bj/&lt;/p>
-</span><span class='line'>
-</span><span class='line'>&lt;h1>User specific&lt;/h1>
-</span><span class='line'>
-</span><span class='line'>&lt;p>&lt;em>.userprefs
-</span><span class='line'>&lt;/em>.usertasks&lt;/p>
-</span><span class='line'>
-</span><span class='line'>&lt;h1>Mono project files&lt;/h1>
-</span><span class='line'>
-</span><span class='line'>&lt;p>&lt;em>~
-</span><span class='line'>&lt;/em>.pidb
-</span><span class='line'>*.resources
-</span><span class='line'>test-results/</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock .gitignore %}</p>
+
+<h1>OSX specific</h1>
+
+<p>.DS_Store
+<em>.lock
+</em>.swp
+*.lock</p>
+
+<h1>Build folders</h1>
+
+<p>[Bb]in/
+[Oo]bj/</p>
+
+<h1>User specific</h1>
+
+<p><em>.userprefs
+</em>.usertasks</p>
+
+<h1>Mono project files</h1>
+
+<p><em>~
+</em>.pidb
+*.resources
+test-results/
+{% endcodeblock %}</p>
 
 <h3>Initial commit</h3>
 
@@ -118,11 +93,11 @@ $ git commit -m "Initial commit."
 
 <p>Next create a private repository on BitBucket.</p>
 
-<p><img src="/images/blog/adventures-in-ios-bitbucket-001.png"></p>
+<p>{% img /images/blog/adventures-in-ios-bitbucket-001.png %}</p>
 
 <p>You will need the address for your repository from the BitBucket page circled in red below.</p>
 
-<p><img src="/images/blog/adventures-in-ios-bitbucket-003.png"></p>
+<p>{% img /images/blog/adventures-in-ios-bitbucket-003.png %}</p>
 
 <p>Then, from the terminal, push the code to BitBucket. Replace the Url below with the address of your your own repository.</p>
 
@@ -134,13 +109,13 @@ $ git push -u origin --all
 
 <p>Open your solution in MonoDevelop and select the <code>Checkout...</code> option from the <code>Version Control</code> menu.</p>
 
-<p><img src="/images/blog/adventures-in-ios-bitbucket-002.png"></p>
+<p>{% img /images/blog/adventures-in-ios-bitbucket-002.png %}</p>
 
 <p>Select <code>Git</code> as the type of repository and put the address to your git repository in the <code>Url</code> field. The rest of the fields are populated automatically. You need to set the <code>Target Directory</code> to the location of your local repository including the trailing slash.</p>
 
 <p>When you click Ok, you will be prompted for your BitBucket credentials.</p>
 
-<p><img class="right" src="/images/blog/adventures-in-ios-bitbucket-004.png" width="379" height="92"></p>
+<p>{% img right /images/blog/adventures-in-ios-bitbucket-004.png 379 92 %}</p>
 
 <p>That's it. Now Git is integrated into your MonoDevelop environment. For instance, you can right-click in the editor to view the diff or the log of the current file, push changes, commit messages locally, etc.</p>
 
