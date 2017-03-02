@@ -4,7 +4,7 @@
   <title><![CDATA[Category: easytest | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/easytest/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-11-30T17:13:37+00:00</updated>
+  <updated>2017-03-02T12:31:27+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -28,30 +28,54 @@
 
 <p>First, we will create a new EasyTest which will cycle through the existing navigation tabs. Open the XAF MainDemo and create a new EasyTest as follows.</p>
 
-<p>{% codeblock MainDemo_CycleThroughTabs.ets lang:text %}</p>
-
-<h1>Application MainDemoWeb</h1>
-
-<p><em>FillForm
- User Name = Sam
- Password =
-</em>Action Log On</p>
-
-<p><em>Action Navigation(Contact)
-</em>Action Navigation(Task)
-<em>Action Navigation(Department)
-</em>Action Navigation(Scheduler Event)
-<em>Action Navigation(My Details)
-</em>Action Navigation(Note)
-<em>Action Navigation(Payment)
-</em>Action Navigation(Position)
-<em>Action Navigation(Resume)
-</em>Action Navigation(Role)
-<em>Action Navigation(User)
-</em>Action Navigation(Reports.Analysis)
-<em>Action Navigation(Reports.Reports)
-</em>Action Log Off
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>MainDemo_CycleThroughTabs.ets  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='text'><span class='line'>&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;h1&gt;Application MainDemoWeb&lt;/h1&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;&lt;em&gt;FillForm
+</span><span class='line'> User Name = Sam
+</span><span class='line'> Password =
+</span><span class='line'>&lt;/em&gt;Action Log On&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;&lt;em&gt;Action Navigation(Contact)
+</span><span class='line'>&lt;/em&gt;Action Navigation(Task)
+</span><span class='line'>&lt;em&gt;Action Navigation(Department)
+</span><span class='line'>&lt;/em&gt;Action Navigation(Scheduler Event)
+</span><span class='line'>&lt;em&gt;Action Navigation(My Details)
+</span><span class='line'>&lt;/em&gt;Action Navigation(Note)
+</span><span class='line'>&lt;em&gt;Action Navigation(Payment)
+</span><span class='line'>&lt;/em&gt;Action Navigation(Position)
+</span><span class='line'>&lt;em&gt;Action Navigation(Resume)
+</span><span class='line'>&lt;/em&gt;Action Navigation(Role)
+</span><span class='line'>&lt;em&gt;Action Navigation(User)
+</span><span class='line'>&lt;/em&gt;Action Navigation(Reports.Analysis)
+</span><span class='line'>&lt;em&gt;Action Navigation(Reports.Reports)
+</span><span class='line'>&lt;/em&gt;Action Log Off
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>(This test replicates the Selenium test we created in <a href="/load-testing-xaf-part-2-selenium/">Part 2</a> of my previous series on load testing with NeuStar and Amazon.) It is important to note that we are only testing the web application and that we do not include a <code>#DropDB</code> directive.</p>
 
@@ -61,33 +85,58 @@
 
 <p>Now modify the config.xml file as follows:</p>
 
-<p>{% codeblock Config.xml lang:xml %}
-&lt;?xml version="1.0" encoding="utf-8" ?>
-<Options xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" TestRunTimeLimit="5" >
-  <Applications></p>
-
-<pre><code>&lt;!-- Web --&gt;
-&lt;Application
-  Name="MainDemoWeb"
-  Url="http://localhost:4030"
-  SingleWebDev="True"
-  WebBrowserType="Standalone"
-  PhysicalPath="[ConfigPath]\..\MainDemo.Web"
-  AdapterAssemblyName="DevExpress.ExpressApp.EasyTest.WebAdapter.v12.2, Version=12.2.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a"/&gt;
-&lt;!-- For IIS --&gt;
-&lt;!--&lt;Application
-  Name="MainDemoWeb"
-  Url="http://localhost/MainDemo.Web/Default.aspx"
-  PhysicalPath=""
-  DontRestartIIS="True"
-  DontRunWebDev="True"
-  WebBrowserType="Standalone"      
-  AdapterAssemblyName="DevExpress.ExpressApp.EasyTest.WebAdapter.v12.2, Version=12.2.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a"/--&gt;
-</code></pre>
-
-<p>  </Applications>
-</Options>
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>Config.xml  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="ni">&amp;lt;</span>?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+</span><span class='line'><span class="nt">&lt;Options</span> <span class="na">xmlns:xsi=</span><span class="s">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="na">TestRunTimeLimit=</span><span class="s">&quot;5&quot;</span> <span class="nt">&gt;</span>
+</span><span class='line'>  <span class="nt">&lt;Applications&gt;&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;pre&gt;&lt;code&gt;</span><span class="ni">&amp;lt;</span>!-- Web --<span class="ni">&amp;gt;</span>
+</span><span class='line'><span class="ni">&amp;lt;</span>Application
+</span><span class='line'>  Name=&quot;MainDemoWeb&quot;
+</span><span class='line'>  Url=&quot;http://localhost:4030&quot;
+</span><span class='line'>  SingleWebDev=&quot;True&quot;
+</span><span class='line'>  WebBrowserType=&quot;Standalone&quot;
+</span><span class='line'>  PhysicalPath=&quot;[ConfigPath]\..\MainDemo.Web&quot;
+</span><span class='line'>  AdapterAssemblyName=&quot;DevExpress.ExpressApp.EasyTest.WebAdapter.v12.2, Version=12.2.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;/<span class="ni">&amp;gt;</span>
+</span><span class='line'><span class="ni">&amp;lt;</span>!-- For IIS --<span class="ni">&amp;gt;</span>
+</span><span class='line'><span class="ni">&amp;lt;</span>!--<span class="ni">&amp;lt;</span>Application
+</span><span class='line'>  Name=&quot;MainDemoWeb&quot;
+</span><span class='line'>  Url=&quot;http://localhost/MainDemo.Web/Default.aspx&quot;
+</span><span class='line'>  PhysicalPath=&quot;&quot;
+</span><span class='line'>  DontRestartIIS=&quot;True&quot;
+</span><span class='line'>  DontRunWebDev=&quot;True&quot;
+</span><span class='line'>  WebBrowserType=&quot;Standalone&quot;
+</span><span class='line'>  AdapterAssemblyName=&quot;DevExpress.ExpressApp.EasyTest.WebAdapter.v12.2, Version=12.2.8.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a&quot;/--<span class="ni">&amp;gt;</span>
+</span><span class='line'><span class="nt">&lt;/code&gt;&lt;/pre&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;/Applications&gt;</span>
+</span><span class='line'><span class="nt">&lt;/Options&gt;</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>There are a few important things to note.</p>
 
@@ -108,60 +157,112 @@
 
 <p>Next, create the following batch file in the MainDemo.EasyTests subdirectory. ##</p>
 
-<p>{% codeblock Launch.bat lang:bat %}
-:: Requires the Debug webserver to be running on port 49660
-:: Requires EasyTests to be enabled
-:: Requires NetDA to be running
-:: Requires admin rights
-:: Must be run from a command prompt
-::
-:: Usage: > launch <numberOfBrowsers>
-:: e.g. : > launch 21
-:: will launch 21 simultaneous browsers at 3 second intervals</p>
-
-<p>@echo off</p>
-
-<p>:DELETE_OUTPUT
-if exist <em>.jpeg del </em>.jpeg
-if exist <em>.html del </em>.html
-if exist TestsLog.xml del TestsLog.xml</p>
-
-<p>:CHECK_ADMIN
-net session >nul 2>&amp;1
-if %ERRORLEVEL% equ 0 goto CHECK_CONSOLE
-echo Must be run from an administrative command window
-goto ERROR</p>
-
-<p>:CHECK_CONSOLE
-echo %CMDCMDLINE% | find /i "/c" >nul
-if ERRORLEVEL 1 goto CHECK_PARAMS
-echo Must be run from an administrative console (not Windows Explorer)
-goto ERROR</p>
-
-<p>:CHECK_PARAMS
-IF [%1]==[] GOTO USAGE</p>
-
-<p>:LAUNCH
-set /a i=0</p>
-
-<p>:LOOP
-if %i%==%1 goto OK
-set /a i=%i%+1
-start "x" "C:\Program Files (x86)\DevExpress\DXperience 12.2\Tools\eXpressAppFramework\EasyTest\TestExecutor.v12.2.exe" MainDemo_CycleThroughTabs.ets
-:: Wait 3 seconds
-ping 1.1.1.1 -n 1 -w 3000 >nul
-goto LOOP</p>
-
-<p>:USAGE
-echo Usage: %0 numberOfBrowsers
-echo numberOfBrowsers must be an integer
-goto OK</p>
-
-<p>:ERROR</p>
-
-<p>:OK
-pause
-{% endcodeblock %}</p>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>Launch.bat  </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+</pre></td><td class='code'><pre><code class='bat'><span class='line'><span class="c">:: Requires the Debug webserver to be running on port 49660</span>
+</span><span class='line'><span class="c">:: Requires EasyTests to be enabled</span>
+</span><span class='line'><span class="c">:: Requires NetDA to be running</span>
+</span><span class='line'><span class="c">:: Requires admin rights</span>
+</span><span class='line'><span class="c">:: Must be run from a command prompt</span>
+</span><span class='line'><span class="c">::</span>
+</span><span class='line'><span class="c">:: Usage: &gt; launch &lt;numberOfBrowsers&gt;</span>
+</span><span class='line'><span class="c">:: e.g. : &gt; launch 21</span>
+</span><span class='line'><span class="c">:: will launch 21 simultaneous browsers at 3 second intervals&lt;/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;@<span class="k">echo</span> <span class="k">off</span>&lt;<span class="n">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:DELETE_OUTPUT</span>
+</span><span class='line'><span class="k">if</span> <span class="k">exist</span> <span class="p">&lt;</span><span class="n">em</span>&gt;.jpeg <span class="k">del</span> &lt;<span class="n">/em&gt;.jpeg</span>
+</span><span class='line'><span class="k">if</span> <span class="k">exist</span> <span class="p">&lt;</span><span class="n">em</span>&gt;.html <span class="k">del</span> &lt;<span class="n">/em&gt;.html</span>
+</span><span class='line'><span class="k">if</span> <span class="k">exist</span> TestsLog.xml <span class="k">del</span> TestsLog.xml&lt;<span class="n">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:CHECK_ADMIN</span>
+</span><span class='line'>net session <span class="p">&gt;</span><span class="n">nul</span> <span class="m">2</span>&gt;&amp;amp;<span class="m">1</span>
+</span><span class='line'><span class="k">if</span> <span class="nv">%ERRORLEVEL%</span> <span class="o">equ</span> <span class="m">0</span> <span class="k">goto</span> <span class="nl">CHECK_CONSOLE</span>
+</span><span class='line'><span class="k">echo</span> Must be run from an administrative command window
+</span><span class='line'><span class="k">goto</span> <span class="nl">ERROR</span>&lt;<span class="n">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:CHECK_CONSOLE</span>
+</span><span class='line'><span class="k">echo</span> <span class="nv">%CMDCMDLINE%</span> <span class="p">|</span> <span class="n">find</span> <span class="n">/i</span> <span class="s2">&quot;/c&quot;</span> <span class="p">&gt;</span><span class="n">nul</span>
+</span><span class='line'><span class="k">if</span> <span class="k">ERRORLEVEL</span> <span class="m">1</span> <span class="k">goto</span> <span class="nl">CHECK_PARAMS</span>
+</span><span class='line'><span class="k">echo</span> Must be run from an administrative console (not Windows Explorer)
+</span><span class='line'><span class="k">goto</span> <span class="nl">ERROR</span>&lt;<span class="n">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:CHECK_PARAMS</span>
+</span><span class='line'><span class="k">IF</span> [<span class="nv">%1</span>]<span class="o">==</span>[] <span class="k">GOTO</span> <span class="nl">USAGE</span>&lt;<span class="n">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:LAUNCH</span>
+</span><span class='line'><span class="k">set</span> <span class="n">/a</span> i<span class="o">=</span><span class="m">0</span>&lt;<span class="n">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:LOOP</span>
+</span><span class='line'><span class="k">if</span> <span class="nv">%i%</span><span class="o">==</span><span class="nv">%1</span> <span class="k">goto</span> <span class="nl">OK</span>
+</span><span class='line'><span class="k">set</span> <span class="n">/a</span> i<span class="o">=</span><span class="nv">%i%</span>+<span class="m">1</span>
+</span><span class='line'>start <span class="s2">&quot;x&quot;</span> <span class="s2">&quot;C:\Program Files (x86)\DevExpress\DXperience 12.2\Tools\eXpressAppFramework\EasyTest\TestExecutor.v12.2.exe&quot;</span> MainDemo_CycleThroughTabs.ets
+</span><span class='line'><span class="c">:: Wait 3 seconds</span>
+</span><span class='line'>ping <span class="m">1</span>.<span class="m">1</span>.<span class="m">1</span>.<span class="m">1</span> -n <span class="m">1</span> -w <span class="m">3000</span> <span class="p">&gt;</span><span class="n">nul</span>
+</span><span class='line'><span class="k">goto</span> <span class="nl">LOOP</span>&lt;<span class="n">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:USAGE</span>
+</span><span class='line'><span class="k">echo</span> Usage: <span class="nv">%0</span> numberOfBrowsers
+</span><span class='line'><span class="k">echo</span> numberOfBrowsers must be an integer
+</span><span class='line'><span class="k">goto</span> <span class="nl">OK</span>&lt;<span class="n">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:ERROR</span>&lt;<span class="n">/p&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="p">&lt;</span><span class="n">p</span>&gt;<span class="nl">:OK</span>
+</span><span class='line'><span class="k">pause</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>If you want to run your tests against the development webserver, you will need to make sure it is running before launching the batch file. The easiest way to do this is to run the application from within Visual Studio and then close the browser. You should still see the development webserver running in the task bar notification area. Against IIS, it is enough to ensure it is started.</p>
 

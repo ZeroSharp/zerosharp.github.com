@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ccnet | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/ccnet/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-11-30T17:13:37+00:00</updated>
+  <updated>2017-03-02T12:31:27+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -18,7 +18,7 @@
     <link href="http://ZeroSharp.github.com/cruisecontrol-notifications-on-your-iphone/"/>
     <updated>2014-02-07T11:32:00+00:00</updated>
     <id>http://ZeroSharp.github.com/cruisecontrol-notifications-on-your-iphone</id>
-    <content type="html"><![CDATA[<p>{% img right /images/blog/ccwatcher-002.jpg 200 %}</p>
+    <content type="html"><![CDATA[<p><img class="right" src="/images/blog/ccwatcher-002.jpg" width="200"></p>
 
 <p><a href="http://sixafter.com/portfolio/continuous-integration-monitoring-for-ios/">CCWatcher</a> is a great iPhone app for any developer who is using CruiseControl.NET, Jenkins or Hudson for their continuous integration.</p>
 
@@ -28,7 +28,7 @@
 
 <p>For a long while I was looking for a better way of being informed of build failures on my phone.</p>
 
-<p>{% img left /images/blog/ccwatcher-001.png 300 %}</p>
+<p><img class="left" src="/images/blog/ccwatcher-001.png" width="300"></p>
 
 <p>Enter <strong>CCWatcher</strong>. It's a simple application which allows you to enter the address of your build server and it will tell you the status of the projects you've configured.</p>
 

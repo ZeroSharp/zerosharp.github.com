@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="In the last post I built a PHP capable sample project for the Serverless Framework. In this post, I&#8217;ll show a concrete use of it. The service I &hellip;">
+  <meta name="description" content="I was inspired by two events to jump back into serverless framework. Firstly, I attended the second London serverless meetup yesterday evening which &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -119,6 +119,161 @@
       
   <header>
     
+      <h1 class="entry-title"><a href="/improvements-to-serverless-php-support/">Improvements to Serverless PHP Support</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2017-03-02T11:37:00+00:00" pubdate data-updated="true">Mar 2<span>nd</span>, 2017</time>
+        
+         | <a href="/improvements-to-serverless-php-support/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>I was inspired by two events to jump back into serverless framework.</p>
+
+<p><img class="left" src="/images/blog/serverless-php-improvements-001.jpeg" width="200" title="Serverless London Meetup" ></p>
+
+<p>Firstly, I attended the second <a href="https://www.meetup.com/Serverless-London/">London serverless meetup</a> yesterday evening which was excellent and showed just how much enthusiasm there is for serverless architectures. Check out their new logo on the left. It was significant that each of the three speakers announced that they are actively hiring serverless developers.</p>
+
+<p>Secondly, <a href="https://github.com/Stolz">Stolz</a> has contributed improvements to my sample project for integrating PHP into the serverless framework. It&#8217;s the purpose of this blog post to cover the changes.</p>
+
+<p>The trick to getting AWS lambda to support PHP is to bundle in a PHP binary so that nodejs can call it with <code>child_process.spawn()</code>. In <a href="/the-serverless-framework-and-php/">my first implementation</a>, I used an Ubuntu docker base image to compile and produce the php binary. Unfortunately, this is not identical to the container that AWS Lambda uses and so sometimes the logs would contain errors such as:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'>START RequestId: 728dcddf-feaa-11e6-8346-2125e1c055d7 Version: <span class="nv">$LATEST</span>
+</span><span class='line'>2017-03-01 18:11:10.455 <span class="o">(</span>+00:00<span class="o">)</span>    728dcddf-feaa-11e6-8346-2125e1c055d7    stderr: ./php: /usr/lib64/libcurl.so.4: no version information available <span class="o">(</span>required by ./php<span class="o">)</span>
+</span><span class='line'>
+</span><span class='line'>END RequestId: 728dcddf-feaa-11e6-8346-2125e1c055d7
+</span><span class='line'>REPORT RequestId: 728dcddf-feaa-11e6-8346-2125e1c055d7    Duration: 6000.08 ms    Billed Duration: 6000 ms    Memory Size: 1024 MB    Max Memory Used: 23 MB  
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In my experience, these errors were often not fatal, but the correct approach is to build the php binary from a base image which is closer to the one lambda uses. So instead of my docker file starting with <code>FROM ubuntu</code>, it now starts with <code>FROM amazonlinux</code>. Also, with this image, I can use <code>yum</code> to install other dependencies like <code>libpng-devel</code>. So the new docker build script for producing the php binary looks like this:</p>
+
+<figure class='code'><figcaption><span>dockerfile.buildphp</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+</pre></td><td class='code'><pre><code class='sh'><span class='line'><span class="c"># Compile PHP with static linked dependencies</span>
+</span><span class='line'><span class="c"># to create a single running binary</span>
+</span><span class='line'>
+</span><span class='line'>FROM amazonlinux
+</span><span class='line'>
+</span><span class='line'>ARG PHP_VERSION
+</span><span class='line'>
+</span><span class='line'>RUN yum install <span class="se">\</span>
+</span><span class='line'>    autoconf <span class="se">\</span>
+</span><span class='line'>    automake <span class="se">\</span>
+</span><span class='line'>    libtool <span class="se">\</span>
+</span><span class='line'>    bison <span class="se">\</span>
+</span><span class='line'>    re2c <span class="se">\</span>
+</span><span class='line'>    libxml2-devel <span class="se">\</span>
+</span><span class='line'>    openssl-devel <span class="se">\</span>
+</span><span class='line'>    libpng-devel <span class="se">\</span>
+</span><span class='line'>    libjpeg-devel <span class="se">\</span>
+</span><span class='line'>    curl-devel -y
+</span><span class='line'>
+</span><span class='line'>RUN curl -sL https://github.com/php/php-src/archive/<span class="nv">$PHP_VERSION</span>.tar.gz | tar -zxv
+</span><span class='line'>
+</span><span class='line'>WORKDIR /php-src-<span class="nv">$PHP_VERSION</span>
+</span><span class='line'>
+</span><span class='line'>RUN ./buildconf --force
+</span><span class='line'>
+</span><span class='line'>RUN ./configure <span class="se">\</span>
+</span><span class='line'>    --enable-static<span class="o">=</span>yes <span class="se">\</span>
+</span><span class='line'>    --enable-shared<span class="o">=</span>no <span class="se">\</span>
+</span><span class='line'>    --disable-all <span class="se">\</span>
+</span><span class='line'>    --enable-json <span class="se">\</span>
+</span><span class='line'>    --enable-libxml <span class="se">\</span>
+</span><span class='line'>    --enable-mbstring <span class="se">\</span>
+</span><span class='line'>    --enable-phar <span class="se">\</span>
+</span><span class='line'>    --enable-soap <span class="se">\</span>
+</span><span class='line'>    --enable-xml <span class="se">\</span>
+</span><span class='line'>    --with-curl <span class="se">\</span>
+</span><span class='line'>    --with-gd <span class="se">\</span>
+</span><span class='line'>    --with-zlib <span class="se">\</span>
+</span><span class='line'>    --with-openssl <span class="se">\</span>
+</span><span class='line'>    --without-pear
+</span><span class='line'>
+</span><span class='line'>RUN make -j 5
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you run this with</p>
+
+<pre><code>$ sh dockerfile.buildphp
+</code></pre>
+
+<p>It will use docker to overwrite the php binary which will get shipped when you deploy with <code>sls deploy</code>. And this time, there are no more libcurl errors. All the code is <a href="https://github.com/ZeroSharp/serverless-php">on Github</a>.</p>
+</div>
+  
+  
+
+
+    </article>
+  
+  
+    <article>
+      
+  <header>
+    
       <h1 class="entry-title"><a href="/a-concrete-php-serverless-example/">A Concrete PHP Serverless Example - Export Chess Games in PDF</a></h1>
     
     
@@ -144,7 +299,7 @@
   </header>
 
 
-  <div class="entry-content"><p>In the last post I built a PHP capable sample project for <a href="https://serverless.com/">the Serverless Framework</a>. In this post, I&#8217;ll show a concrete use of it.</p>
+  <div class="entry-content"><p>In <a href="/the-serverless-framework-and-php/">the last post</a> I built a PHP capable sample project for <a href="https://serverless.com/">the Serverless Framework</a>. In this post, I&#8217;ll show a concrete use of it.</p>
 
 <p>The service I&#8217;m building connects runs a PHP function for pretty-printing chess games from the <a href="http://lichess.org/">lichess online chess server</a>. <a href="https://github.com/clarkerubber/lichessPDFExporter">James Clarke</a> has written a PHP function to do this using <a href="http://www.fpdf.org/">fpdf17</a>.</p>
 
@@ -2347,285 +2502,6 @@ Serverless:   nodejscomponent/potd/check: arn:aws:lambda:eu-west-1:962613113552:
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/serverless-framework-part-3-the-guts/">Serverless Framework - Part 3: The Guts of a Serverless Service</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2016-01-29T17:44:00+00:00" pubdate data-updated="true">Jan 29<span>th</span>, 2016</time>
-        
-         | <a href="/serverless-framework-part-3-the-guts/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>This is part of an ongoing series about the <a href="https://github.com/serverless/serverless">Serverless framework</a>. For those following along, <a href="/serverless-framework-part-1-up-and-running/">part 1</a> and <a href="/serverless-framework-part-2-typescript-and-mocha/">part 2</a> have been updated for the current latest version of Serverless 0.3.1.</p>
-
-<p>In this post, we&#8217;ll discuss how a Serverless function actually works.</p>
-
-<h2>The guts of a serverless function</h2>
-
-<p>When we visited the deployed endpoint at the end of <a href="/serverless-framework-part-1-up-and-running/">part 1</a>, it correctly returned some JSON content.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="err">message:</span> <span class="nt">&quot;Your Serverless function ran successfully!&quot;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>Where does this message come from? Look at <em>index.js</em> in the component&#8217;s <em>lib</em> folder.</p>
-
-<figure class='code'><figcaption><span>nodejscomponent/lib/index.js </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> * Lib</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'>
-</span><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">respond</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">response</span> <span class="o">=</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">message</span><span class="o">:</span> <span class="s2">&quot;Your Serverless function ran successfully!&quot;</span>
-</span><span class='line'>  <span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">return</span> <span class="nx">cb</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">response</span><span class="p">);</span>
-</span><span class='line'><span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And it&#8217;s the <em>handler.js</em> file in the function&#8217;s subfolder which calls it.</p>
-
-<figure class='code'><figcaption><span>nodejscomponent/potd/check/handler.js </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cm">/**</span>
-</span><span class='line'><span class="cm"> * Serverless Module: Lambda Handler</span>
-</span><span class='line'><span class="cm"> * - Your lambda functions should be a thin wrapper around your own separate</span>
-</span><span class='line'><span class="cm"> * modules, to keep your code testable, reusable and AWS independent</span>
-</span><span class='line'><span class="cm"> * - &#39;serverless-helpers-js&#39; module is required for Serverless ENV var support.  Hopefully, AWS will add ENV support to Lambda soon :)</span>
-</span><span class='line'><span class="cm"> */</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// Require Serverless ENV vars</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">ServerlessHelpers</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;serverless-helpers-js&#39;</span><span class="p">).</span><span class="nx">loadEnv</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// Require Logic</span>
-</span><span class='line'><span class="kd">var</span> <span class="nx">lib</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;../../lib&#39;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// Lambda Handler</span>
-</span><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">handler</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nx">lib</span><span class="p">.</span><span class="nx">respond</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nx">context</span><span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">});</span>
-</span><span class='line'><span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>In our case we&#8217;re coding a password checking function. The URI will look something like this:</p>
-
-<pre><code>http://something.amazonaws.com/development/potd/check?password=P455w0rd
-</code></pre>
-
-<p>We&#8217;ll modify <em>lib/index.js</em> to retrieve the value from the query parameter <code>password</code> and return <code>true</code> if the password is correct and <code>false</code> otherwise. But first we need to set up the parameter.</p>
-
-<h2>Configuring the function parameter</h2>
-
-<p>In each function&#8217;s directory, there is a file named <em>s-function.json</em> which allows you to specify the details of the function call. Add a section to the <code>requestTemplates</code> as follows:</p>
-
-<figure class='code'><figcaption><span>nodejscomponent/potd/check/s-function.js </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;check&quot;</span><span class="p">,</span>
-</span><span class='line'>  <span class="nt">&quot;handler&quot;</span><span class="p">:</span> <span class="s2">&quot;potd/check/handler.handler&quot;</span><span class="p">,</span>
-</span><span class='line'>  <span class="nt">&quot;timeout&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
-</span><span class='line'>  <span class="nt">&quot;memorySize&quot;</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
-</span><span class='line'>  <span class="nt">&quot;custom&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nt">&quot;excludePatterns&quot;</span><span class="p">:</span> <span class="p">[],</span>
-</span><span class='line'>    <span class="nt">&quot;envVars&quot;</span><span class="p">:</span> <span class="p">[]</span>
-</span><span class='line'>  <span class="p">},</span>
-</span><span class='line'>  <span class="nt">&quot;endpoints&quot;</span><span class="p">:</span> <span class="p">[</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>      <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;potd/check&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">&quot;authorizationType&quot;</span><span class="p">:</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">&quot;apiKeyRequired&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
-</span><span class='line'>      <span class="nt">&quot;requestParameters&quot;</span><span class="p">:</span> <span class="p">{},</span>
-</span><span class='line'>      <span class="nt">&quot;requestTemplates&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span class='line'><span class="err">+</span>       <span class="nt">&quot;application/json&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span class='line'><span class="err">+</span>           <span class="nt">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;$input.params(&#39;password&#39;)&quot;</span>
-</span><span class='line'><span class="err">+</span>       <span class="p">}</span>
-</span><span class='line'>      <span class="p">},</span>
-</span><span class='line'>      <span class="nt">&quot;responses&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span class='line'>        <span class="nt">&quot;400&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nt">&quot;statusCode&quot;</span><span class="p">:</span> <span class="s2">&quot;400&quot;</span>
-</span><span class='line'>        <span class="p">},</span>
-</span><span class='line'>        <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span class='line'>          <span class="nt">&quot;statusCode&quot;</span><span class="p">:</span> <span class="s2">&quot;200&quot;</span><span class="p">,</span>
-</span><span class='line'>          <span class="nt">&quot;responseParameters&quot;</span><span class="p">:</span> <span class="p">{},</span>
-</span><span class='line'>          <span class="nt">&quot;responseModels&quot;</span><span class="p">:</span> <span class="p">{},</span>
-</span><span class='line'>          <span class="nt">&quot;responseTemplates&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span class='line'>            <span class="nt">&quot;application/json&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
-</span><span class='line'>          <span class="p">}</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>  <span class="p">]</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Note that the <em>s-function.json</em> file is also where you can configure if the service accepts <code>POST</code> or <code>PUT</code> or <code>DELETE</code> requests. Here we are only interested in <code>GET</code>.</p>
-
-<p>You can easily tailor the <code>requestTemplates</code> in this file to extract whatever parameters you need in your lambda function.</p>
-
-<h2>Retrieving the parameter value</h2>
-
-<p>Now back in <em>index.js</em> you will find that the function&#8217;s <code>event</code> parameter has a property <code>password</code> which is set to the value of the querystring parameter.</p>
-
-<figure class='code'><figcaption><span>nodejscomponent/lib/index.js </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">respond</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">parameterValue</span> <span class="o">=</span> <span class="nx">event</span><span class="p">.</span><span class="nx">password</span><span class="p">;</span> <span class="c1">// the querystring parameter</span>
-</span><span class='line'>  <span class="kd">var</span> <span class="nx">response</span> <span class="o">=</span> <span class="p">{</span>
-</span><span class='line'>    <span class="nx">message</span><span class="o">:</span> <span class="nx">parameterValue</span>
-</span><span class='line'>  <span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">return</span> <span class="nx">cb</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">response</span><span class="p">);</span>
-</span><span class='line'><span class="p">};</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Redeploy.</p>
-
-<pre><code> $ serverless dash deploy
-</code></pre>
-
-<p>Visit the URI.</p>
-
-<pre><code>http://something.amazonaws.com/development/potd/check?password=P455w0rd
-</code></pre>
-
-<p>The response is:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="err">message:</span> <span class="nt">&quot;P455w0rd&quot;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Ready for implementation</h2>
-
-<p>We now have all the pieces we need. Serverless, Typescript, Mocha and AWS. In the next post I&#8217;ll show how to wire up everything get it working.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/2/">&larr; Older</a>
@@ -2643,7 +2519,7 @@ Serverless:   nodejscomponent/potd/check: arn:aws:lambda:eu-west-1:962613113552:
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2016 - Robert Anderson
+  Copyright &copy; 2017 - Robert Anderson
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

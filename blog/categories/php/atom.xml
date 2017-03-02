@@ -4,7 +4,7 @@
   <title><![CDATA[Category: php | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/php/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2016-11-30T17:13:37+00:00</updated>
+  <updated>2017-03-02T12:31:27+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -14,17 +14,102 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Improvements to Serverless PHP support]]></title>
+    <link href="http://ZeroSharp.github.com/improvements-to-serverless-php-support/"/>
+    <updated>2017-03-02T11:37:00+00:00</updated>
+    <id>http://ZeroSharp.github.com/improvements-to-serverless-php-support</id>
+    <content type="html"><![CDATA[<p>I was inspired by two events to jump back into serverless framework.</p>
+
+<p><img class="left" src="/images/blog/serverless-php-improvements-001.jpeg" width="200" title="Serverless London Meetup" ></p>
+
+<p>Firstly, I attended the second <a href="https://www.meetup.com/Serverless-London/">London serverless meetup</a> yesterday evening which was excellent and showed just how much enthusiasm there is for serverless architectures. Check out their new logo on the left. It was significant that each of the three speakers announced that they are actively hiring serverless developers.</p>
+
+<p>Secondly, <a href="https://github.com/Stolz">Stolz</a> has contributed improvements to my sample project for integrating PHP into the serverless framework. It's the purpose of this blog post to cover the changes.</p>
+
+<p>The trick to getting AWS lambda to support PHP is to bundle in a PHP binary so that nodejs can call it with <code>child_process.spawn()</code>. In <a href="/the-serverless-framework-and-php/">my first implementation</a>, I used an Ubuntu docker base image to compile and produce the php binary. Unfortunately, this is not identical to the container that AWS Lambda uses and so sometimes the logs would contain errors such as:</p>
+
+<p>```sh
+START RequestId: 728dcddf-feaa-11e6-8346-2125e1c055d7 Version: $LATEST
+2017-03-01 18:11:10.455 (+00:00)    728dcddf-feaa-11e6-8346-2125e1c055d7    stderr: ./php: /usr/lib64/libcurl.so.4: no version information available (required by ./php)</p>
+
+<p>END RequestId: 728dcddf-feaa-11e6-8346-2125e1c055d7
+REPORT RequestId: 728dcddf-feaa-11e6-8346-2125e1c055d7  Duration: 6000.08 ms    Billed Duration: 6000 ms    Memory Size: 1024 MB    Max Memory Used: 23 MB<br/>
+```</p>
+
+<p>In my experience, these errors were often not fatal, but the correct approach is to build the php binary from a base image which is closer to the one lambda uses. So instead of my docker file starting with <code>FROM ubuntu</code>, it now starts with <code>FROM amazonlinux</code>. Also, with this image, I can use <code>yum</code> to install other dependencies like <code>libpng-devel</code>. So the new docker build script for producing the php binary looks like this:</p>
+
+<p>```sh dockerfile.buildphp</p>
+
+<h1>Compile PHP with static linked dependencies</h1>
+
+<h1>to create a single running binary</h1>
+
+<p>FROM amazonlinux</p>
+
+<p>ARG PHP_VERSION</p>
+
+<p>RUN yum install \</p>
+
+<pre><code>autoconf \
+automake \
+libtool \
+bison \
+re2c \
+libxml2-devel \
+openssl-devel \
+libpng-devel \
+libjpeg-devel \
+curl-devel -y
+</code></pre>
+
+<p>RUN curl -sL https://github.com/php/php-src/archive/$PHP_VERSION.tar.gz | tar -zxv</p>
+
+<p>WORKDIR /php-src-$PHP_VERSION</p>
+
+<p>RUN ./buildconf --force</p>
+
+<p>RUN ./configure \</p>
+
+<pre><code>--enable-static=yes \
+--enable-shared=no \
+--disable-all \
+--enable-json \
+--enable-libxml \
+--enable-mbstring \
+--enable-phar \
+--enable-soap \
+--enable-xml \
+--with-curl \
+--with-gd \
+--with-zlib \
+--with-openssl \
+--without-pear
+</code></pre>
+
+<p>RUN make -j 5
+```</p>
+
+<p>If you run this with</p>
+
+<pre><code>$ sh dockerfile.buildphp
+</code></pre>
+
+<p>It will use docker to overwrite the php binary which will get shipped when you deploy with <code>sls deploy</code>. And this time, there are no more libcurl errors. All the code is <a href="https://github.com/ZeroSharp/serverless-php">on Github</a>.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[A concrete PHP Serverless example - export chess games in PDF]]></title>
     <link href="http://ZeroSharp.github.com/a-concrete-php-serverless-example/"/>
     <updated>2016-11-29T17:37:00+00:00</updated>
     <id>http://ZeroSharp.github.com/a-concrete-php-serverless-example</id>
-    <content type="html"><![CDATA[<p>In the last post I built a PHP capable sample project for <a href="https://serverless.com/">the Serverless Framework</a>. In this post, I'll show a concrete use of it.</p>
+    <content type="html"><![CDATA[<p>In <a href="/the-serverless-framework-and-php/">the last post</a> I built a PHP capable sample project for <a href="https://serverless.com/">the Serverless Framework</a>. In this post, I'll show a concrete use of it.</p>
 
 <p>The service I'm building connects runs a PHP function for pretty-printing chess games from the <a href="http://lichess.org/">lichess online chess server</a>. <a href="https://github.com/clarkerubber/lichessPDFExporter">James Clarke</a> has written a PHP function to do this using <a href="http://www.fpdf.org/">fpdf17</a>.</p>
 
 <p>The lichess exporter takes the game id of any game that has been played on the lichess server and produced a PDF output. Take for example, Game 8 of the current World Championship which is <a href="https://en.lichess.org/COQChpzH">here</a>. When I open the resulting file, I see this:</p>
 
-<p>{% img /images/blog/serverless-lichess-pdf-exporter-001.png %}</p>
+<p><img src="/images/blog/serverless-lichess-pdf-exporter-001.png"></p>
 
 <p>In this blog post I'll describe how I turned this into a serverless service. The goal is to create:</p>
 

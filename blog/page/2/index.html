@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Happy New Year everyone! This is the second part of a series about the Serverless framework. Read the first part to get up and running. First I&#8217 &hellip;">
+  <meta name="description" content="This is part of an ongoing series about the Serverless framework. For those following along, part 1 and part 2 have been updated for the current &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,285 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/serverless-framework-part-3-the-guts/">Serverless Framework - Part 3: The Guts of a Serverless Service</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2016-01-29T17:44:00+00:00" pubdate data-updated="true">Jan 29<span>th</span>, 2016</time>
+        
+         | <a href="/serverless-framework-part-3-the-guts/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This is part of an ongoing series about the <a href="https://github.com/serverless/serverless">Serverless framework</a>. For those following along, <a href="/serverless-framework-part-1-up-and-running/">part 1</a> and <a href="/serverless-framework-part-2-typescript-and-mocha/">part 2</a> have been updated for the current latest version of Serverless 0.3.1.</p>
+
+<p>In this post, we&#8217;ll discuss how a Serverless function actually works.</p>
+
+<h2>The guts of a serverless function</h2>
+
+<p>When we visited the deployed endpoint at the end of <a href="/serverless-framework-part-1-up-and-running/">part 1</a>, it correctly returned some JSON content.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="err">message:</span> <span class="nt">&quot;Your Serverless function ran successfully!&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p></p>
+
+<p>Where does this message come from? Look at <em>index.js</em> in the component&#8217;s <em>lib</em> folder.</p>
+
+<figure class='code'><figcaption><span>nodejscomponent/lib/index.js </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Lib</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'>
+</span><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">respond</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">response</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">message</span><span class="o">:</span> <span class="s2">&quot;Your Serverless function ran successfully!&quot;</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">cb</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">response</span><span class="p">);</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And it&#8217;s the <em>handler.js</em> file in the function&#8217;s subfolder which calls it.</p>
+
+<figure class='code'><figcaption><span>nodejscomponent/potd/check/handler.js </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="s1">&#39;use strict&#39;</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'><span class="cm">/**</span>
+</span><span class='line'><span class="cm"> * Serverless Module: Lambda Handler</span>
+</span><span class='line'><span class="cm"> * - Your lambda functions should be a thin wrapper around your own separate</span>
+</span><span class='line'><span class="cm"> * modules, to keep your code testable, reusable and AWS independent</span>
+</span><span class='line'><span class="cm"> * - &#39;serverless-helpers-js&#39; module is required for Serverless ENV var support.  Hopefully, AWS will add ENV support to Lambda soon :)</span>
+</span><span class='line'><span class="cm"> */</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Require Serverless ENV vars</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">ServerlessHelpers</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;serverless-helpers-js&#39;</span><span class="p">).</span><span class="nx">loadEnv</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Require Logic</span>
+</span><span class='line'><span class="kd">var</span> <span class="nx">lib</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;../../lib&#39;</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'><span class="c1">// Lambda Handler</span>
+</span><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">handler</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="nx">lib</span><span class="p">.</span><span class="nx">respond</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="k">return</span> <span class="nx">context</span><span class="p">.</span><span class="nx">done</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">response</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">});</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>In our case we&#8217;re coding a password checking function. The URI will look something like this:</p>
+
+<pre><code>http://something.amazonaws.com/development/potd/check?password=P455w0rd
+</code></pre>
+
+<p>We&#8217;ll modify <em>lib/index.js</em> to retrieve the value from the query parameter <code>password</code> and return <code>true</code> if the password is correct and <code>false</code> otherwise. But first we need to set up the parameter.</p>
+
+<h2>Configuring the function parameter</h2>
+
+<p>In each function&#8217;s directory, there is a file named <em>s-function.json</em> which allows you to specify the details of the function call. Add a section to the <code>requestTemplates</code> as follows:</p>
+
+<figure class='code'><figcaption><span>nodejscomponent/potd/check/s-function.js </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;check&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;handler&quot;</span><span class="p">:</span> <span class="s2">&quot;potd/check/handler.handler&quot;</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;timeout&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;memorySize&quot;</span><span class="p">:</span> <span class="mi">1024</span><span class="p">,</span>
+</span><span class='line'>  <span class="nt">&quot;custom&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nt">&quot;excludePatterns&quot;</span><span class="p">:</span> <span class="p">[],</span>
+</span><span class='line'>    <span class="nt">&quot;envVars&quot;</span><span class="p">:</span> <span class="p">[]</span>
+</span><span class='line'>  <span class="p">},</span>
+</span><span class='line'>  <span class="nt">&quot;endpoints&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>      <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;potd/check&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;authorizationType&quot;</span><span class="p">:</span> <span class="s2">&quot;none&quot;</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;apiKeyRequired&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+</span><span class='line'>      <span class="nt">&quot;requestParameters&quot;</span><span class="p">:</span> <span class="p">{},</span>
+</span><span class='line'>      <span class="nt">&quot;requestTemplates&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'><span class="err">+</span>       <span class="nt">&quot;application/json&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'><span class="err">+</span>           <span class="nt">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;$input.params(&#39;password&#39;)&quot;</span>
+</span><span class='line'><span class="err">+</span>       <span class="p">}</span>
+</span><span class='line'>      <span class="p">},</span>
+</span><span class='line'>      <span class="nt">&quot;responses&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>        <span class="nt">&quot;400&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nt">&quot;statusCode&quot;</span><span class="p">:</span> <span class="s2">&quot;400&quot;</span>
+</span><span class='line'>        <span class="p">},</span>
+</span><span class='line'>        <span class="nt">&quot;default&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>          <span class="nt">&quot;statusCode&quot;</span><span class="p">:</span> <span class="s2">&quot;200&quot;</span><span class="p">,</span>
+</span><span class='line'>          <span class="nt">&quot;responseParameters&quot;</span><span class="p">:</span> <span class="p">{},</span>
+</span><span class='line'>          <span class="nt">&quot;responseModels&quot;</span><span class="p">:</span> <span class="p">{},</span>
+</span><span class='line'>          <span class="nt">&quot;responseTemplates&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span class='line'>            <span class="nt">&quot;application/json&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span>
+</span><span class='line'>          <span class="p">}</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>  <span class="p">]</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Note that the <em>s-function.json</em> file is also where you can configure if the service accepts <code>POST</code> or <code>PUT</code> or <code>DELETE</code> requests. Here we are only interested in <code>GET</code>.</p>
+
+<p>You can easily tailor the <code>requestTemplates</code> in this file to extract whatever parameters you need in your lambda function.</p>
+
+<h2>Retrieving the parameter value</h2>
+
+<p>Now back in <em>index.js</em> you will find that the function&#8217;s <code>event</code> parameter has a property <code>password</code> which is set to the value of the querystring parameter.</p>
+
+<figure class='code'><figcaption><span>nodejscomponent/lib/index.js </span></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='javascript'><span class='line'><span class="nx">module</span><span class="p">.</span><span class="nx">exports</span><span class="p">.</span><span class="nx">respond</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">event</span><span class="p">,</span> <span class="nx">cb</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">parameterValue</span> <span class="o">=</span> <span class="nx">event</span><span class="p">.</span><span class="nx">password</span><span class="p">;</span> <span class="c1">// the querystring parameter</span>
+</span><span class='line'>  <span class="kd">var</span> <span class="nx">response</span> <span class="o">=</span> <span class="p">{</span>
+</span><span class='line'>    <span class="nx">message</span><span class="o">:</span> <span class="nx">parameterValue</span>
+</span><span class='line'>  <span class="p">};</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="nx">cb</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">response</span><span class="p">);</span>
+</span><span class='line'><span class="p">};</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Redeploy.</p>
+
+<pre><code> $ serverless dash deploy
+</code></pre>
+
+<p>Visit the URI.</p>
+
+<pre><code>http://something.amazonaws.com/development/potd/check?password=P455w0rd
+</code></pre>
+
+<p>The response is:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='json'><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="err">message:</span> <span class="nt">&quot;P455w0rd&quot;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Ready for implementation</h2>
+
+<p>We now have all the pieces we need. Serverless, Typescript, Mocha and AWS. In the next post I&#8217;ll show how to wire up everything get it working.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1141,61 +1420,6 @@ First up: Never mess with the .NET garbage collector.</p>
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/fixing-slow-debugging-of-asp-dot-net-applications/">Fixing Slow Debugging of ASP.NET Applications</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2015-06-03T21:31:00+01:00" pubdate data-updated="true">Jun 3<span>rd</span>, 2015</time>
-        
-         | <a href="/fixing-slow-debugging-of-asp-dot-net-applications/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>For a while I&#8217;ve noticed an annoying slowness when debugging ASP.NET applications from Visual Studio. Just after every page load it takes about a second before the buttons become clickable. I noticed mostly when debugging XAF applications, perhaps because the pages are quite complex.</p>
-
-<p>Turns out the culprit is something called <a href="http://www.asp.net/visual-studio/overview/2013/using-browser-link">Browser Link</a> which was introduced in Visual Studio 2013. It&#8217;s enabled by default.</p>
-
-<p>To turn it off you can turn it off from the menu:</p>
-
-<p><img src="/images/blog/browserlink-001.png"></p>
-
-<p>Or you can add the following to your web.config file.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="nt">&lt;appSettings&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;add</span> <span class="na">key=</span><span class="s">&quot;vs:EnableBrowserLink&quot;</span> <span class="na">value=</span><span class="s">&quot;false&quot;</span><span class="nt">/&gt;</span>
-</span><span class='line'><span class="nt">&lt;/appSettings&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/3/">&larr; Older</a>
@@ -1215,7 +1439,7 @@ First up: Never mess with the .NET garbage collector.</p>
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2016 - Robert Anderson
+  Copyright &copy; 2017 - Robert Anderson
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

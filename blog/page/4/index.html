@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="I&#8217;ve been playing around with Boxstarter to configure my entire development environment with hardly any user intervention. Here are the steps: &hellip;">
+  <meta name="description" content="The purpose of this post is to raise your awareness of a toggle which exists in the DevExpress XAF framework which can significantly improve UI &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,66 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/a-web-ui-performance-tip-for-xaf-web-applications/">A Web UI Performance Tip for XAF Web Applications</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-03-31T10:16:00+01:00" pubdate data-updated="true">Mar 31<span>st</span>, 2014</time>
+        
+         | <a href="/a-web-ui-performance-tip-for-xaf-web-applications/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>The purpose of this post is to raise your awareness of a toggle which exists in the <a href="http://www.devexpress.com/xaf/">DevExpress XAF framework</a> which can significantly improve UI performance in the web application.</p>
+
+<p><span class='pullquote-right' data-pullquote='In fact the general responsiveness of the entire web-application seems much better.'>
+The biggest XAF project I work with has one very complex business object. The layout for this screen includes about 100 properties, several nested tabs, some custom editors, several collection properties and a whole lot of <a href="https://documentation.devexpress.com/#Xaf/CustomDocument3286">Conditional Appearance</a> rules. It was very sluggish to navigate - it was taking several seconds to load the detail view and then it was very slow switching between tabs. Switching to edit mode was also slow.</p>
+
+<p>Last week, I almost accidentally changed the value of <code>DelayedViewItemsInitialization</code> to <code>false</code> and noticed that the UI speed was much much better. In fact the general responsiveness of the entire web-application seems much better.</p>
+
+<p>In order to give it a whirl, navigate to the WebApplication.cs file (normally in the ApplicationCode subfolder of your web project) and modify the constructor as follows:</p>
+
+<p></span></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="nf">MainDemoWebApplication</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>    <span class="n">InitializeComponent</span><span class="p">();</span>
+</span><span class='line'>    <span class="k">this</span><span class="p">.</span><span class="n">DelayedViewItemsInitialization</span> <span class="p">=</span> <span class="k">false</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Certainly this is not without consequences, and I would urge a careful reading of the <a href="https://documentation.devexpress.com/#xaf/DevExpressExpressAppXafApplication_DelayedViewItemsInitializationtopic">relevant documentation</a>. To be honest, I still don&#8217;t really understand why my detail view is so much slower without this change. I have tried to isolate the cause without much success and I will update this post if I find anything new. But if some of your detail views seem overly slow, certainly try it out.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1691,102 +1751,6 @@ In the past I have always thought of NDepend as a complex tool. I was never sure
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/always-run-visual-studio-as-an-administrator/">Always Run Visual Studio as an Administrator</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-09-09T07:49:00+01:00" pubdate data-updated="true">Sep 9<span>th</span>, 2013</time>
-        
-         | <a href="/always-run-visual-studio-as-an-administrator/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I always run Visual Studio as an administrator. There are various reasons why this is necessary including:</p>
-
-<ul>
-<li>using IIS with a web application</li>
-<li>running web UI tests</li>
-<li>profiling</li>
-</ul>
-
-
-<p>In fact there&#8217;s a list <a href="http://msdn.microsoft.com/en-us/library/vstudio/jj662724.aspx">on MSDN</a> of all the actions you require administrator permissions.</p>
-
-<p>Here is a way to make sure Visual Studio always opens with elevated privileges, even if you double click on a <em>.sln</em> file. (I&#8217;m running Windows 8.)</p>
-
-<ul>
-<li>Right-click <em>devenv.exe</em></li>
-<li>Select <em>Troubleshoot program</em></li>
-<li>Check <em>The program requires additional permissions</em></li>
-<li>Click <em>Next</em></li>
-<li>Click <em>Test the program&#8230;</em></li>
-<li>Wait for the program to launch</li>
-<li>Click <em>Next</em></li>
-<li>Select <em>Yes, save these settings for this program</em></li>
-<li>Click <em>Close</em></li>
-</ul>
-
-
-<p>If you have multiple versions of Visual Studio installed, you should repeat the operation for all of the following.</p>
-
-<table>
-<thead>
-<tr>
-<th>Program </th>
-<th> &nbsp;Default location</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>&nbsp;Visual Studio 2008&nbsp; </td>
-<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 9.0\Common7\IDE\devenv.exe</em> &nbsp;</td>
-</tr>
-<tr>
-<td>&nbsp;Visual Studio 2010&nbsp; </td>
-<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe</em> &nbsp; </td>
-</tr>
-<tr>
-<td>&nbsp;Visual Studio 2012&nbsp; </td>
-<td> &nbsp;<em>C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\devenv.exe</em> &nbsp;</td>
-</tr>
-<tr>
-<td>&nbsp;VSLauncher.exe&nbsp; </td>
-<td> &nbsp;<em>C:\Program Files (x86)\Common Files\Microsoft Shared\MSEnv\VSLauncher.exe</em> &nbsp;</td>
-</tr>
-</tbody>
-</table>
-
-
-<p>&nbsp;</p>
-
-<p>That&#8217;s it. Now Visual Studio always opens with administrator privileges.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/5/">&larr; Older</a>
@@ -1806,7 +1770,7 @@ In the past I have always thought of NDepend as a complex tool. I was never sure
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2016 - Robert Anderson
+  Copyright &copy; 2017 - Robert Anderson
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
