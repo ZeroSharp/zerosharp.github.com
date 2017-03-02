@@ -7,7 +7,7 @@ categories: [aws, lambda, serverless, php]
 description: I build a serverless application for pretty-printing chess games from the lichess.org server.
 ---
 
-In the last post I built a PHP capable sample project for [the Serverless Framework](https://serverless.com/). In this post, I'll show a concrete use of it.
+In [the last post](/the-serverless-framework-and-php/) I built a PHP capable sample project for [the Serverless Framework](https://serverless.com/). In this post, I'll show a concrete use of it.
 
 The service I'm building connects runs a PHP function for pretty-printing chess games from the [lichess online chess server](http://lichess.org/). [James Clarke](https://github.com/clarkerubber/lichessPDFExporter) has written a PHP function to do this using [fpdf17](http://www.fpdf.org/).
 
