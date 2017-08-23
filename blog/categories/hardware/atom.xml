@@ -4,7 +4,7 @@
   <title><![CDATA[Category: hardware | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/hardware/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2017-03-02T12:31:27+00:00</updated>
+  <updated>2017-08-23T17:12:02+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,35 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Macbook and the mysterious sleep]]></title>
+    <link href="http://ZeroSharp.github.com/macbook-and-the-mysterious-sleep/"/>
+    <updated>2017-08-23T16:46:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/macbook-and-the-mysterious-sleep</id>
+    <content type="html"><![CDATA[<p>I finally worked out why my Macbook was randomly sleeping.</p>
+
+<p><strong>TL;DR</strong> - <a href="#anchor-tldr">Skip to the end</a>.</p>
+
+<h2>Clues</h2>
+
+<p>It only seemed to happen when I was working while sitting up on the bed with the computer on my lap. It seemed to be related to the position of the computer or possibly the lid. The computer would sleep. I'd wake it and login again. Continue. Sometimes it would happen once. Sometimes three times in ten minutes. Annoying. I assumed some hardware defect.</p>
+
+<h2>Pajamas</h2>
+
+<p>Then over several days I cracked it. I realised it never happened when I was wearing pajamas. Very strange.</p>
+
+<h2>Reflections</h2>
+
+<p>I started thinking about what normally triggers sleep mode. Closing the lid. How does a Macbook know the lid is closed. There's not really a clasp or anything so it must be a magnet. Perhaps it's getting confused by my belt buckle or something. My phone?</p>
+
+<p>No, my phone <em>case</em>! The flip-case of my phone has a magnet to keep the flap closed. In my jeans pocket it's near enough to make the laptop think the lid has been closed. Duh.</p>
+
+<h2><a name="anchor-tldr"></a>TL;DR</h2>
+
+<p>Take your mobile phone out of your pocket!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[The best PC laptop is a Mac]]></title>

@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2017-03-02T12:31:27+00:00</updated>
+  <updated>2017-08-23T17:12:02+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,35 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Macbook and the mysterious sleep]]></title>
+    <link href="http://ZeroSharp.github.com/macbook-and-the-mysterious-sleep/"/>
+    <updated>2017-08-23T16:46:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/macbook-and-the-mysterious-sleep</id>
+    <content type="html"><![CDATA[<p>I finally worked out why my Macbook was randomly sleeping.</p>
+
+<p><strong>TL;DR</strong> - <a href="#anchor-tldr">Skip to the end</a>.</p>
+
+<h2>Clues</h2>
+
+<p>It only seemed to happen when I was working while sitting up on the bed with the computer on my lap. It seemed to be related to the position of the computer or possibly the lid. The computer would sleep. I&#8217;d wake it and login again. Continue. Sometimes it would happen once. Sometimes three times in ten minutes. Annoying. I assumed some hardware defect.</p>
+
+<h2>Pajamas</h2>
+
+<p>Then over several days I cracked it. I realised it never happened when I was wearing pajamas. Very strange.</p>
+
+<h2>Reflections</h2>
+
+<p>I started thinking about what normally triggers sleep mode. Closing the lid. How does a Macbook know the lid is closed. There&#8217;s not really a clasp or anything so it must be a magnet. Perhaps it&#8217;s getting confused by my belt buckle or something. My phone?</p>
+
+<p>No, my phone <em>case</em>! The flip-case of my phone has a magnet to keep the flap closed. In my jeans pocket it&#8217;s near enough to make the laptop think the lid has been closed. Duh.</p>
+
+<h2><a name="anchor-tldr"></a>TL;DR</h2>
+
+<p>Take your mobile phone out of your pocket!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Improvements to Serverless PHP support]]></title>
@@ -3108,22 +3137,6 @@ First up: Never mess with the .NET garbage collector.</p>
 </code></pre>
 
 <p>You should see the text <strong>&#8216;Forced garbage collection OK&#8217;</strong> in the top left of the browser window.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[A strange error message from Visual Studio 2015]]></title>
-    <link href="http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015/"/>
-    <updated>2015-08-03T15:35:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/a-strange-error-message-from-visual-studio-2015</id>
-    <content type="html"><![CDATA[<p>When I recently upgraded to Visual Studio 2015, everything seemed to go very smoothly except that whenever I debugged my main application I got a dialog window with the following strange error:</p>
-
-<pre><code>The procedure entry point could not be located in the dynamic link library C:\...\bin\Debug\netutils.dll.
-</code></pre>
-
-<p>After pressing <code>OK</code> everything seemed to work as normal.</p>
-
-<p>After a considerable number of dead ends, I finally worked out that changing the name of the <em>NetUtils.dll</em> assembly fixes the problem. It seems that Visual Studio 2015 gets confused with a Windows system assembly with the same name. I don&#8217;t know why it was never a problem with Visual Studio 2013, but I renamed the assembly and now everything is working fine.</p>
 ]]></content>
   </entry>
   
