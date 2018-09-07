@@ -3,7 +3,7 @@ layout: post
 title: "How to recursively change file ownership"
 date: 2013-02-28 17:40
 comments: true
-categories: powershell windows
+categories: [powershell, windows]
 description: A powershell script to recursively change the ownership of files in the current and subdirectories.
 ---
 I recently ran into some file ownership trouble after cloning a bitbucket repository. 

@@ -3,7 +3,7 @@ layout: post
 title: "How to remove the trailing zeros of precision from a C# Decimal"
 date: 2013-01-09 17:45
 comments: true
-categories: c#
+categories: [c#]
 description: A quirky fix for C# decimal precision.
 ---
 You may know that the C# `Decimal` type remembers any trailing zeros. So for instance:

@@ -3,7 +3,7 @@ layout: post
 title: "Fixing an unmanaged code AppCrash"
 date: 2013-04-29 16:21
 comments: true
-categories: c# apollodb bug
+categories: [c#, apollodb, bug]
 description: Debugging an AppCrash related to incorrect string marshalling in an external dll call.
 ---
 This post is the result of a recent bug hunt in which I came across a tricky bug, found a debugging switch I'd completely forgotten existed and learned a little about calling `extern` string functions from C#.
