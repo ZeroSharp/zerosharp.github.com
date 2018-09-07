@@ -1,12 +1,12 @@
 ---
 layout: post
-title: "Essential applications"
+title: "My essential applications"
 date: 2018-09-07 15:23
 comments: true
 categories: [windows]
 ---
 
-This is the first in a series of posts where I list the applications I find that I use and enjoy the most. 
+This is the first in a series of posts where I list the applications that I use and enjoy the most. 
 
 A bit of preamble, my most powerful machine is a Windows-only desktop with lots of RAM and an SSD drive. I use it almost exclusively for development. 
 
