@@ -6,7 +6,7 @@
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/friends-robots-countrymen/</loc>
-        <lastmod>2016-01-28T17:04:21+00:00</lastmod>
+        <lastmod>2018-09-07T16:04:33+01:00</lastmod>
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/skiing-on-mars/</loc>
@@ -112,7 +112,7 @@
         <loc>
             http://ZeroSharp.github.com/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/
         </loc>
-        <lastmod>2016-01-28T17:04:21+00:00</lastmod>
+        <lastmod>2018-09-07T16:04:33+01:00</lastmod>
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/better-handling-of-decimals-in-the-xaf-audit-trail/</loc>
@@ -158,11 +158,11 @@
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/colourful-git-command-line/</loc>
-        <lastmod>2016-01-28T17:04:21+00:00</lastmod>
+        <lastmod>2018-09-07T16:04:33+01:00</lastmod>
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/how-to-recursively-change-file-ownership/</loc>
-        <lastmod>2016-01-28T17:04:21+00:00</lastmod>
+        <lastmod>2018-09-07T16:04:33+01:00</lastmod>
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/load-testing-xaf-overview/</loc>
@@ -196,7 +196,7 @@
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/fixing-an-unmanaged-code-appcrash/</loc>
-        <lastmod>2016-01-28T17:04:21+00:00</lastmod>
+        <lastmod>2018-09-07T16:04:33+01:00</lastmod>
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/making-xaf-reports-even-better-part-1/</loc>
@@ -427,8 +427,24 @@
         <lastmod>2017-08-23T17:11:16+01:00</lastmod>
     </url>
     <url>
+        <loc>http://ZeroSharp.github.com/essential-applications/</loc>
+        <lastmod>2018-09-07T18:08:51+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://ZeroSharp.github.com/</loc>
+        <lastmod>2018-09-07T18:08:51+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://ZeroSharp.github.com/license/</loc>
+        <lastmod>2016-02-01T09:31:01+00:00</lastmod>
+    </url>
+    <url>
         <loc>http://ZeroSharp.github.com/about/</loc>
         <lastmod>2017-08-23T17:05:56+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://ZeroSharp.github.com/blog/archives/</loc>
+        <lastmod>2018-09-07T18:08:51+01:00</lastmod>
     </url>
     <url>
         <loc>http://ZeroSharp.github.com/atom_xaf.xml</loc>
@@ -437,17 +453,5 @@
     <url>
         <loc>http://ZeroSharp.github.com/atom_xpo.xml</loc>
         <lastmod>2013-01-31T16:02:21+00:00</lastmod>
-    </url>
-    <url>
-        <loc>http://ZeroSharp.github.com/blog/archives/</loc>
-        <lastmod>2017-08-23T17:11:16+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://ZeroSharp.github.com/</loc>
-        <lastmod>2017-08-23T17:11:16+01:00</lastmod>
-    </url>
-    <url>
-        <loc>http://ZeroSharp.github.com/license/</loc>
-        <lastmod>2016-02-01T09:31:01+00:00</lastmod>
     </url>
 </urlset>

@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="When I recently upgraded to Visual Studio 2015, everything seemed to go very smoothly except that whenever I debugged my main application I got a &hellip;">
+  <meta name="description" content="How can I force a full garbage collection easily within an ASP.NET application? The method here is for XAF web applications but the same approach &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,101 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/force-a-complete-garbage-collection-in-an-asp-dot-net-application/">Force a Complete Garbage Collection in an ASP.NET Application.</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-08-05T09:26:00+01:00" pubdate data-updated="true">Aug 5<span>th</span>, 2015</time>
+        
+         | <a href="/force-a-complete-garbage-collection-in-an-asp-dot-net-application/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>How can I force a full garbage collection easily within an ASP.NET application? The method here is for XAF web applications but the same approach should work with any ASP.NET app.</p>
+
+<p><span class='pullquote-right' data-pullquote='First up: Never mess with the .NET garbage collector.'>
+First up: Never mess with the .NET garbage collector.</p>
+
+<p>I sometimes mess with the garbage collector in .NET when I&#8217;m trying to pin down some memory problem. Also, after <a href="/load-testing-xaf-part-1-deploying/">a load test</a>, I prefer to force the garbage collector to collect everything it can so that I can check that the memory drops as expected.
+</span></p>
+
+<p>Garbage collection in .NET is complex and it is hard to be sure you&#8217;ve done it correctly. <a href="///%20See%20http://blogs.msdn.com/b/tess/archive/2006/02/02/net-memory-my-object-is-not-rooted-why-wasn-t-it-garbage-collected.aspx">This ancient article by Tess Ferrandez</a> pointed me in the following direction.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">void</span> <span class="nf">ForceGarbageCollection</span><span class="p">()</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="c1">/// This will garbage collect all generations (including large object), </span>
+</span><span class='line'>    <span class="n">GC</span><span class="p">.</span><span class="n">Collect</span><span class="p">(</span><span class="m">3</span><span class="p">);</span>
+</span><span class='line'>    <span class="c1">/// then execute any finalizers</span>
+</span><span class='line'>    <span class="n">GC</span><span class="p">.</span><span class="n">WaitForPendingFinalizers</span><span class="p">();</span>
+</span><span class='line'>    <span class="c1">/// and then garbage collect again to take care of all the objects that had finalizers.            </span>
+</span><span class='line'>    <span class="n">GC</span><span class="p">.</span><span class="n">Collect</span><span class="p">(</span><span class="m">3</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>How can we easily trigger this routine in an XAF web application? First, add the following to the <em>Global.asax.cs</em> file:</p>
+
+<figure class='code'><figcaption><span>Global.asax.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">protected</span> <span class="k">void</span> <span class="nf">Application_BeginRequest</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>    <span class="kt">var</span> <span class="n">shouldForceGarbageCollection</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">QueryString</span><span class="p">[</span><span class="s">&quot;ForceGC&quot;</span><span class="p">]</span> <span class="p">!=</span> <span class="k">null</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">shouldForceGarbageCollection</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">ForceGarbageCollection</span><span class="p">();</span>
+</span><span class='line'>        <span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&quot;&lt;H1&gt;Forced garbage collection OK!&lt;/H1&gt;&quot;</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Then whenever you want to trigger a garbage collection, visit the following URL:</p>
+
+<pre><code>http://.../Login.aspx?ForceGC=1
+</code></pre>
+
+<p>You should see the text <strong>&#8216;Forced garbage collection OK&#8217;</strong> in the top left of the browser window.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1566,105 +1661,6 @@ How can we replace a given class&#8217;s code with new code at runtime? In parti
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/persisting-changes-to-config-files-within-nuget-packages/">Persisting Changes to Config Files Within NuGet Packages</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-08-13T06:39:00+01:00" pubdate data-updated="true">Aug 13<span>th</span>, 2014</time>
-        
-         | <a href="/persisting-changes-to-config-files-within-nuget-packages/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Whenever NuGet updates or restores a NuGet package, the config files within it are overwritten. Here&#8217;s a method to make sure the changes are reapplied via a <a href="http://msdn.microsoft.com/en-us/library/dd465326.aspx">config transform</a> whenever the solution is built.</p>
-
-<p>I&#8217;m using the NUnit.Runners NuGet packages. To get our coverage tool to play nicely, I need to replace <code>&lt;supportedRuntime "v2.0.50727"&gt;</code> with <code>&lt;supportedRuntime "v4.0.30319"&gt;</code> within the <em>NUnit-console-x86.exe.config</em>.</p>
-
-<p>Normally, a config transform is for modifying the <em>web.config</em> or <em>app.config</em> files. Here, we need to modify a config file within the <em>packages</em> subdirectory.</p>
-
-<p>In my <em>.csproj</em> file, I have added the following:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'>  <span class="nt">&lt;PropertyGroup&gt;</span>
-</span><span class='line'>   <span class="nt">&lt;NUnitRunnerDir&gt;</span>$(SolutionDir)packages\NUnit.Runners.2.6.3\tools\<span class="nt">&lt;/NUnitRunnerDir&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;PropertyGroup&gt;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="c">&lt;!-- Default NUnit test runner requires a modification to the config file--&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;UsingTask</span>
-</span><span class='line'>    <span class="na">TaskName=</span><span class="s">&quot;TransformXml&quot;</span>
-</span><span class='line'>    <span class="na">AssemblyFile=</span><span class="s">&quot;$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v12.0\Web\Microsoft.Web.Publishing.Tasks.dll&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="nt">&lt;Target</span> <span class="na">Name=</span><span class="s">&quot;AfterBuild&quot;</span> <span class="na">Condition=</span><span class="s">&quot;exists(&#39;$(NUnitRunnerDir)NUnit-console-x86.exe.config&#39;)&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;TransformXml</span>
-</span><span class='line'>        <span class="na">Source=</span><span class="s">&quot;$(NUnitRunnerDir)NUnit-console-x86.exe.config&quot;</span>
-</span><span class='line'>        <span class="na">Destination=</span><span class="s">&quot;$(NUnitRunnerDir)NUnit-console-x86.exe.config&quot;</span>
-</span><span class='line'>        <span class="na">Transform=</span><span class="s">&quot;$(SolutionDir)UnitTests\Transforms\NUnit-console-x86.exe.CLR4.config&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/Target&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>And the transform file itself looks like this:</p>
-
-<figure class='code'><figcaption><span>NUnit-console-x86.exe.CLR4.config </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
-</span><span class='line'><span class="nt">&lt;configuration</span> <span class="na">xmlns:xdt=</span><span class="s">&quot;http://schemas.microsoft.com/XML-Document-Transform&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;startup&gt;</span>
-</span><span class='line'>    <span class="nt">&lt;supportedRuntime</span> <span class="na">version=</span><span class="s">&quot;v4.0.30319&quot;</span> <span class="na">xdt:Transform=</span><span class="s">&quot;Replace&quot;</span> <span class="nt">/&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;/startup&gt;</span>
-</span><span class='line'><span class="nt">&lt;/configuration&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>By the way, <a href="https://webconfigtransformationtester.apphb.com/">Web.config Transformation Tester</a> is a handy tool!</p>
-
-<p>Now whenever I build the project, the <em>AfterBuild</em> event ensures the supportedRuntime version is set correctly.</p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/4/">&larr; Older</a>
@@ -1684,7 +1680,7 @@ How can we replace a given class&#8217;s code with new code at runtime? In parti
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2017 - Robert Anderson
+  Copyright &copy; 2018 - Robert Anderson
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 

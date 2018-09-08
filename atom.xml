@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2017-08-23T17:12:02+01:00</updated>
+  <updated>2018-09-08T09:11:00+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,56 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[My essential applications]]></title>
+    <link href="http://ZeroSharp.github.com/essential-applications/"/>
+    <updated>2018-09-07T15:23:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/essential-applications</id>
+    <content type="html"><![CDATA[<p>This is the first in a series of posts where I list the applications that I use and enjoy the most.</p>
+
+<p>A bit of preamble, my most powerful machine is a Windows-only desktop with lots of RAM and an SSD drive. I use it almost exclusively for development.</p>
+
+<p>I also have a Macbook Pro which is configured to dual-boot Windows and MacOS. The Windows machine is more or less a mirror of my main development machine. The Mac is where I do all my document editing, Word, blogging, etc. I also use it for my occasional forays in to iPhone development or other non-Windows experiments.</p>
+
+<p>When I upgrade my development machine, I reconfigure the previous system for Linux, currently Ubuntu.</p>
+
+<h2>Chocolatey</h2>
+
+<p>In Windows, <a href="Chocolatey%20-%20The%20package%20manager%20for%20Windows">Chocolatey</a> is a very convenient way to install programs. Just go:</p>
+
+<pre><code>C:&gt; choco install nodejs
+</code></pre>
+
+<h2>Boxstarter</h2>
+
+<p>Even better, create a powershell script with all the applications you want to install and run it with <a href="https://boxstarter.org/">boxstarter</a>. Repeatable and reboot-resilient environment installations using chocolatey under the hood. For several years now, I have maintained a script for installing my entire development environment (and the build server) from scratch. Works whether it&#8217;s a physical or a virtual machine.</p>
+
+<h2>BeyondCompare</h2>
+
+<p><a href="https://www.scootersoftware.com/">BeyondCompare</a> is the best file-comparison tool I&#8217;ve found. Cross-platform too, I have it installed on my Mac as well.</p>
+
+<h2>Synergy</h2>
+
+<p><a href="https://symless.com/synergy">Synergy</a> allows me to share one mouse and keyboard across all my machines. It works just like dual monitors, except when the mouse moves onto the next screen, you&#8217;ve actually changed computer. I don&#8217;t have multiple monitors any more, I just switch the input on my giant <a href="https://www.dell.com/en-us/shop/dell-ultrasharp-34-curved-monitor-u3417w/apd/210-aiyz/monitors-monitor-accessories">curved 34&#8221; Dell monitor</a> via a keyboard shortcut.</p>
+
+<h2>7Zip</h2>
+
+<p>Nothing to say.</p>
+
+<h2>VS Code</h2>
+
+<p>First class support for .NET and C#, Typescript in particular, but <a href="https://code.visualstudio.com/">VS Code</a> is also extremely good with Javascript, Powershell, Python, Markdown, etc. Multiple cursor support. Cross-platform. Extensions. I&#8217;m writing this blog post in VS Code.</p>
+
+<h2>Visual Studio</h2>
+
+<p>My daily workhorse. I&#8217;ve spent more screen time here than anywhere.</p>
+
+<h2>Next up</h2>
+
+<p>More on Visual Studio in the next post where I go through my essential extensions and tools.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Macbook and the mysterious sleep]]></title>
@@ -3071,72 +3121,6 @@ Here I had a refactoring dilemma to solve. Either I need to rewrite all of the a
 
 <p>I still had a lot of failing unit tests. One seemingly minor change to XAF validation proved to be a lot of work to fix in our code.
 Since 13.1, the XAF <code>Validator</code> class now requires an <code>IObjectSpace</code> parameter in the constructor. This was by far the biggest problem to fix and is the subject of the next blog post.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Force a complete garbage collection in an ASP.NET application.]]></title>
-    <link href="http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application/"/>
-    <updated>2015-08-05T09:26:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/force-a-complete-garbage-collection-in-an-asp-dot-net-application</id>
-    <content type="html"><![CDATA[<p>How can I force a full garbage collection easily within an ASP.NET application? The method here is for XAF web applications but the same approach should work with any ASP.NET app.</p>
-
-<p><span class='pullquote-right' data-pullquote='First up: Never mess with the .NET garbage collector.'>
-First up: Never mess with the .NET garbage collector.</p>
-
-<p>I sometimes mess with the garbage collector in .NET when I&#8217;m trying to pin down some memory problem. Also, after <a href="http://ZeroSharp.github.com/load-testing-xaf-part-1-deploying/">a load test</a>, I prefer to force the garbage collector to collect everything it can so that I can check that the memory drops as expected.
-</span></p>
-
-<p>Garbage collection in .NET is complex and it is hard to be sure you&#8217;ve done it correctly. <a href="http://ZeroSharp.github.com///%20See%20http://blogs.msdn.com/b/tess/archive/2006/02/02/net-memory-my-object-is-not-rooted-why-wasn-t-it-garbage-collected.aspx">This ancient article by Tess Ferrandez</a> pointed me in the following direction.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">void</span> <span class="nf">ForceGarbageCollection</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="c1">/// This will garbage collect all generations (including large object), </span>
-</span><span class='line'>    <span class="n">GC</span><span class="p">.</span><span class="n">Collect</span><span class="p">(</span><span class="m">3</span><span class="p">);</span>
-</span><span class='line'>    <span class="c1">/// then execute any finalizers</span>
-</span><span class='line'>    <span class="n">GC</span><span class="p">.</span><span class="n">WaitForPendingFinalizers</span><span class="p">();</span>
-</span><span class='line'>    <span class="c1">/// and then garbage collect again to take care of all the objects that had finalizers.            </span>
-</span><span class='line'>    <span class="n">GC</span><span class="p">.</span><span class="n">Collect</span><span class="p">(</span><span class="m">3</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>How can we easily trigger this routine in an XAF web application? First, add the following to the <em>Global.asax.cs</em> file:</p>
-
-<figure class='code'><figcaption><span>Global.asax.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">protected</span> <span class="k">void</span> <span class="nf">Application_BeginRequest</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">EventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="kt">var</span> <span class="n">shouldForceGarbageCollection</span> <span class="p">=</span> <span class="n">Request</span><span class="p">.</span><span class="n">QueryString</span><span class="p">[</span><span class="s">&quot;ForceGC&quot;</span><span class="p">]</span> <span class="p">!=</span> <span class="k">null</span><span class="p">;</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">shouldForceGarbageCollection</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">ForceGarbageCollection</span><span class="p">();</span>
-</span><span class='line'>        <span class="n">Response</span><span class="p">.</span><span class="n">Write</span><span class="p">(</span><span class="s">&quot;&lt;H1&gt;Forced garbage collection OK!&lt;/H1&gt;&quot;</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Then whenever you want to trigger a garbage collection, visit the following URL:</p>
-
-<pre><code>http://.../Login.aspx?ForceGC=1
-</code></pre>
-
-<p>You should see the text <strong>&#8216;Forced garbage collection OK&#8217;</strong> in the top left of the browser window.</p>
 ]]></content>
   </entry>
   

@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="This post covers how recreate a local repository of your Octopress blog. Perhaps you&#8217;ve accidentally lost it, or perhaps you would like to be &hellip;">
+  <meta name="description" content="This is the second post in a series about iOS development from the perspective of a C# developer. In the previous post in the series we got started &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,147 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/a-c-number-developers-adventures-in-ios-integrating-git-and-monodevelop/">A C# Developer&#8217;s Adventures in iOS - Integrating Git and MonoDevelop</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-02-08T14:52:00+00:00" pubdate data-updated="true">Feb 8<span>th</span>, 2013</time>
+        
+         | <a href="/a-c-number-developers-adventures-in-ios-integrating-git-and-monodevelop/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This is the second post in a series about iOS development from the perspective of a C# developer.</p>
+
+<p>In the <a href="/a-c-number-developers-adventures-in-ios-getting-started/">previous post in the series</a> we got started with MonoTouch and installed MonoDevelop and XCode. In this post, we&#8217;ll look at how to set up version control for an existing MonoTouch solution.</p>
+
+<h2>Version Control</h2>
+
+<p>I didn&#8217;t have enough time <a href="/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend/">at the hackathon</a> to learn how to set up version control for MonoDevelop on a Mac. So let&#8217;s fix that straight away.</p>
+
+<h3>Git</h3>
+
+<p>I&#8217;m much more familiar with Mercurial, and while it&#8217;s possible to get TortoiseHg to run on a Mac, it seems that the Mac world prefers Git. MonoDevelop has Git integrated which I like very much so I&#8217;ll go with Git for now. I can always switch later.</p>
+
+<h3>Ignore files</h3>
+
+<p>Open a terminal and navigate to the root of your existing source code folder.</p>
+
+<pre><code>$ cd Projects/Babingo # replace with /path/to/your/repo
+</code></pre>
+
+<p>You need a .gitignore file to avoid version controlling compiled sources and user settings unnecessarily.</p>
+
+<p>Create a new file .gitignore as follows. You can type <code>nano .gitignore</code> if you don&#8217;t have a favourite text editor.</p>
+
+<figure class='code'><figcaption><span>.gitignore </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># OSX specific
+</span><span class='line'>.DS_Store
+</span><span class='line'>*.lock
+</span><span class='line'>*.swp
+</span><span class='line'>*.lock
+</span><span class='line'>
+</span><span class='line'># Build folders
+</span><span class='line'>[Bb]in/
+</span><span class='line'>[Oo]bj/
+</span><span class='line'>
+</span><span class='line'># User specific
+</span><span class='line'>*.userprefs
+</span><span class='line'>*.usertasks
+</span><span class='line'>
+</span><span class='line'># Mono project files
+</span><span class='line'>*~
+</span><span class='line'>*.pidb
+</span><span class='line'>*.resources
+</span><span class='line'>test-results/</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Initial commit</h3>
+
+<p>Now initialise a repository for your existing source code and commit it.</p>
+
+<pre><code>$ git init
+$ git add .
+$ git commit -m "Initial commit."
+</code></pre>
+
+<h3>BitBucket</h3>
+
+<p>Next create a private repository on BitBucket.</p>
+
+<p><img src="/images/blog/adventures-in-ios-bitbucket-001.png"></p>
+
+<p>You will need the address for your repository from the BitBucket page circled in red below.</p>
+
+<p><img src="/images/blog/adventures-in-ios-bitbucket-003.png"></p>
+
+<p>Then, from the terminal, push the code to BitBucket. Replace the Url below with the address of your your own repository.</p>
+
+<pre><code>$ git remote add origin https://shamp00@bitbucket.org/shamp00/babingo.git     
+$ git push -u origin --all
+</code></pre>
+
+<h3>Integration with MonoDevelop</h3>
+
+<p>Open your solution in MonoDevelop and select the <code>Checkout...</code> option from the <code>Version Control</code> menu.</p>
+
+<p><img src="/images/blog/adventures-in-ios-bitbucket-002.png"></p>
+
+<p>Select <code>Git</code> as the type of repository and put the address to your git repository in the <code>Url</code> field. The rest of the fields are populated automatically. You need to set the <code>Target Directory</code> to the location of your local repository including the trailing slash.</p>
+
+<p>When you click Ok, you will be prompted for your BitBucket credentials.</p>
+
+<p><img class="right" src="/images/blog/adventures-in-ios-bitbucket-004.png" width="379" height="92"></p>
+
+<p>That&#8217;s it. Now Git is integrated into your MonoDevelop environment. For instance, you can right-click in the editor to view the diff or the log of the current file, push changes, commit messages locally, etc.</p>
+
+<p>Note that instead of BitBucket, it would have been just as straightforward to host the repository on GitHub instead.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1223,67 +1364,6 @@ Console.WriteLine(123.4500000m);
 
     </article>
   
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend/">How I Went From C# Developer to iPhone Developer in a Weekend</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-01-04T10:35:00+00:00" pubdate data-updated="true">Jan 4<span>th</span>, 2013</time>
-        
-         | <a href="/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Recently I took part in <a href="http://buenosaires.startupweekend.org/">Startup Weekend Buenos Aires</a>. It works just like most hackathons:</p>
-
-<p><a href="http://buenosaires.startupweekend.org/2012/11/12/ganadores-swba2012/"><span class='caption-wrapper right'><img class='caption' src='/images/blog/basw/BABingo-2puesto-SWBA2012.jpg' width='' height='' title='New friends: Caro, Eze, Gus and me'><span class='caption-text'>New friends: Caro, Eze, Gus and me</span></span></a></p>
-
-<ul>
-<li>You give a one minute pitch on Friday evening.</li>
-<li>Winners put together a team.</li>
-<li>You work with your team on Saturday and Sunday to launch a product.</li>
-<li>Demo for the judges.</li>
-<li>Prizes. Beer. Sleep.</li>
-</ul>
-
-
-<p>On the Friday I spoke no Spanish and had no idea how to write an iPhone app. By Sunday I still spoke no Spanish, but <strong>I&#8217;d built my first app and it won second prize!</strong></p>
-
-<p>How did I learn Objective-C in a weekend? I didn&#8217;t. I wrote it in C#.</p>
-
-<p><span class='pullquote-right' data-pullquote='Monotouch makes mobile development really easy for C# programmers.'>
-I downloaded <a href="http://xamarin.com/monotouch">Xamarin MonoTouch</a> onto my <a href="/the-best-pc-laptop-is-a-mac/">MacBook Pro</a> and was following the &#8216;Hello World&#8217; tutorial within an hour. The MonoTouch <a href="http://docs.xamarin.com/iOS/Guides">documentation</a> is very clear and the <a href="http://docs2.xamarin.com/ios/samples">samples</a> are very useful. Very soon I had a multiple screen application built, including capturing an image from the camera.</p>
-
-<p>Monotouch makes mobile development really easy for C# programmers. It&#8217;s also cross-platform so you can re-use big chunks of your code when you write the Android version.</p>
-
-<p>Check out <a href="http://blog.xamarin.com/eight-reasons-c-sharp-is-the-best-language-for-mobile-development/">this recent blog post from the guys at Xamarin</a>.
-</span></p>
-</div>
-  
-  
-
-
-    </article>
-  
   <div class="pagination">
     
       <a class="prev" href="/blog/page/8/">&larr; Older</a>
@@ -1303,7 +1383,7 @@ I downloaded <a href="http://xamarin.com/monotouch">Xamarin MonoTouch</a> onto m
     </div>
   </div>
   <footer role="contentinfo"><p>
-  Copyright &copy; 2017 - Robert Anderson
+  Copyright &copy; 2018 - Robert Anderson
   <span class="credit">Powered by <a href="http://octopress.org">Octopress</a></span>
 </p>
 
