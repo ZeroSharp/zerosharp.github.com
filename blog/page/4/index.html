@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="Whenever NuGet updates or restores a NuGet package, the config files within it are overwritten. Here&#8217;s a method to make sure the changes are &hellip;">
+  <meta name="description" content="The goal How can we replace a given class&#8217;s code with new code at runtime? In particular, how we can we do this while allowing dependency &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,127 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/">Replacing a Class at Runtime Using Ninject and Roslyn - Part 1: The Goal</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-09-09T10:47:00+01:00" pubdate data-updated="true">Sep 9<span>th</span>, 2014</time>
+        
+         | <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><h2>The goal</h2>
+
+<p><span class='pullquote-right' data-pullquote='How can we replace a given class&#8217;s code with new code at runtime?'>
+How can we replace a given class&#8217;s code with new code at runtime? In particular, how we can we do this while allowing dependency injection and  sidestepping assembly versioning issues.
+</span></p>
+
+<p>Let&#8217;s say you have bunch of classes like this:</p>
+
+<figure class='code'><figcaption><span>SomeGenerator.cs</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">SomeGenerator</span> <span class="p">:</span> <span class="n">IGenerator</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">SomeGenerator</span><span class="p">(</span><span class="n">ISomeDependency</span> <span class="n">dependency</span><span class="p">,</span> <span class="n">IAnotherDependency</span> <span class="n">another</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="p">...</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">public</span> <span class="k">void</span> <span class="nf">Generate</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="p">...</span>
+</span><span class='line'>        <span class="c1">// generate some output</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now let&#8217;s assume that you need the ability to modify the behaviour of these classes at runtime without upgrading. And change the dependencies. Without restarting the application.</p>
+
+<h4>Old school - The MEF approach (and most other plug-in frameworks)</h4>
+
+<p>One approach would be to place each generator in a separate assembly and then you could load them at runtime. (This was my first effort - <em>oh how I struggled</em>).</p>
+
+<p>You can make use of something like <a href="http://msdn.microsoft.com/en-us/library/dd460648.aspx">MEF</a> to help with the grunt work, but can still be very complex.</p>
+
+<p>One difficulty is the dependencies. The dependencies are often defined in other assemblies and you have to be very careful to avoid &#8216;dll hell&#8217;. It is very easy to get message like:</p>
+
+<pre><code>Could not load file or assembly 'SomeAssembly, Version=1.2.9.1, Culture=neutral, PublicKeyToken=ad2d246d2bace800' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference.
+</code></pre>
+
+<p>Or even exceptions like</p>
+
+<pre><code>Object (of type 'SomeGenerator') is not of type 'SomeGenerator'.
+</code></pre>
+
+<p>You either have to write your plug-in code so that it is totally independent (i.e., has no dependencies), or you need to resort to a heap of <code>&lt;bindingRedirect&gt;</code> tags in your web.config.</p>
+
+<p>Also, with one assembly per format, you can end up with a huge proliferation of assemblies. If you have 50 different formats, that would be 50 assemblies.</p>
+
+<h4>New school - The Rosyln approach</h4>
+
+<p>An alternative is to use the compiler-as-a-service features of <a href="http://msdn.microsoft.com/en-gb/vstudio/roslyn.aspx">Roslyn</a>.</p>
+
+<p>Can we upload a modified <em>SomeGenerator.cs</em> and get it to reference the deployed assemblies and thereby avoid dll hell? With Roslyn we can do this.</p>
+
+<p>If the compilation fails, we can immediately inform the user that the file is not compatible. If it succeeds, we can use it in lieu of the version that was originally deployed.</p>
+
+<p>Also, you do <strong>not</strong> need separate assemblies for the plug-ins. Your production code contains, within it somewhere a class named <code>SomeGenerator</code>. At runtime, we are going to create an in-memory assembly which contains only a single class (still named <code>SomeGenerator</code>), but which can nevertheless reference any other class available to the original implementation. Then we will get the dependency injection container to &#8216;replace&#8217; the old generator with the new one.</p>
+
+<h2>The plan</h2>
+
+<ul>
+<li>Build an ASP.NET MVC 5 web application. It will use an instance of <code>HelloWorldGenerator</code> to generate some output. (This is the <em>original implementation</em>).</li>
+<li>Allow a replacement for the <code>HelloWorldGenerator</code> class to be uploaded into the application as raw C# code. (This is the <em>plug-in implementation</em>.)</li>
+<li>Store the C# code in a database. If the application is restarted, the plug-in code will be reloaded.</li>
+<li>When the output is next requested, compile the new C# class. Any dependencies will be instantiated by the IoC container. If there are any compilation errors, these will be displayed.</li>
+<li>Show that the plug-in class is now being used and the output has changed. The originally shipped <code>HelloWorldGenerator</code> class has been replaced by our plug-in.</li>
+<li>Delete the plug-in from the table and show the output has reverted to the default (the originally implementation code).</li>
+</ul>
+
+
+<p>Over next few posts I&#8217;ll guide you through building the application and demonstrate the runtime replacement of the generator class.</p>
+
+<p>See <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/">Part 2</a> for screen shots of the working application and an overview of the basic project set up.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1302,238 +1423,6 @@ The default directories for the installation have changed again. I&#8217;m sure 
 <li><a href="https://www.devexpress.com/Support/Center/Question/Details/Q510468">Support Center Q510468</a></li>
 </ul>
 
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/three-ways-to-store-a-list-of-currency-codes-in-xaf/">Three Ways to Store a List of Currency Codes in XAF</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-10-22T18:15:00+01:00" pubdate data-updated="true">Oct 22<span>nd</span>, 2013</time>
-        
-         | <a href="/three-ways-to-store-a-list-of-currency-codes-in-xaf/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>In the <a href="/the-ugly-the-heavy-and-the-good">last post</a> we looked at three solutions to a relatively simple XAF requirement. In this post I&#8217;ll discuss another XAF challenge, explain the options and provide a versatile and maintainable solution.</p>
-
-<p>In my DevExpress XAF application, I have an object which has several properties like this:</p>
-
-<p><img src="/images/blog/currency-list-editor-002.png"></p>
-
-<p>In each case, the field is a comma-separated list of currency codes. These fields are not very important to the model - they are used mainly for reporting.</p>
-
-<p>Let&#8217;s look at 3 different ways of handling these fields.</p>
-
-<h2>Option 1 - Use a string field</h2>
-
-<p>The <em>lightest</em> option would be just to declare them as a normal XPO string field:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">private</span> <span class="kt">string</span> <span class="n">_List1Currencies</span><span class="p">;</span>
-</span><span class='line'><span class="k">public</span> <span class="kt">string</span> <span class="n">List1Currencies</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">get</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">_List1Currencies</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">set</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">SetPropertyValue</span><span class="p">(</span><span class="s">&quot;List1Currencies&quot;</span><span class="p">,</span> <span class="k">ref</span> <span class="n">_List1Currencies</span><span class="p">,</span> <span class="k">value</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>It&#8217;s certainly simple and maintainable, but it&#8217;s not very user-friendly. There is no fancy interface to help with the input.  We can perhaps improve things slightly by providing edit masks and/or validation rules to check the input, but careful typing is the only way to change the values.</p>
-
-<h2>Option 2 - Declare an association property</h2>
-
-<p>The <em>heaviest</em> option is to declare each such property as a many-to-many relationship.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">Container</span><span class="p">:</span> <span class="n">XPObject</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="nf">Container</span><span class="p">(</span><span class="n">Session</span> <span class="n">session</span><span class="p">)</span> <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">session</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="na">    [Association(&quot;List1Currencies&quot;)]</span>
-</span><span class='line'>    <span class="k">public</span> <span class="n">XPCollection</span><span class="p">&lt;</span><span class="n">Currency</span><span class="p">&gt;</span> <span class="n">List1</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">get</span> <span class="p">{</span> <span class="k">return</span> <span class="n">GetCollection</span><span class="p">&lt;</span><span class="n">Currency</span><span class="p">&gt;(</span><span class="s">&quot;List1&quot;</span><span class="p">);</span> <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">Currency</span><span class="p">:</span> <span class="n">XPObject</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="nf">Currency</span><span class="p">(</span><span class="n">Session</span> <span class="n">session</span><span class="p">)</span> <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">session</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="na">    [Size(3)]</span>
-</span><span class='line'>    <span class="k">public</span> <span class="kt">string</span> <span class="n">Code</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="na">    [Association(&quot;List1Currencies&quot;)]</span>
-</span><span class='line'>    <span class="k">public</span> <span class="n">XPCollection</span><span class="p">&lt;</span><span class="n">Container</span><span class="p">&gt;</span> <span class="n">List1Container</span> <span class="p">{</span>
-</span><span class='line'>        <span class="k">get</span> <span class="p">{</span> <span class="k">return</span> <span class="n">GetCollection</span><span class="p">&lt;</span><span class="n">Container</span><span class="p">&gt;(</span><span class="s">&quot;List1Container&quot;</span><span class="p">);</span> <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This works great - we get a nice interface for selecting the currencies and the end result looks like this:</p>
-
-<p><img src="/images/blog/currency-list-editor-003.png"></p>
-
-<p>However, it&#8217;s quite a heavy solution for something quite simple. For each such relationship XPO will generate a new intermediate table. If we look at the database schema, we see the following:</p>
-
-<p><img src="/images/blog/currency-list-editor-004.png"></p>
-
-<p>And in the model there are two new views.</p>
-
-<p><img src="/images/blog/currency-list-editor-005.png"></p>
-
-<p>If we have 5 such properties, we end up with 5 intermediary tables and 10 new views.</p>
-
-<p>Now, depending on your requirements that may be acceptable. If those relationships are important to your model, then the overhead may be justified. In my situation, these are minor fields and I do not want to burden the model or the database with extra complexity if I can avoid it.</p>
-
-<h2>Option 3 - Create a custom property editor</h2>
-
-<p>With the help of <a href="http://documentation.devexpress.com/xaf/CustomDocument3097.aspx">the documentation</a> and old Support Center issues, I was able to quite quickly put together a custom editor which gives the end user a nice interface while keeping it simple. The bulk of the logic is in the <code>SerializedListPropertyEditor</code> base class (see the end of the article for the link to the code), but the principle is as follows:</p>
-
-<p>Create a new subclass:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="na">[PropertyEditor(typeof(String), false)]</span>
-</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">CurrencyListPropertyEditor</span> <span class="p">:</span> <span class="n">SerializedListPropertyEditor</span><span class="p">&lt;</span><span class="n">Currency</span><span class="p">&gt;</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">public</span> <span class="nf">CurrencyListPropertyEditor</span><span class="p">(</span><span class="n">Type</span> <span class="n">objectType</span><span class="p">,</span> <span class="n">IModelMemberViewItem</span> <span class="n">info</span><span class="p">)</span>
-</span><span class='line'>        <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">objectType</span><span class="p">,</span> <span class="n">info</span><span class="p">)</span> <span class="p">{</span> <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="kt">string</span> <span class="nf">GetDisplayText</span><span class="p">(</span><span class="n">Currency</span> <span class="n">currency</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">String</span><span class="p">.</span><span class="n">Format</span><span class="p">(</span><span class="s">&quot;{0}\t{1}&quot;</span><span class="p">,</span> <span class="n">currency</span><span class="p">.</span><span class="n">Code</span><span class="p">,</span> <span class="n">currency</span><span class="p">.</span><span class="n">Name</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="kt">string</span> <span class="nf">GetValue</span><span class="p">(</span><span class="n">Currency</span> <span class="n">currency</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">currency</span><span class="p">.</span><span class="n">Code</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Then decorate each property with a <code>ModelDefault</code> attribute to set the <code>PropertyEditorType</code>.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="k">private</span> <span class="kt">string</span> <span class="n">_List1Currencies</span><span class="p">;</span>
-</span><span class='line'><span class="na">[ModelDefault(&quot;PropertyEditorType&quot;, &quot;Solution1.Module.Web.CurrencyListPropertyEditor&quot;)]</span>
-</span><span class='line'><span class="k">public</span> <span class="kt">string</span> <span class="n">List1Currencies</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">get</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">_List1Currencies</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">set</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="n">SetPropertyValue</span><span class="p">(</span><span class="s">&quot;List1Currencies&quot;</span><span class="p">,</span> <span class="k">ref</span> <span class="n">_List1Currencies</span><span class="p">,</span> <span class="k">value</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Now the user gets a pretty editor to select the currencies, but the field is just a string field.</p>
-
-<p><img src="/images/blog/currency-list-editor-001.png"></p>
-
-<p>The editor supports use of the <code>[DataSourceProperty]</code> and <code>[DataSourceCriteria]</code> properties too, so you can easily filter the collection.</p>
-
-<p>It is easy to provide a similar editor for any object type - just create a new subclass of <code>SerializedListPropertyEditor&lt;T&gt;</code> where <code>T</code> is your persistent type.</p>
-
-<p>You can download <a href="https://github.com/ZeroSharp/Xaf_CurrencyListPropertyEditor">a working sample project on GitHub</a>.</p>
 </div>
   
   

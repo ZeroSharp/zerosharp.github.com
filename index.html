@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="This is the first in a series of posts where I list the applications that I use and enjoy the most. A bit of preamble, my most powerful machine is a &hellip;">
+  <meta name="description" content="This is part two of a series of posts about the software and tools I find invaluable. See Part 1 here. CodeRush I&#8217;ve been using DevExpress &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,75 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/my-essential-visual-studio-tools-and-extensions/">My Essential Visual Studio Tools and Extensions</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2018-09-10T15:45:00+01:00" pubdate data-updated="true">Sep 10<span>th</span>, 2018</time>
+        
+         | <a href="/my-essential-visual-studio-tools-and-extensions/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This is part two of a series of posts about the software and tools I find invaluable. See Part 1 <a href="/essential-applications">here</a>.</p>
+
+<h2>CodeRush</h2>
+
+<p>I&#8217;ve been using DevExpress <a href="https://www.devexpress.com/products/coderush/">CodeRush</a> since 2005. Check out <a href="https://youtu.be/v5-MVSoqCnU">this video tutorial</a> for a lightening tour of a lot of the features, and look at the DevExpress youtube channel for <a href="https://www.youtube.com/playlist?list=PL8h4jt35t1wgawacCN9wmxq1EN36CNUGk">a load of other tutorials</a>.</p>
+
+<h2>NCrunch</h2>
+
+<p><a href="https://www.ncrunch.net/">NCrunch</a> provides continuous testing for Visual Studio. When I make any change to my code which breaks a unit test, the NCrunch risk status goes red a few seconds later, even without recompiling. I get immediate feedback for any breaking change, so long as I have a test for it. Not only does it encourages me and my team to write good tests, but it allows us to make new changes and
+refactor with confidence.</p>
+
+<p><img src="/images/blog/ncrunch-progress-bar.png"></p>
+
+<h2>Redgate .NET Reflector Developer Bundle</h2>
+
+<p>When the going gets tough, the <a href="https://www.red-gate.com/products/dotnet-development/ants-performance-profiler/index">ANTS Performance Profiler</a> and <a href="https://www.red-gate.com/products/dotnet-development/ants-memory-profiler/index">ANTS Memory Profiler</a> have helped me find some of the hardest bugs I&#8217;ve come across.</p>
+
+<p>Also, while there are several good .NET decompilers, many of them free, I got used to <a href="https://www.red-gate.com/products/dotnet-development/reflector/index">.NET Reflector</a> which comes part of this bundle.</p>
+
+<h2>T4</h2>
+
+<p>I use code generation to automatically generate templates for unit tests for validation rules and <a href="https://docs.microsoft.com/en-us/visualstudio/modeling/code-generation-and-t4-text-templates?view=vs-2017">T4</a> and the <a href="https://marketplace.visualstudio.com/items?itemName=OlegVSych.T4ToolboxforVisualStudio2017">T4 Toolbox</a> fit the bill nicely.</p>
+
+<p>For a more advanced use case, see my post about automatically <a href="/making-xaf-reports-even-better-part-1/">converting DevExpress v1 report scripts</a> to check for compilation errors and allow for unit testing of report scripts.</p>
+
+<h2>AWS Toolkit</h2>
+
+<p>I always install the <a href="https://aws.amazon.com/visualstudio/">Amazon Web Services Toolkit</a> to make it easy to spin up test servers in the Amazon cloud.</p>
+
+<h2>Next up</h2>
+
+<p>My essential web applications.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1758,104 +1827,6 @@ Docker version 1.12.3, build 6b644ec
 
 
 <p>The controller works by timing the milliseconds to close the confirmation window. If it is less than 350 milliseconds we can assume the confirmation window never opened owing to the checkbox. In this scenario, it returns true (confirm) rather than false (cancel) in order for XAF to function correctly.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/a-basic-chrome-extension-analyze-your-chess-dot-com-games-on-lichess-dot-org/">A Basic Chrome Extension - Analyze Your chess.com Games on lichess.org</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2016-03-04T17:41:00+00:00" pubdate data-updated="true">Mar 4<span>th</span>, 2016</time>
-        
-         | <a href="/a-basic-chrome-extension-analyze-your-chess-dot-com-games-on-lichess-dot-org/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>I&#8217;ve been trying to get better at chess by playing on <a href="http://www.chess.com">chess.com</a>. I often analyse my games with the help of a computer to see where I made mistakes. My favourite way of doing this is to make use of <a href="http://lichess.org">Lichess.org</a>&#8217;s import functionality. The latest version of chess.com has greatly improved its own post game analysis, but I still much prefer Lichess&#8217;s. So I would often download the finished game in pgn and upload it to Lichess.</p>
-
-<p>Somewhere along the way I came across a Chrome extension written by Allan Rempel which would do this in one step. Unfortunately it stopped working when chess.com upgraded its site and Allan does not seem to be maintaining it any longer. I decided to jump in and try to fix it and maybe add a couple of features myself.</p>
-
-<h2>The extension</h2>
-
-<p>When a chess.com game is finished, you can click on a little knight icon and jump straight to the analysis of the game in Lichess.</p>
-
-<p><img src="/images/blog/chrome-extension-chessCom.png"></p>
-
-<p>It takes a few seconds to process but then you can see all your mistakes and blunders.</p>
-
-<p><img src="/images/blog/chrome-extension-lichessOrg.png"></p>
-
-<p>You can play through the game and experiment with different variations. Chess.com&#8217;s new v3 has greatly improved its own post-game analysis but it still lacks many of the features of the Lichess one.</p>
-
-<p>Try it out! The extension is available <a href="https://chrome.google.com/webstore/detail/chesscom-v3-analysis/bhjlkimpkkgkmfjlcfngmakenalgleap">here</a>.</p>
-
-<h2>How to modify an existing extension</h2>
-
-<p>First thing was to find the code of the existing broken extension. A bit of googling lead me to:</p>
-
-<pre><code>$ cd ~/Library/Application\ Support/Google/Chrome/Default/Extensions/
-$ ls
-
-total 0
-drwx------+ 30 ra  staff  1020 29 Feb 20:39 .
-drwx------+ 66 ra  staff  2244 29 Feb 20:56 ..
-drwx------+  2 ra  staff    68 29 Feb 20:39 Temp
-drwx------+  3 ra  staff   102 14 Sep  2012 allibancfngcpjmjnnboebggipbaalhn
-drwx------+  3 ra  staff   102 28 Mar  2013 anfemphbgknehemmbbajjcmakfijiohp
-drwx------+  3 ra  staff   102 25 Oct 08:15 apdfllckaahabafndbhieahigkjlhalf
-drwx------+  3 ra  staff   102  5 Mar  2015 bepbmhgboaologfdajaanbcjmnhjmhfn
-drwx------+  3 ra  staff   102  5 Jun  2014 bfbameneiokkgbdmiekhjnmfkcnldhhm
-drwx------+  3 ra  staff   102 22 Feb 20:09 bhjlkimpkkgkmfjlcfngmakenalgleap
-drwx------+  3 ra  staff   102 24 Sep 20:33 blpcfgokakmgnkcojhhkbfbldkacnbeo
-drwx------+  3 ra  staff   102 29 Jul  2013 bmihblnpomgpjkfddepdpdafhhepdbek
-drwx------+  3 ra  staff   102 13 Sep  2012 boeajhmfdjldchidhphikilcgdacljfm
-... etc.
-</code></pre>
-
-<p>Each extension is in a not very helpfully named folder. If you open <code>chrome://extensions/</code>, you can find the id of any installed extension and work out which directory corresponds to which extension.</p>
-
-<p>So then I dug around in the folder and found <code>ext/background.js</code> where the bulk of the code lies. There is also a <code>manifest.json</code> file which is specifies various parameters such as what permissions are required and which websites will be affected by the extension. I copied all the important files into a development folder.</p>
-
-<h2>Loading the extension from the development folder.</h2>
-
-<ul>
-<li>Navigate to chrome://extensions</li>
-<li>Expand the developer dropdown menu and click &#8220;Load Unpacked Extension&#8221;</li>
-<li>Navigate to development folder</li>
-</ul>
-
-
-<p>Assuming there are no errors, the extension should load into your browser. Don&#8217;t forget to disable any conflicting versions you&#8217;ve installed from the Chrome Web Store.</p>
-
-<p><img src="/images/blog/chrome-extension-load.png"></p>
-
-<p>I used the Chrome&#8217;s built-in Developer Tools and peppered the code with <code>console.log()</code> to explore how it worked. There are plenty of good <a href="https://developer.chrome.com/extensions/tut_debugging">resources</a> on the Chrome developer site. I managed to fix the broken parts and added support for analysis from chess.com&#8217;s game archive. Then I posted the link on <a href="https://redd.it/47cdew">reddit/r/chess</a>.</p>
-
-<p>The source code for the extension is on <a href="https://github.com/ZeroSharp/Chess.com_Analysis_Chrome_extension">GitHub</a>.</p>
 </div>
   
   

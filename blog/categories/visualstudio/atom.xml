@@ -4,7 +4,7 @@
   <title><![CDATA[Category: visualstudio | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/visualstudio/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2018-09-08T09:11:00+01:00</updated>
+  <updated>2018-09-10T19:35:31+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,46 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[My essential Visual Studio tools and extensions]]></title>
+    <link href="http://ZeroSharp.github.com/my-essential-visual-studio-tools-and-extensions/"/>
+    <updated>2018-09-10T15:45:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/my-essential-visual-studio-tools-and-extensions</id>
+    <content type="html"><![CDATA[<p>This is part two of a series of posts about the software and tools I find invaluable. See Part 1 <a href="/essential-applications">here</a>.</p>
+
+<h2>CodeRush</h2>
+
+<p>I've been using DevExpress <a href="https://www.devexpress.com/products/coderush/">CodeRush</a> since 2005. Check out <a href="https://youtu.be/v5-MVSoqCnU">this video tutorial</a> for a lightening tour of a lot of the features, and look at the DevExpress youtube channel for <a href="https://www.youtube.com/playlist?list=PL8h4jt35t1wgawacCN9wmxq1EN36CNUGk">a load of other tutorials</a>.</p>
+
+<h2>NCrunch</h2>
+
+<p><a href="https://www.ncrunch.net/">NCrunch</a> provides continuous testing for Visual Studio. When I make any change to my code which breaks a unit test, the NCrunch risk status goes red a few seconds later, even without recompiling. I get immediate feedback for any breaking change, so long as I have a test for it. Not only does it encourages me and my team to write good tests, but it allows us to make new changes and
+refactor with confidence.</p>
+
+<p><img src="/images/blog/ncrunch-progress-bar.png"></p>
+
+<h2>Redgate .NET Reflector Developer Bundle</h2>
+
+<p>When the going gets tough, the <a href="https://www.red-gate.com/products/dotnet-development/ants-performance-profiler/index">ANTS Performance Profiler</a> and <a href="https://www.red-gate.com/products/dotnet-development/ants-memory-profiler/index">ANTS Memory Profiler</a> have helped me find some of the hardest bugs I've come across.</p>
+
+<p>Also, while there are several good .NET decompilers, many of them free, I got used to <a href="https://www.red-gate.com/products/dotnet-development/reflector/index">.NET Reflector</a> which comes part of this bundle.</p>
+
+<h2>T4</h2>
+
+<p>I use code generation to automatically generate templates for unit tests for validation rules and <a href="https://docs.microsoft.com/en-us/visualstudio/modeling/code-generation-and-t4-text-templates?view=vs-2017">T4</a> and the <a href="https://marketplace.visualstudio.com/items?itemName=OlegVSych.T4ToolboxforVisualStudio2017">T4 Toolbox</a> fit the bill nicely.</p>
+
+<p>For a more advanced use case, see my post about automatically <a href="/making-xaf-reports-even-better-part-1/">converting DevExpress v1 report scripts</a> to check for compilation errors and allow for unit testing of report scripts.</p>
+
+<h2>AWS Toolkit</h2>
+
+<p>I always install the <a href="https://aws.amazon.com/visualstudio/">Amazon Web Services Toolkit</a> to make it easy to spin up test servers in the Amazon cloud.</p>
+
+<h2>Next up</h2>
+
+<p>My essential web applications.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Always run Visual Studio as an Administrator]]></title>
