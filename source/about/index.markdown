@@ -13,6 +13,8 @@ I am the founder and director of [ZeroSharp](http://www.zerosharp.com/) providin
 
 I am the principal software architect at [Coprocess](http://www.coprocess.com/) which supplies enterprise software to corporate treasuries.
 
+I am also a postgraduate, studying for an MSc in Cognition and Computation at Birkbeck, University of London. I am currently researching computer models of analogy.
+
 I have won prizes at hackathons in both Buenos Aires and London. I'm a [DevExpress](https://www.devexpress.com/Home/Community/mvp.xml) MVP.
 
-I also like cognitive science, artificial intelligence, robots, mathematics, chess, old movies, Rubik's cubes, classical guitar, skiing, squash, bicycle holidays, learning Slovenian...
+I also like robots, mathematics, chess, old movies, Rubik's cubes, classical guitar, skiing, squash, bicycle holidays, learning Slovenian...
