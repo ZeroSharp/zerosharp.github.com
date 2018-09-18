@@ -4,7 +4,7 @@
   <title><![CDATA[Category: visualstudio | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/visualstudio/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2018-09-18T11:57:38+01:00</updated>
+  <updated>2018-09-18T12:02:44+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -29,7 +29,7 @@
 <p><a href="https://www.ncrunch.net/">NCrunch</a> provides continuous testing for Visual Studio. When I make any change to my code which breaks a unit test, the NCrunch risk status goes red a few seconds later, even without recompiling. I get immediate feedback for any breaking change, so long as I have a test for it. Not only does it encourages me and my team to write good tests, but it allows us to make new changes and
 refactor with confidence.</p>
 
-<p>{% img /images/blog/ncrunch-progress-bar.png %}</p>
+<p><img src="/images/blog/ncrunch-progress-bar.png"></p>
 
 <h2>Redgate .NET Reflector Developer Bundle</h2>
 
@@ -49,7 +49,7 @@ refactor with confidence.</p>
 
 <h2>Next up</h2>
 
-<p>My <a href="(/my-essential-web-applications">essential web applications and iPhone apps</a>.</p>
+<p>My <a href="/my-essential-web-applications">essential web applications and iPhone apps</a>.</p>
 ]]></content>
   </entry>
   
@@ -129,11 +129,11 @@ refactor with confidence.</p>
 
 <p>I always had a problem when an update to an extension or tool tried to open the browser. For instance, I would see this notification in the system tray.</p>
 
-<p>{% img /images/blog/visual-studio-updates-001.png %}</p>
+<p><img src="/images/blog/visual-studio-updates-001.png"></p>
 
 <p>And then when I went to <em>Tools/Extensions and Updates...</em> in Visual Studio, I'd get to something like this:</p>
 
-<p>{% img /images/blog/visual-studio-updates-002.png %}</p>
+<p><img src="/images/blog/visual-studio-updates-002.png"></p>
 
 <p>But the <em>Update</em> button was not responding to any clicks. The only workaround I found was to restart Visual Studio under my normal user account and then the button would work.</p>
 

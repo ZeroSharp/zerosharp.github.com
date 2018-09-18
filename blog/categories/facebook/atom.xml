@@ -4,7 +4,7 @@
   <title><![CDATA[Category: facebook | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/facebook/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2018-09-18T11:57:38+01:00</updated>
+  <updated>2018-09-18T12:02:44+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -22,7 +22,7 @@
 
 <p>First, search for someone who is not a friend. Most often, if you navigate to their photos, you see something like this:</p>
 
-<p>{% img /images/blog/facebook-graph-search-001.png %}</p>
+<p><img src="/images/blog/facebook-graph-search-001.png"></p>
 
 <p>You can't see any photos because their privacy settings are not set to 'Public'. It's what you'd expect.</p>
 

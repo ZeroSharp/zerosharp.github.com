@@ -4,7 +4,7 @@
   <title><![CDATA[Category: ndepend | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/ndepend/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2018-09-18T11:57:38+01:00</updated>
+  <updated>2018-09-18T12:02:44+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -20,31 +20,31 @@
     <id>http://ZeroSharp.github.com/a-review-of-ndepend-5</id>
     <content type="html"><![CDATA[<p>NDepend is a commercial static analysis tool for .NET managed code. It's been around a long time (since 2004!). Version 5 was just released and in this post I'm going to try it out on the DevExpress MainDemo.</p>
 
-<p>{% pullquote %}
-In the past I have always thought of NDepend as a complex tool. I was never sure where to start. {"In version 5, a lot of work has been done to improve the learning curve."} The installation process is easy and a wizard very quickly points you in the right direction.</p>
+<p><span class='pullquote-right' data-pullquote='In version 5, a lot of work has been done to improve the learning curve.'>
+In the past I have always thought of NDepend as a complex tool. I was never sure where to start. In version 5, a lot of work has been done to improve the learning curve. The installation process is easy and a wizard very quickly points you in the right direction.</p>
 
 <p>After <a href="http://ndepend.com/NDependDownload.aspx">downloading the v5 trial</a> and running the installation you get to the following screen.
-{% endpullquote %}</p>
+</span></p>
 
-<p>{% img /images/blog/ndepend/ndepend-001.png %}</p>
+<p><img src="/images/blog/ndepend/ndepend-001.png"></p>
 
 <p>You cannot miss that big red arrow. In fact, it's even animated in the actual product. Click on it and choose a Visual Studio solution to analyse. I'm going to navigate to the DevExpress MainDemo 13.1.</p>
 
 <p>So long as the project has been built at some point, NDepend works out what to analyse (otherwise you'll get helpful warnings).</p>
 
-<p>{% img /images/blog/ndepend/ndepend-003.png %}</p>
+<p><img src="/images/blog/ndepend/ndepend-003.png"></p>
 
 <p>It is very fast and we get to this help screen.</p>
 
-<p>{% img /images/blog/ndepend/ndepend-004.png %}</p>
+<p><img src="/images/blog/ndepend/ndepend-004.png"></p>
 
 <p>Choose the dashboard.</p>
 
-<p>{% img /images/blog/ndepend/ndepend-005.png %}</p>
+<p><img src="/images/blog/ndepend/ndepend-005.png"></p>
 
 <p>Now that's a lot of information, but it's all well presented and easy to navigate. Let's focus on the worst: I can see <em>2 Critical Rules Violated</em>. Drill down to find out more:</p>
 
-<p>{% img /images/blog/ndepend/ndepend-009.png %}</p>
+<p><img src="/images/blog/ndepend/ndepend-009.png"></p>
 
 <p>It's complaining that we have classes with duplicate names in our projects. In the pane on the left we can see what they are: 3 types named <code>MainDemoWinApplication</code>, 3 named <code>Program</code>, <em>etc.</em> And sure enough there are: <em>MainDemo.Win</em>, <em>MainDemo.Win.Mdi</em> and <em>MainDemo.Win.Ribbon</em> all duplicate those class names.</p>
 
@@ -54,23 +54,23 @@ In the past I have always thought of NDepend as a complex tool. I was never sure
 
 <p>Lets have a brief look at the other screens. The dependency graph:</p>
 
-<p>{% img /images/blog/ndepend/ndepend-006.png %}</p>
+<p><img src="/images/blog/ndepend/ndepend-006.png"></p>
 
 <p>With a million options.</p>
 
-<p>{% img /images/blog/ndepend/ndepend-010.png %}</p>
+<p><img src="/images/blog/ndepend/ndepend-010.png"></p>
 
 <p>A dependency matrix.</p>
 
-<p>{% img /images/blog/ndepend/ndepend-007.png %}</p>
+<p><img src="/images/blog/ndepend/ndepend-007.png"></p>
 
 <p>A metrics view showing class and assembly sizes.</p>
 
-<p>{% img /images/blog/ndepend/ndepend-008.png %}</p>
+<p><img src="/images/blog/ndepend/ndepend-008.png"></p>
 
 <p>All with reams of helpful documentation.</p>
 
-<p>{% img /images/blog/ndepend/ndepend-011.png %}</p>
+<p><img src="/images/blog/ndepend/ndepend-011.png"></p>
 
 <p>Overall, the tool felt fast, responsive and stable. I've focused on the user interface aspects, but there is so much more. Some things you can do:</p>
 
