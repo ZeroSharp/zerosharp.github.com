@@ -3,7 +3,7 @@ layout: post
 title: "Boxstarter and checksums"
 date: 2016-09-22 21:04
 comments: true
-categories: [boxstarter, chocolatey, powershell]
+categories: [windows, boxstarter, chocolatey, powershell]
 description: How to configure boxstarter to avoid checksum errors when installing Visual Studio extensions.
 ---
 [I've blogged before](/provisioning-a-new-development-machine-with-boxstarter/) about using BoxStarter to efficiently provision a new development machine. 

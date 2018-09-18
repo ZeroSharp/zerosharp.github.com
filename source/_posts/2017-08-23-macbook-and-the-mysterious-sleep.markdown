@@ -3,7 +3,7 @@ layout: post
 title: "Macbook and the mysterious sleep"
 date: 2017-08-23 16:46
 comments: true
-categories: [macbook, hardware]
+categories: [mac, macbook, hardware]
 ---
 I finally worked out why my Macbook was randomly sleeping.
 

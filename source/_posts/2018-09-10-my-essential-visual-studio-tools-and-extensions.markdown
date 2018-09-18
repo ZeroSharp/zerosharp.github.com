@@ -6,7 +6,7 @@ comments: true
 categories: [visualstudio]
 ---
 
-This is part two of a series of posts about the software and tools I find invaluable. See Part 1 [here](/essential-applications).
+This is part two of a series of posts about the software and tools I find invaluable. See [part 1](/essential-applications) and [part 3](/my-essential-web-applications).
 
 ## CodeRush
 I've been using DevExpress [CodeRush](https://www.devexpress.com/products/coderush/) since 2005. Check out [this video tutorial](https://youtu.be/v5-MVSoqCnU) for a lightening tour of a lot of the features, and look at the DevExpress youtube channel for [a load of other tutorials](https://www.youtube.com/playlist?list=PL8h4jt35t1wgawacCN9wmxq1EN36CNUGk).
@@ -31,5 +31,5 @@ For a more advanced use case, see my post about automatically [converting DevExp
 I always install the [Amazon Web Services Toolkit](https://aws.amazon.com/visualstudio/) to make it easy to spin up test servers in the Amazon cloud.
 
 ## Next up
-My essential web applications.
+My [essential web applications and iPhone apps]((/my-essential-web-applications).
 
