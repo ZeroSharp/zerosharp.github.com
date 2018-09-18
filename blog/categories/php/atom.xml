@@ -4,7 +4,7 @@
   <title><![CDATA[Category: php | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/php/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2018-09-10T19:35:31+01:00</updated>
+  <updated>2018-09-18T11:57:38+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -20,7 +20,7 @@
     <id>http://ZeroSharp.github.com/improvements-to-serverless-php-support</id>
     <content type="html"><![CDATA[<p>I was inspired by two events to jump back into serverless framework.</p>
 
-<p><img class="left" src="/images/blog/serverless-php-improvements-001.jpeg" width="200" title="Serverless London Meetup" ></p>
+<p>{% img left /images/blog/serverless-php-improvements-001.jpeg 200 Serverless London Meetup %}</p>
 
 <p>Firstly, I attended the second <a href="https://www.meetup.com/Serverless-London/">London serverless meetup</a> yesterday evening which was excellent and showed just how much enthusiasm there is for serverless architectures. Check out their new logo on the left. It was significant that each of the three speakers announced that they are actively hiring serverless developers.</p>
 
@@ -109,7 +109,7 @@ curl-devel -y
 
 <p>The lichess exporter takes the game id of any game that has been played on the lichess server and produced a PDF output. Take for example, Game 8 of the current World Championship which is <a href="https://en.lichess.org/COQChpzH">here</a>. When I open the resulting file, I see this:</p>
 
-<p><img src="/images/blog/serverless-lichess-pdf-exporter-001.png"></p>
+<p>{% img /images/blog/serverless-lichess-pdf-exporter-001.png %}</p>
 
 <p>In this blog post I'll describe how I turned this into a serverless service. The goal is to create:</p>
 

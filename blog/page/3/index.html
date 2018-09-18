@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="I am the principal software architect for a treasury application in use by over 100 large multinational corporates. Upgrades are generally met with &hellip;">
+  <meta name="description" content="This is the second part of a series about migrating a large application from XAF 12.1 to XAF 15.1. In the 13.1 release, DevExpress made a change to &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,64 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2/">Migrating a Large Web Application From XAF 12.1 to 15.1 - Part 2</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2015-09-15T10:37:00+01:00" pubdate data-updated="true">Sep 15<span>th</span>, 2015</time>
+        
+         | <a href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>This is the second part of a <a href="/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1">series</a> about migrating a large application from XAF 12.1 to XAF 15.1.</p>
+
+<p>In the 13.1 release, DevExpress made a change to the way XAF <code>Validator</code> class is used. It now requires an <code>IObjectSpace</code> parameter corresponding to the object. It is needed to correctly evaluate any rules which are descendants of the <code>RuleSearchObjectProperties</code>. These include:</p>
+
+<ul>
+<li><code>RuleCombinationOfPropertiesIsUnique</code></li>
+<li><code>RuleIsReferenced</code></li>
+<li><code>RuleObjectExists</code></li>
+<li><code>RuleUniqueValue</code></li>
+</ul>
+
+
+<p>A lot of our code has been around for years now and the older parts rely heavily on <code>Session</code> and <code>UnitOfWork</code> instead of <code>IObjectSpace</code> For the most part our application used <code>IObjectSpace</code> only within <code>ViewControllers</code>.</p>
+
+<p>But there were several situations where we need the validator where we don&#8217;t have an <code>IObjectSpace</code>. For instance we sometimes need to validate from within <a href="https://documentation.devexpress.com/#eXpressAppFramework/clsDevExpressPersistentBaseActionAttributetopic">method actions</a> (decorated with the <code>ActionAttribute</code>). For performance reasons, we pass criteria to our middleware and it uses a <code>UnitOfWork</code> to run the method on each object. So in this case, there was no <code>IObjectSpace</code> to pass to the XAF <code>Validator</code>.</p>
+
+<p><span class='pullquote-right' data-pullquote='When writing code I often find myself having to decide between the &#8216;quick&#8217; fix and the &#8216;right&#8217; fix.'>
+Here I had a refactoring dilemma to solve. Either I need to rewrite all of the affected rules so that they no longer make use of the <code>IObjectSpace</code>. For instance, I could use <code>RuleFromBoolProperty</code> instead. In our application, this would mean rewriting about 50 rules. Or alternatively, I could go through the entire code base looking for <code>new UnitOfWork()</code> and <code>new Session()</code> and try to use an <code>IObjectSpace</code> instead. When writing code I often find myself having to decide between the &#8216;quick&#8217; fix and the &#8216;right&#8217; fix. Here, moving to <code>IObjectSpace</code> throughout is clearly the right fix and although it would take more time to implement, the system will be more in-line with best XAF practices throughout.
+</span></p>
+
+<p> Eventually, the refactoring was complete and all unit tests are passing. I was eager to run a multi-user load stress test against the 15.1 version to compare performance under load. I have described in previous posts how to <a href="/load-testing-xaf-overview/">stress test XAF applications</a>. I&#8217;ll be sharing the results in the next post.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1509,89 +1567,6 @@ This post is an overview of the brand new version XAF 14.2. The truly outstandin
 
 
 <p>Next we&#8217;ll look at <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-4/">the Roslyn part</a> in more detail.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/">Replacing a Class at Runtime Using Ninject and Roslyn - Part 2: The Solution</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-09-11T09:18:00+01:00" pubdate data-updated="true">Sep 11<span>th</span>, 2014</time>
-        
-         | <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>Previously: <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/">Part 1: The Goal</a></p>
-
-<h2>The solution</h2>
-
-<p>The code for the example is <a href="https://github.com/ZeroSharp/RoslynPlugins">available on GitHub</a>.</p>
-
-<h4>How it looks</h4>
-
-<p>So here&#8217;s the Hello World page in production:</p>
-
-<p><img src="/images/blog/roslyn-plugins-001.png">.</p>
-
-<p>We navigate to the plugins view and create a new replacement for the HelloWorldGenerator:</p>
-
-<p><img src="/images/blog/roslyn-plugins-002.png">.</p>
-
-<p>Without restarting, we can return to the HelloWorld page and see that the new class is being used because the output has changed.</p>
-
-<p><img src="/images/blog/roslyn-plugins-003.png">.</p>
-
-<p>If you delete the row from the plugins page, the behaviour reverts to the original implementation (the code that was originally shipped with production).</p>
-
-<h4>Basic project setup</h4>
-
-<p>First, I created a new ASP.NET MVC 5 application. I added a HelloWorldContrroller and a View. I added a <code>Plugin</code> model and corresponding views. To get started I followed the tutorial here (http://www.asp.net/mvc/tutorials/mvc-5/introduction/getting-started). Once I had the basics in place, I added the following NuGet packages.</p>
-
-<p><strong>Stable</strong></p>
-
-<ul>
-<li>EntityFramework</li>
-<li>Ninject</li>
-<li>Ninject.MVC5</li>
-<li>Ninject.Conventions</li>
-</ul>
-
-
-<p><strong>Pre-release</strong></p>
-
-<ul>
-<li>Microsoft.CodeAnalysis.CSharp</li>
-</ul>
-
-
-<p>The <em>Microsoft.CodeAnalysis.CSharp</em> is the &#8216;Roslyn&#8217; package. It is still in beta, so you have to switch to the pre-release.</p>
-
-<p>Next we&#8217;ll look at <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/">the dependency injection part</a> in more detail.</p>
 </div>
   
   

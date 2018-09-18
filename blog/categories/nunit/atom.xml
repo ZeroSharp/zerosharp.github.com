@@ -4,7 +4,7 @@
   <title><![CDATA[Category: nunit | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/nunit/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2018-09-10T19:35:31+01:00</updated>
+  <updated>2018-09-18T11:57:38+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -63,35 +63,22 @@ public void Test()
 
 <p>One of the recurring problems occurs when the signature of the associated property is incorrect.  Consider the following:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="na">[RuleFromBoolProperty(&quot;Invoice_IsAmountGreaterThanZero&quot;,</span>
-</span><span class='line'><span class="na">  DefaultContexts.Save,</span>
-</span><span class='line'><span class="na">  &quot;Invoice amount must be greater than zero.&quot;,</span>
-</span><span class='line'><span class="na">  UsedProperties = &quot;Amount&quot;)]</span>
-</span><span class='line'><span class="k">public</span> <span class="kt">bool</span> <span class="n">IsAmountGreaterThanZero</span>
-</span><span class='line'><span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="k">get</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">Amount</span> <span class="p">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="m">0</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:csharp %}
+[RuleFromBoolProperty("Invoice_IsAmountGreaterThanZero",
+  DefaultContexts.Save,
+  "Invoice amount must be greater than zero.",
+  UsedProperties = "Amount")]
+public bool IsAmountGreaterThanZero
+{</p>
+
+<pre><code>get
+{
+    return Amount &gt; 0;
+}
+</code></pre>
+
+<p>}
+{% endcodeblock %}</p>
 
 <p>Notice that the rule is declared <code>public</code>.  This causes the getter to be executed when it is not required (see the <a href="http://documentation.devexpress.com/#Xaf/clsDevExpressPersistentValidationRuleFromBoolPropertyAttributetopic">note</a> in the documentation).  However another problem is that the default behaviour for public properties of XPObjects is to persist them to the datastore which means the application will attempt to create a new column called <code>IsAmountGreaterThanZero</code>.</p>
 
@@ -99,55 +86,32 @@ public void Test()
 
 <p>Consequently, I wrote the following unit test which will detect any properties which have the <code>[RuleFromBoolProperty]</code> attribute.  This is not really a unit test, rather a sort of meta-test</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="na">[TestFixture]</span>
-</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">ValidationRuleDeclarationMetaTests</span>
-</span><span class='line'><span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;[</span><span class="n">Test</span><span class="p">]</span>
-</span><span class='line'><span class="k">public</span> <span class="k">void</span> <span class="nf">Test_RuleFromBoolPropertyDeclarations_ShouldBeProtectedVisibility</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="kt">var</span> <span class="n">assemblies</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Assembly</span><span class="p">[]</span> <span class="p">{</span> <span class="k">typeof</span><span class="p">(</span><span class="n">MyObjectAssembly</span><span class="p">).</span><span class="n">Assembly</span> <span class="p">};</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="kt">var</span> <span class="n">invalidProperties</span> <span class="p">=</span> <span class="n">assemblies</span><span class="p">.</span><span class="n">SelectMany</span><span class="p">(</span><span class="n">a</span> <span class="p">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">a</span><span class="p">.</span><span class="n">GetTypes</span><span class="p">())</span>
-</span><span class='line'>                                      <span class="p">.</span><span class="n">SelectMany</span><span class="p">(</span><span class="n">t</span> <span class="p">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">t</span><span class="p">.</span><span class="n">GetProperties</span><span class="p">(</span><span class="n">BindingFlags</span><span class="p">.</span><span class="n">Public</span> <span class="p">|</span> <span class="n">BindingFlags</span><span class="p">.</span><span class="n">Instance</span><span class="p">))</span>
-</span><span class='line'>                                      <span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">p</span> <span class="p">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">p</span><span class="p">.</span><span class="n">GetCustomAttributes</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">RuleFromBoolPropertyAttribute</span><span class="p">),</span> <span class="k">true</span><span class="p">)</span>
-</span><span class='line'>                                                   <span class="p">.</span><span class="n">Any</span><span class="p">())</span>
-</span><span class='line'>                                      <span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">p</span> <span class="p">=&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">String</span><span class="p">.</span><span class="n">Format</span><span class="p">(</span><span class="s">&quot;{0}.{1}&quot;</span><span class="p">,</span> <span class="n">p</span><span class="p">.</span><span class="n">DeclaringType</span><span class="p">,</span> <span class="n">p</span><span class="p">.</span><span class="n">Name</span><span class="p">))</span>
-</span><span class='line'>                                      <span class="p">.</span><span class="n">Distinct</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">Assert</span><span class="p">.</span><span class="n">IsFalse</span><span class="p">(</span><span class="n">invalidProperties</span><span class="p">.</span><span class="n">Any</span><span class="p">(),</span>
-</span><span class='line'>                   <span class="s">&quot;There are &#39;public&#39; properties with the [RuleFromBoolProperty] attribute. &quot;</span> <span class="p">+</span>
-</span><span class='line'>                   <span class="s">&quot;These should be &#39;protected&#39; instead. &quot;</span> <span class="p">+</span>
-</span><span class='line'>                   <span class="s">&quot;The invalid properties are: &quot;</span> <span class="p">+</span> <span class="n">String</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">&quot;, &quot;</span><span class="p">,</span> <span class="n">invalidProperties</span><span class="p">));</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}</span> <span class="p">&lt;</span><span class="n">br</span><span class="p">/&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:csharp %}
+[TestFixture]
+public class ValidationRuleDeclarationMetaTests
+{</p>
+
+<pre><code>[Test]
+public void Test_RuleFromBoolPropertyDeclarations_ShouldBeProtectedVisibility()
+{
+    var assemblies = new Assembly[] { typeof(MyObjectAssembly).Assembly };
+
+    var invalidProperties = assemblies.SelectMany(a =&gt; a.GetTypes())
+                                      .SelectMany(t =&gt; t.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                                      .Where(p =&gt; p.GetCustomAttributes(typeof(RuleFromBoolPropertyAttribute), true)
+                                                   .Any())
+                                      .Select(p =&gt; String.Format("{0}.{1}", p.DeclaringType, p.Name))
+                                      .Distinct();
+
+    Assert.IsFalse(invalidProperties.Any(), 
+                   "There are 'public' properties with the [RuleFromBoolProperty] attribute. " + 
+                   "These should be 'protected' instead. " + 
+                   "The invalid properties are: " + String.Join(", ", invalidProperties));
+}
+</code></pre>
+
+<p>} <br/>
+{% endcodeblock %}</p>
 
 <p>Now the build will fail whenever a validation property signature is incorrect.</p>
 ]]></content>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: windows | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/windows/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2018-09-10T19:35:31+01:00</updated>
+  <updated>2018-09-18T11:57:38+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -14,11 +14,62 @@
 
   
   <entry>
+    <title type="html"><![CDATA[My essential web applications and iPhone apps]]></title>
+    <link href="http://ZeroSharp.github.com/my-essential-web-applications/"/>
+    <updated>2018-09-18T09:27:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/my-essential-web-applications</id>
+    <content type="html"><![CDATA[<p>This is part three of a series of posts about the software and tools I find invaluable. See <a href="/essential-applications">Part 1: essential applications</a> and <a href="/my-essential-visual-studio-tools-and-extensions">Part 2: Visual Studio tools</a>. In this post I'm covering the online applications and iPhone apps I find indispensible.</p>
+
+<h2><a href="https://www.google.com/gmail/">Gmail</a></h2>
+
+<p>Does the job.</p>
+
+<h2><a href="https://www.lastpass.com/">Lastpass</a></h2>
+
+<p>Everyone needs a password manager.</p>
+
+<h2><a href="https://www.pinboard.in">Pinboard</a> (and the <a href="https://pinswiftapp.com/">PinSwift</a> iPhone app)</h2>
+
+<p>The best bookmark tracking tool. Simple, fast, powerful. The best mobile app for it is <a href="https://pinswiftapp.com/">PinSwift</a>.</p>
+
+<h2><a href="https://bear.app/">Bear</a></h2>
+
+<p>A very pretty MarkDown editor for Mac and iPhone. I use <a href="https://bear.app/">Bear</a> for all my notes.</p>
+
+<h2><a href="https://www.google.com/drive/download/">Google Drive File Stream</a></h2>
+
+<p>Since I use <a href="https://gsuite.google.com/">GSuite</a>, it makes sense to try to put everything there. Google Drive has improved enormously since they moved to a file streaming approach.</p>
+
+<h2><a href="https://mail.google.com/tasks/canvas">Google Tasks</a> (and the <a href="gotasksapp.com/">GoTasks</a> app)</h2>
+
+<p>I need simple task manager with support for multiple lists, hierarchies and available everywhere. Google Tasks is often overlooked in this regard. Check out the <a href="https://mail.google.com/tasks/canvas">Google Tasks canvas</a>. There is also a fantastic free iPhone app for it <a href="http://gotasksapp.com/">GoTasks</a>.</p>
+
+<h2><a href="https://feedly.com/">Feedly</a></h2>
+
+<p><a href="https://feedly.com/">Feedly</a> is the best RSS news feed reader, in my opinion. I keep up with a few development blogs, a few science blogs and the blogs of my friends. The mobile app is great too.</p>
+
+<h2><a href="https://www.xero.com/">Xero</a></h2>
+
+<p>I've been using <a href="https://www.xero.com/">Xero</a> for eight years now. Business accounting software done right.</p>
+
+<h2><a href="https://www.amazon.com/kindle-dbs/fd/kcp">Kindle</a></h2>
+
+<p>I like real books but don't always lug them about with me, so often I buy both the hard copy and the kindle version (there shoudl be some sort of clever discount for this...). The Kindle app is where I spend my time when I have no connectivity (the London tube, airplanes, etc.)</p>
+
+<h2><a href="https://chess.com">Chess.com</a> and <a href="https://lichess.com">Lichess.com</a></h2>
+
+<p>I waste hours playing online blitz chess. I've even written a couple of Chrome extensions: <a href="https://chrome.google.com/webstore/detail/lichess-print-friendly-pd/goijhimgdjppmhmjkaglhggoapkgobfg">Pretty print your games</a> and <a href="https://chrome.google.com/webstore/detail/chesscom-v3-analysis/bhjlkimpkkgkmfjlcfngmakenalgleap">Analyse any chess.com game with lichess</a>.</p>
+
+<p>Chess is a mascohistic, character-building pastime. Progress is elusive. You play a couple of good games and you think you're improving and then you get thrashed repeatedly by a 10 year old.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[My essential applications]]></title>
     <link href="http://ZeroSharp.github.com/essential-applications/"/>
     <updated>2018-09-07T15:23:00+01:00</updated>
     <id>http://ZeroSharp.github.com/essential-applications</id>
-    <content type="html"><![CDATA[<p>This is the first in a series of posts where I list the applications that I use and enjoy the most.</p>
+    <content type="html"><![CDATA[<p>This is the first in a series of posts where I list the applications that I use and enjoy the most. See <a href="(/my-essential-visual-studio-tools-and-extensions">part 2</a>) and <a href="/my-essential-web-applications">part 3</a>.</p>
 
 <p>A bit of preamble, my most powerful machine is a Windows-only desktop with lots of RAM and an SSD drive. I use it almost exclusively for development.</p>
 
@@ -57,9 +108,84 @@
 
 <p>My daily workhorse. I've spent more screen time here than anywhere.</p>
 
+<h2>Zotero</h2>
+
+<p>Keep track of academic papers. Download them for offline reading. Handle citations and bibliographies effortlessly from within Word. <a href="https://www.zotero.org/">Zotero</a>.</p>
+
 <h2>Next up</h2>
 
-<p>More on Visual Studio in the next post where I go through my essential extensions and tools.</p>
+<p>More on Visual Studio in the <a href="/my-essential-visual-studio-tools-and-extensions">next post</a> where I go through my essential extensions and tools.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Boxstarter and checksums]]></title>
+    <link href="http://ZeroSharp.github.com/boxstarter-and-checksums/"/>
+    <updated>2016-09-22T21:04:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/boxstarter-and-checksums</id>
+    <content type="html"><![CDATA[<p><a href="/provisioning-a-new-development-machine-with-boxstarter/">I've blogged before</a> about using BoxStarter to efficiently provision a new development machine.</p>
+
+<p>This is working very well for our developers. Maintaining the installation script takes a bit of effort but the benefits are worth it.</p>
+
+<p>Recently, the chocolatey developers have been making things more secure and recent versions now require a checksum with any downloaded package. For now, there seems to be some difficulty using <code>Install-ChocolateyVsixPackage</code> within BoxStarter scripts.</p>
+
+<p>If I try to run a script with</p>
+
+<p><code>powershell
+Install-ChocolateyVsixPackage
+  StopOnFirstBuildError
+  https://visualstudiogallery.msdn.microsoft.com/91aaa139-5d3c-43a7-b39f-369196a84fa5/file/44205/7/StopOnFirstBuildError.vsix
+</code></p>
+
+<p>I get the following error message:</p>
+
+<p>```
+ WARNING: Missing package checksums are not allowed (by default for HTTP/FTP,
+  HTTPS when feature 'allowEmptyChecksumsSecure' is disabled) for
+  safety and security reasons. Although we strongly advise against it,
+  if you need this functionality, please set the feature
+  'allowEmptyChecksums' ('choco feature enable -n
+  allowEmptyChecksums')
+ There were errors attempting to retrieve the vsix from https://visualstudiogallery.msdn.microsoft.com/91aaa139-5d3c-43a
+  or pass in the option '--allow-empty-checksums'.
+ 7-b39f-369196a84fa5/file/44205/7/StopOnFirstBuildError.vsix. The error message was 'Empty checksums are no longer
+ allowed by default for non-secure sources. Please ask the maintainer to add checksums to this package. In the meantime
+ if you need this package to work correctly, please enable the feature allowEmptyChecksums or provide the runtime
+ switch '--allowEmptyChecksums'. We strongly advise against allowing empty checksums for HTTP/FTP sources.'.
+ At C:\ProgramData\chocolatey\helpers\functions\Install-ChocolateyVsixPackage.ps1:173 char:13</p>
+
+<p>etc...
+```</p>
+
+<p>I tried the suggested <code>allowEmptyChecksums</code> but it was still raising an error. After some experimentation it seems that the combination of (temporarily) disabling the <code>checksumFiles</code> feature and enabling <code>allowEmptyChecksums</code> works. Here is the relevant section of my boxstarter script.</p>
+
+<p>```powershell</p>
+
+<pre><code># temporarily enable/disable features to bypass checksums
+choco feature disable -n=checksumFiles
+choco feature enable -n=allowEmptyChecksums
+try {
+    # VS extensions for all versions of Visual Studio
+    Install-ChocolateyVsixPackage StopOnFirstBuildError https://visualstudiogallery.msdn.microsoft.com/91aaa139-5d3c-43a7-b39f-369196a84fa5/file/44205/7/StopOnFirstBuildError.vsix 
+    Install-ChocolateyVsixPackage VisualHG https://visualhg.codeplex.com/downloads/get/1475782
+
+    # VS extensions for VS2015
+    Install-ChocolateyVsixPackage WebEssentials2015 https://visualstudiogallery.msdn.microsoft.com/ee6e6d8c-c837-41fb-886a-6b50ae2d06a2/file/146119/19/WebEssentials2015.vsix
+    Install-ChocolateyVsixPackage WebExtensionPack https://visualstudiogallery.msdn.microsoft.com/f3b504c6-0095-42f1-a989-51d5fc2a8459/file/186606/23/Web%20Extension%20Pack%20v1.5.50.vsix 
+    Install-ChocolateyVsixPackage T4Toolbox2015 https://visualstudiogallery.msdn.microsoft.com/34b6d489-afbc-4d7b-82c3-dded2b726dbc/file/165481/2/T4Toolbox.14.0.0.71.vsix
+
+    # CodeRush for Roslyn Preview
+    Install-ChocolateyVsixPackage CodeRushForRoslyn https://visualstudiogallery.msdn.microsoft.com/8a8390ae-1f71-4659-9d8d-5dd56fd8a72e/file/163212/15/DevExpress.CodeRush.Roslyn-16.1.6.vsix            
+}
+finally {
+    choco feature enable -n=checksumFiles
+    choco feature disable -n=allowEmptyChecksums
+}
+</code></pre>
+
+<p>```</p>
+
+<p>And then everything works as expected.</p>
 ]]></content>
   </entry>
   
@@ -70,7 +196,7 @@
     <id>http://ZeroSharp.github.com/provisioning-a-new-development-machine-with-boxstarter</id>
     <content type="html"><![CDATA[<p>I've been playing around with <a href="http://boxstarter.org/">Boxstarter</a> to configure my entire development environment with hardly any user intervention.</p>
 
-<p><img class="right" src="/images/blog/boxstarter-001.png" width="300"></p>
+<p>{% img right /images/blog/boxstarter-001.png 300 %}</p>
 
 <p>Here are the steps:</p>
 
@@ -235,32 +361,19 @@ $pathToDevExpressComponentsSetup = "\somewhere\DevExpressCodeRush-13.2.7.exe"</p
 
 <p>The following script saved my bacon.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>FixOwnership.ps1 </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='powershell'><span class='line'><span class="p">&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">h1</span><span class="p">&gt;</span><span class="n">This</span> <span class="n">script</span> <span class="n">recursively</span> <span class="n">fixes</span> <span class="n">the</span> <span class="n">ownership</span> <span class="n">on</span> <span class="n">the</span> <span class="n">files</span> <span class="k">in</span> <span class="n">the</span><span class="p">&lt;/</span><span class="n">h1</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">h1</span><span class="p">&gt;</span><span class="n">current</span> <span class="n">and</span> <span class="n">subdirectories</span><span class="p">.&lt;/</span><span class="n">h1</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;</span><span class="nv">$acct1</span> <span class="p">=</span> <span class="nb">New-Object</span> <span class="n">System</span><span class="p">.</span><span class="n">Security</span><span class="p">.</span><span class="n">Principal</span><span class="p">.</span><span class="n">NTAccount</span><span class="p">(</span><span class="s1">&#39;Administrators&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="nv">$profilefolder</span> <span class="p">=</span> <span class="nb">Get-Item</span> <span class="p">.</span>
-</span><span class='line'><span class="nv">$acl1</span> <span class="p">=</span> <span class="nv">$profilefolder</span><span class="p">.</span><span class="n">GetAccessControl</span><span class="p">()</span>
-</span><span class='line'><span class="nv">$acl1</span><span class="p">.</span><span class="n">SetOwner</span><span class="p">(</span><span class="nv">$acct1</span><span class="p">)</span>
-</span><span class='line'><span class="n">dir</span> <span class="n">-r</span> <span class="p">.</span> <span class="p">|</span> <span class="nb">set-acl</span> <span class="n">-aclobject</span> <span class="nv">$acl1</span>
-</span><span class='line'><span class="n">pause</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:powershell FixOwnership.ps1 %}</p>
+
+<h1>This script recursively fixes the ownership on the files in the</h1>
+
+<h1>current and subdirectories.</h1>
+
+<p>$acct1 = New-Object System.Security.Principal.NTAccount('Administrators')
+$profilefolder = Get-Item .
+$acl1 = $profilefolder.GetAccessControl()
+$acl1.SetOwner($acct1)
+dir -r . | set-acl -aclobject $acl1
+pause
+{% endcodeblock %}</p>
 ]]></content>
   </entry>
   

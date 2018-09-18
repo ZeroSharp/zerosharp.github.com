@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rbenv | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/rbenv/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2018-09-10T19:35:31+01:00</updated>
+  <updated>2018-09-18T11:57:38+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -57,20 +57,13 @@ occurs before /usr/bin in your PATH.
 
 <p>This one can be fixed by modifying your <code>.profile</code> file. Create it if it doesn't already exist. Use <code>nano ~/.profile</code> if you don't have a preferred editor.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>.profile </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h1&gt;Fix <span class="nv">$PATH</span> <span class="k">for </span>homebrew&lt;/h1&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;homebrew<span class="o">=</span>/usr/local/bin:/usr/local/sbin
-</span><span class='line'><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$homebrew</span>:<span class="nv">$PATH</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:bash .profile %}</p>
+
+<h1>Fix $PATH for homebrew</h1>
+
+<p>homebrew=/usr/local/bin:/usr/local/sbin
+export PATH=$homebrew:$PATH
+{% endcodeblock %}</p>
 
 <p>Google tells me the other two warnings are related to Mono being installed and can be ignored.</p>
 
@@ -139,18 +132,11 @@ $ rbenv rehash
 
 <p>Shouldn't it say ruby 1.9.3? It turns out you need to add the following to the end of your <code>.profile</code>.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>.profile </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h1&gt;Initialize rbenv&lt;/h1&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;if which rbenv &gt; /dev/null; <span class="k">then </span><span class="nb">eval</span> <span class="s2">&quot;$(rbenv init -)&quot;</span>; <span class="k">fi</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:bash .profile %}</p>
+
+<h1>Initialize rbenv</h1>
+
+<p>if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi{% endcodeblock %}</p>
 
 <p>Now quit and restart Terminal.</p>
 

@@ -9,7 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="The goal How can we replace a given class&#8217;s code with new code at runtime? In particular, how we can we do this while allowing dependency &hellip;">
+  <meta name="description" content="Previously: Part 1: The Goal The solution The code for the example is available on GitHub. How it looks So here&#8217;s the Hello World page in &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -113,6 +113,89 @@
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/">Replacing a Class at Runtime Using Ninject and Roslyn - Part 2: The Solution</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-09-11T09:18:00+01:00" pubdate data-updated="true">Sep 11<span>th</span>, 2014</time>
+        
+         | <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-2/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>Previously: <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-1/">Part 1: The Goal</a></p>
+
+<h2>The solution</h2>
+
+<p>The code for the example is <a href="https://github.com/ZeroSharp/RoslynPlugins">available on GitHub</a>.</p>
+
+<h4>How it looks</h4>
+
+<p>So here&#8217;s the Hello World page in production:</p>
+
+<p><img src="/images/blog/roslyn-plugins-001.png">.</p>
+
+<p>We navigate to the plugins view and create a new replacement for the HelloWorldGenerator:</p>
+
+<p><img src="/images/blog/roslyn-plugins-002.png">.</p>
+
+<p>Without restarting, we can return to the HelloWorld page and see that the new class is being used because the output has changed.</p>
+
+<p><img src="/images/blog/roslyn-plugins-003.png">.</p>
+
+<p>If you delete the row from the plugins page, the behaviour reverts to the original implementation (the code that was originally shipped with production).</p>
+
+<h4>Basic project setup</h4>
+
+<p>First, I created a new ASP.NET MVC 5 application. I added a HelloWorldContrroller and a View. I added a <code>Plugin</code> model and corresponding views. To get started I followed the tutorial here (http://www.asp.net/mvc/tutorials/mvc-5/introduction/getting-started). Once I had the basics in place, I added the following NuGet packages.</p>
+
+<p><strong>Stable</strong></p>
+
+<ul>
+<li>EntityFramework</li>
+<li>Ninject</li>
+<li>Ninject.MVC5</li>
+<li>Ninject.Conventions</li>
+</ul>
+
+
+<p><strong>Pre-release</strong></p>
+
+<ul>
+<li>Microsoft.CodeAnalysis.CSharp</li>
+</ul>
+
+
+<p>The <em>Microsoft.CodeAnalysis.CSharp</em> is the &#8216;Roslyn&#8217; package. It is still in beta, so you have to switch to the pre-release.</p>
+
+<p>Next we&#8217;ll look at <a href="/replacing-a-class-at-runtime-using-ninject-and-roslyn-part-3/">the dependency injection part</a> in more detail.</p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -1276,153 +1359,6 @@ The default directories for the installation have changed again. I&#8217;m sure 
 <h2>Next up</h2>
 
 <p>In my next post I&#8217;ll be taking a look at the new soft validation along with some other 13.2 improvements.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/how-to-improve-xaf-grid-layout-for-chrome/">How to Improve XAF Grid Layout for Chrome</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-11-08T09:55:00+00:00" pubdate data-updated="true">Nov 8<span>th</span>, 2013</time>
-        
-         | <a href="/how-to-improve-xaf-grid-layout-for-chrome/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>This post proposes a workaround for a specific XAF rendering problem related to recent versions of Google Chrome.</p>
-
-<p>Here is an XAF list view as it looks with IE 10 and DevExpress 13.1.8.</p>
-
-<p><img src="/images/blog/chrome-grid-layout-001.png"></p>
-
-<p>This is how the same view looks with Chrome 30. Notice how the column widths are rendered poorly. The minimum space is given to the string field and the date and bool fields are too wide.</p>
-
-<p><img src="/images/blog/chrome-grid-layout-002.png"></p>
-
-<p>What&#8217;s going on? An update to the Chrome browser occurred in which has caused problems with the rendering of grid views in certain situations. The problem exists in all versions of Chrome great than 25 and also affects the <a href="http://www.google.com/chromeframe">Google Chrome Frame</a> plugin for IE.</p>
-
-<p>DevExpress were able to fix some scenarios in 13.1.4 and 12.2.11 (such as column sorting), but there are other situations which still pose problems (<em>e.g.</em> the fix does not resolve the problem if the <em>Auto Filter Row</em> is enabled, which is the case above.)</p>
-
-<p>Hopefully the Chrome devs will one day fix the root problem. You can keep an eye on <a href="https://code.google.com/p/chromium/issues/detail?id=178369">the issue here</a></p>
-
-<h2>The fix</h2>
-
-<p>Not so much a fix as a workaround. We use a <code>ViewController&lt;ListView&gt;</code> to set the grid layout to <code>UseFixedTableLayout</code>, but only for Chrome browsers. Something like this:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-</pre></td><td class='code'><pre><code class='c#'><span class='line'><span class="c1">/// &lt;summary&gt;</span>
-</span><span class='line'><span class="c1">/// Switches to fixed table layout for the main list view when using Chrome or ChromeFrame.</span>
-</span><span class='line'><span class="c1">/// &lt;/summary&gt;</span>
-</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">ChromeSpecificListViewController</span> <span class="p">:</span> <span class="n">ViewController</span><span class="p">&lt;</span><span class="n">ListView</span><span class="p">&gt;</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnViewChanging</span><span class="p">(</span><span class="n">View</span> <span class="n">view</span><span class="p">)</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">base</span><span class="p">.</span><span class="n">OnViewChanging</span><span class="p">(</span><span class="n">view</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">Active</span><span class="p">[</span><span class="s">&quot;IsChrome&quot;</span><span class="p">]</span> <span class="p">=</span> <span class="n">IsChrome</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">private</span> <span class="k">static</span> <span class="kt">bool</span> <span class="n">IsChrome</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">get</span>
-</span><span class='line'>        <span class="p">{</span>
-</span><span class='line'>            <span class="n">HttpContext</span> <span class="n">context</span> <span class="p">=</span> <span class="n">HttpContext</span><span class="p">.</span><span class="n">Current</span><span class="p">;</span>
-</span><span class='line'>            <span class="k">return</span> <span class="n">context</span> <span class="p">!=</span> <span class="k">null</span> <span class="p">&amp;&amp;</span> <span class="n">context</span><span class="p">.</span><span class="n">Request</span><span class="p">.</span><span class="n">Browser</span><span class="p">.</span><span class="n">Browser</span> <span class="p">==</span> <span class="s">&quot;Chrome&quot;</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">protected</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">OnViewControlsCreated</span><span class="p">()</span>
-</span><span class='line'>    <span class="p">{</span>
-</span><span class='line'>        <span class="k">base</span><span class="p">.</span><span class="n">OnViewControlsCreated</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">ASPxGridListEditor</span> <span class="n">listEditor</span> <span class="p">=</span> <span class="n">View</span><span class="p">.</span><span class="n">Editor</span> <span class="k">as</span> <span class="n">ASPxGridListEditor</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">listEditor</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
-</span><span class='line'>            <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">ASPxGridView</span> <span class="n">gridView</span> <span class="p">=</span> <span class="n">listEditor</span><span class="p">.</span><span class="n">Grid</span> <span class="k">as</span> <span class="n">ASPxGridView</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">gridView</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
-</span><span class='line'>            <span class="k">return</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">gridView</span><span class="p">.</span><span class="n">Settings</span><span class="p">.</span><span class="n">UseFixedTableLayout</span> <span class="p">=</span> <span class="k">true</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p></p>
-
-<p>The resulting view in Chrome:</p>
-
-<p><img src="/images/blog/chrome-grid-layout-003.png"></p>
-
-<p>That looks better. You may notice the columns will allways be the same width now, which is not quite as good as the IE rendering. As such, it may not be appropriate for all views. But since it&#8217;s a <code>ViewController</code> it&#8217;s easy to deactivate it by adding an <code>Active[]</code> criteria.</p>
-
-<h4>References</h4>
-
-<ul>
-<li><a href="https://code.google.com/p/chromium/issues/detail?id=178369">Chrome issue</a></li>
-<li><a href="http://www.devexpress.com/Support/Center/Question/Details/Q477066">Support Center Q477066</a></li>
-<li><a href="https://www.devexpress.com/Support/Center/Question/Details/B235945">Support Center B235945</a></li>
-<li><a href="https://www.devexpress.com/Support/Center/Question/Details/Q510468">Support Center Q510468</a></li>
-</ul>
-
 </div>
   
   

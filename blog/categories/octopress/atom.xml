@@ -4,7 +4,7 @@
   <title><![CDATA[Category: octopress | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/octopress/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2018-09-10T19:35:31+01:00</updated>
+  <updated>2018-09-18T11:57:38+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -22,71 +22,42 @@
 
 <p>First, create a new site variable <code>show_feeds</code> by adding a line to the <em>_config.yml</em> file which is in the root folder of the Octopress source.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>_config.yml  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='diff'><span class='line'>  # RSS / Email (optional) subscription links (change if using something like Feedburner)
-</span><span class='line'><span class="gi">+ show_feeds: false</span>
-</span><span class='line'>  subscribe_rss: http://feeds.feedburner.com/zerosharp
-</span><span class='line'>  subscribe_email:
-</span><span class='line'>  # RSS feeds can list your email address if you like
-</span><span class='line'>  email:
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock _config.yml lang:diff %}
+  # RSS / Email (optional) subscription links (change if using something like Feedburner)
++ show_feeds: false
+  subscribe_rss: http://feeds.feedburner.com/zerosharp
+  subscribe_email:
+  # RSS feeds can list your email address if you like
+  email:
+{% endcodeblock %}</p>
 
 <p>Then modify the <em>source/_includes/navigation.html</em> as follows</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>navigation.html  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='diff'><span class='line'><span class="gi">+ {% if site.show_feeds %}</span>
-</span><span class='line'>  &lt;ul class=&quot;subscription&quot; data-subscription=&quot;rss&quot;&gt;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;pre&gt;&lt;code&gt;&amp;lt;li&amp;gt;&amp;lt;a href=&quot;http://feeds.feedburner.com/zerosharp&quot; rel=&quot;subscribe-rss&quot; title=&quot;subscribe via RSS&quot;&amp;gt;RSS&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-</span><span class='line'>{% if site.subscribe_email %}
-</span><span class='line'>  &amp;lt;li&amp;gt;&amp;lt;a href=&quot;&quot; rel=&quot;subscribe-email&quot; title=&quot;subscribe via email&quot;&amp;gt;Email&amp;lt;/a&amp;gt;&amp;lt;/li&amp;gt;
-</span><span class='line'>{% endif %}
-</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  &lt;/ul&gt;
-</span><span class='line'><span class="gi">+ {% endif %}</span>
-</span><span class='line'>  {% if site.simple_search %}
-</span><span class='line'>  &lt;form action=&quot;http://google.com/search&quot; method=&quot;get&quot;&gt;&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;pre&gt;&lt;code&gt;&amp;lt;fieldset role=&quot;search&quot;&amp;gt;
-</span><span class='line'>  &amp;lt;input type=&quot;hidden&quot; name=&quot;q&quot; value=&quot;site:ZeroSharp.github.com&quot; /&amp;gt;
-</span><span class='line'>  &amp;lt;input class=&quot;search&quot; type=&quot;text&quot; name=&quot;q&quot; results=&quot;0&quot; placeholder=&quot;Search&quot;/&amp;gt;
-</span><span class='line'>&amp;lt;/fieldset&amp;gt;
-</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;  &lt;/form&gt;
-</span><span class='line'>  {% endif %}
-</span><span class='line'>  {% include custom/navigation.html %}
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock navigation.html lang:diff %}
++ {% raw %}{% if site.show_feeds %}{% endraw %}
+  <ul class="subscription" data-subscription="rss{% if site.subscribe_email %} email{% endif %}"></p>
+
+<pre><code>&lt;li&gt;&lt;a href="{{ site.subscribe_rss }}" rel="subscribe-rss" title="subscribe via RSS"&gt;RSS&lt;/a&gt;&lt;/li&gt;
+{% raw %}{% if site.subscribe_email %}{% endraw %} 
+  &lt;li&gt;&lt;a href="{{ site.subscribe_email }}" rel="subscribe-email" title="subscribe via email"&gt;Email&lt;/a&gt;&lt;/li&gt;
+{% raw %}{% endif %}{% endraw %} 
+</code></pre>
+
+<p>  </ul>
++ {% raw %}{% endif %}{% endraw %}
+  {% raw %}{% if site.simple_search %}{% endraw %}
+  <form action="{{ site.simple_search }}" method="get"></p>
+
+<pre><code>&lt;fieldset role="search"&gt;
+  &lt;input type="hidden" name="q" value="site:{{ site.url | shorthand_url }}" /&gt;
+  &lt;input class="search" type="text" name="q" results="0" placeholder="Search"/&gt;
+&lt;/fieldset&gt;
+</code></pre>
+
+<p>  </form>
+  {% raw %}{% endif %}{% endraw %}
+  {% raw %}{% include custom/navigation.html %}{% endraw %}
+{% endcodeblock %}</p>
 
 <p>Then you can toggle the visibility of the feed icon by changing the <code>show_feeds</code> setting in the <code>_config.yml</code> file.</p>
 ]]></content>
@@ -97,7 +68,7 @@
     <link href="http://ZeroSharp.github.com/clone-your-octopress-to-blog-from-two-places/"/>
     <updated>2013-02-01T11:59:00+00:00</updated>
     <id>http://ZeroSharp.github.com/clone-your-octopress-to-blog-from-two-places</id>
-    <content type="html"><![CDATA[<p><img class="right" src="/images/blog/clone-your-octopress-001.png"></p>
+    <content type="html"><![CDATA[<p>{% img right /images/blog/clone-your-octopress-001.png %}</p>
 
 <p>This post covers how recreate a local repository of your Octopress blog. Perhaps you've accidentally lost it, or perhaps you would like to be able to blog from two different places. Recently <a href="/the-best-pc-laptop-is-a-mac/">I bought a new computer</a> and I wanted to be able to blog from both my desktop and my laptop.</p>
 
@@ -207,20 +178,13 @@ occurs before /usr/bin in your PATH.
 
 <p>This one can be fixed by modifying your <code>.profile</code> file. Create it if it doesn't already exist. Use <code>nano ~/.profile</code> if you don't have a preferred editor.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>.profile </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h1&gt;Fix <span class="nv">$PATH</span> <span class="k">for </span>homebrew&lt;/h1&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;homebrew<span class="o">=</span>/usr/local/bin:/usr/local/sbin
-</span><span class='line'><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$homebrew</span>:<span class="nv">$PATH</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:bash .profile %}</p>
+
+<h1>Fix $PATH for homebrew</h1>
+
+<p>homebrew=/usr/local/bin:/usr/local/sbin
+export PATH=$homebrew:$PATH
+{% endcodeblock %}</p>
 
 <p>Google tells me the other two warnings are related to Mono being installed and can be ignored.</p>
 
@@ -289,18 +253,11 @@ $ rbenv rehash
 
 <p>Shouldn't it say ruby 1.9.3? It turns out you need to add the following to the end of your <code>.profile</code>.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>.profile </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h1&gt;Initialize rbenv&lt;/h1&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;if which rbenv &gt; /dev/null; <span class="k">then </span><span class="nb">eval</span> <span class="s2">&quot;$(rbenv init -)&quot;</span>; <span class="k">fi</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:bash .profile %}</p>
+
+<h1>Initialize rbenv</h1>
+
+<p>if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi{% endcodeblock %}</p>
 
 <p>Now quit and restart Terminal.</p>
 
@@ -331,12 +288,12 @@ ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-darwin12.2.1]
 
 <p>The following markdown</p>
 
-<pre><code> {% imgcap http://some.url.com/pic.jpg Leonhard Euler %} 
+<pre><code>{% raw %} {% imgcap http://some.url.com/pic.jpg Leonhard Euler %} {% endraw %}
 </code></pre>
 
 <p>will render like this.</p>
 
-<p><span class='caption-wrapper'><img class='caption' src='http://upload.wikimedia.org/wikipedia/commons/d/d7/Leonhard_Euler.jpg' width='' height='' title='Leonhard Euler'><span class='caption-text'>Leonhard Euler</span></span></p>
+<p>{% imgcap http://upload.wikimedia.org/wikipedia/commons/d/d7/Leonhard_Euler.jpg Leonhard Euler %}</p>
 
 <p>It works with <code>left</code> and <code>right</code> too.</p>
 
@@ -344,224 +301,116 @@ ruby 1.9.3p194 (2012-04-20 revision 35410) [x86_64-darwin12.2.1]
 
 <p>First, create the image_caption_tag plugin and put it in the plugins subfolder.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>plugins/image_caption_tag.rb  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-</pre></td><td class='code'><pre><code class='ruby'><span class='line'><span class="o">&lt;</span><span class="sr">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;h1&gt;Title: Image tag with caption for Jekyll&lt;/</span><span class="n">h1</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="n">h1</span><span class="o">&gt;</span><span class="no">Description</span><span class="p">:</span> <span class="no">Easily</span> <span class="n">output</span> <span class="n">images</span> <span class="n">with</span> <span class="n">captions</span><span class="o">&lt;</span><span class="sr">/h1&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;p&gt;module Jekyll&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>  <span class="k">class</span> <span class="nc">CaptionImageTag</span> <span class="o">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="no">Liquid</span><span class="o">::</span><span class="no">Tag</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;pre&gt;&lt;code&gt;@img = nil</span>
-</span><span class='line'><span class="sr">@title = nil</span>
-</span><span class='line'><span class="sr">@class = &#39;&#39;</span>
-</span><span class='line'><span class="sr">@width = &#39;&#39;</span>
-</span><span class='line'><span class="sr">@height = &#39;&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">def initialize(tag_name, markup, tokens)</span>
-</span><span class='line'><span class="sr">  if markup =~ /</span><span class="p">(\</span><span class="n">S</span><span class="o">.</span><span class="n">*</span><span class="p">\</span><span class="n">s</span><span class="o">+</span><span class="p">)?(</span><span class="n">https?</span><span class="p">:\</span><span class="o">/</span><span class="p">\</span><span class="o">/|</span><span class="p">\</span><span class="o">/</span><span class="p">)(\</span><span class="n">S</span><span class="o">+</span><span class="p">)(\</span><span class="n">s</span><span class="o">+</span><span class="p">\</span><span class="n">d</span><span class="o">+</span><span class="p">\</span><span class="n">s</span><span class="o">+</span><span class="p">\</span><span class="n">d</span><span class="o">+</span><span class="p">)</span><span class="sc">?(</span><span class="p">\</span><span class="n">s</span><span class="o">+.</span><span class="n">+</span><span class="p">)?</span><span class="o">/</span><span class="n">i</span>
-</span><span class='line'>    <span class="vi">@class</span> <span class="o">=</span> <span class="vg">$1</span> <span class="o">||</span> <span class="s1">&#39;&#39;</span>
-</span><span class='line'>    <span class="vi">@img</span> <span class="o">=</span> <span class="vg">$2</span> <span class="o">+</span> <span class="vg">$3</span>
-</span><span class='line'>    <span class="k">if</span> <span class="vg">$5</span>
-</span><span class='line'>      <span class="vi">@title</span> <span class="o">=</span> <span class="vg">$5</span><span class="o">.</span><span class="n">strip</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>    <span class="k">if</span> <span class="vg">$4</span> <span class="o">=~</span> <span class="sr">/\s*(\d+)\s+(\d+)/</span>
-</span><span class='line'>      <span class="vi">@width</span> <span class="o">=</span> <span class="vg">$1</span>
-</span><span class='line'>      <span class="vi">@height</span> <span class="o">=</span> <span class="vg">$2</span>
-</span><span class='line'>    <span class="k">end</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'>  <span class="k">super</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-</span><span class='line'>  <span class="n">output</span> <span class="o">=</span> <span class="k">super</span>
-</span><span class='line'>  <span class="k">if</span> <span class="vi">@img</span>
-</span><span class='line'>    <span class="s2">&quot;&amp;lt;span class=&#39;</span><span class="si">#{</span><span class="p">(</span><span class="s1">&#39;caption-wrapper &#39;</span> <span class="o">+</span> <span class="vi">@class</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="si">}</span><span class="s2">&#39;&amp;gt;&quot;</span> <span class="o">+</span>
-</span><span class='line'>      <span class="s2">&quot;&amp;lt;img class=&#39;caption&#39; src=&#39;</span><span class="si">#{</span><span class="vi">@img</span><span class="si">}</span><span class="s2">&#39; width=&#39;</span><span class="si">#{</span><span class="vi">@width</span><span class="si">}</span><span class="s2">&#39; height=&#39;</span><span class="si">#{</span><span class="vi">@height</span><span class="si">}</span><span class="s2">&#39; title=&#39;</span><span class="si">#{</span><span class="vi">@title</span><span class="si">}</span><span class="s2">&#39;&amp;gt;&quot;</span> <span class="o">+</span>
-</span><span class='line'>      <span class="s2">&quot;&amp;lt;span class=&#39;caption-text&#39;&amp;gt;</span><span class="si">#{</span><span class="vi">@title</span><span class="si">}</span><span class="s2">&amp;lt;/span&amp;gt;&quot;</span> <span class="o">+</span>
-</span><span class='line'>    <span class="s2">&quot;&amp;lt;/span&amp;gt;&quot;</span>
-</span><span class='line'>  <span class="k">else</span>
-</span><span class='line'>    <span class="s2">&quot;Error processing input, expected syntax: {% img [class name(s)] /url/to/image [width height] [title text] %}&quot;</span>
-</span><span class='line'>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span>
-</span><span class='line'><span class="o">&lt;</span><span class="sr">/code&gt;&lt;/</span><span class="n">pre</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>  <span class="k">end</span>
-</span><span class='line'><span class="k">end</span><span class="o">&lt;</span><span class="sr">/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="sr">&lt;p&gt;Liquid::Template.register_tag(&#39;imgcap&#39;, Jekyll::CaptionImageTag)&lt;/</span><span class="nb">p</span><span class="o">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">p</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock plugins/image_caption_tag.rb lang:ruby %}</p>
+
+<h1>Title: Image tag with caption for Jekyll</h1>
+
+<h1>Description: Easily output images with captions</h1>
+
+<p>module Jekyll</p>
+
+<p>  class CaptionImageTag &lt; Liquid::Tag</p>
+
+<pre><code>@img = nil
+@title = nil
+@class = ''
+@width = ''
+@height = ''
+
+def initialize(tag_name, markup, tokens)
+  if markup =~ /(\S.*\s+)?(https?:\/\/|\/)(\S+)(\s+\d+\s+\d+)?(\s+.+)?/i
+    @class = $1 || ''
+    @img = $2 + $3
+    if $5
+      @title = $5.strip
+    end
+    if $4 =~ /\s*(\d+)\s+(\d+)/
+      @width = $1
+      @height = $2
+    end
+  end
+  super
+end
+
+def render(context)
+  output = super
+  if @img
+    "&lt;span class='#{('caption-wrapper ' + @class).rstrip}'&gt;" +
+      "&lt;img class='caption' src='#{@img}' width='#{@width}' height='#{@height}' title='#{@title}'&gt;" +
+      "&lt;span class='caption-text'&gt;#{@title}&lt;/span&gt;" +
+    "&lt;/span&gt;"
+  else
+    {% raw %}"Error processing input, expected syntax: {% img [class name(s)] /url/to/image [width height] [title text] %}"{% endraw %}
+  end
+end
+</code></pre>
+
+<p>  end
+end</p>
+
+<p>Liquid::Template.register_tag('imgcap', Jekyll::CaptionImageTag)</p>
+
+<p>{% endcodeblock %}</p>
 
 <p>Next, modify the _utilities.scss file as follows.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>sass/base/_utilities.scss  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='diff'><span class='line'>   border: $border;
-</span><span class='line'> }&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;+@mixin reset-shadow-box() {
-</span><span class='line'><span class="gi">+  @include shadow-box(0px, 0px, 0px);</span>
-</span><span class='line'><span class="gi">+}</span>
-</span><span class='line'><span class="gi">+</span>
-</span><span class='line'> @mixin selection($bg, $color: inherit, $text-shadow: none){
-</span><span class='line'>   * {&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;pre&gt;&lt;code&gt; &amp;amp;::-moz-selection { background: $bg; color: $color; text-shadow: $text-shadow; }
-</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock sass/base/_utilities.scss lang:diff %}
+   border: $border;
+ }</p>
+
+<p>+@mixin reset-shadow-box() {
++  @include shadow-box(0px, 0px, 0px);
++}
++
+ @mixin selection($bg, $color: inherit, $text-shadow: none){
+   * {</p>
+
+<pre><code> &amp;::-moz-selection { background: $bg; color: $color; text-shadow: $text-shadow; }
+</code></pre>
+
+<p>{% endcodeblock %}</p>
 
 <p>Finally, apply the following changes to the _blog.scss file.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>sass/partials/_blog.scss  </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-</pre></td><td class='code'><pre><code class='diff'><span class='line'>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;   article {&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;pre&gt;&lt;code&gt; font-size: 2.0em; font-style: italic;
-</span><span class='line'> line-height: 1.3em;
-</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;   }
-</span><span class='line'><span class="gd">-  img, video, .flash-video {</span>
-</span><span class='line'><span class="gi">+  img, video, .flash-video, .caption-wrapper {&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'>&lt;pre&gt;&lt;code&gt; @extend .flex-content;
-</span><span class='line'> @extend .basic-alignment;
-</span><span class='line'> @include shadow-box;
-</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;ul&gt;
-</span><span class='line'>&lt;li&gt; &amp;amp;.caption {&lt;/li&gt;
-</span><span class='line'>&lt;li&gt;   @include reset-shadow-box;&lt;/li&gt;
-</span><span class='line'>&lt;li&gt; }&lt;/li&gt;
-</span><span class='line'>&lt;li&gt;}&lt;/li&gt;
-</span><span class='line'>&lt;li&gt;.caption-wrapper {&lt;/li&gt;
-</span><span class='line'>&lt;li&gt; display: inline-block;&lt;/li&gt;
-</span><span class='line'>&lt;li&gt; margin-bottom: 10px;&lt;/li&gt;
-</span><span class='line'>&lt;li&gt; .caption-text {&lt;/li&gt;
-</span><span class='line'>&lt;li&gt;   background: #fff;&lt;/li&gt;
-</span><span class='line'>&lt;li&gt;   text-align: center;&lt;/li&gt;
-</span><span class='line'>&lt;li&gt;   font-size: .8em;&lt;/li&gt;
-</span><span class='line'>&lt;li&gt;   color: #666;&lt;/li&gt;
-</span><span class='line'>&lt;li&gt;   display: block;&lt;/li&gt;
-</span><span class='line'>&lt;li&gt; }
-</span><span class='line'>}
-</span><span class='line'>video, .flash-video { margin: 0 auto 1.5em; }
-</span><span class='line'>video { display: block; width: 100%; }&lt;/li&gt;
-</span><span class='line'>&lt;/ul&gt;
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock sass/partials/_blog.scss lang:diff %}</p>
+
+<p>   article {</p>
+
+<pre><code> font-size: 2.0em; font-style: italic;
+ line-height: 1.3em;
+</code></pre>
+
+<p>   }
+-  img, video, .flash-video {
++  img, video, .flash-video, .caption-wrapper {</p>
+
+<pre><code> @extend .flex-content;
+ @extend .basic-alignment;
+ @include shadow-box;
+</code></pre>
+
+<ul>
+<li> &amp;.caption {</li>
+<li>   @include reset-shadow-box;</li>
+<li> }</li>
+<li>}</li>
+<li>.caption-wrapper {</li>
+<li> display: inline-block;</li>
+<li> margin-bottom: 10px;</li>
+<li> .caption-text {</li>
+<li>   background: #fff;</li>
+<li>   text-align: center;</li>
+<li>   font-size: .8em;</li>
+<li>   color: #666;</li>
+<li>   display: block;</li>
+<li> }
+}
+video, .flash-video { margin: 0 auto 1.5em; }
+video { display: block; width: 100%; }</li>
+</ul>
+
+
+<p>{% endcodeblock %}</p>
 
 <p>Regenerate your Octopress site and you can start using <code>imgcap</code> instead of <code>img</code>.</p>
 ]]></content>

@@ -9,8 +9,7 @@
   <meta name="author" content="Robert Anderson">
 
   
-  <meta name="description" content="You may know that the C# Decimal type remembers any trailing zeros. So for instance: Console.WriteLine(123.45m);
-Console.WriteLine(123.45000m); &hellip;">
+  <meta name="description" content="The following screenshot shows the detail view of an object change from the DevExpress XAF Audit Trail. The DecimalValue property was changed from &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -114,6 +113,212 @@ Console.WriteLine(123.45000m); &hellip;">
     <div id="content">
       <div class="blog-index">
   
+  
+  
+    <article>
+      
+  <header>
+    
+      <h1 class="entry-title"><a href="/better-handling-of-decimals-in-the-xaf-audit-trail/">Better Handling of Decimals in the XAF Audit Trail</a></h1>
+    
+    
+      <p class="meta">
+        
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-01-15T10:29:00+00:00" pubdate data-updated="true">Jan 15<span>th</span>, 2013</time>
+        
+         | <a href="/better-handling-of-decimals-in-the-xaf-audit-trail/#disqus_thread">Comments</a>
+        
+      </p>
+    
+  </header>
+
+
+  <div class="entry-content"><p>The following screenshot shows the detail view of an object change from the DevExpress XAF Audit Trail. The <code>DecimalValue</code> property was changed from 123.45 to 543.22.</p>
+
+<p><img src="/images/blog/audit-trail-001.jpg"></p>
+
+<p>Why is the <code>OldValue</code> property is displayed with two trailing zeros? The corresponding property is defined as follows:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="na">[DefaultClassOptions]</span>
+</span><span class='line'><span class="k">public</span> <span class="k">class</span> <span class="nc">MyClass</span> <span class="p">:</span> <span class="n">XPObject</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="nf">MyClass</span><span class="p">(</span><span class="n">Session</span> <span class="n">session</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">:</span> <span class="k">base</span><span class="p">(</span><span class="n">session</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span> <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="c1">//...</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="kt">decimal</span> <span class="n">_DecimalValue</span><span class="p">;</span>
+</span><span class='line'><span class="na">    [ModelDefault(&quot;DisplayFormat&quot;, &quot;{0:n2}&quot;)]</span>
+</span><span class='line'>    <span class="k">public</span> <span class="kt">decimal</span> <span class="n">DecimalValue</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">get</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">_DecimalValue</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>        <span class="k">set</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="n">SetPropertyValue</span><span class="p">(</span><span class="s">&quot;DecimalValue&quot;</span><span class="p">,</span> <span class="k">ref</span> <span class="n">_DecimalValue</span><span class="p">,</span> <span class="k">value</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="n">XPCollection</span><span class="p">&lt;</span><span class="n">AuditDataItemPersistent</span><span class="p">&gt;</span> <span class="n">_ChangeHistory</span><span class="p">;</span>
+</span><span class='line'>    <span class="k">public</span> <span class="n">XPCollection</span><span class="p">&lt;</span><span class="n">AuditDataItemPersistent</span><span class="p">&gt;</span> <span class="n">ChangeHistory</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">get</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="k">if</span> <span class="p">(</span><span class="n">_ChangeHistory</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span>
+</span><span class='line'>            <span class="p">{</span>
+</span><span class='line'>                <span class="n">_ChangeHistory</span> <span class="p">=</span> <span class="n">AuditedObjectWeakReference</span><span class="p">.</span><span class="n">GetAuditTrail</span><span class="p">(</span><span class="n">Session</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="k">return</span> <span class="n">_ChangeHistory</span><span class="p">;</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h3>Explanation and fix</h3>
+
+<p>A C# <code>decimal</code> is a type which represents a number&#8217;s value <em>and its precision</em>. It actually stores the number of trailing zeros along with the value. For the <code>NewValue</code>, it has stored the decimal value as the user entered it - with no trailing zeros. Howevever, for the <code>OldValue</code>, it has retrieved the value from the database and used the SQL column definition to determine the precision.</p>
+
+<p>The default SQL column type that XPO column type for properties of type <code>decimal</code> is the <code>money</code> type (<a href="http://msdn.microsoft.com/en-us/library/aa933242.aspx">see the MSDN documentation</a>) which stores 4 decimal places of precision. If we override this with, say, a <code>DECIMAL(28, 13)</code>, the audit trail would show 13 decimal places of precision.</p>
+
+<p>From the user&#8217;s perspective, this looks a little confusing, so let&#8217;s fix it.</p>
+
+<p>During the initialization of your application (in Application_Start for a web application), add an event to the <code>AuditTrailService</code> as follows.</p>
+
+<pre><code>AuditTrailConfig.Initialize();
+</code></pre>
+
+<p>and then declare the <code>AuditTrailConfig</code> helper class as follows:</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">AuditTrailConfig</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">Initialize</span><span class="p">()</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">AuditTrailService</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">SaveAuditTrailData</span> <span class="p">+=</span> <span class="n">Instance_SaveAuditTrailData</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">static</span> <span class="k">void</span> <span class="nf">Instance_SaveAuditTrailData</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">SaveAuditTrailDataEventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="n">NormalizeOldValuesDecimalPrecision</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">private</span> <span class="k">static</span> <span class="k">void</span> <span class="nf">NormalizeOldValuesDecimalPrecision</span><span class="p">(</span><span class="n">SaveAuditTrailDataEventArgs</span> <span class="n">e</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="kt">var</span> <span class="n">decimalAuditTrailDataItems</span> <span class="p">=</span> <span class="n">e</span><span class="p">.</span><span class="n">AuditTrailDataItems</span>
+</span><span class='line'>                                          <span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">i</span> <span class="p">=&gt;</span> <span class="n">i</span><span class="p">.</span><span class="n">OldValue</span> <span class="k">is</span> <span class="kt">decimal</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>        <span class="k">foreach</span> <span class="p">(</span><span class="n">AuditDataItem</span> <span class="n">auditTrailItem</span> <span class="k">in</span> <span class="n">decimalAuditTrailDataItems</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">{</span>
+</span><span class='line'>            <span class="c1">// remove any trailing zeros from OldValue</span>
+</span><span class='line'>            <span class="n">auditTrailItem</span><span class="p">.</span><span class="n">OldValue</span> <span class="p">=</span> <span class="p">((</span><span class="kt">decimal</span><span class="p">)</span><span class="n">auditTrailItem</span><span class="p">.</span><span class="n">OldValue</span><span class="p">).</span><span class="n">Normalize</span><span class="p">();</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>Normalize()</code> method is an extension method. See the <a href="/how-to-remove-the-trailing-zeros-of-precision-from-a-c-number-decimal/">trick in my last post</a> for more information.</p>
+
+<figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">DecimalExtensions</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>    <span class="k">public</span> <span class="k">static</span> <span class="kt">decimal</span> <span class="nf">Normalize</span><span class="p">(</span><span class="k">this</span> <span class="kt">decimal</span> <span class="k">value</span><span class="p">)</span>
+</span><span class='line'>    <span class="p">{</span>
+</span><span class='line'>        <span class="k">return</span> <span class="k">value</span> <span class="p">/</span> <span class="m">1.000000000000000000000000000000000</span><span class="n">m</span><span class="p">;</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>And then the same change would be logged as follows.</p>
+
+<p><img src="/images/blog/audit-trail-002.jpg"></p>
+</div>
+  
+  
+
+
+    </article>
   
   
     <article>
@@ -976,119 +1181,6 @@ There are some keys which you will still not find, for instance, <code>NumLock</
 <p>If I need these, I use the On-Screen keyboard (type &#8216;osk&#8217; into the search bar). If you cannot see the <code>NumLock</code>, the options allow you to show the numeric keypad. Alternatively, you could always plug in a USB keyboard.</p>
 
 <p>The trackpad works great including the two-finger click for right-click and two-finger swipe for scroll.</p>
-</div>
-  
-  
-
-
-    </article>
-  
-  
-    <article>
-      
-  <header>
-    
-      <h1 class="entry-title"><a href="/a-look-at-the-devexpress-maindemo-with-google-page-speed/">A Look at the DevExpress MainDemo With Google Page Speed</a></h1>
-    
-    
-      <p class="meta">
-        
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2012-09-12T17:22:00+01:00" pubdate data-updated="true">Sep 12<span>th</span>, 2012</time>
-        
-         | <a href="/a-look-at-the-devexpress-maindemo-with-google-page-speed/#disqus_thread">Comments</a>
-        
-      </p>
-    
-  </header>
-
-
-  <div class="entry-content"><p>In this post I&#8217;ll demonstrate how to use the <a href="https://developers.google.com/speed/pagespeed/">Google Page Speed</a> tools to analyse the performance of the DevExpress XAF MainDemo.</p>
-
-<p>The easiest way to run Google Page Speed is as a Chrome or Firefox plugin. Both are available <a href="https://developers.google.com/speed/pagespeed/insights_extensions">here</a>. I use Chrome.</p>
-
-<p>Now open the DevExpress MainDemo from Visual Studio. By default it is installed to:</p>
-
-<pre><code>C:\Users\Public\Documents\DXperience 12.1 Demos\eXpressApp Framework\MainDemo\CS\MainDemo.sln
-</code></pre>
-
-<p>Set the MainDemo.Web as the startup project and change the connection string in web.config if necessary. Launch the application with Chrome and login as &#8216;Sam&#8217; (password is blank). Then press <code>F12</code> to bring up the developer tools. The last tab is the Page Speed Analysis and your browser should look like this:</p>
-
-<p><img src="/images/blog/google-page-speed-001.png"></p>
-
-<p>Now click <code>Start Analysis</code> button. After a few seconds you should get something like the following results.</p>
-
-<h4>Results against the debug webserver</h4>
-
-<p><img src="/images/blog/google-page-speed-002.png"></p>
-
-<p>It&#8217;s as easy as that. We now have a list of suggested improvements. The same report can be generated for any page you visit with your browser.</p>
-
-<p>I get an overall score of 72 out of 100. First thing to note is that the only &#8216;high priority&#8217; recommendation is to &#8216;enable keep-alive&#8217; which I suspect will not be necessary when running in IIS instead of the debug webserver.</p>
-
-<h4>Switch to use IIS</h4>
-
-<p>Actually to get the main demo to run in IIS is not altogether simple because of the security permissions required for logging in and creating or updating the schema. If you get an error message after login:</p>
-
-<pre><code>Login failed for user 'IIS APPPOOL\DefaultAppPool
-</code></pre>
-
-<p>you will need to add the IIS application pool identity to the SQL Server security.</p>
-
-<ul>
-<li>Launch SQL Server management studio and connect to the database.</li>
-<li>In the <code>Security\Logins</code> right click and select <code>New Login...</code>.</li>
-<li>Type in <code>IIS APPPOOL\DefaultAppPool</code> (you won&#8217;t find it by searching) or <code>IIS APPPOOL\ASP.NET v4.0</code> depending on the security context of the application pool you are using.</li>
-<li>Select <code>Server Roles</code> and check <code>public</code> and <code>sysadmin</code> to allow the MainDemo to create the database.</li>
-</ul>
-
-
-<p>(All of this is assuming you are using a non-public instance of SQL Server for development.)</p>
-
-<h4>Results against IIS</h4>
-
-<p>The results are much better: an overall score of 93.</p>
-
-<p><img src="/images/blog/google-page-speed-003.png"></p>
-
-<h4>Other points of interest</h4>
-
-<p>Let&#8217;s experiment by turning off compression in the webconfig.</p>
-
-<pre><code>&lt;compression 
-  enableHtmlCompression="false" 
-  enableCallbackCompression="false" 
-  enableResourceCompression="false" 
-  enableResourceMerging="false" /&gt;
-</code></pre>
-
-<p>The overall score drops to 62.</p>
-
-<p><img class="right" src="/images/blog/google-page-speed-004.png"></p>
-
-<p>You can alternatively use IIS&#8217;s dynamic compression by setting <code>enableResourceMerging="true"</code> and the others false and adding a <code>urlCompression</code> setting as follows.</p>
-
-<pre><code>&lt;system.webServer&gt;
-  &lt;urlCompression doDynamicCompression="true" /&gt;
-  ...
-&lt;/system.webServer&gt; 
-</code></pre>
-
-<p>(Note that you may need to install the dynamic compression module via <strong>Control Panel/Programs/Turn Windows Features On or Off</strong>.)</p>
-
-<p>Then the analysis is back up to 93. The advantage of IIS dynamic compression in IIS 7 is that it turns itself off automatically when the CPU load is high. See <a href="http://www.codeproject.com/Articles/242133/Making-the-most-out-of-IIS-compression-Part-1-conf">Matt Perdeck&#8217;s series of articles about IIS Compression</a> for more information.</p>
-
-<p>One mysterious point: if you navigate to the <a href="http://demos.devexpress.com/XAF/MainDemo/default.aspx">online version of the MainDemo</a> and run the analysis there you will notice that compression resource merging must be turned off for some reason and the overall score is only 75. Perhaps someone from DevExpress can explain&#8230;</p>
 </div>
   
   

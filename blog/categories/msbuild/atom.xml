@@ -4,7 +4,7 @@
   <title><![CDATA[Category: msbuild | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/msbuild/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2018-09-10T19:35:31+01:00</updated>
+  <updated>2018-09-18T11:57:38+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -50,26 +50,17 @@ AssemblyFile="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v12.0\Web\Micros
 ```</p>
 
 <p>And the transform file itself looks like this:
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>NUnit-console-x86.exe.CLR4.config </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='xml'><span class='line'><span class="ni">&amp;lt;</span>?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
-</span><span class='line'><span class="nt">&lt;configuration</span> <span class="na">xmlns:xdt=</span><span class="s">&quot;http://schemas.microsoft.com/XML-Document-Transform&quot;</span><span class="nt">&gt;</span>
-</span><span class='line'>  <span class="nt">&lt;startup&gt;&lt;/p&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;pre&gt;&lt;code&gt;</span><span class="ni">&amp;lt;</span>supportedRuntime version=&quot;v4.0.30319&quot; xdt:Transform=&quot;Replace&quot; /<span class="ni">&amp;gt;</span>
-</span><span class='line'><span class="nt">&lt;/code&gt;&lt;/pre&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="nt">&lt;p&gt;</span>  <span class="nt">&lt;/startup&gt;</span>
-</span><span class='line'><span class="nt">&lt;/configuration&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+{% codeblock lang:xml NUnit-console-x86.exe.CLR4.config %}
+&lt;?xml version="1.0" encoding="utf-8"?>
+<configuration xmlns:xdt="http://schemas.microsoft.com/XML-Document-Transform">
+  <startup></p>
+
+<pre><code>&lt;supportedRuntime version="v4.0.30319" xdt:Transform="Replace" /&gt;
+</code></pre>
+
+<p>  </startup>
+</configuration>
+{% endcodeblock %}</p>
 
 <p>By the way, <a href="https://webconfigtransformationtester.apphb.com/">Web.config Transformation Tester</a> is a handy tool!</p>
 

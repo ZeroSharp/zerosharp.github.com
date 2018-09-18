@@ -4,7 +4,7 @@
   <title><![CDATA[Category: mac | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/mac/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2018-09-10T19:35:31+01:00</updated>
+  <updated>2018-09-18T11:57:38+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,140 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[My essential web applications and iPhone apps]]></title>
+    <link href="http://ZeroSharp.github.com/my-essential-web-applications/"/>
+    <updated>2018-09-18T09:27:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/my-essential-web-applications</id>
+    <content type="html"><![CDATA[<p>This is part three of a series of posts about the software and tools I find invaluable. See <a href="/essential-applications">Part 1: essential applications</a> and <a href="/my-essential-visual-studio-tools-and-extensions">Part 2: Visual Studio tools</a>. In this post I'm covering the online applications and iPhone apps I find indispensible.</p>
+
+<h2><a href="https://www.google.com/gmail/">Gmail</a></h2>
+
+<p>Does the job.</p>
+
+<h2><a href="https://www.lastpass.com/">Lastpass</a></h2>
+
+<p>Everyone needs a password manager.</p>
+
+<h2><a href="https://www.pinboard.in">Pinboard</a> (and the <a href="https://pinswiftapp.com/">PinSwift</a> iPhone app)</h2>
+
+<p>The best bookmark tracking tool. Simple, fast, powerful. The best mobile app for it is <a href="https://pinswiftapp.com/">PinSwift</a>.</p>
+
+<h2><a href="https://bear.app/">Bear</a></h2>
+
+<p>A very pretty MarkDown editor for Mac and iPhone. I use <a href="https://bear.app/">Bear</a> for all my notes.</p>
+
+<h2><a href="https://www.google.com/drive/download/">Google Drive File Stream</a></h2>
+
+<p>Since I use <a href="https://gsuite.google.com/">GSuite</a>, it makes sense to try to put everything there. Google Drive has improved enormously since they moved to a file streaming approach.</p>
+
+<h2><a href="https://mail.google.com/tasks/canvas">Google Tasks</a> (and the <a href="gotasksapp.com/">GoTasks</a> app)</h2>
+
+<p>I need simple task manager with support for multiple lists, hierarchies and available everywhere. Google Tasks is often overlooked in this regard. Check out the <a href="https://mail.google.com/tasks/canvas">Google Tasks canvas</a>. There is also a fantastic free iPhone app for it <a href="http://gotasksapp.com/">GoTasks</a>.</p>
+
+<h2><a href="https://feedly.com/">Feedly</a></h2>
+
+<p><a href="https://feedly.com/">Feedly</a> is the best RSS news feed reader, in my opinion. I keep up with a few development blogs, a few science blogs and the blogs of my friends. The mobile app is great too.</p>
+
+<h2><a href="https://www.xero.com/">Xero</a></h2>
+
+<p>I've been using <a href="https://www.xero.com/">Xero</a> for eight years now. Business accounting software done right.</p>
+
+<h2><a href="https://www.amazon.com/kindle-dbs/fd/kcp">Kindle</a></h2>
+
+<p>I like real books but don't always lug them about with me, so often I buy both the hard copy and the kindle version (there shoudl be some sort of clever discount for this...). The Kindle app is where I spend my time when I have no connectivity (the London tube, airplanes, etc.)</p>
+
+<h2><a href="https://chess.com">Chess.com</a> and <a href="https://lichess.com">Lichess.com</a></h2>
+
+<p>I waste hours playing online blitz chess. I've even written a couple of Chrome extensions: <a href="https://chrome.google.com/webstore/detail/lichess-print-friendly-pd/goijhimgdjppmhmjkaglhggoapkgobfg">Pretty print your games</a> and <a href="https://chrome.google.com/webstore/detail/chesscom-v3-analysis/bhjlkimpkkgkmfjlcfngmakenalgleap">Analyse any chess.com game with lichess</a>.</p>
+
+<p>Chess is a mascohistic, character-building pastime. Progress is elusive. You play a couple of good games and you think you're improving and then you get thrashed repeatedly by a 10 year old.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[My essential applications]]></title>
+    <link href="http://ZeroSharp.github.com/essential-applications/"/>
+    <updated>2018-09-07T15:23:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/essential-applications</id>
+    <content type="html"><![CDATA[<p>This is the first in a series of posts where I list the applications that I use and enjoy the most. See <a href="(/my-essential-visual-studio-tools-and-extensions">part 2</a>) and <a href="/my-essential-web-applications">part 3</a>.</p>
+
+<p>A bit of preamble, my most powerful machine is a Windows-only desktop with lots of RAM and an SSD drive. I use it almost exclusively for development.</p>
+
+<p>I also have a Macbook Pro which is configured to dual-boot Windows and MacOS. The Windows machine is more or less a mirror of my main development machine. The Mac is where I do all my document editing, Word, blogging, etc. I also use it for my occasional forays in to iPhone development or other non-Windows experiments.</p>
+
+<p>When I upgrade my development machine, I reconfigure the previous system for Linux, currently Ubuntu.</p>
+
+<h2>Chocolatey</h2>
+
+<p>In Windows, <a href="Chocolatey%20-%20The%20package%20manager%20for%20Windows">Chocolatey</a> is a very convenient way to install programs. Just go:</p>
+
+<pre><code>C:&gt; choco install nodejs
+</code></pre>
+
+<h2>Boxstarter</h2>
+
+<p>Even better, create a powershell script with all the applications you want to install and run it with <a href="https://boxstarter.org/">boxstarter</a>. Repeatable and reboot-resilient environment installations using chocolatey under the hood. For several years now, I have maintained a script for installing my entire development environment (and the build server) from scratch. Works whether it's a physical or a virtual machine.</p>
+
+<h2>BeyondCompare</h2>
+
+<p><a href="https://www.scootersoftware.com/">BeyondCompare</a> is the best file-comparison tool I've found. Cross-platform too, I have it installed on my Mac as well.</p>
+
+<h2>Synergy</h2>
+
+<p><a href="https://symless.com/synergy">Synergy</a> allows me to share one mouse and keyboard across all my machines. It works just like dual monitors, except when the mouse moves onto the next screen, you've actually changed computer. I don't have multiple monitors any more, I just switch the input on my giant <a href="https://www.dell.com/en-us/shop/dell-ultrasharp-34-curved-monitor-u3417w/apd/210-aiyz/monitors-monitor-accessories">curved 34" Dell monitor</a> via a keyboard shortcut.</p>
+
+<h2>7Zip</h2>
+
+<p>Nothing to say.</p>
+
+<h2>VS Code</h2>
+
+<p>First class support for .NET and C#, Typescript in particular, but <a href="https://code.visualstudio.com/">VS Code</a> is also extremely good with Javascript, Powershell, Python, Markdown, etc. Multiple cursor support. Cross-platform. Extensions. I'm writing this blog post in VS Code.</p>
+
+<h2>Visual Studio</h2>
+
+<p>My daily workhorse. I've spent more screen time here than anywhere.</p>
+
+<h2>Zotero</h2>
+
+<p>Keep track of academic papers. Download them for offline reading. Handle citations and bibliographies effortlessly from within Word. <a href="https://www.zotero.org/">Zotero</a>.</p>
+
+<h2>Next up</h2>
+
+<p>More on Visual Studio in the <a href="/my-essential-visual-studio-tools-and-extensions">next post</a> where I go through my essential extensions and tools.</p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Macbook and the mysterious sleep]]></title>
+    <link href="http://ZeroSharp.github.com/macbook-and-the-mysterious-sleep/"/>
+    <updated>2017-08-23T16:46:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/macbook-and-the-mysterious-sleep</id>
+    <content type="html"><![CDATA[<p>I finally worked out why my Macbook was randomly sleeping.</p>
+
+<p><strong>TL;DR</strong> - <a href="#anchor-tldr">Skip to the end</a>.</p>
+
+<h2>Clues</h2>
+
+<p>It only seemed to happen when I was working while sitting up on the bed with the computer on my lap. It seemed to be related to the position of the computer or possibly the lid. The computer would sleep. I'd wake it and login again. Continue. Sometimes it would happen once. Sometimes three times in ten minutes. Annoying. I assumed some hardware defect.</p>
+
+<h2>Pajamas</h2>
+
+<p>Then over several days I cracked it. I realised it never happened when I was wearing pajamas. Very strange.</p>
+
+<h2>Reflections</h2>
+
+<p>I started thinking about what normally triggers sleep mode. Closing the lid. How does a Macbook know the lid is closed. There's not really a clasp or anything so it must be a magnet. Perhaps it's getting confused by my belt buckle or something. My phone?</p>
+
+<p>No, my phone <em>case</em>! The flip-case of my phone has a magnet to keep the flap closed. In my jeans pocket it's near enough to make the laptop think the lid has been closed. Duh.</p>
+
+<h2><a name="anchor-tldr"></a>TL;DR</h2>
+
+<p>Take your mobile phone out of your pocket!</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Installing Ruby with Homebrew and rbenv on Mac OS X Mountain Lion]]></title>
@@ -57,20 +191,13 @@ occurs before /usr/bin in your PATH.
 
 <p>This one can be fixed by modifying your <code>.profile</code> file. Create it if it doesn't already exist. Use <code>nano ~/.profile</code> if you don't have a preferred editor.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>.profile </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h1&gt;Fix <span class="nv">$PATH</span> <span class="k">for </span>homebrew&lt;/h1&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;homebrew<span class="o">=</span>/usr/local/bin:/usr/local/sbin
-</span><span class='line'><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$homebrew</span>:<span class="nv">$PATH</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:bash .profile %}</p>
+
+<h1>Fix $PATH for homebrew</h1>
+
+<p>homebrew=/usr/local/bin:/usr/local/sbin
+export PATH=$homebrew:$PATH
+{% endcodeblock %}</p>
 
 <p>Google tells me the other two warnings are related to Mono being installed and can be ignored.</p>
 
@@ -139,18 +266,11 @@ $ rbenv rehash
 
 <p>Shouldn't it say ruby 1.9.3? It turns out you need to add the following to the end of your <code>.profile</code>.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>.profile </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h1&gt;Initialize rbenv&lt;/h1&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;if which rbenv &gt; /dev/null; <span class="k">then </span><span class="nb">eval</span> <span class="s2">&quot;$(rbenv init -)&quot;</span>; <span class="k">fi</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:bash .profile %}</p>
+
+<h1>Initialize rbenv</h1>
+
+<p>if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi{% endcodeblock %}</p>
 
 <p>Now quit and restart Terminal.</p>
 

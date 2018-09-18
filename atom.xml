@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2018-09-10T19:35:31+01:00</updated>
+  <updated>2018-09-18T11:57:24+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -14,11 +14,62 @@
 
   
   <entry>
+    <title type="html"><![CDATA[My essential web applications and iPhone apps]]></title>
+    <link href="http://ZeroSharp.github.com/my-essential-web-applications/"/>
+    <updated>2018-09-18T09:27:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/my-essential-web-applications</id>
+    <content type="html"><![CDATA[<p>This is part three of a series of posts about the software and tools I find invaluable. See <a href="http://ZeroSharp.github.com/essential-applications">Part 1: essential applications</a> and <a href="http://ZeroSharp.github.com/my-essential-visual-studio-tools-and-extensions">Part 2: Visual Studio tools</a>. In this post I&#8217;m covering the online applications and iPhone apps I find indispensible.</p>
+
+<h2><a href="https://www.google.com/gmail/">Gmail</a></h2>
+
+<p>Does the job.</p>
+
+<h2><a href="https://www.lastpass.com/">Lastpass</a></h2>
+
+<p>Everyone needs a password manager.</p>
+
+<h2><a href="https://www.pinboard.in">Pinboard</a> (and the <a href="https://pinswiftapp.com/">PinSwift</a> iPhone app)</h2>
+
+<p>The best bookmark tracking tool. Simple, fast, powerful. The best mobile app for it is <a href="https://pinswiftapp.com/">PinSwift</a>.</p>
+
+<h2><a href="https://bear.app/">Bear</a></h2>
+
+<p>A very pretty MarkDown editor for Mac and iPhone. I use <a href="https://bear.app/">Bear</a> for all my notes.</p>
+
+<h2><a href="https://www.google.com/drive/download/">Google Drive File Stream</a></h2>
+
+<p>Since I use <a href="https://gsuite.google.com/">GSuite</a>, it makes sense to try to put everything there. Google Drive has improved enormously since they moved to a file streaming approach.</p>
+
+<h2><a href="https://mail.google.com/tasks/canvas">Google Tasks</a> (and the <a href="gotasksapp.com/">GoTasks</a> app)</h2>
+
+<p>I need simple task manager with support for multiple lists, hierarchies and available everywhere. Google Tasks is often overlooked in this regard. Check out the <a href="https://mail.google.com/tasks/canvas">Google Tasks canvas</a>. There is also a fantastic free iPhone app for it <a href="http://gotasksapp.com/">GoTasks</a>.</p>
+
+<h2><a href="https://feedly.com/">Feedly</a></h2>
+
+<p><a href="https://feedly.com/">Feedly</a> is the best RSS news feed reader, in my opinion. I keep up with a few development blogs, a few science blogs and the blogs of my friends. The mobile app is great too.</p>
+
+<h2><a href="https://www.xero.com/">Xero</a></h2>
+
+<p>I&#8217;ve been using <a href="https://www.xero.com/">Xero</a> for eight years now. Business accounting software done right.</p>
+
+<h2><a href="https://www.amazon.com/kindle-dbs/fd/kcp">Kindle</a></h2>
+
+<p>I like real books but don&#8217;t always lug them about with me, so often I buy both the hard copy and the kindle version (there shoudl be some sort of clever discount for this&#8230;). The Kindle app is where I spend my time when I have no connectivity (the London tube, airplanes, etc.)</p>
+
+<h2><a href="https://chess.com">Chess.com</a> and <a href="https://lichess.com">Lichess.com</a></h2>
+
+<p>I waste hours playing online blitz chess. I&#8217;ve even written a couple of Chrome extensions: <a href="https://chrome.google.com/webstore/detail/lichess-print-friendly-pd/goijhimgdjppmhmjkaglhggoapkgobfg">Pretty print your games</a> and <a href="https://chrome.google.com/webstore/detail/chesscom-v3-analysis/bhjlkimpkkgkmfjlcfngmakenalgleap">Analyse any chess.com game with lichess</a>.</p>
+
+<p>Chess is a mascohistic, character-building pastime. Progress is elusive. You play a couple of good games and you think you&#8217;re improving and then you get thrashed repeatedly by a 10 year old.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[My essential Visual Studio tools and extensions]]></title>
     <link href="http://ZeroSharp.github.com/my-essential-visual-studio-tools-and-extensions/"/>
     <updated>2018-09-10T15:45:00+01:00</updated>
     <id>http://ZeroSharp.github.com/my-essential-visual-studio-tools-and-extensions</id>
-    <content type="html"><![CDATA[<p>This is part two of a series of posts about the software and tools I find invaluable. See Part 1 <a href="http://ZeroSharp.github.com/essential-applications">here</a>.</p>
+    <content type="html"><![CDATA[<p>This is part two of a series of posts about the software and tools I find invaluable. See <a href="http://ZeroSharp.github.com/essential-applications">part 1</a> and <a href="http://ZeroSharp.github.com/my-essential-web-applications">part 3</a>.</p>
 
 <h2>CodeRush</h2>
 
@@ -49,7 +100,7 @@ refactor with confidence.</p>
 
 <h2>Next up</h2>
 
-<p>My essential web applications.</p>
+<p>My <a href="(/my-essential-web-applications">essential web applications and iPhone apps</a>.</p>
 ]]></content>
   </entry>
   
@@ -58,7 +109,7 @@ refactor with confidence.</p>
     <link href="http://ZeroSharp.github.com/essential-applications/"/>
     <updated>2018-09-07T15:23:00+01:00</updated>
     <id>http://ZeroSharp.github.com/essential-applications</id>
-    <content type="html"><![CDATA[<p>This is the first in a series of posts where I list the applications that I use and enjoy the most.</p>
+    <content type="html"><![CDATA[<p>This is the first in a series of posts where I list the applications that I use and enjoy the most. See <a href="(/my-essential-visual-studio-tools-and-extensions">part 2</a>) and <a href="http://ZeroSharp.github.com/my-essential-web-applications">part 3</a>.</p>
 
 <p>A bit of preamble, my most powerful machine is a Windows-only desktop with lots of RAM and an SSD drive. I use it almost exclusively for development.</p>
 
@@ -97,9 +148,13 @@ refactor with confidence.</p>
 
 <p>My daily workhorse. I&#8217;ve spent more screen time here than anywhere.</p>
 
+<h2>Zotero</h2>
+
+<p>Keep track of academic papers. Download them for offline reading. Handle citations and bibliographies effortlessly from within Word. <a href="https://www.zotero.org/">Zotero</a>.</p>
+
 <h2>Next up</h2>
 
-<p>More on Visual Studio in the next post where I go through my essential extensions and tools.</p>
+<p>More on Visual Studio in the <a href="http://ZeroSharp.github.com/my-essential-visual-studio-tools-and-extensions">next post</a> where I go through my essential extensions and tools.</p>
 ]]></content>
   </entry>
   
@@ -3102,35 +3157,6 @@ This is the third part of a <a href="http://ZeroSharp.github.com/migrating-a-lar
 
 <iframe class="cmd" src="https://load.wpm.neustar.biz/load/test/share/e4c5e109f8f04ceebd72cdb5c93eb1c2" width="1024" height="512">
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 2]]></title>
-    <link href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2/"/>
-    <updated>2015-09-15T10:37:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2</id>
-    <content type="html"><![CDATA[<p>This is the second part of a <a href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-1">series</a> about migrating a large application from XAF 12.1 to XAF 15.1.</p>
-
-<p>In the 13.1 release, DevExpress made a change to the way XAF <code>Validator</code> class is used. It now requires an <code>IObjectSpace</code> parameter corresponding to the object. It is needed to correctly evaluate any rules which are descendants of the <code>RuleSearchObjectProperties</code>. These include:</p>
-
-<ul>
-<li><code>RuleCombinationOfPropertiesIsUnique</code></li>
-<li><code>RuleIsReferenced</code></li>
-<li><code>RuleObjectExists</code></li>
-<li><code>RuleUniqueValue</code></li>
-</ul>
-
-
-<p>A lot of our code has been around for years now and the older parts rely heavily on <code>Session</code> and <code>UnitOfWork</code> instead of <code>IObjectSpace</code> For the most part our application used <code>IObjectSpace</code> only within <code>ViewControllers</code>.</p>
-
-<p>But there were several situations where we need the validator where we don&#8217;t have an <code>IObjectSpace</code>. For instance we sometimes need to validate from within <a href="https://documentation.devexpress.com/#eXpressAppFramework/clsDevExpressPersistentBaseActionAttributetopic">method actions</a> (decorated with the <code>ActionAttribute</code>). For performance reasons, we pass criteria to our middleware and it uses a <code>UnitOfWork</code> to run the method on each object. So in this case, there was no <code>IObjectSpace</code> to pass to the XAF <code>Validator</code>.</p>
-
-<p><span class='pullquote-right' data-pullquote='When writing code I often find myself having to decide between the &#8216;quick&#8217; fix and the &#8216;right&#8217; fix.'>
-Here I had a refactoring dilemma to solve. Either I need to rewrite all of the affected rules so that they no longer make use of the <code>IObjectSpace</code>. For instance, I could use <code>RuleFromBoolProperty</code> instead. In our application, this would mean rewriting about 50 rules. Or alternatively, I could go through the entire code base looking for <code>new UnitOfWork()</code> and <code>new Session()</code> and try to use an <code>IObjectSpace</code> instead. When writing code I often find myself having to decide between the &#8216;quick&#8217; fix and the &#8216;right&#8217; fix. Here, moving to <code>IObjectSpace</code> throughout is clearly the right fix and although it would take more time to implement, the system will be more in-line with best XAF practices throughout.
-</span></p>
-
-<p> Eventually, the refactoring was complete and all unit tests are passing. I was eager to run a multi-user load stress test against the 15.1 version to compare performance under load. I have described in previous posts how to <a href="http://ZeroSharp.github.com/load-testing-xaf-overview/">stress test XAF applications</a>. I&#8217;ll be sharing the results in the next post.</p>
 ]]></content>
   </entry>
   

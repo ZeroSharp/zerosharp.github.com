@@ -4,7 +4,7 @@
   <title><![CDATA[Category: reports | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/reports/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2018-09-10T19:35:31+01:00</updated>
+  <updated>2018-09-18T11:57:38+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -18,38 +18,29 @@
     <link href="http://ZeroSharp.github.com/making-xaf-reports-even-better-part-2/"/>
     <updated>2013-05-28T11:51:00+01:00</updated>
     <id>http://ZeroSharp.github.com/making-xaf-reports-even-better-part-2</id>
-    <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='Repx files with embedded scripts are now much more maintainable. You can correct syntax errors, refactor, version control, merge versions easily.'>
+    <content type="html"><![CDATA[<p>{% pullquote %}
 Good news. The conversion is now two-way. Get the source code <a href="https://github.com/ZeroSharp/Xaf_MainDemo_ReportSync">from GitHub</a>. Make sure you have built MainDemo.Reports project.</p>
 
 <p>You will find there are now two T4 transforms in the project. <em>RepxToCSharp.tt</em> is covered in the <a href="/making-xaf-reports-even-better-part-1">Part 1</a>. It searches for any <em>.repx</em> files in the solution and converts the scripts into compilable C#.</p>
 
 <p>The second transform is new. <em>CSharpToRepx.tt</em> copies any changes to the script part back into the original <em>.repx</em> files. Again, there are performance optimisations via checksums to prevent overwriting unchanged files.</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='text'><span class='line'>(This is an automatically generated file which should be excluded from version control)&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h1&gt;Summary of C# transformation&lt;/h1&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;Total C# files found                                        :  2
-</span><span class='line'>  Total reports injected                                    :  1
-</span><span class='line'>  Total reports missing                                     :  0
-</span><span class='line'>  Total reports skipped because unchanged                   :  1&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;Time elapsed: 00:00:02.3483264
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:text %}
+(This is an automatically generated file which should be excluded from version control)</p>
 
-<p>Repx files with embedded scripts are now much more maintainable. You can correct syntax errors, refactor, version control, merge versions easily. You could even write unit tests against the code in the scripts.</p>
+<h1>Summary of C# transformation</h1>
 
-<p></span></p>
+<p>Total C# files found                                        :  2
+  Total reports injected                                    :  1
+  Total reports missing                                     :  0
+  Total reports skipped because unchanged                   :  1</p>
+
+<p>Time elapsed: 00:00:02.3483264
+{% endcodeblock %}</p>
+
+<p>{"Repx files with embedded scripts are now much more maintainable. You can correct syntax errors, refactor, version control, merge versions easily."} You could even write unit tests against the code in the scripts.</p>
+
+<p>{% endpullquote %}</p>
 
 <p>Currently the easiest way of running these scripts is to open them and save them with <code>Ctrl+S</code>. This is because T4 templates were originally designed as a Visual Studio tool.</p>
 
@@ -74,11 +65,11 @@ Good news. The conversion is now two-way. Get the source code <a href="https://g
 
 <p>You may notice that if you reload the MainDemo.Reports project, you can now see <code>View in Designer</code> in the context menu when you right-click on the <em>.repx.cs</em> file.</p>
 
-<p><img src="/images/blog/xaf-report-sync-003.png"></p>
+<p>{% img /images/blog/xaf-report-sync-003.png %}</p>
 
 <p>Let's click it and see what happens. It opens directly in Visual Studio (like an <code>XtraReport</code>).</p>
 
-<p><img src="/images/blog/xaf-report-sync-004.png"></p>
+<p>{% img /images/blog/xaf-report-sync-004.png %}</p>
 
 <p>Now, this is all highly experimental. You can see there are some warnings... Also, there is no connection with XPO, so the <em>Preview</em> is always empty.</p>
 
@@ -91,7 +82,7 @@ Good news. The conversion is now two-way. Get the source code <a href="https://g
     <link href="http://ZeroSharp.github.com/making-xaf-reports-even-better-part-1/"/>
     <updated>2013-05-21T14:38:00+01:00</updated>
     <id>http://ZeroSharp.github.com/making-xaf-reports-even-better-part-1</id>
-    <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='The aim of these posts is to provide a two-way conversion process between .repx and C# files.'>
+    <content type="html"><![CDATA[<p>{% pullquote %}
 The ability to create reports using a report writer is a very powerful feature of <a href="http://www.devexpress.com/Products/NET/Application_Framework/">DevExpress XAF</a>, but there are some limitations which are particularly cumbersome to deal with in complex project.</p>
 
 <p>One of the projects I work on has over 100 reports in it. Even though we make use of unit tests to ensure they are not broken, the maintenance of the code in the embedded scripts is particularly difficult to manage.</p>
@@ -114,8 +105,8 @@ The ability to create reports using a report writer is a very powerful feature o
 </ul>
 
 
-<p>The aim of these posts is to provide a two-way conversion process between .repx and C# files. In order to accomplish this we'll be relying on Visual Studio's excellent T4 templating engine.
-</span></p>
+<p>{"The aim of these posts is to provide a two-way conversion process between .repx and C# files."} In order to accomplish this we'll be relying on Visual Studio's excellent T4 templating engine.
+{% endpullquote %}</p>
 
 <h2>Installing T4Toolbox</h2>
 
@@ -123,7 +114,7 @@ The ability to create reports using a report writer is a very powerful feature o
 
 <p>Install T4 Toolbox by selecting <strong>Tools/Extensions and Updates</strong> from Visual Studio and searching for it.</p>
 
-<p><img src="/images/blog/xaf-report-sync-001.png"></p>
+<p>{% img /images/blog/xaf-report-sync-001.png %}</p>
 
 <h2>The ReportSync MainDemo</h2>
 
@@ -133,51 +124,32 @@ The ability to create reports using a report writer is a very powerful feature o
 
 <p>Let's look at the <em>ContactsGroupByPosition.repx</em> file. You will find that there is a section:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">this</span><span class="p">.</span><span class="n">ScriptsSource</span> <span class="p">=</span> <span class="s">&quot;\r\nprivate void xrLabel4_BeforePrint(object sender, System.Drawing.Printing.PrintE&quot;</span> <span class="p">+&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="s">&quot;ventArgs e) {\r\n\txrLabel4.Text = xrLabel4.Text + \&quot; Test!\&quot;;\r\n}\r\n&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:csharp %}
+this.ScriptsSource = "\r\nprivate void xrLabel4_BeforePrint(object sender, System.Drawing.Printing.PrintE" +</p>
+
+<pre><code>"ventArgs e) {\r\n\txrLabel4.Text = xrLabel4.Text + \" Test!\";\r\n}\r\n";
+</code></pre>
+
+<p>{% endcodeblock %}</p>
 
 <p>In this case, the script has been saved as a string. The other report, which has only slightly more complex script code looks like this:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">private</span> <span class="n">System</span><span class="p">.</span><span class="n">Resources</span><span class="p">.</span><span class="n">ResourceManager</span> <span class="n">resources</span> <span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="k">get</span> <span class="p">{</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">_resources</span> <span class="p">==</span> <span class="k">null</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>        <span class="kt">string</span> <span class="n">resourceString</span> <span class="p">=</span> <span class="s">@&quot;zsrvvgEAAACRAAAAbFN5c3RlbS5SZXNvdXJjZXMuUmVzb3VyY2VSZWFkZXIsIG1zY29ybGliLCBWZXJzaW9uPT.....5kIFtEdWVEYXRlXSA8PSAnQEN1cnJlbnREYXRlJwABEFRhc2tzU3RhdGVSZXBvcnQ=&quot;</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">this</span><span class="p">.</span><span class="n">_resources</span> <span class="p">=</span> <span class="k">new</span> <span class="n">DevExpress</span><span class="p">.</span><span class="n">XtraReports</span><span class="p">.</span><span class="n">Serialization</span><span class="p">.</span><span class="n">XRResourceManager</span><span class="p">(</span><span class="n">resourceString</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="n">_resources</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}</span>
-</span><span class='line'><span class="c1">// ...</span>
-</span><span class='line'><span class="k">this</span><span class="p">.</span><span class="n">ScriptsSource</span> <span class="p">=</span> <span class="n">resources</span><span class="p">.</span><span class="n">GetString</span><span class="p">(</span><span class="s">&quot;$this.ScriptsSource&quot;</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:csharp %}
+private System.Resources.ResourceManager resources {</p>
+
+<pre><code>get {
+    if (_resources == null) {
+        string resourceString = @"zsrvvgEAAACRAAAAbFN5c3RlbS5SZXNvdXJjZXMuUmVzb3VyY2VSZWFkZXIsIG1zY29ybGliLCBWZXJzaW9uPT.....5kIFtEdWVEYXRlXSA8PSAnQEN1cnJlbnREYXRlJwABEFRhc2tzU3RhdGVSZXBvcnQ=";
+        this._resources = new DevExpress.XtraReports.Serialization.XRResourceManager(resourceString);
+    }
+    return this._resources;
+}
+</code></pre>
+
+<p>}
+// ...
+this.ScriptsSource = resources.GetString("$this.ScriptsSource");
+{% endcodeblock %}</p>
 
 <p>Here, the scripts are not even in plain text. They have been serialised to the <em>resources</em> property.</p>
 
@@ -191,111 +163,67 @@ The ability to create reports using a report writer is a very powerful feature o
 
 <p>The template will generate two types of output. First, it generates the following report which you should find in <em>RepxToCSharp.txt</em></p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'> <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='text'><span class='line'>(This is an automatically generated file which should be excluded from version control)&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;h1&gt;Summary of repx transformation&lt;/h1&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;Total repx files found                                      :  2
-</span><span class='line'>  Total reports generated                                   :  2
-</span><span class='line'>  Total reports skipped because unchanged                   :  0&lt;/p&gt;
-</span><span class='line'>
-</span><span class='line'>&lt;p&gt;Time elapsed: 00:00:02.1762029
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:text %}
+(This is an automatically generated file which should be excluded from version control)</p>
+
+<h1>Summary of repx transformation</h1>
+
+<p>Total repx files found                                      :  2
+  Total reports generated                                   :  2
+  Total reports skipped because unchanged                   :  0</p>
+
+<p>Time elapsed: 00:00:02.1762029
+{% endcodeblock %}</p>
 
 <p>In addition, each repx will have been transformed into two correpsonding files. All the generated files are highlighted in yellow:</p>
 
-<p><img src="/images/blog/xaf-report-sync-002.png"></p>
+<p>{% img /images/blog/xaf-report-sync-002.png %}</p>
 
 <p>Now the scripts have been deserialized from the repx and put in a partial class and the remainder of the repx has been transformed into a corresponding <code>XafReport</code> descendant. See for instance, <em>ContactsGroupedByPosition.cs</em> (which stored its scripts as a string) is as follows:</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>ContactsGroupedByPosition.cs </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">_ContactsGroupedByPosition</span>
-</span><span class='line'><span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="c1">// -- Start of embedded scripts -- </span>
-</span><span class='line'>
-</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">xrLabel4_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">xrLabel4</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">xrLabel4</span><span class="p">.</span><span class="n">Text</span> <span class="p">+</span> <span class="s">&quot; Test!&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// -- End of embedded scripts --    </span>
-</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:csharp ContactsGroupedByPosition.cs %}
+public partial class _ContactsGroupedByPosition
+{</p>
+
+<pre><code>// -- Start of embedded scripts -- 
+
+private void xrLabel4_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e) {
+    xrLabel4.Text = xrLabel4.Text + " Test!";
+}
+
+// -- End of embedded scripts --    
+</code></pre>
+
+<p>}
+{% endcodeblock %}</p>
 
 <p>And <em>TasksStateReport.cs</em> is now like this</p>
 
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>TasksStateReport.cs </span></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class='csharp'><span class='line'><span class="k">public</span> <span class="k">partial</span> <span class="k">class</span> <span class="nc">_TasksStateReport</span>
-</span><span class='line'><span class="p">{&lt;/</span><span class="n">p</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">pre</span><span class="p">&gt;&lt;</span><span class="n">code</span><span class="p">&gt;</span><span class="c1">// -- Start of embedded scripts -- </span>
-</span><span class='line'>
-</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">xrLabel1_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="c1">// This is a test</span>
-</span><span class='line'>    <span class="n">xrLabel1</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="s">&quot;Hello&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">private</span> <span class="k">void</span> <span class="nf">xrLabel2_BeforePrint</span><span class="p">(</span><span class="kt">object</span> <span class="n">sender</span><span class="p">,</span> <span class="n">System</span><span class="p">.</span><span class="n">Drawing</span><span class="p">.</span><span class="n">Printing</span><span class="p">.</span><span class="n">PrintEventArgs</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>    <span class="n">xrLabel2</span><span class="p">.</span><span class="n">Text</span> <span class="p">=</span> <span class="n">GetLabel2Text</span><span class="p">();</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">public</span> <span class="kt">string</span> <span class="nf">GetLabel2Text</span><span class="p">()</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>    <span class="k">return</span> <span class="s">&quot;Label 2!&quot;</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="c1">// -- End of embedded scripts --    </span>
-</span><span class='line'><span class="p">&lt;/</span><span class="n">code</span><span class="p">&gt;&lt;/</span><span class="n">pre</span><span class="p">&gt;</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">&lt;</span><span class="n">p</span><span class="p">&gt;}</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+<p>{% codeblock lang:csharp TasksStateReport.cs %}
+public partial class _TasksStateReport
+{</p>
+
+<pre><code>// -- Start of embedded scripts -- 
+
+private void xrLabel1_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e) {
+    // This is a test
+    xrLabel1.Text = "Hello";
+}
+
+private void xrLabel2_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e) {
+    xrLabel2.Text = GetLabel2Text();
+}
+
+public string GetLabel2Text()
+{
+    return "Label 2!";
+}
+
+// -- End of embedded scripts --    
+</code></pre>
+
+<p>}
+{% endcodeblock %}</p>
 
 <h2>A note about performance</h2>
 

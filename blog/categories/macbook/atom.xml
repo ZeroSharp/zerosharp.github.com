@@ -4,7 +4,7 @@
   <title><![CDATA[Category: macbook | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/macbook/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2018-09-10T19:35:31+01:00</updated>
+  <updated>2018-09-18T11:57:38+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -54,7 +54,9 @@ I can't even find the on/off switch.</p>
 
 <p>Then there are those fancy new <strong>Macbook Pro</strong>s with retina displays. They seem light and powerful and the screen looks great. I don't know much about Macs, but I'd like to learn.</p>
 
-<p><blockquote><p>But I need Microsoft Windows and Visual Studio. I know theoretically I can run a virtual machine or setup a dual boot, but I'll bet it's all a bit of a hassle and rather clunky...</p></blockquote></p>
+<p>{% blockquote %}
+But I need Microsoft Windows and Visual Studio. I know theoretically I can run a virtual machine or setup a dual boot, but I'll bet it's all a bit of a hassle and rather clunky...
+{% endblockquote %}</p>
 
 <h3>Three hours after my Macbook Pro arrived</h3>
 
@@ -64,7 +66,9 @@ I can't even find the on/off switch.</p>
 
 <h3>Three weeks later</h3>
 
-<p><blockquote><p>This is by far the most pleasant laptop I've ever used for development.</p></blockquote></p>
+<p>{% blockquote %}
+This is by far the most pleasant laptop I've ever used for development.
+{% endblockquote %}</p>
 
 <p>The screen is wonderful - the machine seems very fast and it is no weight to carry around.</p>
 
