@@ -7,13 +7,13 @@ categories: [mathematics]
 description: A review of a lecture at the Tate Modern by Sir Michael Atiyah and Cédric Villani.
 ---
 
-{% img right /images/blog/an-afternoon-with-two-fields-medallists-001.jpg %}
+{% img right /images/blog/an-afternoon-with-two-fields-medallists-001.jpg By Tugsataydin CC BY-SA 4.0 from Wikimedia Commons %}
 
 On Saturday I attended an excellent discussion at the Tate modern which was part of [a series of lectures on Topology](http://www.tate.org.uk/whats-on/tate-modern/eventseries/topology).  The first part was a screening of _Au Bonheur des Maths_, a film by Raymond Depardon and Claudine Nougaret which is a collection of portraits of famous mathematicians describing beauty in mathematics.  The second part was a discussion on the same topic between Sir Michael Atiyah and Cédric Villani, both winners of the [Fields Medal](http://en.wikipedia.org/wiki/Fields_Medal).  You can read a review of the event at [Tony Mann's maths blog](http://tonysmaths.blogspot.co.uk/2012/06/atiyah-and-villani-at-tate-modern-value.html).
 
 I particularly enjoyed witnessing world-class mathematicians in the flesh and learning a little about their day-to-day work.  [Sir Michael Atiyah](http://en.wikipedia.org/wiki/Michael_Atiyah) is a jovial fellow in his 80s who speaks extremely quickly as if his mouth is trying to keep up with his thoughts.  His passion for mathematics is infectious.
 
-{% img left /images/blog/an-afternoon-with-two-fields-medallists-002.jpg %}
+{% img left /images/blog/an-afternoon-with-two-fields-medallists-002.jpg By Renate Schmid CC BY-SA 2.0 de via Wikimedia Commons %}
 
 In stark comparison [Cédric Villani](http://en.wikipedia.org/wiki/C%C3%A9dric_Villani) is a flamboyant Frenchman who was dressed in a three-piece suit and a cravat.  He looks more like a musketeer than a mathematician.  He was wearing an ornate and sparkly jewel in the shape of a spider on his lapel (and apparently always does).  He speaks very good English but with quite a thick French accent.  He has a mischevous sense of humour and an endless enthusiasm.  Check out his great [TEDx talk](http://www.youtube.com/watch?v=U3kKjGKp9rA#!).
 

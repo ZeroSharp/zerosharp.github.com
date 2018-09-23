@@ -31,5 +31,5 @@ For a more advanced use case, see my post about automatically [converting DevExp
 I always install the [Amazon Web Services Toolkit](https://aws.amazon.com/visualstudio/) to make it easy to spin up test servers in the Amazon cloud.
 
 ## Next up
-My [essential web applications and iPhone apps]((/my-essential-web-applications).
+My [essential web applications and iPhone apps](/my-essential-web-applications).
 
