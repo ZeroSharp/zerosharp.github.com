@@ -4,7 +4,7 @@
   <title><![CDATA[Category: mathematics | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/mathematics/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2018-09-18T12:02:44+01:00</updated>
+  <updated>2018-09-23T09:48:16+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -14,17 +14,31 @@
 
   
   <entry>
+    <title type="html"><![CDATA[Has the Riemann Hypothesis been proved?]]></title>
+    <link href="http://ZeroSharp.github.com/has-the-riemann-hypothesis-been-proved/"/>
+    <updated>2018-09-23T08:35:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/has-the-riemann-hypothesis-been-proved</id>
+    <content type="html"><![CDATA[<p><img class="right" src="/images/blog/has-the-riemann-hypothesis-been-proved-michael-atiyah.jpg" title="By Tugsataydin CC BY-SA 4.0 from Wikimedia Commons" >
+Tomorrow could be an exciting moment in the history of maths. <a href="https://en.wikipedia.org/wiki/Michael_Atiyah">Sir Michael Atiyah</a> is presenting a proof of the Riemann Hypothesis at the Heidelberg Laureate Forum which will be available on <a href="https://www.youtube.com/user/LaureateForum">their youtube channel</a>. There is a good angle by Ken Regan on the <a href="https://rjlipton.wordpress.com/2018/09/21/the-specter-of-simpler-proofs/">Gödel's Lost Letter blog</a>.</p>
+
+<p>The Riemann Hypothesis is one of the most important unsolved problems in mathematics and the subject of one of my favourite books about maths: <a href="https://www.amazon.com/Prime-Obsession-Bernhard-Greatest-Mathematics/dp/0452285259">Prime Obsession</a>.</p>
+
+<p>A few years ago in Paris, I had the pleasure of seeing <a href="/an-afternoon-with-two-fields-medallists">Sir Michael speak</a>. He spoke so cheerfully about life and mathematics. There is a great interview with him on the <a href="https://www.youtube.com/playlist?list=PLVV0r6CmEsFzjttuP9WTFDzu0oAOJBM_3">Web of Stories</a> YouTube channel.</p>
+]]></content>
+  </entry>
+  
+  <entry>
     <title type="html"><![CDATA[An afternoon with two Fields Medallists]]></title>
     <link href="http://ZeroSharp.github.com/an-afternoon-with-two-fields-medallists/"/>
     <updated>2012-06-05T08:30:00+01:00</updated>
     <id>http://ZeroSharp.github.com/an-afternoon-with-two-fields-medallists</id>
-    <content type="html"><![CDATA[<p><img class="right" src="/images/blog/an-afternoon-with-two-fields-medallists-001.jpg"></p>
+    <content type="html"><![CDATA[<p><img class="right" src="/images/blog/an-afternoon-with-two-fields-medallists-001.jpg" title="By Tugsataydin CC BY-SA 4.0 from Wikimedia Commons" ></p>
 
 <p>On Saturday I attended an excellent discussion at the Tate modern which was part of <a href="http://www.tate.org.uk/whats-on/tate-modern/eventseries/topology">a series of lectures on Topology</a>.  The first part was a screening of <em>Au Bonheur des Maths</em>, a film by Raymond Depardon and Claudine Nougaret which is a collection of portraits of famous mathematicians describing beauty in mathematics.  The second part was a discussion on the same topic between Sir Michael Atiyah and Cédric Villani, both winners of the <a href="http://en.wikipedia.org/wiki/Fields_Medal">Fields Medal</a>.  You can read a review of the event at <a href="http://tonysmaths.blogspot.co.uk/2012/06/atiyah-and-villani-at-tate-modern-value.html">Tony Mann's maths blog</a>.</p>
 
 <p>I particularly enjoyed witnessing world-class mathematicians in the flesh and learning a little about their day-to-day work.  <a href="http://en.wikipedia.org/wiki/Michael_Atiyah">Sir Michael Atiyah</a> is a jovial fellow in his 80s who speaks extremely quickly as if his mouth is trying to keep up with his thoughts.  His passion for mathematics is infectious.</p>
 
-<p><img class="left" src="/images/blog/an-afternoon-with-two-fields-medallists-002.jpg"></p>
+<p><img class="left" src="/images/blog/an-afternoon-with-two-fields-medallists-002.jpg" title="By Renate Schmid CC BY-SA 2.0 de via Wikimedia Commons" ></p>
 
 <p>In stark comparison <a href="http://en.wikipedia.org/wiki/C%C3%A9dric_Villani">Cédric Villani</a> is a flamboyant Frenchman who was dressed in a three-piece suit and a cravat.  He looks more like a musketeer than a mathematician.  He was wearing an ornate and sparkly jewel in the shape of a spider on his lapel (and apparently always does).  He speaks very good English but with quite a thick French accent.  He has a mischevous sense of humour and an endless enthusiasm.  Check out his great <a href="http://www.youtube.com/watch?v=U3kKjGKp9rA#!">TEDx talk</a>.</p>
 

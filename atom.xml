@@ -4,7 +4,7 @@
   <title><![CDATA[ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2018-09-18T12:02:44+01:00</updated>
+  <updated>2018-09-23T09:48:16+01:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -12,6 +12,20 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Has the Riemann Hypothesis been proved?]]></title>
+    <link href="http://ZeroSharp.github.com/has-the-riemann-hypothesis-been-proved/"/>
+    <updated>2018-09-23T08:35:00+01:00</updated>
+    <id>http://ZeroSharp.github.com/has-the-riemann-hypothesis-been-proved</id>
+    <content type="html"><![CDATA[<p><img class="right" src="http://ZeroSharp.github.com/images/blog/has-the-riemann-hypothesis-been-proved-michael-atiyah.jpg" title="By Tugsataydin CC BY-SA 4.0 from Wikimedia Commons" >
+Tomorrow could be an exciting moment in the history of maths. <a href="https://en.wikipedia.org/wiki/Michael_Atiyah">Sir Michael Atiyah</a> is presenting a proof of the Riemann Hypothesis at the Heidelberg Laureate Forum which will be available on <a href="https://www.youtube.com/user/LaureateForum">their youtube channel</a>. There is a good angle by Ken Regan on the <a href="https://rjlipton.wordpress.com/2018/09/21/the-specter-of-simpler-proofs/">Gödel&#8217;s Lost Letter blog</a>.</p>
+
+<p>The Riemann Hypothesis is one of the most important unsolved problems in mathematics and the subject of one of my favourite books about maths: <a href="https://www.amazon.com/Prime-Obsession-Bernhard-Greatest-Mathematics/dp/0452285259">Prime Obsession</a>.</p>
+
+<p>A few years ago in Paris, I had the pleasure of seeing <a href="http://ZeroSharp.github.com/an-afternoon-with-two-fields-medallists">Sir Michael speak</a>. He spoke so cheerfully about life and mathematics. There is a great interview with him on the <a href="https://www.youtube.com/playlist?list=PLVV0r6CmEsFzjttuP9WTFDzu0oAOJBM_3">Web of Stories</a> YouTube channel.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[My essential web applications and iPhone apps]]></title>
@@ -3133,30 +3147,6 @@ Reporting is definitely one of the areas where XAF has progressed the most in re
 <h2>Coming up</h2>
 
 <p>Tomorrow I&#8217;ll be looking at the new <a href="https://community.devexpress.com/blogs/eaf/archive/2015/11/24/xaf-validation-module-enhancements-for-windows-and-the-web-coming-soon-in-v15-2.aspx">batch editing in grids</a> in more detail.</p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Migrating a large web application from XAF 12.1 to 15.1 - Part 3]]></title>
-    <link href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3/"/>
-    <updated>2015-09-16T09:39:00+01:00</updated>
-    <id>http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-3</id>
-    <content type="html"><![CDATA[<p><span class='pullquote-right' data-pullquote='I&#8217;m happy to report there is a considerable improvement under load in version 15.1.'>
-This is the third part of a <a href="http://ZeroSharp.github.com/migrating-a-large-web-application-from-xaf-12-dot-1-to-15-dot-1-part-2">series</a> about migrating a large application from XAF 12.1 to XAF 15.1. In this part I will compare the results of a simple stress test between the versions.</p>
-
-<p>I have described in previous posts how to <a href="http://ZeroSharp.github.com/load-testing-xaf-overview/">stress test XAF applications</a>. One of our most basic tests is to simulate 25 users cycling through all the navigation tabs for an hour. I&#8217;m happy to report there is a considerable improvement under load in version 15.1.</p>
-
-<p>(Note that we purposefully stress test against a single web application so that we can compare apples with apples. In production we have multiple instances load-balanced.)</p>
-
-<p>Here is an interactive summary of the 15.1 results:
-</span></p>
-
-<p>Here is version 15.1. There were zero errors and 382 completed scripts.</p>
-
-<p>By comparison, the same test against DevExpress 12.1 yielded only 258 completions. So 15.1 shows a 48% performance improvement over 12.1.</p>
-
-<iframe class="cmd" src="https://load.wpm.neustar.biz/load/test/share/e4c5e109f8f04ceebd72cdb5c93eb1c2" width="1024" height="512">
-
 ]]></content>
   </entry>
   
