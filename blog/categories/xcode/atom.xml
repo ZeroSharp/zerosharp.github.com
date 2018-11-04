@@ -4,7 +4,7 @@
   <title><![CDATA[Category: xcode | ZeroSharp]]></title>
   <link href="http://ZeroSharp.github.com/blog/categories/xcode/atom.xml" rel="self"/>
   <link href="http://ZeroSharp.github.com/"/>
-  <updated>2018-09-23T09:48:16+01:00</updated>
+  <updated>2018-11-04T19:50:26+00:00</updated>
   <id>http://ZeroSharp.github.com/</id>
   <author>
     <name><![CDATA[Robert Anderson]]></name>
@@ -147,7 +147,7 @@ $ git push -u origin --all
 
 <h3>Startup Weekend</h3>
 
-<p>On a recent month-long trip to South America, I took part in the <a href="http://buenosaires.startupweekend.org/">Buenos Aires Startup Weekend</a> hackathon and my team came second!](/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend). The application we built is a treasure hunt game for tourists which helps them discover Buenos Aires. At the beginning of the weekend I knew nothing about mobile development. It was the first time I developed software using a Mac.</p>
+<p>On a recent month-long trip to South America, I took part in the <a href="http://buenosaires.startupweekend.org/">Buenos Aires Startup Weekend</a> hackathon and <a href="/how-i-went-from-c-number-developer-to-iphone-developer-in-a-weekend">my team came second!</a>. The application we built is a treasure hunt game for tourists which helps them discover Buenos Aires. At the beginning of the weekend I knew nothing about mobile development. It was the first time I developed software using a Mac.</p>
 
 <p>First, let's look at the basic requirements for the environment.</p>
 
